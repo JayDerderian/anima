@@ -1,0 +1,10 @@
+results/
+test/
+libs/
+_pycache_/
+.vscode/
+docs/
+old files/
+raw midi/
+resources/
+.env
