@@ -1459,7 +1459,7 @@ class generate():
                     newMelody.notes.append(note)
 
         # Check melody container data
-        if(newMelody.isEmpty() == True):
+        if(newMelody.hasData() == False):
             return -1
 
         # Add data to MIDI object and write out file.

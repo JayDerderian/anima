@@ -19,13 +19,17 @@ class melody():
         self.dynamics = []
 
     # Check if there's complete melody data
-    def isEmpty(self):
+    def hasData(self):
+        '''
+        Is there complete melody data? 
+        If True, all data fields have been used.
+        '''
         if(self.tempo != 0.0 
             and self.notes is not None 
             and self.rhythms is not None 
             and self.dynamics is not None):
-            return False
-        return True
+            return True
+        return False
 
     #---------------------------Input all data-----------------------------#
 
@@ -45,6 +49,9 @@ class melody():
     #-------------------------------Getters--------------------------------#
 
     def getNotes(self):
+        '''
+        Returns list of notes (str)
+        '''
         if(self.notes is not None):
             myNotes = []
             for i in range(len(self.notes)):
@@ -57,6 +64,9 @@ class melody():
             return None
 
     def getRhythms(self):
+        '''
+        Returns list of rhythms (floats)
+        '''
         if(self.rhythms is not None):
             myRhythms = []
             for i in range(len(self.rhythms)):
@@ -69,6 +79,9 @@ class melody():
             return None
 
     def getDynamics(self):
+        '''
+        Returns list of MIDI velocities (int)
+        '''
         if(self.dynamics is not None):
             myDynamics = []
             for i in range(len(self.dynamics)):
