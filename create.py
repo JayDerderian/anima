@@ -61,6 +61,7 @@ from random import randint
 from midi import midiStuff as mid
 from decisions import decide as choice
 from containers.melody import melody
+from containers.note import note
 
 #Generative functions
 class generate():
@@ -1492,15 +1493,13 @@ class generate():
                 1.1 If random, generate number
             2. Pick duration
         '''
-        i = 0
-        note = []
-        rhythms = []
-        dynamics = []
+        # Melody container object for note data
+        newNote = melody()
 
         print("\nGenerating single note with varying dynamics and rhythms...")
 
         #Tempo
-        tempo = self.newTempo()
+        newNote.tempo = self.newTempo()
         #Pick note
         note = self.note()
         #Total times note is repeated (2-9)
@@ -1518,12 +1517,12 @@ class generate():
                 r = 0
                 reps = randint(1, 3)
                 while(r < reps):
-                    dynamics.append(dynamic)
+                    newMelody.dynamics.append(dynamic)
                     if(len(dynamics) == totalLen):
                         break
                     r += 1
             else:
-                dynamics.append(dynamic)
+                newNote.dynamics.append(dynamic)
 
             #Pick rhythm
             rhythm = self.newRhythm()
@@ -1533,14 +1532,15 @@ class generate():
                 r = 0
                 reps = randint(1, 3)
                 while(r < reps):
-                    rhythms.append(rhythm)
+                    newMelody.rhythms.append(rhythm)
                     if(len(rhythms) == totalLen):
                         break
                     r += 1
             else:
-                rhythms.append(rhythm)
+                newMelody.rhythms.append(rhythm)
 
-        if(dynamics is None or rhythms is None):
+        if(newMelody.dynamics is None 
+            or newMelody.rhythms is None):
             return -1
 
         #Display results
