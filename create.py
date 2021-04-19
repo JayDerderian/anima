@@ -1376,9 +1376,6 @@ class generate():
         if(newMelody.rhythms is None):
             return -1
 
-        # Convert rhythms to durations in seconds according to desingated tempo
-        # newMelody = self.convert(newMelody)
-
         # Dynamics
         if(choices[2] == 1):
             # Non-repeating
