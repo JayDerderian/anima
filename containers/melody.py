@@ -37,9 +37,9 @@ class melody():
                 self.rhythms.append(newRhythms[i])
                 self.dynamics.append(newDynamics[i])
         if(self.isEmpty() == False):    
-            return True
+            return 0
         else:
-            return False
+            return -1
                 
                 
     #-------------------------------Getters--------------------------------#
@@ -48,7 +48,8 @@ class melody():
         if(self.notes is not None):
             myNotes = []
             for i in range(len(self.notes)):
-                myNotes[i] = self.notes[i]
+                # myNotes[i] = self.notes[i]
+                myNotes.append(self.notes[i])
         else:
             return None
         if(myNotes is not None):
@@ -60,7 +61,8 @@ class melody():
         if(self.rhythms is not None):
             myRhythms = []
             for i in range(len(self.rhythms)):
-                myRhythms[i] = self.rhythms[i]
+                # myRhythms[i] = self.rhythms[i]
+                myRhythms.append(self.rhythms[i])
         else:
             return None
         if(myRhythms is not None):
@@ -72,7 +74,8 @@ class melody():
         if(self.dynamics is not None):
             myDynamics = []
             for i in range(len(self.dynamics)):
-                myDynamics[i] = self.dynamics[i]
+                # myDynamics[i] = self.dynamics[i]
+                myDynamics.append(self.dynamics[i])
         else:
             return None
         if(myDynamics is not None):

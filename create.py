@@ -1336,17 +1336,17 @@ class generate():
                     range of octaves thats randomly chosen from.
         '''
 
-        #Melody container object
+        # Melody container object
         newMelody = melody()
 
         print("\nGenerating melody...")
 
         #---------------------Initial choices---------------------#
 
-        #Pick tempo
+        # Pick tempo
         newMelody.tempo = self.newTempo()
 
-        #Choose paramters
+        # Choose paramters
         '''
         choices indices:
             0 = total elements (number of notes, rhythms, and dynamics)
@@ -1360,49 +1360,49 @@ class generate():
         if(choices is None):
             return -1
 
-        #Rhythm
+        # Rhythm
         if(choices[1] == 1):
-            #Non-repeating (returns 2-20 rhythms)
+            # Non-repeating (returns 2-20 rhythms)
             print("\n...Using non-repeating rhythms!")
             newMelody.rhythms = self.newRhythmsNonRep(choices[0])
         elif(choices[1] == 2):
-            #Repeating (returns 2-10 rhythms)
+            # Repeating (returns 2-10 rhythms)
             print("\n...Using one repeating rhythm!")
             newMelody.rhythms = self.newRhythmRep(choices[0])
         elif(choices[1] == 3):
-            #Semi-repeating (returns 2-20 rhythms)
+            # Semi-repeating (returns 2-20 rhythms)
             print("\n...Using semi-repeating rhythm!")
             newMelody.rhythms = self.newRhythms(choices[0])
         if(newMelody.rhythms is None):
             return -1
 
-        #Convert rhythms to durations in seconds according to desingated tempo
-        #newMelody = self.convert(newMelody)
+        # Convert rhythms to durations in seconds according to desingated tempo
+        # newMelody = self.convert(newMelody)
 
-        #Dynamics
+        # Dynamics
         if(choices[2] == 1):
-            #Non-repeating
+            # Non-repeating
             newMelody.dynamics = self.newDynamicsNonRep(choices[0])
             print("\n...Using non-repeating dynamics!")
         elif(choices[2] == 2):
-            #Repeating
+            # Repeating
             newMelody.dynamics = self.newDynamicsRep(choices[0])
             print("\n...Using one repeated dynamic!")
         elif(choices[2] == 3):
-            #Semi-repeating
+            # Semi-repeating
             newMelody.dynamics = self.newDynamics(choices[0])
             print("\n...Using semi-repeated dynamics!")
         if(newMelody.dynamics is None):
             return -1
 
-        #Melodic Range
+        # Melodic Range
         if(choices[4] == 1):
             print("\nUsing octave", choices[5], "only!")
         elif(choices[4] == 2 or choices[4] == 3):
             octaves = []
-            #How many octaves do we want (2-3 max)?
+            # How many octaves do we want (2-3 max)?
             total = randint(2, 3)
-            #Which octaves do we want to use? 
+            # Which octaves do we want to use? 
             '''Choose starting octave then add 1 n (total) times'''
             octave = randint(2, 4)
             while(len(octaves) < total):
@@ -1419,39 +1419,36 @@ class generate():
             
         #----------------------Generate--------------------------#
 
-        #Pick the notes
+        # Pick the notes
         print("\nPicking notes...")
         while(len(newMelody.notes) < len(newMelody.rhythms)):
 
-            #Using single octave
+            # Using single octave
             if(choices[3] == 1):
                 note = self.aNote(choices[4])
-            #Using limited range of octaves
+            # Using limited range of octaves
             elif(choices[3] == 2):
                 note = self.aNote(octaves[randint(0, len(octaves) - 1)])
-            #Use random alteration between fixed range/random octaves
+            # Use random alteration between fixed range/random octaves
             elif(choices[3] == 3):
-                #Random octave(1) or select from fixed range (2)?
+                # Random octave(1) or select from fixed range (2)?
                 if(randint(1, 2) == 1):
                     note = self.note()
                 else:
                     note = self.aNote(octaves[randint(0, len(octaves) - 1)])
-            #Use random octaves
+            # Use random octaves
             elif(choices[3] == 4):
                 note = self.note()
 
-            #Repeat this note (1) or not (2)?
-            repeat = randint(1, 2)
-
-            #Repeat
-            if(repeat == 1):
-                #Repeat this note r times(reps)
+            # Repeat this note (1) or not (2)?
+            if(randint(1, 2) == 1):
+                # Repeat this note r times(reps)
                 r = 0
                 reps = 0
-                #If 1 < notes < 5, repeat between 1 and 3 times 
+                # If 1 < notes < 5, repeat between 1 and 3 times 
                 if(len(newMelody.notes) < 6 and len(newMelody.notes) > 0):
                     reps = randint(1, 3)
-                #Otherwise scale repetitions
+                # Otherwise scale repetitions
                 else:
                     reps = choice.howManyRepetitions(self, newMelody.notes)
                 while(r < reps):
@@ -1459,16 +1456,20 @@ class generate():
                     r += 1
                     if(len(newMelody.notes) == choices[0]):
                         break
-            #Dont repeat
-            elif(repeat == 2):
+            # Dont repeat
+            else:
                 if(note not in newMelody.notes):
                     newMelody.notes.append(note)
 
-        #Add data to MIDI object and write out file.
+        # Check melody container data
+        if(newMelody.isEmpty() == True):
+            return -1
+
+        # Add data to MIDI object and write out file.
         if(mid.saveMelody(self, newMelody) == -1):
             return -1
 
-        #Display results
+        # Display results
         print("\nRESULTS:")
         print("\nTempo:", newMelody.tempo, "bpm")
         print("\nTotal Notes:", len(newMelody.notes))
