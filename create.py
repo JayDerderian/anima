@@ -1506,18 +1506,14 @@ class generate():
         #Total times note is repeated (2-9)
         totalLen = randint(2, 9)
         
-        print("\nNote", note, "will be repeated", totalLen, "times...")
+        print("\n...Note", note, "will be repeated", totalLen, "times...")
 
         #Generate lists of dynamics and rhythms
-        i = 0
-        while(i < totalLen):
-            
+        for i in range(totalLen):
             #Pick dynamic
             dynamic = self.newDynamic()
-            #Repeat this dynamic?
-            repChoice = randint(1, 2)
-            #If repeating...
-            if(repChoice == 1):
+            #Repeat this dynamic (1) or not (2)?
+            if(randint(1, 2) == 1):
                 #...How many times (1-3)?
                 r = 0
                 reps = randint(1, 3)
@@ -1531,10 +1527,8 @@ class generate():
 
             #Pick rhythm
             rhythm = self.newRhythm()
-            #Repeat this rhythm?
-            rhyChoice = randint(1, 2)
-            #If repeating...
-            if(rhyChoice == 1):
+            #Repeat this rhythm (1) or not (2)?
+            if(randint(1, 2) == 1):
                 #...How many times (1-3)?
                 r = 0
                 reps = randint(1, 3)
@@ -1546,7 +1540,8 @@ class generate():
             else:
                 rhythms.append(rhythm)
 
-            i += 1
+        if(dynamics is None or rhythms is None):
+            return -1
 
         #Display results
         print("\n---Results---")
