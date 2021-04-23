@@ -377,6 +377,51 @@ class generate():
     to generate more notes instead of randomly chosen chromatic notes. 
     '''
 
+    #Generate new notes for a new melody
+    def newNotes(self, total):
+        
+        '''
+        Generate lists of 2-20 notes to be used as a 
+        melody/ostinato/riff/whatever. Uses infrequent repetition.
+
+        Algorithm:
+            1. Pick pattern length (l) 
+            2. Pick note.
+            3. Repeat note or pick another?
+                3.1. If repeat, how many times (r < l)?
+                3.2. If not, repeat steps 2-3 while duration total < l.
+        '''
+        i = 0
+        notes = []
+        print("\nGenerating", total, "notes...")
+        while(len(notes) < total):
+            #Pick rhythm + add to list    
+            note = self.notes[randint(0, len(self.notes) - 1)]
+            #Repeat this rhythm or not? 1 = yes, 2 = no
+            repChoice = randint(1, 2) 
+            if(repChoice == 1):
+                #Limit reps to no more than 1/3 of the total no. of rhythms
+                limit = math.floor(len(notes)/3)
+                '''Note: This limit will increase rep levels w/longer list lengths
+                         May need to scale for larger lists'''
+                if(limit == 0):
+                    limit += 2
+                reps = randint(1, limit) 
+                for i in range(reps):
+                    notes.append(note)
+                    if(len(notes) == total):
+                        break
+            else:
+                if(note not in notes):
+                    notes.append(notes)
+
+            print("Total:", len(notes))
+
+        if(not notes):
+            print("...Unable to generate pattern!")
+            return -1
+        return notes
+
     #-----------------------------------------------------------------------------------#
     #--------------------------------------Rhythm---------------------------------------#
     #-----------------------------------------------------------------------------------#
@@ -1315,6 +1360,15 @@ class generate():
 
         Appends to pretty_midi object and returns new MIDI object. Also exports a MIDI file.
 
+        NOTE: May need to modify some decision making sequences. For example, try implementing:
+              1. Generate a rhythm/note/dynamic set of n length.
+              2. Decide to create x number of note events (2 - however many)
+              3. For each note event, randomly pick from set n. 
+                 ex: note = noteSet[randint(0, len(noteSet) - 1)]
+
+              This could allow for the creation of rhythms/melodies/dynamics with 
+              very limited ranges, but for wide variety of other parameters. 
+
         TODO: Modify this to use a variable number of arguments! Allow user to supply
         the list of rhythms, list of dynamics, and the tempo! If some or none of these
         are supplied, then the function should decide whether to create its own. 
@@ -1419,7 +1473,7 @@ class generate():
 
         # Pick the notes
         print("\nPicking notes...")
-        while(len(newMelody.notes) < len(newMelody.rhythms)):
+        while(len(newMelody.notes) < choices[0]):
 
             # Using single octave
             if(choices[3] == 1):
