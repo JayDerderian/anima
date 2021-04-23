@@ -381,14 +381,15 @@ class generate():
     def newNotes(self, total):
         
         '''
-        Generate lists of 2-20 notes to be used as a 
-        melody/ostinato/riff/whatever. Uses infrequent repetition.
+        Generate lists of n number notes to be used as a 
+        melody/ostinato/riff/whatever, where n is supplied from elsewhere. 
+        Uses infrequent repetition.
 
         Algorithm:
             1. Pick pattern length (l) 
             2. Pick note.
             3. Repeat note or pick another?
-                3.1. If repeat, how many times (r < l)?
+                3.1. If repeat, how many times (where r < l)?
                 3.2. If not, repeat steps 2-3 while duration total < l.
         '''
         notes = []
@@ -396,12 +397,12 @@ class generate():
         print("\nGenerating", total, "notes...")
 
         while(len(notes) < total):
-            #Pick rhythm + add to list    
+            # Pick note + add to list    
             note = self.noteNames[randint(0, len(self.noteNames) - 1)]
-            #Repeat this rhythm or not? 1 = yes, 2 = no
+            # Repeat this note (1) or not (2)?
             repChoice = randint(1, 2) 
             if(repChoice == 1):
-                #Limit reps to no more than 1/3 of the total no. of rhythms
+                # Limit reps to no more than 1/3 of the total # of notes
                 limit = math.floor(len(notes)/3)
                 '''Note: This limit will increase rep levels w/longer list lengths
                          May need to scale for larger lists'''
@@ -412,6 +413,7 @@ class generate():
                     notes.append(note)
                     if(len(notes) == total):
                         break
+            # Dont repeat    
             else:
                 if(note not in notes):
                     notes.append(notes)
@@ -419,6 +421,7 @@ class generate():
         if(not notes):
             print("...Unable to generate pattern!")
             return -1
+
         return notes
 
     #-----------------------------------------------------------------------------------#
