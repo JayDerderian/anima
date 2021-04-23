@@ -391,12 +391,13 @@ class generate():
                 3.1. If repeat, how many times (r < l)?
                 3.2. If not, repeat steps 2-3 while duration total < l.
         '''
-        i = 0
         notes = []
+
         print("\nGenerating", total, "notes...")
+
         while(len(notes) < total):
             #Pick rhythm + add to list    
-            note = self.notes[randint(0, len(self.notes) - 1)]
+            note = self.noteNames[randint(0, len(self.noteNames) - 1)]
             #Repeat this rhythm or not? 1 = yes, 2 = no
             repChoice = randint(1, 2) 
             if(repChoice == 1):
@@ -414,8 +415,6 @@ class generate():
             else:
                 if(note not in notes):
                     notes.append(notes)
-
-            print("Total:", len(notes))
 
         if(not notes):
             print("...Unable to generate pattern!")
