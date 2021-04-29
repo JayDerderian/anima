@@ -81,6 +81,14 @@ class generate():
         #--------------------------Resource data------------------------------#
         #---------------------------------------------------------------------#
 
+
+        # Alphabet to map letters to notes.
+        self.alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g',
+                         'h', 'i', 'j', 'k', 'l', 'm', 'n',
+                         'o', 'p', 'q', 'r', 's', 't', 'u',
+                         'v', 'w', 'x', 'y', 'z']
+
+
         #--------Notes and Scales--------#
 
         #Enharmonically spelled note names starting on A. Indicies: 0-16
@@ -90,32 +98,47 @@ class generate():
                           "F#", "Gb", "G", "G#",
                           "Ab"]
 
-        #Major scale template. Use with noteNames and 
-        #alter values to transpose (mod12) and modify
+        # Major scale template. Use with noteNames and 
+        # alter values to transpose (mod12) and modify
         self.defaultScale = ["C", "D", "E", "F", "G", "A", "B"]
 
-        #Major scale in PC notation.
+        # Major scale in PC notation.
         self.majorScale = [0, 2, 4, 5, 7, 9, 11]
 
-        #Natural minor scale in PC notation
+        # Natural minor scale in PC notation
         self.minorScale = [0, 2, 3, 5, 7, 8, 10]
 
-        #Harmonic minor scale in PC notation
+        # Harmonic minor scale in PC notation
         self.harMinScale = [0, 2, 3, 5, 7, 8, 11]
 
-        #Melodic minor scalale in PC notation
+        # Melodic minor scalale in PC notation
         self.melMinorScale = [0, 2, 3, 5, 7, 9, 11]
 
-        #Chormatic scale (using all sharps). Indicies 0 - 11.
+        # Chormatic scale (using all sharps). Indicies 0 - 11.
         self.chromaticScaleSharps = ["C", "C#", "D", "D#", "E", "F",
                                      "F#", "G", "G#", "A", "A#", "B"] 
 
-        #Chormatic scale (using all flats). Indicies 0 - 11.
+        # Chormatic scale (using all flats). Indicies 0 - 11.
         self.chromaticScaleFlats = ["C", "Db", "D", "Eb", "E", "F",
                                     "Gb", "G", "Ab", "A", "Bb", "B"]        
 
-        #Octave numbers
+        # Octave numbers
         self.octave = [1, 2, 3, 4, 5, 6, 7]
+
+
+        # Major scales
+        self.scales = {1: ['C', 'D', 'E', 'F', 'G', 'A', 'B'], 
+                       2: ['Db', 'Eb', 'F', 'Gb', 'Ab', 'Bb', 'C'],
+                       3: ['D', 'E', 'F#', 'G', 'A', 'B', 'C#' ],
+                       4: ['Eb', 'F', 'G', 'Ab', 'Bb', 'C', 'D'],
+                       5: ['E', 'F#', 'G#', 'A', 'B', 'C#', "D#"],
+                       6: ['F', 'G', 'A', 'Bb', 'C', 'D', 'E'],
+                       7: ['F#', 'G#', 'A#', 'B', 'C#', 'D#', 'E#'],
+                       8: ['G', 'A', 'B', 'C', 'D', 'E', 'F#'],
+                       9: ['Ab', 'Bb', 'C', 'Db', 'Eb', 'F', 'G'],
+                       10:['A', 'B', 'C#', 'D', 'E', 'F#', 'G#'],
+                       11:['Bb', 'C', 'D', 'Eb', 'F', 'G', 'A'],
+                       12:['B', 'C#', 'D#', 'E', 'F#', 'G#', 'A#']}
 
 
         #-----------Interval Lists----------#
@@ -241,7 +264,7 @@ class generate():
     #--------------------------------------------------------------------------------#
 
     #Convert base rhythms to values in a specified tempo
-    def convert(self, newMelody):
+    def tempoConvert(self, newMelody):
         '''
         A rhythm converter function to translate durations in self.rhythms
         to actual value in seconds for that rhythm in a specified tempo. 
@@ -273,6 +296,106 @@ class generate():
             return True
         return False
 
+    # Converts an array of floats to an array of ints
+    def floatToInt(self, data):
+        '''Converts an array of floats to an array of ints'''
+        if(len(data) == 0):
+            print("ERROR: no data inputted!")
+            return -1
+        result = []
+        for i in range(len(data)):
+            result.append(int(data[i]))
+        return result
+
+    # Scale individual data set integers such that i = i < len(dataSet) - 1
+    def scaleTheScale(self, data):
+        '''
+        This repeatedly subtracts the value of len(data) - 2 from each integer in the 
+        data array. This will keep the newly inputted data array's values within the bounds 
+        of the scale array. These values function as a collection of index numbers 
+        to randomly chose from in order to pick note strings from the scale array.
+
+        len(data) - 1 acts as a way to do some modulo arithmatic whose base is
+        a dynamically determined value.
+
+        NOTE: Alternate version where highest numbers must be divisible by
+        len(data) - 2. Trying to make this function like octave equivalance.
+
+        while(data[i] % len(data) - 2 != 0):
+            data[i] = math.floor(data[i] % len(data) - 2) 
+        '''
+        if(len(data) == 0):
+            print("ERROR: no data inputted") 
+            return -1
+        newData = []
+        for i in range(len(data) - 1):
+            while(data[i] > len(data) - 2):
+                data[i] -= len(data) - 2
+            newData.append(data[i])
+        return newData
+
+    # Maps letters to index numbers
+    def mapLettersToNumbers(self, letters):
+        '''
+        Maps letters to index numbers, which will then be 
+        translated into notes (strings).
+        '''
+        print("\nMapping letters to index numbers...")
+        if(len(letters) == 0): 
+            print("ERROR: no data inputted!")
+            return -1
+        # Make all uppercase characters lowercase
+        for i in range(len(letters) - 1):
+            if(letters[i].isupper() == True):
+                letters[i] = letters[i].lower()
+        numbers = []
+        # Pick a letter
+        for i in range(len(letters)):
+            # Search alphabet letter by letter
+            for j in range(len(self.alphabet) - 1):
+                # If we get a match, store that index number
+                if(letters[i] == self.alphabet[j]):
+                    numbers.append(j)
+        if(len(numbers) == 0):
+            print("ERROR: no index numbers found!")
+            return -1
+        return numbers
+    
+    # Converts a major scale to its relative minor
+    def convertToMinor(self, scale):
+        if(len(scale) == 0):
+            print("ERROR: no scale inputted!")
+            return -1
+        k = 5
+        minorScale = []
+        for i in range(len(scale)):
+            minorScale.append(scale[k])
+            k += 1
+            if(k > len(scale) - 1):
+                k = 0
+        if(len(minorScale) == 0):
+            print("ERROR: unable to generate minor scale!")
+            return -1
+        return minorScale
+    
+    # Convert a hex number representing a color to an array of integers
+    def hexToIntArray(self, hex):
+        '''
+        Converts a prefixed hex number to an array of integers.
+
+        Algorithm:
+            1. Convert to integer
+            2. Break single integer into array of individual integers (ex 108 to [1, 0, 8])
+               using list comprehension
+        '''
+        if(hex == 0 or hex == None):
+            print("ERROR: Invalid input!")
+            return -1
+        # Convert to int
+        hexStr = int(hex, 0)
+        # Convert to array of ints (ie. 132 -> [1, 3, 2])
+        numArr = [int(x) for x in str(hexStr)]
+        return numArr
 
     #--------------------------------------------------------------------------------#
     #-------------------------------------Tempo--------------------------------------#
@@ -376,6 +499,17 @@ class generate():
     Note - create a version of notes() that takes the notes of a given MIDI file and uses those
     to generate more notes instead of randomly chosen chromatic notes. 
     '''
+    # Picks which key (scale) to use. 
+    def pickKey(self):
+        '''
+        Picks which key (scale) to use. 
+        Returns a list of pitch classes without specified octaves.
+
+        For minor scales, feed the output of this into convertToMinor()
+        '''
+        scale = []
+        scale = self.scales[randint(1, 12)]
+        return scale
 
     #Generate new notes for a new melody
     def newNotes(self, total):
@@ -423,7 +557,108 @@ class generate():
             return -1
 
         return notes
+    # Generate a series of notes based off an inputted array of integers
+    def newNotesFromInts(self, data, isMinor):
+        '''
+        Generate a series of notes based on inputted data (an array of integers)
+        This randomly picks the key and the starting octave! 
 
+        NOTE:
+            Long data sets will have the same note associated with different 
+            values elsewhere in the array. 
+            
+            If we ascend through the available octaves we can pick a new 
+            key/scale and cycle through the octaves again. This will allow for 
+            some cool chromaticism to emerge rather "organiclly" while minimizing
+            the amount of repeated notes associated with different elements in 
+            the data array (unless we get the same scale chosen again, or there's
+            a lot of common tones between the scales that are picked) .  
+        '''
+        if(len(data) == 0):
+            print("ERROR: no data inputted!")
+            return -1
+
+        # Pick starting octave (2 or 3)
+        octave = randint(2, 3)
+        octStart = octave
+
+        # Pick initial root/starting scale
+        root = self.scales[randint(1, 12)]
+
+        # Will this be a minor scale?
+        if(isMinor == True):
+            root = self.convertToMinor(root)
+
+        #Display choices
+        if(isMinor == True):
+            print("\nGenerating", len(data), "notes starting in the key of", root[0], "minor")
+        else:
+            print("\nGenerating", len(data), "notes starting in the key of", root[0], "major")
+
+        # Scale individual data set integers such that i = i < len(dataSet) -1
+        '''
+        This will eventually be moved to newMelody() so that
+        incoming data will already be scaled by the time it reaches newNotes()
+        '''
+        data = self.scaleTheScale(data)
+        '''
+        Note generation algorithm:
+
+            1. Total notes is equivalent to number of notes in data set.
+                1b. Maybe if data-sets exceed a certain length, we can 
+                    create a subset of available notes that is divisible
+                    by the total number elements in the data set
+            2. Generate a starting key/scale, and a starting octave.
+            3. Cycle through this scale appending each note to a list
+               of available notes until we reach the last note in the scale
+               in octave 8.
+            4. If we reach this note, reset octave to starting point, and 
+               pick a new starting scale at random.
+            5. Repeat steps 3-4 until we reach the end of the supplied data set.
+        '''    
+        # Generate notes to pick from
+        n = 0
+        notes = []
+        scale = []
+        for i in range(len(data)):
+            note = "{}{}".format(root[n], octave)
+            scale.append(note)
+            n += 1
+            # If we've reached the end of the root scale,
+            # increment the octave (until octave 8)
+            # Ideally trigger this condition every
+            # 6 iterations. 
+            if(i % 6 == 0):
+                octave += 1
+                # If we reach highest octave (8), reset
+                # to original starting point/octave 
+                # and pick a new scale to chose from
+                if(octave > 8):
+                    octave = octStart
+                    root = self.scales[randint(1, 12)]
+                    # Re-decide if we're using minor (1) or major (2) again
+                    if(randint(1, 2) == 1):
+                        isMinor = True
+                        print("Switching to a major key!")
+                    else:
+                        isMinor = False
+                        print("Staying in a minor key!")
+                    if(isMinor == True):
+                        root = self.convertToMinor(root)
+                        print("Key-change! Now using", root[0], "minor")
+                    else:
+                        print("Key-change! Now using", root[0], "major")
+                n = 0
+        # Pick notes according to integers in data array
+        for i in range(len(data) - 1):
+            notes.append(scale[data[i]])
+        # Check results
+        if(len(notes) == 0):
+            print("ERROR: Unable to generate notes!")
+            return -1
+        return notes
+
+        
     #-----------------------------------------------------------------------------------#
     #--------------------------------------Rhythm---------------------------------------#
     #-----------------------------------------------------------------------------------#
