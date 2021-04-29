@@ -658,7 +658,7 @@ class generate():
             return -1
         return notes
 
-        
+
     #-----------------------------------------------------------------------------------#
     #--------------------------------------Rhythm---------------------------------------#
     #-----------------------------------------------------------------------------------#
@@ -738,31 +738,26 @@ class generate():
         rhythms = []
         print("\nGenerating", total, "rhythms...")
         while(len(rhythms) < total):
-            #Pick rhythm + add to list    
+            #Pick rhythm and add to list    
             rhythm = self.rhythms[randint(0, len(self.rhythms) - 1)]
             #Repeat this rhythm or not? 1 = yes, 2 = no
-            repChoice = randint(1, 2) 
-            if(repChoice == 1):
+            if(randint(1, 2) == 1):
                 #Limit reps to no more than 1/3 of the total no. of rhythms
                 limit = math.floor(len(rhythms)/3)
                 '''Note: This limit will increase rep levels w/longer list lengths
                          May need to scale for larger lists'''
                 if(limit == 0):
-                    limit += 1
+                    limit += 2
                 reps = randint(1, limit) 
-                while(i < reps):
+                for i in range(reps):
                     rhythms.append(rhythm)
                     if(len(rhythms) == total):
                         break
-                    i += 1
             else:
                 if(rhythm not in rhythms):
                     rhythms.append(rhythm)
-
-            print("Total:", len(rhythms))
-
-        if(not rhythms):
-            print("...Unable to generate pattern!")
+        if(len(rhythms) == 0):
+            print("ERROR: Unable to generate pattern!")
             return -1
         return rhythms
 
@@ -918,32 +913,29 @@ class generate():
         Generates a list of dynamics (MIDI velocites). Total supplied from elsewhere.
         Uses infrequent repetition. Returns -1 if unable to generate a list.
         '''
-        i = 0
         dynamics = []
         print("\nGenerating", total, "semi-reapeating dynamics...")
         while(len(dynamics) < total):
             #Pick dynamic    
             dynamic = self.dynamics[randint(0, 9)]
             #Repeat this dynamic or not? 1 = yes, 2 = no
-            repChoice = randint(1, 2) 
-            if(repChoice == 1):
+            if(randint(1, 2) == 1):
                 #Limit reps to no more than 1/3 of the supplied total
                 limit = math.floor(total/3)
                 '''Note: This limit will increase rep levels w/longer totals
                          May need to scale for larger lists'''
                 if(limit == 0):
-                    limit += 1
+                    limit += 2
                 reps = randint(1, limit) 
-                while(i < reps):
+                for i in range(reps):
                     dynamics.append(dynamic)
                     if(len(dynamics) == total):
                         break
-                    i += 1
             else:
                 if(dynamic not in dynamics):
                     dynamics.append(dynamic)
-        if(not dynamics):
-            print("...Unable to generate pattern!")
+        if(len(dynamics) == 0):
+            print("ERROR: Unable to generate pattern!")
             return -1
         return dynamics
 
