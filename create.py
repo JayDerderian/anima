@@ -1757,7 +1757,7 @@ class generate():
         return 0
     
 
-    #Generate a single note string with varying durations and dynamics
+    # Generate a single note string with varying durations and dynamics
     def newRepeatedNote(self):
         '''
         NOTE: NOT READY
@@ -1775,20 +1775,20 @@ class generate():
 
         print("\nGenerating single note with varying dynamics and rhythms...")
 
-        #Tempo
+        # Pick Tempo
         newNote.tempo = self.newTempo()
-        #Pick note
+        # Pick note
         note = self.note()
-        #Total times note is repeated (2-9)
+        # Total times note is repeated (2-9)
         totalLen = randint(2, 9)
         
         print("\n...Note", note, "will be repeated", totalLen, "times...")
 
-        #Generate lists of dynamics and rhythms
+        # Generate lists of dynamics and rhythms
         for i in range(totalLen):
-            #Pick dynamic
+            # Pick dynamic
             dynamic = self.newDynamic()
-            #Repeat this dynamic (1) or not (2)?
+            # Repeat this dynamic (1) or not (2)?
             if(randint(1, 2) == 1):
                 #...How many times (1-3)?
                 r = 0
@@ -1801,9 +1801,9 @@ class generate():
             else:
                 newNote.dynamics.append(dynamic)
 
-            #Pick rhythm
+            # Pick rhythm
             rhythm = self.newRhythm()
-            #Repeat this rhythm (1) or not (2)?
+            # Repeat this rhythm (1) or not (2)?
             if(randint(1, 2) == 1):
                 #...How many times (1-3)?
                 r = 0
@@ -1839,7 +1839,7 @@ class generate():
             return False
         '''
 
-    #Generate short, fast pattern
+    # Generate short, fast pattern
     def newTwinkles(self):
         '''
         NOTE: NOT READY
@@ -1852,27 +1852,27 @@ class generate():
         newRhythms = []
         newDynamics = []
 
-        #New tempo
+        # New tempo
         tempo = self.newTempo()
-        #Which octave?
+        # Which octave?
         octave = randint(5, 8)
-        #Total times note/rhythm pattern is repeated (4-7)
+        # Total times note/rhythm pattern is repeated (4-7)
         totalReps = randint(4, 7)
-        #Pick rhythms. This row is also the limit for generating
-        #note and dynamics lists. 
+        # Pick rhythms. This row is also the limit for generating
+        # note and dynamics lists. 
         newRhythms = self.newRhythmsFast()
 
         print("\nGenerating *twinkly* pattern...")
 
-        #Generate pattern
+        # Generate pattern
         while(i < len(newRhythms)):
             note = self.aNote(octave)
             dynamic = self.newDynamicSoft()
 
-            #Repeat this note(1) or not(2)?
+            # Repeat this note(1) or not(2)?
             noteRep = randint(1, 2)
             if(noteRep == 1):
-                #If yes, how many times (1-5)?
+                # If yes, how many times (1-5)?
                 r = 0
                 reps = randint(1, 5)
                 while(r < reps):
@@ -1883,10 +1883,10 @@ class generate():
             else:
                 newNotes.append(note)
 
-            #Repeat this dynamic(1) or not(2)?
+            # Repeat this dynamic(1) or not(2)?
             DynRep = randint(1, 2)
             if(DynRep == 1):
-                #If yes, how many times (1 -5)
+                # If yes, how many times (1 -5)
                 r = 0
                 reps = randint(1, 5)
                 while(r < reps):
@@ -1897,8 +1897,8 @@ class generate():
             else:
                 newDynamics.append(dynamic)
 
-            #End if we somehow get there earlier than expected
-            #if(self.isMax3Rows(newRhythms, newDynamics, newNotes, len(newRhythms))):
+            # End if we somehow get there earlier than expected
+            # if(self.isMax3Rows(newRhythms, newDynamics, newNotes, len(newRhythms))):
                 break
             i += 1
 
