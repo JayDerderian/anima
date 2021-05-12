@@ -499,17 +499,6 @@ class generate():
     Note - create a version of notes() that takes the notes of a given MIDI file and uses those
     to generate more notes instead of randomly chosen chromatic notes. 
     '''
-    # Picks which key (scale) to use. 
-    def pickKey(self):
-        '''
-        Picks which key (scale) to use. 
-        Returns a list of pitch classes without specified octaves.
-
-        For minor scales, feed the output of this into convertToMinor()
-        '''
-        scale = []
-        scale = self.scales[randint(1, 12)]
-        return scale
 
     # Generate new randomly chosen notes for a new melody
     def newNotes(self, total):
@@ -558,7 +547,7 @@ class generate():
         return notes
 
     # Generate a series of notes based off an inputted array of integers
-    def newNotesFromInts(self, data, isMinor):
+    def newNotesFromInts(self, data):
         '''
         Generate a series of notes based on inputted data (an array of integers)
         This randomly picks the key and the starting octave! 
@@ -654,40 +643,6 @@ class generate():
             print("ERROR: Unable to generate notes!")
             return -1
         return notes
-
-    # Returns a randomly generated scale within one octave to be used
-    # as a 'root'
-    def newScale(self, octave):
-        '''
-        Requires a starting octave. Returns a randomly generated scale 
-        within one octave to be used as a 'root'. Returns -1 on failure.
-        '''
-        print("\nGenerating new root scale...")
-        pcs = []
-        # Use sharps (1) or flats (2)?
-        sof = randint(1, 2)
-        # generate an ascending set of integers/note array indices 
-        while(len(pcs) < 8):
-            # pick note 
-            n = randint(0, 11)
-            if(n not in pcs):
-                pcs.append(n)
-        # sort in ascending order
-        pcs.sort()
-        # convert to strings
-        print("new ints:", pcs)
-        print("total:", len(pcs))
-        scale = []
-        for i in range(len(pcs)):
-            if(sof == 1):
-                note = "{}{}".format(self.chromaticScaleSharps[pcs[i]], octave)
-            else:
-                note = "{}{}".format(self.chromaticScaleFlats[pcs[i]], octave)
-            scale.append(note)
-        if(len(scale) == 0):
-            print("ERROR: unable to generate scale!")
-            return -1
-        return scale
 
     # Converts a major scale to its relative minor
     def convertToMinor(self, scale):
@@ -1016,7 +971,7 @@ class generate():
 
 
     # Generate a new scale (list of sorted integers between 0 - 11)
-    def newScale(self):
+    def newScaleInts(self):
         '''
         Generates a new scale. Returns a list of sorted integers between 0-11.
 
@@ -1042,44 +997,29 @@ class generate():
         if(not scale):
             print("...Unable to generate scale!")
             return -1
-        print("New scale:", scale)
+        print("New PC scale:", scale)
         return scale
 
-    # Convert a PC/integer scale to a scale with pitch names (in octave 4)
-    def convertScale(self, scale):
+    # Returns a randomly generated scale within one octave to be used
+    # as a 'root'
+    def newScale(self, octave):
         '''
-        Convert a PC/integer scale to a scale with pitch names (in octave 4)
+        Requires a starting octave. Returns a randomly generated scale 
+        within one octave to be used as a 'root'. Returns -1 on failure.
         '''
-        if(not scale):
-            return -1
-        octave = 4
-        newScale = []
-        for i in range(len(scale) - 1):
-            note = self.numToANote(scale[i], octave)
-            newScale.append(note)
-        if(len(newScale) == 0):
-            return -1
-        return newScale
-
-    # Generate a new scale with pitch classes.
-    def newScalePitches(self):
-        '''
-        Generate a new scale with pitch classes with enharmonic spellings
-        in the middle octave (4)
-        '''
-        i = 0
+        print("\nGenerating new root scale...")
         scale = []
-        octave = 4
-        pcScale = self.newScale()
-        print("\nGenerating scale with pitch classes...")
-        while(len(scale) < len(pcScale)):
-            note = self.chromaticScaleSharps[pcScale[i]]
-            note = "{}{}".format(note, octave)
+        pcs = self.newScaleInts()
+        # Sharps (1) or flats (2)?
+        sof = randint(1, 2)
+        for i in range(len(pcs)):
+            if(sof == 1):
+                note = "{}{}".format(self.chromaticScaleSharps[pcs[i]], octave)
+            else:
+                note = "{}{}".format(self.chromaticScaleFlats[pcs[i]], octave)
             scale.append(note)
-            i += 1
-        # Test output
         if(len(scale) == 0):
-            print("...Unable to generate scale!")
+            print("ERROR: unable to generate scale!")
             return -1
         print("New scale:", scale)
         return scale
