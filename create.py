@@ -578,86 +578,134 @@ class generate():
             print("ERROR: no data inputted!")
             return -1
 
-        # Pick starting octave (2 or 3)
-        octave = randint(2, 3)
-        octStart = octave
+        # Pick starting octave (1 - 3)
+        octave = randint(1, 3)
 
-        # Pick initial root/starting scale
+        # Pick initial root/starting scale (major or minor)
         root = self.scales[randint(1, 12)]
-
-        # Will this be a minor scale?
-        if(isMinor == True):
+        # Will this be a minor scale (0 = no, 1 = yes)?
+        isMinor = False
+        if(randint(0, 1) == 1):
+            isMinor = True
             root = self.convertToMinor(root)
 
-        #Display choices
+        # Display choices
         if(isMinor == True):
             print("\nGenerating", len(data), "notes starting in the key of", root[0], "minor")
         else:
             print("\nGenerating", len(data), "notes starting in the key of", root[0], "major")
-
-        # Scale individual data set integers such that i = i < len(dataSet) -1
-        '''
-        This will eventually be moved to newMelody() so that
-        incoming data will already be scaled by the time it reaches newNotes()
-        '''
-        data = self.scaleTheScale(data)
         '''
         Note generation algorithm:
 
-            1. Total notes is equivalent to number of notes in data set.
-                1b. Maybe if data-sets exceed a certain length, we can 
-                    create a subset of available notes that is divisible
-                    by the total number elements in the data set
+            1. Total notes is equivalent to *highest single integer* in data set.
             2. Generate a starting key/scale, and a starting octave.
             3. Cycle through this scale appending each note to a list
                of available notes until we reach the last note in the scale
-               in octave 8.
+               in octave 6.
             4. If we reach this note, reset octave to starting point, and 
                pick a new starting scale at random.
             5. Repeat steps 3-4 until we reach the end of the supplied data set.
         '''    
-        # Generate notes to pick from
+        #-----Generate notes to pick from-----#
+
+        '''NOTE: Alter so we ONLY go off of largest value in the array instead of
+                 number of elements in the data aray? This might be very wasteful
+                 if the supplied array were something like [1, 3, 10003230, 4]. 
+                 
+                 It would also mean we wouldn't have to scale or alter the inputted 
+                 data beyond being only an integer array, though.'''
+
         n = 0
-        notes = []
         scale = []
-        for i in range(len(data)):
+        total = max(data)
+        for i in range(total):
             note = "{}{}".format(root[n], octave)
             scale.append(note)
             n += 1
-            # If we've reached the end of the root scale,
-            # increment the octave (until octave 8)
-            # Ideally trigger this condition every
-            # 6 iterations. 
+            '''NOTE: At most, the alphabet will map to 4 1/3 octaves.
+                        Still didn't want to exceed octave 6'''
             if(i % 6 == 0):
                 octave += 1
-                # If we reach highest octave (8), reset
-                # to original starting point/octave 
-                # and pick a new scale to chose from
-                if(octave > 8):
-                    octave = octStart
+                if(octave > 6):
+                    octave = randint(1, 3)
                     root = self.scales[randint(1, 12)]
                     # Re-decide if we're using minor (1) or major (2) again
                     if(randint(1, 2) == 1):
                         isMinor = True
-                        print("Switching to a major key!")
+                        print("Switching to a minor key!")
                     else:
                         isMinor = False
-                        print("Staying in a minor key!")
+                        print("Staying in a major key!")
                     if(isMinor == True):
                         root = self.convertToMinor(root)
                         print("Key-change! Now using", root[0], "minor")
                     else:
                         print("Key-change! Now using", root[0], "major")
+                # Reset n to stay within len(root)
                 n = 0
+
         # Pick notes according to integers in data array
+        notes = []
         for i in range(len(data) - 1):
             notes.append(scale[data[i]])
+
         # Check results
         if(len(notes) == 0):
             print("ERROR: Unable to generate notes!")
             return -1
         return notes
 
+    # Returns a randomly generated scale within one octave to be used
+    # as a 'root'
+    def newScale(self, octave):
+        '''
+        Requires a starting octave. Returns a randomly generated scale 
+        within one octave to be used as a 'root'. Returns -1 on failure.
+        '''
+        print("\nGenerating new root scale...")
+        pcs = []
+        # Use sharps (1) or flats (2)?
+        sof = randint(1, 2)
+        # generate an ascending set of integers/note array indices 
+        while(len(pcs) < 8):
+            # pick note 
+            n = randint(0, 11)
+            if(n not in pcs):
+                pcs.append(n)
+        # sort in ascending order
+        pcs.sort()
+        # convert to strings
+        print("new ints:", pcs)
+        print("total:", len(pcs))
+        scale = []
+        for i in range(len(pcs)):
+            if(sof == 1):
+                note = "{}{}".format(self.chromaticScaleSharps[pcs[i]], octave)
+            else:
+                note = "{}{}".format(self.chromaticScaleFlats[pcs[i]], octave)
+            scale.append(note)
+        if(len(scale) == 0):
+            print("ERROR: unable to generate scale!")
+            return -1
+        return scale
+
+    # Converts a major scale to its relative minor
+    def convertToMinor(self, scale):
+        print("\nConverting scale to relative minor...")
+        if(len(scale) == 0):
+            print("ERROR: no scale inputted!")
+            return -1
+        k = 5
+        minorScale = []
+        for i in range(len(scale)):
+            minorScale.append(scale[k])
+            k += 1
+            if(k > len(scale) - 1):
+                k = 0
+        if(len(minorScale) == 0):
+            print("ERROR: unable to generate minor scale!")
+            return -1
+        return minorScale
 
     #-----------------------------------------------------------------------------------#
     #--------------------------------------Rhythm---------------------------------------#
