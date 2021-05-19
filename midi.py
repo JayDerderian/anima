@@ -61,14 +61,10 @@ class midiStuff():
         representation very messy. 
         '''
         # Check incoming data
-        if(newMelody.notes is None 
-            or newMelody.rhythms is None 
-            or newMelody.dynamics is None 
-            or newMelody.tempo == 0.0):
+        if(newMelody.hasData() == False):
             return -1
 
         # Variables
-        i = 0
         strt = 0
         end = 0
 
@@ -78,12 +74,13 @@ class midiStuff():
         instrument = pm.instrument_name_to_program('Acoustic Grand Piano')
         '''
         Randomly choose an instrument? 
-        instrument = pm.instrument_name_to_program(inst.INSTRUMENT_MAP[randint(0, 110))'''
+        instrument = pm.instrument_name_to_program(inst.INSTRUMENT_MAP[randint(0, 110))
+        '''
         melody = pm.Instrument(program = instrument)
 
         # Attach notes, rhythms, and dynamics to melody instrument/MIDI object
         end += newMelody.rhythms[0]
-        while(i < len(newMelody.rhythms)):
+        for i in range(len(newMelody.notes)):
             # Converts note name strings to MIDI note numbers
             note = pm.note_name_to_number(newMelody.notes[i])
             # Attaches MIDI note number, dynamic, and strt/end time to pm.Note container
@@ -94,119 +91,158 @@ class midiStuff():
             try:
                 strt += newMelody.rhythms[i]
                 end += newMelody.rhythms[i + 1]
-                i += 1
             except IndexError:
                 break  
 
         # Write out file from MIDI object
         mid.instruments.append(melody)
-        mid.write('test-melody.mid')
-
+        # print("saving", fileName, "...")
+        # mid.write(fileName)
+        mid.write('new-melody.mid')
         return 0
 
 
     # Outputs a single MIDI chord.
-    def saveChord(self, newchord, dynamics):
+    def saveChord(self, newChord):
         '''
         Outputs a single MIDI chord (ideally). Also returns a pretty_midi object. 
         To be used with chord generation.
-        
-        Defaults:
-            Instrument: Piano
-            Tempo: 120
-            Velocity: 100
         '''
-        if(not newchord or not dynamics):
-            return -1
+        print("\nSaving chord...")
 
-        i = 0
-        strt = 0.0
-        end = 2.0
-
-        # Create instrument/MIDI object
-        aNewChord = pm.PrettyMIDI(initial_tempo=60)
+        # Create PrettyMIDI object
+        mid = pm.PrettyMIDI(initial_tempo=60)
+        # Create instrument object.
         instrument = pm.instrument_name_to_program('Acoustic Grand Piano')
         chord = pm.Instrument(program = instrument)
 
+        print("Created instrument:", 'Acoustic Grand Piano')
+
         # Add data to pm object
-        while(i < len(newchord)):
-            note = pm.note_name_to_number(newchord[i])
-            note = pm.Note(velocity= dynamics[i], pitch= note, start= strt, end= end)
+        for i in range(len(newChord.notes)):
+            note = pm.note_name_to_number(newChord.notes[i])
+            note = pm.Note(velocity= newChord.dynamics[i], pitch= note, start= 0.0, end= newChord.rhythm)
             chord.notes.append(note)
-            i += 1
         
         # Write out file from MIDI object
-        aNewChord.instruments.append(chord)
-        aNewChord.write('test-chord.mid')
-
+        mid.instruments.append(chord)
+        mid.write('new-chord.mid')
+        print("'new-chord.mid' file saved!")
         return 0
 
 
     # Generates a MIDI file of the chords created by newChord()
-    def chordsMIDI(self, newChords):
+    def saveChords(self, newChords):
         '''
-        Generates a MIDI file of the chords created by newChord()
+        Takes a chord() object as an argument and generates a MIDI file.
+        Returns a pretty_midi object. Returns 0.
 
-        NOTE: Not ready. 
-            
-            Still need to find a way to iterate through individual
-            chords in newChords while assigning the same duration to each note
-            in the chord before progressing to the next associated set of dynamics
-            and chords.
-
-            Example input:
-            newChords = [['C#2','Db6', 'B4'],['','','','','','','','',],['','','','']...,n]
-
-            i = 0: first subarray in newChords[]
-            i = 1: second sub-array ""
-            etc...
-
-            i < newChords(len(i)) ??? 
-            Need to iterate for the length of each individual sub-arrays.
-
-            strt = 0
-            end = rhythms[0]
-            for i in range(len(rhythms)):
-                for j in newChords[i[j]]:
-                    note_number = pm.note_name_to_number(note_name)
-                    note = pm.Note(velocity= vel, pitch= note_number, start= strt, end= end)
-                    chords.notes.append(note)
-                strt += end
-                end += rhythms[i]
-
-            Add returning object from newChord as an argument?
+        NOTE: Currently creates a separate track for EACH chord. Need to find a way
+              to get them all onto one track.
         '''
 
         print("\nGenerating MIDI chords...")
-
-        # Variables and stuff
-        i = 0
-        dur = 4.0
-        strt = 0.0
-        end = 4.0
-        vel = 60
         
-        # Create instrument
+        # Create PrettyMIDI object
         myChords = pm.PrettyMIDI(initial_tempo = 60)
-        chordProgram = pm.instrument_name_to_program('Acoustic Grand Piano')
-        chords = pm.Instrument(program = chordProgram)
 
-        # Generate chords and append to MIDI object
-        '''
-        Note: Confirm whether a pm.Instrument.notes list 
-              can function as a list of lists.
-        '''
-        while(i < len(newChords)):
-            for note_name in newChords[i]:
-                note_number = pm.note_name_to_number(note_name)
-                note = pm.Note(velocity= vel, pitch= note_number, start= strt, end= end)
-                chords.notes.append(note)
-                strt += dur
-                end += dur
-            i += 1
+        # Create instrument object.
+        instrument = pm.instrument_name_to_program('Acoustic Grand Piano')
+        chord = pm.Instrument(program = instrument)
+
+        strt = 0
+        end = newChords[0].rhythm
+        for i in range(len(newChords)):
+            # Add *this* chord's notes
+            for j in range(len(newChords[i].notes)):
+                # Translate note to MIDI note
+                note = pm.note_name_to_number(newChords[i].notes[j])
+                note = pm.Note(velocity= newChords[i].dynamics[j], pitch= note, start= strt, end= end)
+                # Add to instrument object
+                chord.notes.append(note)
+            try:
+                # Increment strt/end times
+                strt += newChords[i].rhythm
+                end += newChords[i + 1].rhythm
+            except IndexError:
+                break
+
+        # Add chord to instrument list 
+        myChords.instruments.append(chord)
 
         # Write out file from MIDI object
-        myChords.instruments.append(chords)
-        myChords.write('test-chords.mid')
+        myChords.write('new-chords.mid')
+        print("'new-chords' saved successfully!")
+        return 0
 
-        return myChords
+
+    # Save a melody and chords
+    def saveComposition(self, newMelody, newChords):
+        '''
+        Save a single-line melody with chords generated from that melody
+        to a MIDI file. Returns -1 upon failure.
+        '''
+        # Check incoming data
+        if(newMelody.hasData() == False):
+            return -1
+        if(len(newChords) == 0):
+            return -1
+
+        # Variables
+        strt = 0
+        end = 0
+
+        # Create PM object PM object is used to just write out the file.
+        mid = pm.PrettyMIDI(initial_tempo = newMelody.tempo)
+
+        # Create melody instrument (strings)
+        instrument = pm.instrument_name_to_program('Synth Strings 1')
+        melody = pm.Instrument(program = instrument)
+
+        #----------------------------Add Melody----------------------------------#
+
+        # Attach notes, rhythms, and dynamics to melody instrument/MIDI object
+        end += newMelody.rhythms[0]
+        for i in range(len(newMelody.notes)):
+            # Converts note name strings to MIDI note numbers
+            note = pm.note_name_to_number(newMelody.notes[i])
+            # Attaches MIDI note number, dynamic, and strt/end time to pm.Note container
+            note = pm.Note(velocity= newMelody.dynamics[i], pitch= note, start= strt, end= end)
+            # Then places container in melody notes list.
+            melody.notes.append(note)
+            # Increment rhythms (note event strt/end times)
+            try:
+                strt += newMelody.rhythms[i]
+                end += newMelody.rhythms[i + 1]
+            except IndexError:
+                break  
+
+        # Add melody to instrument list
+        mid.instruments.append(melody)
+
+        #-----------------------------Add Chords---------------------------------#
+
+        # Create instrument object.
+        instrument = pm.instrument_name_to_program('Acoustic Grand Piano')
+        chord = pm.Instrument(program = instrument)
+        for i in range(len(newChords)):
+            # Add *this* chord's notes
+            for j in range(len(newChords[i].notes)):
+                # Translate note to MIDI note
+                note = pm.note_name_to_number(newChords[i].notes[j])
+                note = pm.Note(velocity= newChords[i].dynamics[j], pitch= note, start= strt, end= end)
+                # Add to instrument object
+                chord.notes.append(note)
+            # Add chord to instrument list 
+            mid.instruments.append(chord)
+            try:
+                # Increment strt/end times
+                strt += newChords[i].rhythm
+                end += newChords[i + 1].rhythm
+            except IndexError:
+                break
+
+
+        # mid.write(fileName)
+        mid.write('new-composition.mid')
+        return 0

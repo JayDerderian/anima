@@ -62,6 +62,7 @@ from midi import midiStuff as mid
 from decisions import decide as choice
 from containers.melody import melody
 from containers.note import note
+from containers.chord import chord
 
 #Generative functions
 class generate():
@@ -1281,37 +1282,75 @@ class generate():
         print("New progression:", newChords)
         return newChords
 
-    # Generates a progression from the notes of a given scale
-    def newChordsFromScale(self, scale):
+    # Generates a single chord from a given scale
+    def newChordFromScale(self, scale, tempo):
+        '''
+        Generates a single new chord from the notes in a given scale and
+        rhythm Returns a chord object. Does not double/repeat notes!
+        '''
+        if(len(scale) == 0):
+            print("ERROR: no input!")
+            return -1
+        # newchord object
+        newchord = chord()
+        # how many notes in this chord? 2 to 9 (for now)
+        total = randint(2, 9)
+        while(len(newchord.notes) < total):
+            # Pick note
+            note = scale[randint(0, len(scale) - 1)]
+            newchord.notes.append(note)
+        if(len(newchord.notes) == 0):
+            print("\nERROR: no chord generated!")
+            return -1
+        # Remove duplicate notes/doublings
+        '''NOTE: This is avoids getting the while loop stuck
+                 if there's a lot of repeated notes in the melody '''
+        newchord.notes = list(dict.fromkeys(newchord.notes))
+        # Use inputted tempo    
+        newchord.tempo = tempo
+        # Pick a rhythm
+        newchord.rhythm = self.newRhythm()
+        # Pick a dynamic (randomize for each note? probably)
+        dynamic = self.newDynamic()
+        while(len(newchord.dynamics) < len(newchord.notes)):
+            newchord.dynamics.append(dynamic)
+        # Dispay chord
+        # self.displayChord(newchord)
+        return newchord
+
+    # Generates a chord progression from the notes of a given scale
+    def newChordsFromScale(self, scale, tempo):
         '''
         Generates a progression from the notes of a given scale.
-        Returns 0 if recieving bad input, and -1 if generation was unsuccessfull. 
+        Returns a list of chord objects (notes only).
+        
+        NOTE: Chords will be derived from the given scale ONLY! Could possibly
+              add more randomly inserted chromatic tones to give progressions more
+              variance and color. 
         '''
-        if(scale is None):
-            return 0
-        print("\nGenerating chords from a given scale...")
-        print("Given scale:", scale)
-        #How many chords?
-        chords = []
-        total = randint(3, 10)
-        print("\nGenerating", total, "chords...")
-        #Pick notes
-        while(len(chords) < total):
-            chord = []
-            #How many notes in this chord?
-            totalNotes = randint(2, 9)
-            while(len(chord) < totalNotes):
-                note = scale[randint(0, len(scale) - 1)]
-                if(note not in chord):
-                    chord.append(note)
-                elif(note in chord and len(chord) > 2):
-                    break
-            chords.append(chord)
-        if(not chords):
-            print("...Unable to generate chords!")
+        if(len(scale) == 0):
+            print("ERROR: no scale inputted!")
             return -1
-        print("\nTotal chords:", len(chords))
-        print("Chords:", chords)
+        # How many chords?
+        chords = []
+        # Create between 3 and however many notes there are in the scale
+        total = randint(3, len(scale) - 1)
+        print("\nGenerating", total, "chords...")
+        # Pick notes
+        while(len(chords) < total):
+            newchord = self.newChordFromScale(scale, tempo)
+            chords.append(newchord)
+        if(len(chords) == 0):
+            print("ERROR: Unable to generate chords!")
+            return -1
+        # Display chords
+        self.displayChords(chords)
+        # Test output
+        # if(mid.saveChords(self, chords) != -1):
+        #     print("chords saved!")
+        # else:
+        #     print("unable to save chords!")
+        #     return -1
         return chords
 
 
@@ -1561,6 +1600,26 @@ class generate():
     #-------------------------------MELODIC GENERATION--------------------------------#
     #---------------------------------------------------------------------------------#
 
+
+    # Display newMelody() object data
+    def displayMelody(self, newMelody):
+        '''
+        Display newMelody() object data
+        '''
+        if(newMelody.hasData() == False):
+            print("ERROR: no melody data!")
+            return -1
+
+        print("\n-----------MELODY Data:------------")
+        print("\nTempo:", newMelody.tempo, "bpm")
+        print("\nTotal Notes:", len(newMelody.notes))
+        print("Notes:", newMelody.notes)
+        print("\nTotal rhythms:", len(newMelody.rhythms))
+        print("Rhythms:", newMelody.rhythms)
+        print("\nTotal dynamics:", len(newMelody.dynamics))
+        print("Dynamics:", newMelody.dynamics)
+
+        return 0
 
     # Generate a melody. 
     def newMelody(self):
@@ -1827,6 +1886,84 @@ class generate():
             return False
         '''
 
+    #Generate a melody from an array of integers. 
+    def newMelodyFromData(self, data, dataType):
+        '''
+        Picks a tempo, notes, rhythms, and dynamics. Rhythms and dynamics are picked randomly (total
+        for each is len(data), notes come from user. Should (ideally) handle either a character
+        array for a person's name (or any random set of characters), or an array of 
+        either floats or integers of n length.
+
+        Appends to newMelody() object and exports a MIDI file. Returns a newMelody() object.
+        '''
+        # Melody container object
+        newMelody = melody()
+
+        #------------------Process incoming data-----------------#
+       
+        print("\nProcessing incoming data...")
+
+        # If ints, scale as necessary
+        if(dataType == 1):
+            data = self.scaleTheScale(data)
+            print("\nTotal elements:", len(data))
+            print("Inputted data after processing:", data)
+
+        # If floats then convert to ints and scale
+        if(dataType == 2):
+            data = self.floatToInt(data)
+            data = self.scaleTheScale(data)
+            print("\nTotal elements:", len(data))
+            print("Inputted data after processing:", data)
+
+        # If letters/chars then match letters to their corresponding index numbers.
+        if(dataType == 3):
+            data = self.mapLettersToNumbers(data)
+            print("\nTotal elements:", len(data))
+            print("Inputted data after processing:", data)
+
+        # If hex convert to array of ints and scale
+        if(dataType == 4):
+            data = self.hexToIntArray(data)
+            print("\nTotal elements:", len(data))
+            print("Inputted data after processing:", data)
+
+
+        #-----------------------Generate!------------------------#
+        
+        print("\nGenerating melody...")
+
+        # Pick tempo
+        newMelody.tempo = self.newTempo()
+        # Pick notes
+        newMelody.notes = self.newNotes(data)
+        # Pick rhythms
+        newMelody.rhythms = self.newRhythms(len(newMelody.notes))
+        # Pick dynamics
+        newMelody.dynamics = self.newDynamics(len(newMelody.notes))
+
+        #------------Check data, display, and export-------------#
+
+        print("\nChecking results...")
+
+        # Make sure all data was inputted
+        if(newMelody.hasData() == False):
+            print("ERROR: missing melody data!")
+            return -1
+
+        # Display results
+        self.displayMelody(newMelody)
+
+        # # Write out to MIDI file
+        # if(mid.saveMelody(self, newMelody, 'new-melody.mid') == -1):
+        #     print("\nERROR: unable to save file!")
+        #     return -1
+        # else:
+        #     print("\nFile saved as 'new-melody.mid'")
+
+        return newMelody
+
+
     # Generate short, fast pattern
     def newTwinkles(self):
         '''
@@ -2020,3 +2157,36 @@ class generate():
 
         4. Duration? (min 20 seconds or...????)
     '''
+
+    #-------------------------------------------------------------------------------------#
+    #-------------------------------COMPOSITION GENERATION--------------------------------#
+    #-------------------------------------------------------------------------------------#
+
+    # Outputs a single melody with chords in a MIDI file
+    def newComposition(self, data, dataType):
+        '''
+        Takes an array of ints of any length as an arg.
+        Outputs a single melody with chords in a MIDI file (hopefully)
+        '''
+        # Check incoming data
+        if(len(data) == 0):
+            print("\nERROR: no data inputted!")
+            return -1
+        # Generate melody
+        newTune = self.newMelody(data, dataType)
+        # Generate harmonies
+        newChords = self.newChordsFromScale(newTune.notes, newTune.tempo)
+        # Check data
+        if(newTune.hasData() == False):
+            print("\nERROR: No melody data created")
+        elif(len(newChords) == 0):
+            print("\nERROR: no chord data created!")
+        # Save to MIDI file
+        if(mid.saveComposition(self, newTune, newChords) != -1):
+            print("Piece saved as 'new-composition.mid!'")
+            return 0
+        else:
+            print("Unable to export piece to MIDI file!")
+            return -1
+        
+        
