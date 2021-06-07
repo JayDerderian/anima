@@ -14,6 +14,8 @@ class melody():
             
         # Data
         self.tempo = 0.0
+        self.instrument = ""
+        self.sourceData = []
         self.notes = []
         self.rhythms = []
         self.dynamics = []
@@ -23,24 +25,28 @@ class melody():
         '''
         Is there complete melody data? 
         If True, all data fields have been used.
+
+        NOTE: doesn't check for original source data!
+        Need to find a way to save either hex or array of ints/chars
+        Separate fields? That would require two versions of hasData()
         '''
-        if(self.tempo != 0.0 
+        if(self.tempo != 0.0
+            and self.instrument != "" 
             and len(self.notes) > 0
             and len(self.rhythms) > 0
             and len(self.dynamics) > 0):
             return True
-        return False
-
-    #---------------------------Input all data-----------------------------#
-
-    def inputAll(self, newNotes, newRhythms, newDynamics, newTempo):    
-        if(newNotes and newRhythms and newDynamics and newTempo):
-            self.tempo = newTempo
-            for i in range(len(newRhythms)):
-                self.notes.append(newNotes[i])
-                self.rhythms.append(newRhythms[i])
-                self.dynamics.append(newDynamics[i])
-        if(self.isEmpty() == False):    
-            return 0
         else:
-            return -1
+            if(self.tempo == 0.0):
+                print("\nmelody() - ERROR: no tempo inputted!")
+            elif(self.instrument == ""):
+                print("\nmelody() - ERROR: no instrument selected!")
+            elif(len(self.sourceData) == 0):
+                print("\nmelody() - ERROR: no source data inputted!")
+            elif(len(self.notes) == 0):
+                print("\nmelody() - ERROR: no notes inputted!")
+            elif(len(self.rhythms) == 0):
+                print("\nmelody() - ERROR: no rhythms inputted!")
+            elif(len(self.dynamics) == 0):
+                print("\nmelody() - ERROR: no dynamics inputted!")
+            return False
