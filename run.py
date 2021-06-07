@@ -5,6 +5,7 @@
 '''
 
 # Imports
+import test
 from test import newData
 from random import randint
 from generate import generate

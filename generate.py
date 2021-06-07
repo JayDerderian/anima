@@ -136,6 +136,68 @@ class generate():
                        11: ["Bb", "C", "D", "Eb", "F", "G", "A"],
                        12: ["B", "C#", "D#", "E", "F#", "G#", "A#"]}
 
+        # Major scale in PC notation.
+        self.majorScale = [0, 2, 4, 5, 7, 9, 11]
+
+        # Natural minor scale in PC notation
+        self.minorScale = [0, 2, 3, 5, 7, 8, 10]
+
+        # Harmonic minor scale in PC notation
+        self.harMinScale = [0, 2, 3, 5, 7, 8, 11]
+
+        # Melodic minor scalale in PC notation
+        self.melMinorScale = [0, 2, 3, 5, 7, 9, 11]
+
+        #---------------------------Interval Lists---------------------------#
+        '''
+        Notes:
+
+            Develop interval sets that begin with 2 and end with 2,
+            making the next cycle of intervals begin on a tone a half
+            step higher than originally.
+
+            "Self-transposing interval sets"
+
+            ex. 
+                c, d, e, f#, g, a, bb, c,
+                db, eb, f, g, ab, bB, cb, db,
+                d, e, f#, g#, a, b, c, d ...ect.  
+        '''
+
+        # Major
+        self.major = [2, 2, 1, 2, 2, 2, 1]
+
+        # Natural minor
+        self.natMinor = [2, 1, 2, 2, 1, 2, 2]
+
+        # Melodic minor
+        self.melMinor = [2, 1, 2, 2, 2, 2, 1]
+
+        # Harmonic minor
+        self.harMinor = [2, 1, 2, 2, 1, 3]
+
+        # Whole tone
+        self.wholeTone = [2, 2, 2, 2, 2]
+
+        # Octatonic
+        self.octatonic = [2, 1, 2, 1, 2, 1, 2]
+
+        # Triads
+        self.majorTriad = [4, 3]
+        self.minorTriad = [3, 4]
+        self.diminishedTriad = [3, 3]
+        self.augmentedTriad = [4, 4]
+
+        #---------------------------Chords-----------------------------------#
+
+        # Major, minor, augmented, and diminished triads
+        self.triads = {1: [0,4,7], 2: [0,3,7], 
+                       3: [0,4,8], 4: [0,3,6]}
+        
+        # Diminished, augmented, quartal, quintal chords
+        self.symChords = {1: [0,3,6], 2: [0,4,8],
+                          3: [0,5,10], 4: [0,2,7]}
+
         #---------------------------Rhythm-----------------------------------#
 
         '''
@@ -164,6 +226,7 @@ class generate():
         # Slow rhythms (0-7) - [n2 = n1 + (n1/2)]
         self.rhythmsSlow = [8.0, 12.0, 18.0, 27.0,
                             40.5, 60.75, 91.125, 136.6875]
+
 
         #--------------------------Dynamics---------------------------------#
 
@@ -495,6 +558,25 @@ class generate():
         numArr = [int(x) for x in str(hexStr)]
         return numArr
 
+    #Convert base rhythms to values in a specified tempo
+    def tempoConvert(self, newMelody):
+        '''
+        A rhythm converter function to translate durations in self.rhythms
+        to actual value in seconds for that rhythm in a specified tempo. 
+        
+        ex: [base] q = 60, quarterNote = 1 sec, [new tempo] q = 72, quarterNote = 0.8333(...) sec
+
+        60/72 = .83 - The result becomes the converter value to multiply all supplied
+        durations against to get the new tempo-accurate durations.
+
+        '''
+        if(not newMelody):
+            return -1
+        diff = 60/newMelody.tempo
+        for i in range(len(newMelody.rhythms) - 1):
+            newMelody.rhythms[i] *= diff
+        return newMelody
+        
 
     #--------------------------------------------------------------------------------#
     #-------------------------------------Tempo--------------------------------------#
@@ -763,6 +845,68 @@ class generate():
             return -1
         return minorScale
 
+    # Generate derivative scales based on each note in a given scale.
+    def deriveScales(self, scale):
+        '''
+        Generate derivative scales based on each note in a given scale.
+        
+        Algorithm:
+            1. Start with first note in prime scale.
+            2. Derive each subsequent note by adding a 
+            randomly chosen interval. Ex; 0 + 2 = 2,
+            2 + 1 = 3, 3 + 2 = 5, creating [2, 3, 5,...] etc.
+            3. Repeat step 2 with next note in prime scale
+            up to end of scale.            
+        '''
+        if(not scale):
+            return -1 
+        variants = []
+        print("\nGenerating derived scales...")
+        for i in range(len(scale) - 1):
+            #Retrieve note from prime scale
+            note = scale[i]
+            scaleVariant = []
+            while(len(scaleVariant) < len(scale)):
+                note += randint(1, 3)
+                if(note > 11):
+                    note = self.octaveEquiv(note)
+                scaleVariant.append(note)
+                #scaleVariant = list(set(scaleVariant)) #Remove duplicates
+                #scaleVariant.sort() #Sort new derived scale 
+            variants.append(scaleVariant) #Add to list of derived scales.
+        if(not variants):
+            print("...Unable to generate derived scales!")
+            return -1
+        # print("\nTotal derivisions:", len(scaleVariant))
+        # print("Derivitions:", variants)
+        return variants
+
+    # Generate a 12-tone row.
+    def newTwelveToneRow(self):
+        '''
+        Generate a 12-tone row.
+        '''
+        print("\nGenerating new 12-tone row...")
+        row = []
+        while(len(row) < 11):
+            note = self.newNote(randint(0, 11), 4)
+            if(note not in row):
+                row.append(note)
+        #Test outputs
+        if(len(row) == 0):
+            print("...No row generated!")
+            return -1
+        # print("New row:", row)
+        return row
+
+    # Keeps a single pitch within span of an octave (0 - 11)
+    def octaveEquiv(self, pitch):
+        '''
+        Keeps a single pitch within span of an octave (0 - 11). 
+        '''
+        while(pitch > 12):
+            pitch -= 12
+        return pitch 
 
     #-----------------------------------------------------------------------------------#
     #--------------------------------------Rhythm---------------------------------------#
@@ -817,6 +961,56 @@ class generate():
             print("ERROR: Unable to generate pattern!")
             return -1
         return rhythms
+
+    # Generate list of a single repeated rhythm
+    def newSingleRhythmRep(self, total):
+        '''
+        Generate list of a SINGLE repeating rhythm n times, where
+        n is supplied from elsewhere.
+
+        Algorithm:
+            1. Pick duration.
+            2. Pick n repetitions.
+            3. Copy into list[i] n times.
+        '''
+        rhythms = []
+        rhythm = self.rhythms[randint(0, len(self.rhythms) - 1)]
+        print("\nGenerating", total, "rhythms...")
+        while(len(rhythms) < total):
+            rhythms.append(rhythm)
+        return rhythms
+
+    # Generate list of immediatly repeated rhythms
+    def newRepeatedRhythms(self):
+        '''
+        Generates a list of 5-21 immediately repeated rhythms
+        ex: [1, 1, 0.25, 0.25., 0.25, 0.125, 0.125, 0.125, 0.125...n] etc...
+        '''
+        rhythms = []
+        total = randint(5, 21)
+        for i in range(total):
+            reps = randint(1, 9)
+            rhythm = self.newRhythm()
+            for j in range(reps):
+                rhythms.append(rhythm)
+                if(len(rhythms) == total):
+                    break
+        return rhythms
+
+    # Generate list of non-repeating durations
+    def newRhythmsNonRep(self, total):
+        '''
+        Generate list non-repeating rhythms of n length, where
+        n is supplied from elsewhere.
+        '''
+        newDurations = []
+        print("\nGenerating", total, "non-repeating rhythms...")
+        while(len(newDurations) < total):
+            newDurations.append(self.newRhythm())
+        if(not newDurations):
+            print("...Unable to generate durations!")
+            return -1
+        return newDurations
 
 
     #--------------------------------------------------------------------------------#
@@ -947,7 +1141,7 @@ class generate():
             print('      Dynamics:', chords[i].dynamics)
 
     # Generates a chord with randomly chosen notes
-    def newRandChord(self, tempo=None):
+    def newChord(self, tempo=None):
         '''
         Generates a chord with randomly chosen notes, rhythm, and dynamic.  
         Returns a chord() object.
@@ -975,6 +1169,28 @@ class generate():
             print("\nnewRandChord() - ERROR: no chord generated!")
             return -1
         return newChord
+
+    # Generates a series of random chromatic chords 
+    def newChords(self):
+        '''
+        Generates 3-10 non-repeating chromatic chords in
+        various octaves and spellings. Returns -1 if newChords
+        is None/null.
+        '''
+        print("\nGenerating random chord progression...")
+        newChords = []
+        #3-10 chords
+        totalChords = randint(3, 10)
+        while(len(newChords) < totalChords): 
+            chord = self.newChord()
+            if(chord not in newChords):
+                newChords.append(chord)
+        if(len(newChords) == 0):
+            print("newChords() - ERROR: No progression generated!")
+            return -1
+        # print("Total chords:", totalChords)
+        # print("New progression:", newChords)
+        return newChords
 
     # Generates a single chord from a given scale
     def newChordFromScale(self, scale, tempo=None):
@@ -1046,6 +1262,28 @@ class generate():
         # self.displayChords(chords)
         return chords
 
+   # Generate a chord off a given interval i (between 1 and 6) to total notes for the chord n
+    # starting with root r (integer)
+    def newSymTriad(self, r, i, n):
+        '''
+        Generates an intervallicly symmetrical chord of n length 
+        based off a given root (r) and interval (i). Returns a 
+        list of integers between 0 - 11 of n length. Does not specify
+        octave of the notes! Only pitch classes. 
+        
+        Returns -1 if given interval is invalid.
+        '''
+        if(i > 6 or i < 1):
+            return -1
+        chord = []
+        while(len(chord) < n):
+            chord.append(r)
+            r += i
+            if(r > 11):
+                r = self.octaveEquiv(r)
+        if(len(chord) == 0):
+            return -1
+        return chord
 
     #---------------------------------------------------------------------------------#
     #-------------------------------MELODIC GENERATION--------------------------------#
@@ -1087,7 +1325,7 @@ class generate():
         # Melody container object
         newMelody = melody()
 
-        #------------------Process incoming data-----------------#
+        #----------------Process any incoming data---------------#
 
         if(dataType is not None and data is not None):
             print("\nProcessing incoming data...")
