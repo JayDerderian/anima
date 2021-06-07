@@ -212,19 +212,19 @@ class decide(object):
         print("\nDeciding what to do...")
         choice = randint(1, 7)
         if(choice == 1):
-            print("Modifying NOTES only!")
+            print("...Modifying NOTES only!")
         elif(choice == 2):
-            print("Modifying RHYTHMS only!")
+            print("...Modifying RHYTHMS only!")
         elif(choice == 3):
-            print("Modifying DYNAMICS only!")
+            print("...Modifying DYNAMICS only!")
         elif(choice == 4):
-            print("Modifying NOTES & RHYTHMS!")
+            print("...Modifying NOTES & RHYTHMS!")
         elif(choice == 5):
-            print("Modifying NOTES & DYNAMICS!")
+            print("...Modifying NOTES & DYNAMICS!")
         elif(choice == 6):
-            print("Modifying RHYTHMS & DYNAMICS!")
+            print("...Modifying RHYTHMS & DYNAMICS!")
         elif(choice == 7):
-            print("Modifying NOTES & RHYTHMS & DYNAMICS!")
+            print("...Modifying NOTES & RHYTHMS & DYNAMICS!")
         return choice
 
     # Choices (notes): Transpose Up (1), down (2), transpose up AND down (3), 
@@ -241,17 +241,17 @@ class decide(object):
         choice = randint(1, 5)
         # Test outputs
         if(choice == 1):
-            print("Transposing UP only!")
+            print("...Transposing UP only!")
         elif(choice == 2):
-            print("Transposing DOWN only!")
+            print("...Transposing DOWN only!")
         elif(choice == 3):
-            print("Transposing UP & DOWN!")
+            print("...Transposing UP & DOWN!")
         elif(choice == 4):
-            print("ADDING notes!")
+            print("...ADDING notes!")
         elif(choice == 5):
-            print("REMOVING notes!")
+            print("...REMOVING notes!")
         elif(choice == 6):
-            print("ADDING & REMOVING notes!")
+            print("...ADDING & REMOVING notes!")
         return choice
     
     # Choices (rythms): Augment (1), diminish(2), augment AND diminish (3)
@@ -262,11 +262,11 @@ class decide(object):
         print("\nDeciding what to do with the rhythms...")
         choice = randint(1, 3)
         if(choice == 1):
-            print("Augmenting rhythms!")
+            print("...Augmenting rhythms!")
         elif(choice == 2):
-            print("Diminishing rhythms!")
+            print("...Diminishing rhythms!")
         elif(choice == 3):
-            print("Augment & diminish rhythms!")
+            print("...Augment & diminish rhythms!")
         return choice
 
     # Determines how many notes to modify of a given total.
@@ -281,7 +281,7 @@ class decide(object):
         totalModify = randint(1, totalModify)
         if(totalModify <= 0):
             print("...Unable to decide!")
-        print("Total:", totalModify)
+        # print("Total:", totalModify)
         return totalModify
 
     # Scales howMany to different MIDI note file sizes
@@ -325,7 +325,7 @@ class decide(object):
         notesToModify.sort()
         if(not notesToModify):
             print("...Unable to decide!")
-        print("Notes to modify: ", notesToModify)
+        # print("Notes to modify: ", notesToModify)
         return notesToModify
 
     #How much do we want to augment or diminish a rhythm?   
