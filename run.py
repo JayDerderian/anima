@@ -1,0 +1,376 @@
+'''
+----------------------------------------------------------------------------------------------------
+                       THIS FILE IS FOR RUNNING THE PROGRAM IN THE TERMINAL
+----------------------------------------------------------------------------------------------------
+'''
+
+# Imports
+from test import newData
+from random import randint
+from generate import generate
+
+# Driver code class
+class run():
+    '''
+    Class for executing generative functions in the terminal
+    '''
+    # Constructor
+    def __init__(self) -> None:
+        pass
+
+    # Main menu
+    def mainMenu(self):
+        '''
+        It's in the title
+        '''
+
+        print("\n-------------------Main Menu-----------------")
+        print("                                             ")
+        print("   0. Exit                                   ")
+        print("   1. New melody                             ")
+        print("   2. New chord                              ")
+        print("   3. New chord progression                  ")
+        print("   4. New composition (1 melody + chords)    ")
+        print("                                             ")
+        print("---------------------------------------------\n")
+
+    # Data menu
+    def dataMenu(self):
+        '''
+        Displays data input options
+        '''
+
+        print("\n          What kind of data?         ")
+        print("                                     ")
+        print("1 = Random list of ints of n length  ")
+        print("2 = Random list of floats of n length")
+        print("3 = Random list of chars of n length ")
+        print("4 = Random 0xXXXXXX hex number       ")
+        print("5 = Enter your name                  \n")
+
+    # Exit message
+    def goodBye(self):
+        '''
+        Smell ya later, chump
+        '''
+        print("\n~~~~Have a nice day!~~~~\n\n")
+
+    # Keep going?
+    def keepGoing(self):
+        '''
+        Must we?
+        '''
+        answer = input("\nWant to do something else? y = yes, n = no\n")
+        if(answer.isupper()):
+            answer = answer.lower()
+        if(answer == 'y'):
+            return True
+        else:
+            return False
+
+    # Driver code for using the generative functions in the terminal
+    def start(self):
+        '''
+        Main driver code. 
+        
+        User options include: 
+        -single melody generation (random or using source data) 
+        -single chord generation (random or using source data) 
+        -chord progression generation (random or using source data)
+        -composition (1 random inst + pno) generation (random or using source data)
+        '''
+        # Welcoming message
+        print("\n*~*~*~*~*~Let's make some music!~*~*~*~*~*~*~\n")
+        
+        # Create generator instance
+        create = generate()
+
+        # Main loop
+        going = True
+        while(going):
+            # Main menu 
+            self.mainMenu()
+            choice = int(input("Selection (0 - 4): "))
+            # Error check...
+            attempts = 0
+            while(choice > 4 or choice < 0):
+                print("try again, bub")
+                choice = int(input("Selection (0 - 4): "))
+                attempts += 1
+                if(attempts > 9):
+                    print("\njust about had enough of yer shinanigans!")
+                    exit()
+
+            # Exit
+            if(choice == 0):
+                self.goodBye()
+                exit()
+
+            # Generate melody
+            if(choice == 1):
+                print("\nCreate a new melody (1) from scratch, or use source data (2)?")
+                c = int(input("Selection (1 or 2): "))
+                # Error check...
+                attempts = 0
+                while(c > 2 or c < 1):
+                    print("\ntry again bub\n")
+                    c = int(input("Selection (1 or 2): "))
+                    attempts += 1
+                    if(attempts > 9):
+                        print("\njust about had enough of yer shinanigans!")
+                        exit()
+                
+                # From scratch
+                if(c == 1):
+                    tune = create.newMelody()
+                    if(tune != -1):
+                        create.displayMelody(tune)
+                        print("\nEnjoy your new melody! :)\n")
+                    else:
+                        print("RIP :(\n")
+
+                # Using supplied data
+                elif(c == 2):
+                    # List options
+                    self.dataMenu()
+                    d = int(input("Selection (1 - 5): "))
+                    # Error check...
+                    attempts = 0
+                    while(d > 5 or d < 1):
+                        print("\ntry again bub\n")
+                        d = int(input("Selection (1 - 5): "))
+                        attempts+=1
+                        if(attempts > 9):
+                            print("\nhad enough of your shenanigans!\n")
+                            exit()
+
+                    # Random ints
+                    if(d == 1):
+                        data = newData(d)
+                    # Random floats
+                    elif(d == 2):
+                        data = newData(d)
+                    # Random chars/letters
+                    elif(d == 3):
+                        data = newData(d)
+                    # Random hex number
+                    elif(d == 4):
+                        data = newData(d)
+                    # user enters their name
+                    elif(d == 5):
+                        data = input("\nYour name: ")
+                        d = 3
+
+                    # Generate melody
+                    tune = create.newMelody(data, d)
+                    if(tune != -1):
+                        create.displayMelody(tune)
+                        print("\nEnjoy your new melody! :)\n")
+                    else:
+                        print("\n:(\n")
+
+            # Generate chord
+            elif(choice == 2):
+                print("\nNew random chord (1) or from scale (2)?")
+                c = int(input("Selection (1 or 2):"))
+                # Error check...
+                attempts = 0
+                while(c > 2 or c < 1):
+                    print("\ntry again bub\n")
+                    c = int(input("Selection (1 or 2):"))
+                    attempts += 1
+                    if(attempts > 9):
+                        print("\njust about had enough of yer shinanigans!")
+                        exit()
+
+                # From scratch
+                if(c == 1):
+                    chord = create.newRandChord() 
+                    if(chord != -1):
+                        create.displayChord(chord)
+                    else:
+                        print("\n:(\n")
+
+                # From scale
+                elif(c == 2):
+                    print("\nUse existing scale (1) or generate a new one (2)?")
+                    d = int(input("Selection (1 or 2):"))
+                    # Error check...
+                    attempts = 0
+                    while(d > 2 or d < 1):
+                        print("\ntry again bub\n")
+                        d = int(input("Selection (1 or 2):"))
+                        attempts += 1
+                        if(attempts > 10):
+                            print("\njust about had enough of yer shinanigans!")
+                            exit()
+
+                    # Use existing scale
+                    if(d == 1):
+                        # Randomly decide between major or minor because why not
+                        if(randint(1, 2) == 1):
+                            scale = create.newMajorScale()
+                        else:
+                            scale = create.newMinorScale()
+                        tempo = create.newTempo()
+                        chord = create.newChordFromScale(scale, tempo)
+                        if(chord != -1):
+                            create.displayChord(chord)
+                        else:
+                            print("\nRIP :(\n")
+
+                    # Generate a new one
+                    elif(d == 2):
+                        scale = create.newScale(octave=4)
+                        tempo = create.newTempo()
+                        chord = create.newChordFromScale(scale, tempo)
+                        if(chord != -1):
+                            create.displayChord(chord)
+                        else:
+                            print("\n:(\n")
+
+            # Generate chord progression
+            elif(choice == 3):
+                print("\nNew random chords (1) or from scale (2)?")
+                c = int(input("Selection (1 or 2): "))
+                # Error check...
+                attempts = 0
+                while(c > 2 or c < 1):
+                    print("\ntry again bub\n")
+                    c = int(input("Selection (1 or 2): "))
+                    attempts += 1
+                    if(attempts > 9):
+                        print("\njust about had enough of yer shinanigans!")
+                        exit()
+
+                # From scratch
+                if(c == 1):
+                    total = int(input("How many? "))
+                    chords = []
+                    tempo = create.newTempo()
+                    while(len(chords) < total):
+                        chord = create.newRandChord(tempo=tempo)
+                        if(chord == -1):
+                            print("\nExiting...")
+                            break
+                        else:
+                            chords.append(chord)
+                    if(len(chords) == 0):
+                        print("\n:(")
+                    if(len(chords) != 0):
+                        create.displayChords(chords)
+                    else:
+                        print("\nERROR: unable to generate chords! :(\n")
+
+                # From scale
+                elif(c == 2):
+                    print("\nUse existing scale (1) or generate a new one (2)?")
+                    d = int(input("Selection (1 or 2):"))
+                    # Error check...
+                    attempts = 0
+                    while(d > 2 or d < 1):
+                        print("\ntry again bub\n")
+                        d = int(input("Selection (1 or 2): "))
+                        attempts += 1
+                        if(attempts > 9):
+                            print("\njust about had enough of yer shinanigans!")
+                            exit()
+
+                    # Use existing scale
+                    if(d == 1):
+                        tempo = create.newTempo()
+                        # Randomly decide between major or minor because why not
+                        if(randint(1, 2) == 1):
+                            scale = create.newMajorScale()
+                        else:
+                            scale = create.newMinorScale()
+                        chords = create.newChordsFromScale(scale, tempo)
+                        if(chords != -1):
+                            create.displayChords(chords)
+                        else:
+                            print("\n:(\n")
+
+                    # Generate a new one
+                    elif(d == 2):
+                        tempo = create.newTempo()
+                        scale = create.newScale(octave=4)
+                        if(scale != -1):
+                            chords = create.newChordsFromScale(scale, tempo)
+                        else:
+                            print("\nERROR: unable to generate scale! Exiting...")
+                            break
+                        if(chords != -1):
+                            create.displayChords(chords)
+                        else:
+                            print("\n:(\n")                
+
+            # Generate composition
+            elif(choice == 4):
+                print("\nCreate a new composition (1) from scratch, or use source data (2)?")
+                c = int(input("Selection (1 or 2):"))
+                # Error check...
+                attempts = 0
+                while(c > 2 or c < 1):
+                    print("\ntry again bub\n")
+                    c = int(input("Selection (1 or 2): "))
+                    attempts += 1
+                    if(attempts > 9):
+                        print("\njust about had enough of yer shinanigans!")
+                        exit()
+                
+                # From scratch
+                if(c == 1):
+                    if(create.newComposition() != -1):
+                        print("\nEnjoy your new music! :)\n")
+                    else:
+                        print("\n:(\n")
+
+                # Using supplied data
+                elif(c == 2):
+                    # List options
+                    self.dataMenu()
+                    d = int(input("Selection (1 - 5): "))
+                    # Error check...
+                    attempts = 0
+                    while(d > 5 or d < 1):
+                        print("\ntry again bub\n")
+                        d = int(input("Selection (1 - 5): "))
+                        attempts += 1
+                        if(attempts > 10):
+                            print("\njust about had enough of yer shinanigans!")
+                            exit()
+
+                    # Random ints
+                    if(d == 1):
+                        data = newData(d)
+                    # Random floats
+                    elif(d == 2):
+                        data = newData(d)
+                    # Random chars/letters
+                    elif(d == 3):
+                        data = newData(d)
+                    # Random hex number
+                    elif(d == 4):
+                        data = newData(d)
+                    # user enters their name
+                    elif(d == 5):
+                        data = input("\nYour name: ")
+                        d = 3
+
+                    # Generate melody
+                    if(create.newComposition(data, d) != - 1):
+                        print("\nEnjoy your new music! :)\n")
+                    else:
+                        print("\n:(\n")
+            
+            # Again?
+            going = self.keepGoing()
+
+        # Exit message
+        self.goodBye()
+        return 0
+
+#------------------------Driver Code------------------------#
+
+# Run it!
+run().start()
