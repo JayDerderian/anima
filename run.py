@@ -250,7 +250,7 @@ class run():
                     chords = []
                     tempo = create.newTempo()
                     while(len(chords) < total):
-                        chord = create.newRandChord(tempo=tempo)
+                        chord = create.newChords()
                         if(chord == -1):
                             print("\nExiting...")
                             break

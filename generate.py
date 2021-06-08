@@ -35,8 +35,6 @@ from containers.chord import chord
 from containers.composition import composition
 
 # Generative functions
-
-
 class generate():
     '''
     This class handles all generative functions. It contains a set of resource data
@@ -1171,7 +1169,7 @@ class generate():
         return newChord
 
     # Generates a series of random chromatic chords 
-    def newChords(self):
+    def newChords(self, total=None):
         '''
         Generates 3-10 non-repeating chromatic chords in
         various octaves and spellings. Returns -1 if newChords
@@ -1179,9 +1177,10 @@ class generate():
         '''
         print("\nGenerating random chord progression...")
         newChords = []
-        #3-10 chords
-        totalChords = randint(3, 10)
-        while(len(newChords) < totalChords): 
+        if(total is not None):
+            #3-10 chords
+            total = randint(3, 10)
+        while(len(newChords) < total): 
             chord = self.newChord()
             if(chord not in newChords):
                 newChords.append(chord)

@@ -14,7 +14,7 @@ import pretty_midi
 import midi as mid
 from analyze import analysis
 from decisions import decide as choice
-from create import generate as create
+from generate import generate as create
 
 class modification(create):
     '''
