@@ -8,3 +8,4 @@ old files/
 raw midi/
 resources/
 .env
+__pycache__/
