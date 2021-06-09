@@ -765,7 +765,7 @@ class generate():
               is outside the bounds 0...127. Maybe something gets weird when going
               from ints to chars. 
         '''
-        print("\nGenerating new root scale...")
+        # print("\nGenerating new root scale...")
         if(octave is not None):
             if(octave < 1 or octave > 6):
                 print("\nERROR: octave out of range!")
@@ -792,9 +792,9 @@ class generate():
                 note = "{}{}".format(self.chromaticScaleFlats[pcs[i]], octave)
             scale.append(note)
         if(len(scale) == 0):
-            print("ERROR: unable to generate scale!")
+            print("newScale() - ERROR: unable to generate scale!")
             return -1
-        print("new scale:", scale, "\n")
+        # print("new scale:", scale, "\n")
         return scale
 
     # Picks one of twelve major scales
@@ -1134,62 +1134,94 @@ class generate():
     def displayChords(self, chords):
         print("\n----------------HARMONY DATA:-------------------")
         for i in range(len(chords)):
-            print('\n', i + 1, ': ', 'Notes:', chords[i].notes)
+            print('\n', i + 1, ': ', 'Notes:', chords[i].notes[i])
             print('      Rhythm:', chords[i].rhythm)
             print('      Dynamics:', chords[i].dynamics)
 
     # Generates a chord with randomly chosen notes
-    def newChord(self, tempo=None):
+    def newChord(self, tempo=None, scale=None):
         '''
         Generates a chord with randomly chosen notes, rhythm, and dynamic.  
         Returns a chord() object.
+
+        NOTE: Will eventually replace newChordFromScale()
         '''
-        # Create new chord() object
-        newChord = chord()
-        # Total notes (2-9)
+        # Error check
+        if(scale is not None):
+            if(len(scale) == 0):
+                print("ERROR: no input!")
+                return -1
+        # New chord() object
+        newchord = chord()
+        # If we dont get a source scale
+        if(scale is None):
+            '''NOTE: See notes for newScale()! '''
+            scale = self.newScale()
+        # How many notes in this chord? 2 to 9 (for now)
         total = randint(2, 9)
-        # Add tempo if one is provided, otherwise pick a new one
-        if(tempo is not None):
-            newChord.tempo = tempo
-        else:
-            newChord.tempo = self.newTempo()
-        # Pick notes
-        while(len(newChord.notes) < total):
-            newChord.notes.append(self.newNote())
-        # Add dynamics 
-        dynamic = self.newDynamic()
-        for i in range(len(newChord.notes)):
-            newChord.dynamics.append(dynamic)
-        # Pick rhythm
-        newChord.rhythm = self.newRhythm()
-        # Make sure it worked
-        if(newChord.hasData() == False):
-            print("\nnewRandChord() - ERROR: no chord generated!")
+        while(len(newchord.notes) < total):
+            # Pick note and add to list
+            note = scale[randint(0, len(scale) - 1)]
+            newchord.notes.append(note)
+        # Error check
+        if(len(newchord.notes) == 0):
+            print("\nERROR: no chord generated!")
             return -1
-        return newChord
+        # Remove duplicate notes/doublings
+        '''NOTE: This is avoids getting the while loop stuck
+                 if there's a lot of repeated notes in the melody '''
+        newchord.notes = list(dict.fromkeys(newchord.notes))
+        if(tempo is None):
+            newchord.tempo = 60.0
+        else:
+            newchord.tempo = tempo
+        # Pick a rhythm
+        newchord.rhythm = self.newRhythm()
+        # Pick a dynamic (randomize for each note? probably)
+        dynamic = self.newDynamic()
+        while(len(newchord.dynamics) < len(newchord.notes)):
+            newchord.dynamics.append(dynamic)
+        return newchord
 
     # Generates a series of random chromatic chords 
-    def newChords(self, total=None):
+    def newChords(self, total=None, tempo=None, scale=None):
         '''
-        Generates 3-10 non-repeating chromatic chords in
-        various octaves and spellings. Returns -1 if newChords
-        is None/null.
+        Generates a progression from the notes of a given scale.
+        Returns a list of chord() objects.
+
+        NOTE: Chords will be derived from the given scale ONLY! Could possibly
+              add more randomly inserted chromatic tones to give progressions more
+              variance and color. 
         '''
-        print("\nGenerating random chord progression...")
-        newChords = []
-        if(total is not None):
-            #3-10 chords
+        chords = []
+        # Is there a total, tempo, and scale provided?
+        if(total is None):
             total = randint(3, 10)
-        while(len(newChords) < total): 
-            chord = self.newChord()
-            if(chord not in newChords):
-                newChords.append(chord)
-        if(len(newChords) == 0):
-            print("newChords() - ERROR: No progression generated!")
+        if(scale is None):
+            scale = self.newScale()
+        if(tempo is None):   
+            tempo = self.newTempo()
+        elif(total is not None and scale is not None):
+            # Error check
+            if(len(scale) == 0):
+                print("newChordsfromScale() - ERROR: no scale inputted!")
+                return -1
+            # Picks total equivalent to between 30-100% of total elements in the scale
+            total = randint(math.floor(len(scale) * 0.3), len(scale))
+            if(total == 0):
+                total = randint(1, len(scale))
+        # Display total chords
+        print("\nGenerating", total, "chords...")
+        # Pick notes
+        while(len(chords) < total):
+            newchord = self.newChord(tempo=tempo, scale=scale)
+            chords.append(newchord)
+        if(len(chords) == 0):
+            print("newChordsfromScale() - ERROR: Unable to generate chords!")
             return -1
-        # print("Total chords:", totalChords)
-        # print("New progression:", newChords)
-        return newChords
+        # Display chords
+        # self.displayChords(chords)
+        return chords
 
     # Generates a single chord from a given scale
     def newChordFromScale(self, scale, tempo=None):
@@ -1499,7 +1531,8 @@ class generate():
 
 
         #---------------------Generate harmonies------------------------#
-        newChords = self.newChordsFromScale(newTune.notes, newTune.tempo)
+        # newChords = self.newChordsFromScale(newTune.notes, newTune.tempo)
+        newChords = self.newChords(total=None, tempo=newTune.tempo, scale=newTune.notes)
         # music.chords.append(newChords)
 
 

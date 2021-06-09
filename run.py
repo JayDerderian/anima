@@ -247,22 +247,13 @@ class run():
                 # From scratch
                 if(c == 1):
                     total = int(input("How many? "))
-                    chords = []
                     tempo = create.newTempo()
-                    while(len(chords) < total):
-                        chord = create.newChords()
-                        if(chord == -1):
-                            print("\nExiting...")
-                            break
-                        else:
-                            chords.append(chord)
+                    chords = create.newChords(total=total, tempo=tempo)
                     if(len(chords) == 0):
-                        print("\n:(")
-                    if(len(chords) != 0):
-                        create.displayChords(chords)
-                    else:
                         print("\nERROR: unable to generate chords! :(\n")
-
+                    elif(len(chords) != 0):
+                        create.displayChords(chords)
+                        
                 # From scale
                 elif(c == 2):
                     print("\nUse existing scale (1) or generate a new one (2)?")
