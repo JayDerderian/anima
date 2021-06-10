@@ -79,8 +79,133 @@ def newData(dataType):
     print("\ntotal elements:", len(data))
     return data
 
+# quick test
+def quicktest():
+    print("\n***quick test***\n")
+    print("\nrandomly picking data type and data, then sending to newComposition()...")
+    d = randint(1, 4)
+    data = newData(d)
+    print("\ninputting:", data)
+    # Create new instance
+    create = generate()
+    result, abc = create.newComposition(data, d)
+    if(result != -1):
+        print("new piece:", result)
+        return result
+    else:
+        print("ERROR")
+        return "ERROR"
 
-#----------------------------------------------Low-level tests-------------------------------------------#
+#---------------------------------------------conversion tests-------------------------------------------#
+
+# test float to int
+def testFloats():
+    print("\ntesting float conversion...")
+    create = generate()
+    result = create.floatToInt(newFloats())
+    # see if we got any data at all
+    if(len(result) == 0):
+        print("...no conversion created!")
+        exit()
+    # check to make sure they're all ints
+    for i in range(len(result) - 1):
+        if(type(result[i]) != int):
+            print("...int conversion failed!")
+            exit()
+    print("ok!")
+    
+# test char list to int list conversion
+def testCharToInt():
+    print("\ntesting string to int list conversion...")
+    test = "test input"
+    result = generate().mapLettersToNumbers(test)
+    # ensure the list isn't empty
+    if(len(result) == 0):
+        print("...no conversion! test failed!")
+        exit()
+    # ensure a list of ints was returned
+    for i in range(len(result)):
+        if(type(result[i]) != int):
+            print("...str to int list test failed!")
+            exit() 
+    print("ok!")
+
+# test hex char to int list conversion
+def testHexToInt():
+    print("\ntesting hext to int array conversion...")
+    result = generate().hexToIntArray(newHex())
+    # did anything return?
+    if(len(result) == 0):
+        print("...no conversion created!")
+        exit()
+    # is it the correct type?
+    for i in range(len(result)):
+        if(type(result[i]) != int):
+            print("...wrong type created!")
+            exit()
+    print("ok!")
+
+
+#----------------------------------------------low-level tests-------------------------------------------#
+
+# test tempo generation
+def testNewTempo():
+    '''
+    tests tempo generation. Ensures return value is a float within an acceptible range.
+    '''
+    print("\ntesting tempo generation...")
+    create = generate()
+    t = create.newTempo()
+    # type check
+    if(type(t) != float):
+        print("...tempo generation failed!")
+        exit()
+    # bounds check
+    if(t > create.tempos[38] or t < create.tempos[0]):
+        print("...tempo generated out of range!")
+        exit()
+    print("ok!")
+
+# test single-note generation
+def testNewNote():
+    '''
+    tests single-note generation.
+    '''
+    print("\ntesting pitch generation...")
+    # Create new instance
+    create = generate()
+    # random note
+    p = ''
+    p = create.newNote()
+    if(p == ''):
+        print("...random note test failed!")
+        exit()
+    # test bounds check
+    if(create.newNote(-1, 10) != -1):
+        print("...bounds check failed!")
+        exit()
+    # test specified note
+    p = ''
+    p = create.newNote(randint(0, 11), randint(2, 5))
+    if(p == ''):
+        print("...specified note test failed!")
+        exit()
+    print("ok!")
+
+# test source-scale generation
+def testNewNotes():
+    '''
+    Tests source scale generation with supplied data plus random functions
+    '''
+    print("\ntesting source scale generation...")
+    s = []
+    # random source scale
+    s = generate().newNotes()
+    if(len(s) == 0):
+        print("...random source scale test failed!")
+        exit()
+    # supplied data tests
+
 
 
 #----------------------------------------------Mid-level tests-------------------------------------------#
@@ -91,8 +216,22 @@ def newData(dataType):
 
 
 # MAIN DRIVER CODE
-def main():
-    print("\n\n***STARTING TESTS***")
+def runAllTests():
+    print("\n***STARTING TESTS***\n")
+    
+    # conversion tests
+    testFloats()
+    testCharToInt()
+    testHexToInt()
+
+    # low-level tests
+    testNewTempo()
+    testNewNote()
+    testNewNotes()
+
+    # mid-level tests
+
+    # high-level tests
 
 
 

@@ -24,30 +24,50 @@ class run():
         '''
         It's in the title
         '''
-
-        print("\n-------------------Main Menu-----------------")
+        print("                                             ")
+        print("-------------------Main Menu-----------------")
         print("                                             ")
         print("   0. Exit                                   ")
         print("   1. New melody                             ")
         print("   2. New chord                              ")
         print("   3. New chord progression                  ")
         print("   4. New composition (1 melody + chords)    ")
+        print("   5. Run testing software                   ")
         print("                                             ")
-        print("---------------------------------------------\n")
+        print("---------------------------------------------")
+        print("                                             ")
 
     # Data menu
     def dataMenu(self):
         '''
         Displays data input options
         '''
+        print("                                              ")
+        print("------------------Data Inputs-----------------")
+        print("                                              ")
+        print("    1. Random list of ints of n length        ")
+        print("    2. Random list of floats of n length      ")
+        print("    3. Random list of chars of n length       ")
+        print("    4. Random 0xXXXXXX hex number             ")
+        print("    5. Enter your name                        ")
+        print("                                              ")
+        print("----------------------------------------------")
+        print("                                              ")
 
-        print("\n          What kind of data?         ")
-        print("                                     ")
-        print("1 = Random list of ints of n length  ")
-        print("2 = Random list of floats of n length")
-        print("3 = Random list of chars of n length ")
-        print("4 = Random 0xXXXXXX hex number       ")
-        print("5 = Enter your name                  \n")
+    # Test menu
+    def testMenu(self):
+        '''
+        Displays testing options
+        '''
+        print("                                               ")
+        print("----------------Testing options----------------")
+        print("                                               ")
+        print("                                               ")
+        print("                                               ")
+        print("                                               ")
+        print("                                               ")
+        print("-----------------------------------------------")
+        print("                                               ")
 
     # Exit message
     def goodBye(self):
@@ -355,6 +375,30 @@ class run():
                     else:
                         print("\n:(\n")
             
+            # Run test suite
+            '''
+            elif(choice == 5):
+                self.testMenu()
+                t = int(input("Selection:"))
+                # error check...
+                attempts = 0
+                while(t < 0 or t > 5):
+                    print("\ntry again bub")
+                    t = int(input("Selection:"))
+                    attempts += 1
+                    if(attempots > 10):
+                        print("\njust about had it with yer shenanigans")
+                        exit()
+
+                # run quick test
+                if(t == 1):
+                    test.runQuickTest()
+
+                # run full test
+                if(t == 2):
+                    test.runAllTests()
+            '''
+
             # Again?
             going = self.keepGoing()
 
