@@ -208,14 +208,18 @@ def testNewInstrument():
         print("\nexiting...\n")
         exit()
     # was this on the list?
+    found = False
     for i in range(len(generate().instruments)):
-        if(generate().instruments[i] != inst):
-            print("...output not on original instrument list!")
-            print("***Test failed!***\n")
-            print("\nexiting...\n")
-            exit()
+        if(generate().instruments[i] == inst):
+            found = True
+            break
+    if(found == False):
+        print("...output not on original instrument list!")
+        print("***Test failed!***\n")
+        print("\nexiting...\n")
+        exit()
     # instrument list
-    instruments = generate().newInstruments()
+    instruments = generate().newInstruments(randint(2, 10))
     # did we get a list back?
     if(type(instruments) != list):
         print("...wrong data type returned!")

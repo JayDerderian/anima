@@ -9,10 +9,11 @@
     representation very messy. 
   
 '''
+import pretty_midi as pm
 import urllib.request
 from random import randint
 from datetime import datetime
-import pretty_midi as pm
+
 
 
 class midiStuff():
