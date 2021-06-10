@@ -466,9 +466,12 @@ class generate():
         '''
         Converts an array of floats to an array of ints
         '''
-        print("\nConverting floats to ints...")
+        # print("\nConverting floats to ints...")
+        if(type(data) != list):
+            print("floatToInt() - ERROR: wrong data type inputted!")
+            return -1
         if(len(data) == 0):
-            print("ERROR: no data inputted!")
+            print("floatToInt() - ERROR: no data inputted!")
             return -1
         result = []
         for i in range(len(data)):
@@ -487,7 +490,7 @@ class generate():
         NOTE: Current method introduces a bias towards the notes in the lower indices
               of the total array (at least the first third). 
         '''
-        print("\nScaling input...")
+        # print("\nScaling input...")
         if(len(data) == 0):
             print("ERROR: no data inputted")
             return -1
@@ -678,13 +681,13 @@ class generate():
                 integer from the supplied data set.
         '''
         # Check incoming data
-        if(data is not None and len(data) == 0):
-            print("ERROR: no data inputted!")
-            return -1
-        # Is this a list of ints?
-        if(type(data) != list and type(data[0]) != int):
-            print("newNotes() - ERROR: wrong data type inputted!")
-            return -1
+        if(data is not None):
+            if(type(data) != list):
+                print("\nnewNotes() - ERROR: wrong data type inputted!")
+                return -1
+        if(data is not None and type(data) == list):
+            if(type(data[0]) != int):
+                print("\nnewNotes() - ERROR: list does not contain ints!")
 
         # Pick starting octave (2 or 3)
         octave = randint(2, 3)
@@ -725,15 +728,15 @@ class generate():
                     # Re-decide if we're using minor (1) or major (2) again
                     if(randint(1, 2) == 1):
                         isMinor = True
-                        print("Switching to a minor key!")
-                    else:
-                        isMinor = False
-                        print("Choosing another a major key!")
+                        # print("Switching to a minor key!")
+                    # else:
+                    #     isMinor = False
+                    #     print("Choosing another a major key!")
                     if(isMinor == True):
                         root = self.convertToMinor(root)
-                        print("Key-change! Now using", root[0], "minor")
-                    else:
-                        print("Key-change! Now using", root[0], "major")
+                        # print("Key-change! Now using", root[0], "minor")
+                    # else:
+                    #     print("Key-change! Now using", root[0], "major")
                 # Reset n to stay within len(root)
                 n = 0
 
@@ -960,7 +963,7 @@ class generate():
                 if(rhythm not in rhythms):
                     rhythms.append(rhythm)
         if(len(rhythms) == 0):
-            print("ERROR: Unable to generate pattern!")
+            print("newRhythms() - ERROR: Unable to generate pattern!")
             return -1
         return rhythms
 

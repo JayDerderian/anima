@@ -156,13 +156,14 @@ def testScaleTheScale():
     print("\ntesting integer array scaling method...")
     test = newInts()
     limit = len(test) - 1
-    result = generate.scaleTheScale(test)
+    result = generate().scaleTheScale(test)
     for i in range(len(result)):
         if(result[i] > limit):
             print("...result out of bounds!")
             print("***Test failed!***\n")
             print("\nexiting...\n")
             exit()
+    print("ok!")
 
 #----------------------------------------------low-level tests-------------------------------------------#
 
@@ -172,8 +173,7 @@ def testNewTempo():
     tests tempo generation. Ensures return value is a float within an acceptible range.
     '''
     print("\ntesting tempo generation...")
-    create = generate()
-    t = create.newTempo()
+    t = generate().newTempo()
     # type check
     if(type(t) != float):
         print("...tempo generation failed!")
@@ -181,7 +181,7 @@ def testNewTempo():
         print("\nexiting...\n")
         exit()
     # bounds check
-    if(t > create.tempos[38] or t < create.tempos[0]):
+    if(t > generate().tempos[len(generate().tempos) - 1] or t < generate().tempos[0]):
         print("...tempo generated out of range!")
         print("***Test failed!***\n")
         print("\nexiting...\n")
@@ -220,32 +220,60 @@ def testNewNote():
         exit()
     print("ok!")
 
-# test rhythm generation
+# test single-rhythm generation
 def testNewRhythm():
     '''
     tests single-rhythm generation
     '''
     print("\ntesting single-rhythm generation...")
-    r = create.newRhythm()
+    r = generate().newRhythm()
     # make sure it's the right data type
     if(type(r) != float):
+        print("...wrong data type generated!")
+        print("***Test failed!***\n")
+        print("\nexiting...\n")
+        exit()
+    # make sure it's one from our list
+    # found = False
+    # for i in range(len(generate().rhythms)):
+    #     if(r == generate().rhythms[i]):
+    #         found == True
+    #         break
+    # if(found == False):
+    #     print("...no rhythm generated!")
+    #     print("***Test failed!***\n")
+    #     print("\nexiting...\n")
+    #     exit()
+
+    print("ok!")
+
+# test single-dynamic generation
+def testNewDynamic():    
+    '''
+    tests single-dynamic generation
+    '''
+    print("\ntesting single-rhythm generation...")
+    create = generate()
+    d = create.newDynamic()
+    # make sure it's the right data type
+    if(type(d) != int):
         print("...wrong data type!")
         print("***Test failed!***\n")
         print("\nexiting...\n")
         exit()
     # make sure it's one of the ones we'd want...
-    found = False
-    for i in range(len(create.rhythms)):
-        if(r == create.rhythms[i]):
-            found == True
-            break
-    if(found == False):
-        print("...no rhythm generated!")
-        print("***Test failed!***\n")
-        print("\nexiting...\n")
-        exit()
+    # found = False
+    # for i in range(len(create.dynamics)):
+    #     if(d == create.dynamics[i]):
+    #         found == True
+    #         break
+    # if(found == False):
+    #     print("...no dynamic generated!")
+    #     print("***Test failed!***\n")
+    #     print("\nexiting...\n")
+    #     exit()
 
-    print("ok!")
+    print("ok!") 
 
 #----------------------------------------------Mid-level tests-------------------------------------------#
 
@@ -266,19 +294,19 @@ def testNewNotes():
         exit()
     # with bad data
     t = 10
-    if(generate.newNotes(t) != -1):
+    if(generate().newNotes(t) != -1):
         print("...failed to catch bad data type (single int)!")
         print("***Test failed!***")
         print("\nexiting...\n")
         exit()
     t = "test string"
-    if(generate.newNotes(t) != -1):
+    if(generate().newNotes(t) != -1):
         print("...failed to catch bad data type (single string)!")
         print("***Test failed!***")
         print("\nexiting...\n")
         exit()
     t = ['t','e','s','t']
-    if(generate.newNotes(t) != -1):
+    if(generate().newNotes(t) != -1):
         print("...failed to catch bad data type (list of strings)!")
         print("***Test failed!***")
         print("\nexiting...\n")
@@ -286,7 +314,7 @@ def testNewNotes():
     # with supplied (and converted) data
     s = []
     data = newInts()
-    s = generate.newNotes(data)
+    s = generate().newNotes(data)
     for i in range(len(s)):
         # make sure it's a list of str's
         if(type(s[i]) != str):
@@ -305,7 +333,7 @@ def testNewScale():
     '''
     print("\ntesting random scale generation...")
     s = []
-    s = generate.newScale()
+    s = generate().newScale()
     # did we get anything?
     if(len(s) == 0):
         print("...no scale generated!")
@@ -321,6 +349,134 @@ def testNewScale():
             exit()
     print("ok!")
 
+# test new rhythms list generation
+def testNewRhythms():
+    '''
+    tests rhythms list generation with and without a supplied total
+    '''
+    print("\ntesting rhythms list generation...")
+    # without total
+    r = []
+    r = generate().newRhythms()
+    # did the method fail?
+    if(r == -1):
+        print("***Test failed!***")
+        print("\nexiting...\n")
+        exit()
+    # did we get a list back?
+    if(type(r) != list):
+        print("...did not return a list!")
+        print("***Test failed!***")
+        print("\nexiting...\n")
+        exit()
+    # did we get anything?
+    elif(len(r) == 0):
+        print("...nothing returned!")
+        print("***Test failed!***")
+        print("\nexiting...\n")
+        exit()
+    # is this a list of floats?
+    for i in range(len(r)):
+        if(type(r[i] != float)):
+            print("...incorrect type generated!")
+            print("***Test failed!***")
+            print("\nexiting...\n")
+            exit()
+    # with total
+    r = []
+    r = generate().newRhythms(randint(2, 20))
+    # did the method fail?
+    if(r == -1):
+        print("***Test failed!***")
+        print("\nexiting...\n")
+        exit()
+    # did we get anything?
+    elif(len(r) == 0):
+        print("...nothing returned!")
+        print("***Test failed!***")
+        print("\nexiting...\n")
+        exit()
+    # is this a list of floats?
+    for i in range(len(r)):
+        if(type(r[i] != float)):
+            print("...incorrect type generated!")
+            print("***Test failed!***")
+            print("\nexiting...\n")
+            exit()
+
+    print("ok!")
+
+# test new dynamics list generation
+def testNewDynamics():
+    '''
+    tests dynamics list generation with and without a supplied total
+    '''
+    print("\ntesting dynamics list generation...")
+    # without total
+    d = []
+    d = generate().newDynamics()
+    # did the method fail?
+    if(d == -1):
+        print("***Test failed!***")
+        print("\nexiting...\n")
+        exit()
+    # did we get a list back?
+    if(type(d) != list):
+        print("...did not return a list!")
+        print("***Test failed!***")
+        print("\nexiting...\n")
+        exit()
+    # did we get anything?
+    elif(len(d) == 0):
+        print("...nothing returned!")
+        print("***Test failed!***")
+        print("\nexiting...\n")
+        exit()
+    # is this a list of ints and are they in the correct range?
+    for i in range(len(d)):
+        # right type?
+        if(type(d[i] != int)):
+            print("...incorrect type generated!")
+            print("***Test failed!***")
+            print("\nexiting...\n")
+            exit()
+        # in range?
+        if(d[i] > 127 or d[i] < 0):
+            print("...output out of range! d = {d[i]}")
+            print("***Test failed!***")
+            print("\nexiting...\n")
+            exit()
+
+    # with total
+    d = []
+    d = generate().newDynamics(randint(2, 20))
+    # did the method fail?
+    if(r == -1):
+        print("***Test failed!***")
+        print("\nexiting...\n")
+        exit()
+    # did we get anything?
+    elif(len(d) == 0):
+        print("...nothing returned!")
+        print("***Test failed!***")
+        print("\nexiting...\n")
+        exit()
+    # is this a list of ints and are they in the correct range?
+    for i in range(len(d)):
+        # right type?
+        if(type(d[i] != int)):
+            print("...incorrect type generated!")
+            print("***Test failed!***")
+            print("\nexiting...\n")
+            exit()
+        # in range?
+        if(d[i] > 127 or d[i] < 0):
+            print("...output out of range! d = {d[i]}")
+            print("***Test failed!***")
+            print("\nexiting...\n")
+            exit()
+
+    print("ok!")
 
 
 #---------------------------------------------High-level tests-------------------------------------------#
@@ -358,28 +514,32 @@ def quickTest():
 
 # RUN ALL TESTS
 def runAllTests():
-    print("\n***STARTING ALL TESTS***\n")
+    # lets gooooooooo
+    print("\n\n~~~~~~~~~~~~~STARTING ALL TESTS~~~~~~~~~~~~~")
     
     # conversion tests
-    print("\n****running conversion tests***\n")
+    print("\n\n****running conversion tests***")
     testFloats()
     testCharToInt()
     testHexToInt()
     testScaleTheScale()
 
     # low-level tests
-    print("\n***running low-level tests***\n")
+    print("\n\n***running low-level tests***")
     testNewTempo()
     testNewNote()
     testNewRhythm()
+    testNewDynamic()
 
     # mid-level tests
-    print("\n***running mid-level tests***\n")
+    print("\n\n***running mid-level tests***")
     testNewNotes()
     testNewScale()
+    testNewRhythms()
+    testNewDynamics()
 
     # high-level tests
-    print("\n***running high-level tests***\n")
+    print("\n\n***running high-level tests***\n")
 
 
     # we did it! hooray!

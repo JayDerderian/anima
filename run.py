@@ -68,13 +68,12 @@ class run():
         displays testing options
         '''
         print("\n")
-        print("----------------Testing options----------------")
-        print("                                               ")
-        print("              1. Run quick test                ")
-        print("              2. Run all tests                 ")
-        print("                                               ")
-        print("                                               ")
-        print("-----------------------------------------------")
+        print("------------Testing options--------------")
+        print("                                         ")
+        print("          1. Run quick test              ")
+        print("          2. Run all tests               ")
+        print("                                         ")
+        print("-----------------------------------------")
         print("\n")
 
     # Exit message
@@ -120,10 +119,10 @@ class run():
         while(going):
             # Main menu 
             self.mainMenu()
-            choice = int(input("Selection (0 - 4): "))
+            choice = int(input("Selection (0 - 5): "))
             # Error check...
             attempts = 0
-            while(choice > 4 or choice < 0):
+            while(choice > 5 or choice < 0):
                 print("try again, bub")
                 choice = int(input("Selection (0 - 4): "))
                 attempts += 1
@@ -385,10 +384,9 @@ class run():
                         print("\n:(\n")
             
             # Run test suite
-            '''
             elif(choice == 5):
                 self.testMenu()
-                t = int(input("Selection:"))
+                t = int(input("Selection: "))
                 # error check...
                 attempts = 0
                 while(t < 0 or t > 5):
@@ -406,7 +404,6 @@ class run():
                 # run full test
                 if(t == 2):
                     test.runAllTests()
-            '''
 
             # Again?
             going = self.keepGoing()
