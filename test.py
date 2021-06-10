@@ -353,8 +353,8 @@ def testNewChord():
 
     # with input
     tempo = 60.0
-    testScale = ["C#4, D#4, E4, F#4, G#4, A4, B4"]
-    c = generate().newChord(tempo, testScale)
+    scale = ["C#4", "D#4", "E4", "F#4", "G#4", "A4", "B4"]
+    c = generate().newChord(tempo, scale)
     # did we get all required data?
     if(c.hasData() == False):
         print("...insufficient chord info!")
@@ -621,14 +621,16 @@ def testNewChords():
     # is all the data present for each chord?
     for i in range(len(c)):
         if(c[i].hasData() == False):
-            print("...insufficient chord info at chord", i, " chord:" chordc[i])
+            print("...insufficient chord info at chord", i, " chord:", c[i])
             print("***Test failed!***\n")
             print("\nexiting...\n")
             exit()
     # are all the notes arrays of strings?
+    i = 0
+    j = 0
     for i in range(len(c)):
-        for j in range(len(c.notes[i])):
-            if(type(c.notes[j]) != str):
+        for j in range(len(c[i].notes[j]) - 1):
+            if(type(c[i].notes[j]) != str):
                 print("...wrong data type in chord note list!")
                 print("***Test failed!***\n")
                 print("\nexiting...\n")
@@ -637,7 +639,7 @@ def testNewChords():
     # with input
     tempo = 60.0
     total = randint(2, 10)
-    scale = ["C#4, D#4, E4, F#4, G#4, A4, B4"]
+    scale = ["C#4", "D#4", "E4", "F#4", "G#4", "A4", "B4"]
     c = generate().newChords(total, tempo, scale)
     # is this a list?
     if(type(c) != list):
@@ -655,14 +657,16 @@ def testNewChords():
     # is all the data present for each chord?
     for i in range(len(c)):
         if(c[i].hasData() == False):
-            print("...insufficient chord info at chord", i, " chord:" chordc[i])
+            print("...insufficient chord info at chord", i, " chord:", c[i])
             print("***Test failed!***\n")
             print("\nexiting...\n")
             exit()
     # are all the notes arrays of strings?
+    i = 0
+    j = 0
     for i in range(len(c)):
-        for j in range(len(c.notes[i])):
-            if(type(c.notes[j]) != str):
+        for j in range(len(c[i].notes[j]) - 1):
+            if(type(c[i].notes[j]) != str):
                 print("...wrong data type in chord note list!")
                 print("***Test failed!***\n")
                 print("\nexiting...\n")

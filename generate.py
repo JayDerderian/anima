@@ -1219,7 +1219,7 @@ class generate():
             if(total == 0):
                 total = randint(1, len(scale))
         # Display total chords
-        print("\nGenerating", total, "chords...")
+        # print("\nGenerating", total, "chords...")
         # Pick notes
         while(len(chords) < total):
             newchord = self.newChord(tempo=tempo, scale=scale)
@@ -1289,7 +1289,7 @@ class generate():
         if(total == 0):
             total = randint(1, len(scale))
         # Display total chords
-        print("\nGenerating", total, "chords...")
+        # print("\nGenerating", total, "chords...")
         # Pick notes
         while(len(chords) < total):
             newchord = self.newChordFromScale(scale, tempo)
