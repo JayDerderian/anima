@@ -392,7 +392,7 @@ class run():
 
                 # run quick test
                 if(t == 1):
-                    test.runQuickTest()
+                    test.quickTest()
 
                 # run full test
                 if(t == 2):

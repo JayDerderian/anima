@@ -681,6 +681,10 @@ class generate():
         if(data is not None and len(data) == 0):
             print("ERROR: no data inputted!")
             return -1
+        # Is this a list of ints?
+        if(type(data) != list and type(data[0]) != int):
+            print("newNotes() - ERROR: wrong data type inputted!")
+            return -1
 
         # Pick starting octave (2 or 3)
         octave = randint(2, 3)

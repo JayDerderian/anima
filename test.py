@@ -80,7 +80,7 @@ def newData(dataType):
     return data
 
 # quick test
-def quicktest():
+def quickTest():
     print("\n***quick test***\n")
     print("\nrandomly picking data type and data, then sending to newComposition()...")
     d = randint(1, 4)
@@ -100,51 +100,85 @@ def quicktest():
 
 # test float to int
 def testFloats():
+    '''
+    tests float array to int array conversion
+    '''
     print("\ntesting float conversion...")
     create = generate()
     result = create.floatToInt(newFloats())
     # see if we got any data at all
     if(len(result) == 0):
         print("...no conversion created!")
+        print("***Test failed!***\n")
         exit()
     # check to make sure they're all ints
     for i in range(len(result) - 1):
         if(type(result[i]) != int):
             print("...int conversion failed!")
+            print("***Test failed!***\n")
+            print("\nexiting...\n")
             exit()
     print("ok!")
     
 # test char list to int list conversion
 def testCharToInt():
+    '''
+    tests char str to int array conversion
+    '''
     print("\ntesting string to int list conversion...")
     test = "test input"
     result = generate().mapLettersToNumbers(test)
     # ensure the list isn't empty
     if(len(result) == 0):
         print("...no conversion! test failed!")
+        print("***Test failed!***\n")
+        print("\nexiting...\n")
         exit()
     # ensure a list of ints was returned
     for i in range(len(result)):
         if(type(result[i]) != int):
             print("...str to int list test failed!")
+            print("***Test failed!***\n")
+            print("\nexiting...\n")
             exit() 
     print("ok!")
 
 # test hex char to int list conversion
 def testHexToInt():
+    '''
+    tests hex num (in str form) to int array conversion
+    '''
     print("\ntesting hext to int array conversion...")
     result = generate().hexToIntArray(newHex())
     # did anything return?
     if(len(result) == 0):
         print("...no conversion created!")
+        print("\nexiting...\n")
         exit()
     # is it the correct type?
     for i in range(len(result)):
         if(type(result[i]) != int):
             print("...wrong type created!")
+            print("***Test failed!***\n")
+            print("\nexiting...\n")
             exit()
     print("ok!")
 
+# test scaling method
+def testScaleTheScale():
+    '''
+    tests integer array scaling method
+    '''
+    print("\ntesting integer array scaling method...")
+    test = newInts()
+    limit = len(test) - 1
+    result = generate.scaleTheScale(test)
+    for i in range(len(result)):
+        if(result[i] > limit):
+            print("...result out of bounds!")
+            print("***Test failed!***\n")
+            print("\nexiting...\n")
+            exit()
 
 #----------------------------------------------low-level tests-------------------------------------------#
 
@@ -159,10 +193,14 @@ def testNewTempo():
     # type check
     if(type(t) != float):
         print("...tempo generation failed!")
+        print("***Test failed!***\n")
+        print("\nexiting...\n")
         exit()
     # bounds check
     if(t > create.tempos[38] or t < create.tempos[0]):
         print("...tempo generated out of range!")
+        print("***Test failed!***\n")
+        print("\nexiting...\n")
         exit()
     print("ok!")
 
@@ -179,23 +217,30 @@ def testNewNote():
     p = create.newNote()
     if(p == ''):
         print("...random note test failed!")
+        print("***Test failed!***\n")
+        print("\nexiting...\n")
         exit()
     # test bounds check
     if(create.newNote(-1, 10) != -1):
         print("...bounds check failed!")
+        print("***Test failed!***\n")
+        print("\nexiting...\n")
         exit()
     # test specified note
     p = ''
     p = create.newNote(randint(0, 11), randint(2, 5))
     if(p == ''):
         print("...specified note test failed!")
+        print("***Test failed!***\n")
+        print("\nexiting...\n")
         exit()
     print("ok!")
 
 # test source-scale generation
 def testNewNotes():
     '''
-    Tests source scale generation with supplied data plus random functions
+    tests source scale generation. attempts random scale, sends bad data,
+    then sends a list of ints
     '''
     print("\ntesting source scale generation...")
     s = []
@@ -203,15 +248,46 @@ def testNewNotes():
     s = generate().newNotes()
     if(len(s) == 0):
         print("...random source scale test failed!")
+        print("***Test failed!***")
+        print("\nexiting...\n")
         exit()
-    # supplied data tests
-
-
+    # with bad data
+    t = 10
+    if(generate.newNotes(t) != -1):
+        print("...failed to catch bad data type (single int)!")
+        print("***Test failed!***")
+        print("\nexiting...\n")
+        exit()
+    t = "test string"
+    if(generate.newNotes(t) != -1):
+        print("...failed to catch bad data type (single string)!")
+        print("***Test failed!***")
+        print("\nexiting...\n")
+        exit()
+    t = ['t','e','s','t']
+    if(generate.newNotes(t) != -1):
+        print("...failed to catch bad data type (list of strings)!")
+        print("***Test failed!***")
+        print("\nexiting...\n")
+        exit()
+    # with supplied (and converted) data
+    s = []
+    data = newInts()
+    s = generate.newNotes(data)
+    for i in range(len(s)):
+        # make sure it's a list of str's
+        if(type(s[i]) != str):
+            print("...")
+            print("***Test failed!***")
+            print("\nexiting...\n")
+            exit()
+    print("ok!")
 
 #----------------------------------------------Mid-level tests-------------------------------------------#
 
 
 #---------------------------------------------High-level tests-------------------------------------------#
+
 
 
 
@@ -223,6 +299,7 @@ def runAllTests():
     testFloats()
     testCharToInt()
     testHexToInt()
+    testScaleTheScale()
 
     # low-level tests
     testNewTempo()
