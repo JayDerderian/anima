@@ -248,7 +248,7 @@ class run():
                 if(c == 1):
                     total = int(input("How many? "))
                     tempo = create.newTempo()
-                    chords = create.newChords(total=total, tempo=tempo)
+                    chords = create.newChords(total, tempo, None)
                     if(len(chords) == 0):
                         print("\nERROR: unable to generate chords! :(\n")
                     elif(len(chords) != 0):

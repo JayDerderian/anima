@@ -1134,7 +1134,7 @@ class generate():
     def displayChords(self, chords):
         print("\n----------------HARMONY DATA:-------------------")
         for i in range(len(chords)):
-            print('\n', i + 1, ': ', 'Notes:', chords[i].notes[i])
+            print('\n', i + 1, ': ', 'Notes:', chords[i].notes)
             print('      Rhythm:', chords[i].rhythm)
             print('      Dynamics:', chords[i].dynamics)
 
@@ -1197,9 +1197,9 @@ class generate():
         # Is there a total, tempo, and scale provided?
         if(total is None):
             total = randint(3, 10)
-        if(scale is None):
+        elif(scale is None):
             scale = self.newScale()
-        if(tempo is None):   
+        elif(tempo is None):   
             tempo = self.newTempo()
         elif(total is not None and scale is not None):
             # Error check
@@ -1390,6 +1390,10 @@ class generate():
             else:
                 print("\nnewMelody() - ERROR: dataType value out of range!")
                 return -1
+        else:
+            # Otherwise just add single string to list
+            data = 'None Inputted'
+            newMelody.sourceData.append(data)
 
         #-----------------------Generate!------------------------#
 
@@ -1532,7 +1536,7 @@ class generate():
 
         #---------------------Generate harmonies------------------------#
         # newChords = self.newChordsFromScale(newTune.notes, newTune.tempo)
-        newChords = self.newChords(total=None, tempo=newTune.tempo, scale=newTune.notes)
+        newChords = self.newChords(None, newTune.tempo, newTune.notes)
         # music.chords.append(newChords)
 
 
