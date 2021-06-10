@@ -9,7 +9,8 @@ from random import randint
 from generate import generate
 
 
-#---------------------------test data generation------------------------------#
+#-----------------------------------------test data generation------------------------------------------#
+
 
 # Generate a list of 10 - 50 random numbers between 0-200
 def newInts():
@@ -81,6 +82,7 @@ def newData(dataType):
 
 
 #---------------------------------------------conversion tests-------------------------------------------#
+
 
 # test float to int
 def testFloats():
@@ -165,7 +167,9 @@ def testScaleTheScale():
             exit()
     print("ok!")
 
+
 #----------------------------------------------low-level tests-------------------------------------------#
+
 
 # test tempo generation
 def testNewTempo():
@@ -275,7 +279,9 @@ def testNewDynamic():
 
     print("ok!") 
 
-#----------------------------------------------Mid-level tests-------------------------------------------#
+
+#----------------------------------------------mid-level tests-------------------------------------------#
+
 
 # test source-scale generation
 def testNewNotes():
@@ -489,12 +495,15 @@ def testNewDynamics():
     print("ok!")
 
 
-#---------------------------------------------High-level tests-------------------------------------------#
+#---------------------------------------------high-level tests-------------------------------------------#
 
 
 
 
-#--------------------------------------------------------------------------------------------------------#
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#----------------------------------------------DRIVER CODE-----------------------------------------------#
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+
 
 # we did it, hooray!
 def testsPassed():
@@ -521,11 +530,10 @@ def quickTest():
         print("ERROR")
         return "ERROR"
 
-
 # RUN ALL TESTS
 def runAllTests():
     # lets gooooooooo
-    print("\n\n~~~~~~~~~~~~~STARTING ALL TESTS~~~~~~~~~~~~~")
+    print("\n\n~~~~~~~~~~~~~STARTING ALL TESTS~~~~~~~~~~~~~~")
     
     # conversion tests
     print("\n\n****running conversion tests***")
@@ -549,7 +557,7 @@ def runAllTests():
     testNewDynamics()
 
     # high-level tests
-    print("\n\n***running high-level tests***\n")
+    # print("\n\n***running high-level tests***\n")
 
 
     # we did it! hooray!
