@@ -1,6 +1,14 @@
 '''
 ----------------------------------------------------------------------------------------------------
                        THIS FILE IS FOR RUNNING THE PROGRAM IN THE TERMINAL
+
+    User options include: 
+        -single melody generation (random or using source data) 
+        -single chord generation (random or using source data) 
+        -chord progression generation (random or using source data)
+        -composition (1 random inst + pno) generation (random or using source data)
+        -run testing software
+
 ----------------------------------------------------------------------------------------------------
 '''
 
@@ -22,9 +30,9 @@ class run():
     # Main menu
     def mainMenu(self):
         '''
-        It's in the title
+        it's in the title
         '''
-        print("                                             ")
+        print("\n")
         print("-------------------Main Menu-----------------")
         print("                                             ")
         print("   0. Exit                                   ")
@@ -35,14 +43,14 @@ class run():
         print("   5. Run testing software                   ")
         print("                                             ")
         print("---------------------------------------------")
-        print("                                             ")
+        print("\n")
 
     # Data menu
     def dataMenu(self):
         '''
-        Displays data input options
+        displays data input options
         '''
-        print("                                              ")
+        print("\n")
         print("------------------Data Inputs-----------------")
         print("                                              ")
         print("    1. Random list of ints of n length        ")
@@ -52,27 +60,27 @@ class run():
         print("    5. Enter your name                        ")
         print("                                              ")
         print("----------------------------------------------")
-        print("                                              ")
+        print("\n")
 
     # Test menu
     def testMenu(self):
         '''
-        Displays testing options
+        displays testing options
         '''
-        print("                                               ")
+        print("\n")
         print("----------------Testing options----------------")
         print("                                               ")
-        print("                                               ")
-        print("                                               ")
+        print("              1. Run quick test                ")
+        print("              2. Run all tests                 ")
         print("                                               ")
         print("                                               ")
         print("-----------------------------------------------")
-        print("                                               ")
+        print("\n")
 
     # Exit message
     def goodBye(self):
         '''
-        Smell ya later, chump
+        smell ya later, chump
         '''
         print("\n~~~~Have a nice day!~~~~\n\n")
 
@@ -99,6 +107,7 @@ class run():
         -single chord generation (random or using source data) 
         -chord progression generation (random or using source data)
         -composition (1 random inst + pno) generation (random or using source data)
+        -run testing software
         '''
         # Welcoming message
         print("\n*~*~*~*~*~Let's make some music!~*~*~*~*~*~*~\n")
@@ -386,7 +395,7 @@ class run():
                     print("\ntry again bub")
                     t = int(input("Selection:"))
                     attempts += 1
-                    if(attempots > 10):
+                    if(attempts > 10):
                         print("\njust about had it with yer shenanigans")
                         exit()
 
