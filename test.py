@@ -597,6 +597,78 @@ def testNewDynamics():
 
     print("ok!")
 
+# test chord progression generation
+def testNewChords():
+    '''
+    tests chord progression generation with and without input
+    '''
+    print("\ntesting chord progression generation...")
+    # without input
+    c = generate().newChords()
+    # is this a list?
+    if(type(c) != list):
+        print("...wrong data type returned!")
+        print("type returned is", type(c))
+        print("***Test failed!***\n")
+        print("\nexiting...\n")
+        exit()
+    # are there things on it?
+    if(len(c) == 0):
+        print("...empty list returned!")
+        print("***Test failed!***\n")
+        print("\nexiting...\n")
+        exit()
+    # is all the data present for each chord?
+    for i in range(len(c)):
+        if(c[i].hasData() == False):
+            print("...insufficient chord info at chord", i, " chord:" chordc[i])
+            print("***Test failed!***\n")
+            print("\nexiting...\n")
+            exit()
+    # are all the notes arrays of strings?
+    for i in range(len(c)):
+        for j in range(len(c.notes[i])):
+            if(type(c.notes[j]) != str):
+                print("...wrong data type in chord note list!")
+                print("***Test failed!***\n")
+                print("\nexiting...\n")
+                exit()
+    
+    # with input
+    tempo = 60.0
+    total = randint(2, 10)
+    scale = ["C#4, D#4, E4, F#4, G#4, A4, B4"]
+    c = generate().newChords(total, tempo, scale)
+    # is this a list?
+    if(type(c) != list):
+        print("...wrong data type returned!")
+        print("type returned is", type(c))
+        print("***Test failed!***\n")
+        print("\nexiting...\n")
+        exit()
+    # are there things on it?
+    if(len(c) == 0):
+        print("...empty list returned!")
+        print("***Test failed!***\n")
+        print("\nexiting...\n")
+        exit()
+    # is all the data present for each chord?
+    for i in range(len(c)):
+        if(c[i].hasData() == False):
+            print("...insufficient chord info at chord", i, " chord:" chordc[i])
+            print("***Test failed!***\n")
+            print("\nexiting...\n")
+            exit()
+    # are all the notes arrays of strings?
+    for i in range(len(c)):
+        for j in range(len(c.notes[i])):
+            if(type(c.notes[j]) != str):
+                print("...wrong data type in chord note list!")
+                print("***Test failed!***\n")
+                print("\nexiting...\n")
+                exit()
+
+
 
 #---------------------------------------------high-level tests-------------------------------------------#
 
@@ -660,6 +732,7 @@ def runAllTests():
     testNewScale()
     testNewRhythms()
     testNewDynamics()
+    testNewChords()
 
     # high-level tests
     # print("\n\n***running high-level tests***\n")
