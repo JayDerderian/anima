@@ -683,11 +683,12 @@ class generate():
         # Check incoming data
         if(data is not None):
             if(type(data) != list):
-                print("\nnewNotes() - ERROR: wrong data type inputted!")
+                # print("\nnewNotes() - ERROR: wrong data type inputted!")
                 return -1
-        if(data is not None and type(data) == list):
-            if(type(data[0]) != int):
-                print("\nnewNotes() - ERROR: list does not contain ints!")
+            elif(type(data) == list and type(data[0]) != int):
+                # print("\nnewNotes() - ERROR: list does not contain integers!")
+                return -1
+
 
         # Pick starting octave (2 or 3)
         octave = randint(2, 3)
@@ -942,7 +943,7 @@ class generate():
         rhythms = []
         if(total is None):
             total = randint(3, 30)
-        print("\nGenerating", total, "rhythms...")
+        # print("\nGenerating", total, "rhythms...")
         while(len(rhythms) < total):
             # Pick rhythm and add to list
             rhythm = self.rhythms[randint(0, len(self.rhythms) - 1)]
@@ -980,7 +981,7 @@ class generate():
         '''
         rhythms = []
         rhythm = self.rhythms[randint(0, len(self.rhythms) - 1)]
-        print("\nGenerating", total, "rhythms...")
+        # print("\nGenerating", total, "rhythms...")
         while(len(rhythms) < total):
             rhythms.append(rhythm)
         return rhythms
@@ -1048,7 +1049,7 @@ class generate():
         dynamics = []
         if(total is None):
             total = randint(3, 30)
-        print("\nGenerating", total, "dynamics...")
+        # print("\nGenerating", total, "dynamics...")
         while(len(dynamics) < total):
             # Pick dynamic (medium range for now)
             dynamic = self.dynamics[randint(0, 8)]
@@ -1091,10 +1092,10 @@ class generate():
         # Check input
         if(total is None):
             total = randint(3, 30)
-        if(dataType == 1):
-            print("\nGenerating", total, "rhythms...")
-        else:
-            print("\nGenerating", total, "dynamics...")
+        # if(dataType == 1):
+        #     print("\nGenerating", total, "rhythms...")
+        # else:
+        #     print("\nGenerating", total, "dynamics...")
         # Main loop
         elements = []
         while(len(elements) < total):
