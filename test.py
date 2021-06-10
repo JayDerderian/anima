@@ -79,22 +79,6 @@ def newData(dataType):
     print("\ntotal elements:", len(data))
     return data
 
-# quick test
-def quickTest():
-    print("\n***quick test***\n")
-    print("\nrandomly picking data type and data, then sending to newComposition()...")
-    d = randint(1, 4)
-    data = newData(d)
-    print("\ninputting:", data)
-    # Create new instance
-    create = generate()
-    result, abc = create.newComposition(data, d)
-    if(result != -1):
-        print("new piece:", result)
-        return result
-    else:
-        print("ERROR")
-        return "ERROR"
 
 #---------------------------------------------conversion tests-------------------------------------------#
 
@@ -120,7 +104,7 @@ def testFloats():
             exit()
     print("ok!")
     
-# test char list to int list conversion
+# test str to int list conversion
 def testCharToInt():
     '''
     tests char str to int array conversion
@@ -143,7 +127,7 @@ def testCharToInt():
             exit() 
     print("ok!")
 
-# test hex char to int list conversion
+# test hex char (str) to int list conversion
 def testHexToInt():
     '''
     tests hex num (in str form) to int array conversion
@@ -236,6 +220,35 @@ def testNewNote():
         exit()
     print("ok!")
 
+# test rhythm generation
+def testNewRhythm():
+    '''
+    tests single-rhythm generation
+    '''
+    print("\ntesting single-rhythm generation...")
+    r = create.newRhythm()
+    # make sure it's the right data type
+    if(type(r) != float):
+        print("...wrong data type!")
+        print("***Test failed!***\n")
+        print("\nexiting...\n")
+        exit()
+    # make sure it's one of the ones we'd want...
+    found = False
+    for i in range(len(create.rhythms)):
+        if(r == create.rhythms[i]):
+            found == True
+            break
+    if(found == False):
+        print("...no rhythm generated!")
+        print("***Test failed!***\n")
+        print("\nexiting...\n")
+        exit()
+
+    print("ok!")
+
+#----------------------------------------------Mid-level tests-------------------------------------------#
+
 # test source-scale generation
 def testNewNotes():
     '''
@@ -283,7 +296,31 @@ def testNewNotes():
             exit()
     print("ok!")
 
-#----------------------------------------------Mid-level tests-------------------------------------------#
+# test new random scale generation
+def testNewScale():
+    '''
+    tests random scale generation. 
+    NOTE: figure out a way to test for dataType value! 
+          must be within 0-127 according to mido!
+    '''
+    print("\ntesting random scale generation...")
+    s = []
+    s = generate.newScale()
+    # did we get anything?
+    if(len(s) == 0):
+        print("...no scale generated!")
+        print("***Test failed!***")
+        print("\nexiting...\n")
+        exit()
+    # is this a list of strings?
+    for i in range(len(s)):
+        if(type(s[i]) != str):
+            print("...wrong data type generated!")
+            print("***Test failed!***")
+            print("\nexiting...\n")
+            exit()
+    print("ok!")
+
 
 
 #---------------------------------------------High-level tests-------------------------------------------#
@@ -291,25 +328,59 @@ def testNewNotes():
 
 
 
-# MAIN DRIVER CODE
+#--------------------------------------------------------------------------------------------------------#
+
+# we did it, hooray!
+def testsPassed():
+    print("                      ")
+    print("----------------------")
+    print("***ALL TESTS PASSED***")
+    print("----------------------")
+    print("                      ")
+
+# quick test
+def quickTest():
+    print("\n***quick test***\n")
+    print("\nrandomly picking data type and data, then sending to newComposition()...")
+    d = randint(1, 4)
+    data = newData(d)
+    print("\ninputting:", data)
+    # Create new instance
+    create = generate()
+    result, abc = create.newComposition(data, d)
+    if(result != -1):
+        print("new piece:", result)
+        return result
+    else:
+        print("ERROR")
+        return "ERROR"
+
+
+# RUN ALL TESTS
 def runAllTests():
-    print("\n***STARTING TESTS***\n")
+    print("\n***STARTING ALL TESTS***\n")
     
     # conversion tests
+    print("\n****running conversion tests***\n")
     testFloats()
     testCharToInt()
     testHexToInt()
     testScaleTheScale()
 
     # low-level tests
+    print("\n***running low-level tests***\n")
     testNewTempo()
     testNewNote()
-    testNewNotes()
+    testNewRhythm()
 
     # mid-level tests
+    print("\n***running mid-level tests***\n")
+    testNewNotes()
+    testNewScale()
 
     # high-level tests
+    print("\n***running high-level tests***\n")
 
 
-
-# main()
+    # we did it! hooray!
+    testsPassed()
