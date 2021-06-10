@@ -257,8 +257,7 @@ def testNewDynamic():
     tests single-dynamic generation
     '''
     print("\ntesting single-rhythm generation...")
-    create = generate()
-    d = create.newDynamic()
+    d = generate().newDynamic()
     # make sure it's the right data type
     if(type(d) != int):
         print("...wrong data type!")
@@ -279,6 +278,71 @@ def testNewDynamic():
 
     print("ok!") 
 
+# test single-chord generation
+def testNewChord():
+    '''
+    tests chord generation with and without input
+    '''
+    print("\ntesting single-chord generation...")
+    # without input
+    c = generate().newChord()
+    # did we get all required data?
+    if(c.hasData() == False):
+        print("...insufficient chord info!")
+        print("***Test failed!***\n")
+        print("\nexiting...\n")
+        exit()
+    # did we get a list back?
+    if(type(c.notes) != list):
+        print("...wrong data type generated!")
+        print("***Test failed!***\n")
+        print("\nexiting...\n")
+        exit()
+    # is there anything in it?
+    if(len(c.notes) == 0):
+        print("...no chord object returned!")
+        print("***Test failed!***\n")
+        print("\nexiting...\n")
+        exit()
+    # is this a list of strings?
+    for i in range(len(c.notes)):
+        if(type(c.notes[i]) != str):
+            print("...wrong data type!")
+            print("***Test failed!***\n")
+            print("\nexiting...\n")
+            exit()
+
+    # with input
+    tempo = 60.0
+    testScale = ["C#4, D#4, E4, F#4, G#4, A4, B4"]
+    c = generate().newChord(tempo, testScale)
+    # did we get all required data?
+    if(c.hasData() == False):
+        print("...insufficient chord info!")
+        print("***Test failed!***\n")
+        print("\nexiting...\n")
+        exit()
+    # did we get a list back?
+    if(type(c.notes) != list):
+        print("...wrong data type generated!")
+        print("***Test failed!***\n")
+        print("\nexiting...\n")
+        exit()
+    # is there anything in it?
+    if(len(c.notes) == 0):
+        print("...no chord object returned!")
+        print("***Test failed!***\n")
+        print("\nexiting...\n")
+        exit()
+    # is this a list of strings?
+    for i in range(len(c.notes)):
+        if(type(c.notes[i]) != str):
+            print("...wrong data type!")
+            print("***Test failed!***\n")
+            print("\nexiting...\n")
+            exit()
+
+    print("ok!")
 
 #----------------------------------------------mid-level tests-------------------------------------------#
 
@@ -383,14 +447,14 @@ def testNewRhythms():
         print("\nexiting...\n")
         exit()
     # is this a list of floats?
-    # for i in range(len(r)):
-    #     if(type(r[i] != float)):
-    #         msg = "...incorrect type generated! r = "
-    #         msg = "{}{}".format(msg, r[i])
-    #         print(msg)
-    #         print("***Test failed!***")
-    #         print("\nexiting...\n")
-    #         exit()
+    for i in range(len(r)):
+        if(type(r[i]) != float):
+            msg = "...incorrect type generated! r = "
+            msg = "{}{}".format(msg, r[i])
+            print(msg)
+            print("***Test failed!***")
+            print("\nexiting...\n")
+            exit()
 
     # with total
     r = []
@@ -451,11 +515,11 @@ def testNewDynamics():
     # is this a list of ints and are they in the correct range?
     for i in range(len(d)):
         # right type?
-        # if(type(d[i] != int)):
-        #     print("...incorrect type generated!")
-        #     print("***Test failed!***")
-        #     print("\nexiting...\n")
-        #     exit()
+        if(type(d[i]) != int):
+            print("...incorrect type generated!")
+            print("***Test failed!***")
+            print("\nexiting...\n")
+            exit()
         # in range?
         if(d[i] > 127 or d[i] < 0):
             print("...output out of range! d = {d[i]}")
@@ -480,11 +544,11 @@ def testNewDynamics():
     # is this a list of ints and are they in the correct range?
     for i in range(len(d)):
         # right type?
-        # if(type(d[i] != int)):
-        #     print("...incorrect type generated!")
-        #     print("***Test failed!***")
-        #     print("\nexiting...\n")
-        #     exit()
+        if(type(d[i]) != int):
+            print("...incorrect type generated!")
+            print("***Test failed!***")
+            print("\nexiting...\n")
+            exit()
         # in range?
         if(d[i] > 127 or d[i] < 0):
             print("...output out of range! d = {d[i]}")
@@ -548,6 +612,7 @@ def runAllTests():
     testNewNote()
     testNewRhythm()
     testNewDynamic()
+    testNewChord()
 
     # mid-level tests
     print("\n\n***running mid-level tests***")
