@@ -192,6 +192,62 @@ def testNewTempo():
         exit()
     print("ok!")
 
+# tests instrument selection
+def testNewInstrument():
+    '''
+    tests instrument selection. also generates a list and checks to make sure
+    those instruments are on the original list
+    '''
+    print("\ntesting instrument selection...")
+    # single instrument
+    inst = generate().newInstrument()
+    # did we get a string back?
+    if(type(inst) != str):
+        print("...wrong data type returned!")
+        print("***Test failed!***\n")
+        print("\nexiting...\n")
+        exit()
+    # was this on the list?
+    for i in range(len(generate().instruments)):
+        if(generate().instruments[i] != inst):
+            print("...output not on original instrument list!")
+            print("***Test failed!***\n")
+            print("\nexiting...\n")
+            exit()
+    # instrument list
+    instruments = generate().newInstruments()
+    # did we get a list back?
+    if(type(instruments) != list):
+        print("...wrong data type returned!")
+        print("***Test failed!***\n")
+        print("\nexiting...\n")
+        exit()
+    # is there anything in it?
+    if(len(instruments) == 0):
+        print("...no instruments in list!")
+        print("***Test failed!***\n")
+        print("\nexiting...\n")
+        exit()
+    # are the elements strings?
+    for i in range(len(instruments)):
+        if(type(instruments[i]) != str):
+            print("...wrong data type in list!")
+            print("***Test failed!***\n")
+            print("\nexiting...\n")
+            exit()
+    # and are they in the original list?
+    found = False
+    for i in range(len(instruments)):
+        if(instruments[i] == generate().instruments[i]):
+            found = True
+            break
+    if(found == False):
+        print("***Test failed!***\n")
+        print("\nexiting...\n")
+        exit()
+
+    print("ok!")
+
 # test single-note generation
 def testNewNote():
     '''
@@ -238,16 +294,16 @@ def testNewRhythm():
         print("\nexiting...\n")
         exit()
     # make sure it's one from our list
-    # found = False
-    # for i in range(len(generate().rhythms)):
-    #     if(r == generate().rhythms[i]):
-    #         found == True
-    #         break
-    # if(found == False):
-    #     print("...no rhythm generated!")
-    #     print("***Test failed!***\n")
-    #     print("\nexiting...\n")
-    #     exit()
+    found = False
+    for i in range(len(generate().rhythms)):
+        if(r == generate().rhythms[i]):
+            found = True
+            break
+    if(found == False):
+        print("...no rhythm generated!")
+        print("***Test failed!***\n")
+        print("\nexiting...\n")
+        exit()
 
     print("ok!")
 
@@ -265,16 +321,16 @@ def testNewDynamic():
         print("\nexiting...\n")
         exit()
     # make sure it's one of the ones we'd want...
-    # found = False
-    # for i in range(len(create.dynamics)):
-    #     if(d == create.dynamics[i]):
-    #         found == True
-    #         break
-    # if(found == False):
-    #     print("...no dynamic generated!")
-    #     print("***Test failed!***\n")
-    #     print("\nexiting...\n")
-    #     exit()
+    found = False
+    for i in range(len(generate().dynamics)):
+        if(d == generate().dynamics[i]):
+            found = True
+            break
+    if(found == False):
+        print("...no dynamic generated!")
+        print("***Test failed!***\n")
+        print("\nexiting...\n")
+        exit()
 
     print("ok!") 
 
@@ -609,6 +665,7 @@ def runAllTests():
     # low-level tests
     print("\n\n***running low-level tests***")
     testNewTempo()
+    testNewInstrument()
     testNewNote()
     testNewRhythm()
     testNewDynamic()
