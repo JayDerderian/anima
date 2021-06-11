@@ -383,6 +383,7 @@ def testNewChord():
 
     print("ok!")
 
+
 #----------------------------------------------mid-level tests-------------------------------------------#
 
 
@@ -671,12 +672,56 @@ def testNewChords():
                 print("***Test failed!***\n")
                 print("\nexiting...\n")
                 exit()
-
+    
+    print("ok!")
 
 
 #---------------------------------------------high-level tests-------------------------------------------#
 
+# test melody generation
+def testNewMelody():
+    '''
+    tests melodic generation with and without input
+    '''
+    print("\ntesting single melody generation...")
+    # without inputted data
+    m = generate().newMelody()
+    # is all data present?
+    if(m.hasData() == False):
+        print("...incomplete melody data generated!")
+        print("***Test failed!***\n")
+        print("\nexiting...\n")
+        exit()
+    # are all the notes strings?
+    for i in range(len(m.notes)):
+        if(type(m.notes[i]) != str):
+            print("...wrong data type returned!")
+            print("type returned is", type(m.notes[i]))
+            print("***Test failed!***\n")
+            print("\nexiting...\n")
+            exit()
 
+    # with input
+    d = randint(1, 4)
+    data = newData(d)
+    m = generate().newMelody(data, d)
+    # is all data present?
+    if(m.hasData() == False):
+        print("...incomplete melody data generated!")
+        print("***Test failed!***\n")
+        print("\nexiting...\n")
+        exit()
+    # are all the notes strings?
+    for i in range(len(m.notes)):
+        if(type(m.notes[i]) != str):
+            print("...wrong data type returned!")
+            print("type returned is", type(m.notes[i]))
+            print("***Test failed!***\n")
+            print("\nexiting...\n")
+            exit()
+    print("ok!")
+
+# test composition generation
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
