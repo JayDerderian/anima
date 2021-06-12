@@ -805,34 +805,6 @@ class generate():
         # print("new scale:", scale, "\n")
         return scale
 
-    # Picks one of twelve major scales
-    def newMajorScale(self):
-        '''
-        Picks one of twelve major scales.
-        '''
-        # print("\nPicking major scale...")
-        finalScale = []
-        # Pick scale
-        scale = self.scales[randint(1, len(self.scales) - 1)]
-        # Assign octave
-        octave = randint(3, 5)
-        for i in range(len(scale)):
-            note = "{}{}".format(scale[i], octave)
-            finalScale.append(note)
-        return finalScale
-
-    # Picks one of twelve melodic minor scales
-    def newMinorScale(self):
-        '''
-        Picks one of twelve melodic minor scales
-        '''
-        # print("\nPicking minor scale...")
-        # Pick major scale
-        scale = self.newMajorScale()
-        # Convert to minor
-        scale = self.convertToMinor(scale)
-        return scale
-
     # Converts a major scale to its relative minor
     def convertToMinor(self, scale):
         # print("\nConverting major scale to relative minor...")
@@ -873,6 +845,7 @@ class generate():
             note = scale[i]
             scaleVariant = []
             while(len(scaleVariant) < len(scale)):
+                # add note with random interval value
                 note += randint(1, 3)
                 if(note > 11):
                     note = self.octaveEquiv(note)
@@ -995,7 +968,7 @@ class generate():
         rhythms = []
         total = randint(5, 21)
         for i in range(total):
-            reps = randint(1, 9)
+            reps = randint(1, total - len(rhythms))
             rhythm = self.newRhythm()
             for j in range(reps):
                 rhythms.append(rhythm)
@@ -1004,17 +977,21 @@ class generate():
         return rhythms
 
     # Generate list of non-repeating durations
-    def newRhythmsNonRep(self, total):
+    def newRhythmsNonRep(self, total=None):
         '''
         Generate list non-repeating rhythms of n length, where
-        n is supplied from elsewhere.
+        n could be inputted or self-determined.
         '''
+        if(total is None):
+            total = randint(5, 31)
         newDurations = []
         print("\nGenerating", total, "non-repeating rhythms...")
         while(len(newDurations) < total):
-            newDurations.append(self.newRhythm())
-        if(not newDurations):
-            print("...Unable to generate durations!")
+            rhythm = self.newRhythm()
+            if(rhythm not in newDurations):
+                newDurations.append(newDurations)
+        if(len(newDurations) == 0):
+            print("newRhythmsNonRep() - ERROR: Unable to generate durations!")
             return -1
         return newDurations
 
@@ -1222,7 +1199,7 @@ class generate():
         # print("\nGenerating", total, "chords...")
         # Pick notes
         while(len(chords) < total):
-            newchord = self.newChord(tempo=tempo, scale=scale)
+            newchord = self.newChord(tempo, scale)
             chords.append(newchord)
         if(len(chords) == 0):
             print("newChordsfromScale() - ERROR: Unable to generate chords!")
