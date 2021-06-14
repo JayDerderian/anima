@@ -90,8 +90,7 @@ def testFloats():
     tests float array to int array conversion
     '''
     print("\ntesting float conversion...")
-    create = generate()
-    result = create.floatToInt(newFloats())
+    result = generate().floatToInt(newFloats())
     # see if we got any data at all
     if(len(result) == 0):
         print("...no conversion created!")
@@ -731,11 +730,11 @@ def testNewMelody():
 
 # we did it, hooray!
 def testsPassed():
-    print("                      ")
+    print("\n")
     print("----------------------")
     print("***ALL TESTS PASSED***")
     print("----------------------")
-    print("                      ")
+    print("\n")
 
 # quick test
 def quickTest():
@@ -791,4 +790,4 @@ def runAllTests():
     testsPassed()
 
 # run it 
-runAllTests()
+# runAllTests()
