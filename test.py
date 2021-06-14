@@ -755,6 +755,9 @@ def quickTest():
 
 # RUN ALL TESTS
 def runAllTests():
+    '''
+    Main driver code for running all tests.
+    '''
     # lets gooooooooo
     print("\n\n~~~~~~~~~~~~~STARTING ALL TESTS~~~~~~~~~~~~~~")
     

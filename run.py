@@ -76,6 +76,13 @@ class run():
         print("-----------------------------------------")
         print("\n")
 
+    # Welcoming message
+    def hello(self):
+        '''
+        what's up
+        '''
+        print("\n*~*~*~*~*~Let's make some music!~*~*~*~*~*~*~\n")
+
     # Exit message
     def goodBye(self):
         '''
@@ -108,8 +115,8 @@ class run():
         -composition (1 random inst + pno) generation (random or using source data)
         -run testing software
         '''
-        # Welcoming message
-        print("\n*~*~*~*~*~Let's make some music!~*~*~*~*~*~*~\n")
+        # Hello
+        self.hello()
         
         # Create generator instance
         create = generate()
@@ -372,10 +379,10 @@ class run():
                     # Random floats
                     elif(d == 2):
                         data = newData(d)
-                    # Random chars/letters
+                    # Random string
                     elif(d == 3):
                         data = newData(d)
-                    # Random hex number
+                    # Random hex number (string)
                     elif(d == 4):
                         data = newData(d)
                     # user enters their name
