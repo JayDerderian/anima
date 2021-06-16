@@ -400,7 +400,7 @@ class generate():
             f.write(totalNotes)
 
             noteStr = ', '.join(newMelody.notes)
-            notes = '\nNotes: ' + noteStr
+            notes = '\n\nNotes: ' + noteStr
             f.write(notes)
 
             totalRhythms = '\n\nTotal rhythms:' + str(len(newMelody.rhythms))
@@ -410,12 +410,12 @@ class generate():
             rhythms = '\nRhythms: ' + rhythmStr
             f.write(rhythms)
 
-            totalDynamics = '\n\nTotal dynamics:' + \
+            totalDynamics = '\n\nTotal dynamics: ' + \
                 str(len(newMelody.dynamics))
             f.write(totalDynamics)
 
             dynamicStr = ', '.join([str(i) for i in newMelody.dynamics])
-            dynamics = '\nDynamics:' + dynamicStr
+            dynamics = '\nDynamics: ' + dynamicStr
             f.write(dynamics)
 
         if(newChords is not None):
@@ -424,7 +424,7 @@ class generate():
             f.write(header)
 
             # Get totals
-            totalChords = '\n\nTotal chords:' + str(len(newChords))
+            totalChords = '\n\nTotal chords: ' + str(len(newChords))
             f.write(totalChords)
 
             for j in range(len(newChords)):
@@ -1107,7 +1107,7 @@ class generate():
             if(randint(1, 2) == 1):
                 # Limit reps to no more than  approx 1/3 of the total no. of rhythms
                 limit = math.floor(len(elements) * 0.3333333333333)
-                '''Note: This limit will increase rep levels w/longer list lengths
+                '''NOTE: This limit will increase rep levels w/longer list lengths
                          May need to scale for larger lists'''
                 if(limit == 0):
                     limit += 2
@@ -1220,7 +1220,7 @@ class generate():
             if(total == 0):
                 total = randint(1, len(scale))
         # Display total chords
-        # print("\nGenerating", total, "chords...")
+        print("\nGenerating harmonies...")
         # Pick notes
         while(len(chords) < total):
             newchord = self.newChord(tempo, scale)
