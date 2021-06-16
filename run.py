@@ -130,7 +130,7 @@ class run():
             # Error check...
             attempts = 0
             while(choice > 5 or choice < 0):
-                print("try again, bub")
+                print("try again bub")
                 choice = int(input("Selection (0 - 4): "))
                 attempts += 1
                 if(attempts > 9):

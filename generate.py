@@ -682,10 +682,10 @@ class generate():
         # Check incoming data
         if(data is not None):
             if(type(data) != list):
-                # print("\nnewNotes() - ERROR: wrong data type inputted!")
+                print("\nnewNotes() - ERROR: wrong data type inputted!")
                 return -1
             elif(type(data) == list and type(data[0]) != int):
-                # print("\nnewNotes() - ERROR: list does not contain integers!")
+                print("\nnewNotes() - ERROR: list does not contain integers!")
                 return -1
 
         # Pick starting octave (2 or 3)
@@ -757,7 +757,7 @@ class generate():
 
         # Check results
         if(len(notes) == 0):
-            print("ERROR: Unable to generate notes!")
+            print("\nnewNotes() - ERROR: Unable to generate notes!")
             return -1
         return notes
 
@@ -1134,12 +1134,12 @@ class generate():
             if(len(scale) == 0):
                 print("ERROR: no input!")
                 return -1
-        # New chord() object
-        newchord = chord()
         # If we dont get a source scale
         if(scale is None):
             '''NOTE: See notes for newScale()! '''
             scale = self.newScale()
+        # New chord() object
+        newchord = chord()
         # How many notes in this chord? 2 to 9 (for now)
         total = randint(2, 9)
         while(len(newchord.notes) < total):
@@ -1154,6 +1154,7 @@ class generate():
         '''NOTE: This is avoids getting the while loop stuck
                  if there's a lot of repeated notes in the melody '''
         newchord.notes = list(dict.fromkeys(newchord.notes))
+        # Add tempo
         if(tempo is None):
             newchord.tempo = 60.0
         else:
@@ -1186,9 +1187,10 @@ class generate():
             tempo = self.newTempo()
         elif(total is not None and scale is not None):
             # Error check
-            if(len(scale) == 0):
-                print("\nnewChordsfromScale() - ERROR: no scale inputted!")
-                return -1
+            if(type(scale) == list):
+                if(len(scale) == 0):
+                    print("\nnewChordsfromScale() - ERROR: no scale inputted!")
+                    return -1
             # Picks total equivalent to between 30-100% of total elements in the scale
             total = randint(math.floor(len(scale) * 0.3), len(scale))
             if(total == 0):
@@ -1198,76 +1200,6 @@ class generate():
         # Pick notes
         while(len(chords) < total):
             newchord = self.newChord(tempo, scale)
-            chords.append(newchord)
-        if(len(chords) == 0):
-            print("\nnewChordsfromScale() - ERROR: Unable to generate chords!")
-            return -1
-        # Display chords
-        # self.displayChords(chords)
-        return chords
-
-    # Generates a single chord from a given scale
-    def newChordFromScale(self, scale, tempo=None):
-        '''
-        Generates a single new chord from the notes in a given scale and
-        rhythm returns a chord() object. Does not double/repeat notes!
-        '''
-        if(len(scale) == 0):
-            print("ERROR: no input!")
-            return -1
-        # New chord() object
-        newchord = chord()
-        # If we dont get any data...
-        if(tempo is None):
-            # scale = self.newScale()
-            tempo = self.newTempo()
-        # How many notes in this chord? 2 to 9 (for now)
-        total = randint(2, 9)
-        while(len(newchord.notes) < total):
-            # Pick note and add to list
-            note = scale[randint(0, len(scale) - 1)]
-            newchord.notes.append(note)
-        if(len(newchord.notes) == 0):
-            print("\nnewChordFromScale() - ERROR: no chord generated!")
-            return -1
-        # Remove duplicate notes/doublings
-        '''NOTE: This is avoids getting the while loop stuck
-                 if there's a lot of repeated notes in the melody '''
-        newchord.notes = list(dict.fromkeys(newchord.notes))
-        # Use inputted tempo
-        newchord.tempo = tempo
-        # Pick a rhythm
-        newchord.rhythm = self.newRhythm()
-        # Pick a dynamic (randomize for each note? probably)
-        dynamic = self.newDynamic()
-        while(len(newchord.dynamics) < len(newchord.notes)):
-            newchord.dynamics.append(dynamic)
-        return newchord
-
-    # Generates a chord progression from the notes of a given scale
-    def newChordsFromScale(self, scale, tempo):
-        '''
-        Generates a progression from the notes of a given scale.
-        Returns a list of chord() objects.
-
-        NOTE: Chords will be derived from the given scale ONLY! Could possibly
-              add more randomly inserted chromatic tones to give progressions more
-              variance and color. 
-        '''
-        if(len(scale) == 0):
-            print("\nnewChordsfromScale() - ERROR: no scale inputted!")
-            return -1
-        # How many chords?
-        chords = []
-        # Picks total equivalent to between 30-100% of total elements in the scale
-        total = randint(math.floor(len(scale) * 0.3), len(scale))
-        if(total == 0):
-            total = randint(1, len(scale))
-        # Display total chords
-        # print("\nGenerating", total, "chords...")
-        # Pick notes
-        while(len(chords) < total):
-            newchord = self.newChordFromScale(scale, tempo)
             chords.append(newchord)
         if(len(chords) == 0):
             print("\nnewChordsfromScale() - ERROR: Unable to generate chords!")

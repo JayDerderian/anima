@@ -5,7 +5,7 @@
 class chord():
     '''
     A class/container for managing all data relevant to a single chord. This contains the tempo (float: BPM), 
-    a list for notes (strings: i.e. "C#2:"), a rhythm (float: duration in seconds), 
+    a list for notes (strings: i.e. "C#2"), a rhythm (float: duration in seconds), 
     and list for dynamics (int: MIDI velocity numbers).
     '''
 
