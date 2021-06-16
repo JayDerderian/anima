@@ -250,6 +250,26 @@ class generate():
     #-----------------------------------Utility Functions-------------------------------------#
     #-----------------------------------------------------------------------------------------#
 
+    # Checks data type of incoming data
+    def rightType(self, data):
+        '''
+        Checks data type of incoming data.
+
+        1 = int, 2 = float, 3 = str, 4 = list
+
+        Returns -1 upon failure
+        '''
+        if(type(data) == int):
+            return 1
+        elif(type(data) == float):
+            return 2
+        elif(type(data) == str):
+            return 3
+        elif(type(data) == list):
+            return 4
+        else:
+            return -1
+
     # Auto generate a composition title from two random words
     def newTitle(self):
         '''
@@ -679,14 +699,16 @@ class generate():
             5. Repeat steps 3-4 until we have as many notes as the highest single
                 integer from the supplied data set.
         '''
-        # Check incoming data
+        # Did we get a list?
+        if(data is not None and self.rightType(data) != 4):
+            # print("\nnewNotes() - ERROR: data inutted is type: ", type(data))
+            return -1
+        # And is this an array of *ints*??
         if(data is not None):
-            if(type(data) != list):
-                print("\nnewNotes() - ERROR: wrong data type inputted!")
-                return -1
-            elif(type(data) == list and type(data[0]) != int):
-                print("\nnewNotes() - ERROR: list does not contain integers!")
-                return -1
+            for i in range(len(data)):
+                if(type(data[i]) != int):
+                    # print("\nnewNotes() - ERROR: data is list but with wrong element type: ", type(data[i]))
+                    return -1             
 
         # Pick starting octave (2 or 3)
         octave = randint(2, 3)
@@ -709,13 +731,14 @@ class generate():
             root = self.newScale(octave)
         '''
 
-        # Use either the max value of the supplied data set...
-        if(data is not None):
-            total = max(data)
-        # ...Or 3 - 50 if we're generating random notes
-        else:
+        # Pick total: 3 - 50 if we're generating random notes
+        if(data is None):
             # Note that the main loop uses total + 1!
             total = randint(2, 49)
+
+        # Or the max value of the supplied data set
+        else:
+            total = max(data)
         
         # Main loop
         n = 0
@@ -740,20 +763,21 @@ class generate():
                 # Reset n to stay within len(root)
                 n = 0
 
-        # Pick notes according to integers in data array
-        notes = []
-        if(data is not None):
-            # Total number of notes is equivalent to the 
-            # number of elements in the data set
-            for i in range(len(data)):
-                notes.append(scale[data[i]])
         # Randomly pick notes from the generated scale
-        else:
+        notes = []
+        if(data is None):
             # Total notes in melody will be between 3 and 
             # however many notes are in the source scale
             total = randint(3, len(scale))
             for i in range(total):
                 notes.append(scale[randint(0, len(scale) - 1)])
+
+        # Pick notes according to integers in data array
+        else:
+            # Total number of notes is equivalent to the 
+            # number of elements in the data set
+            for i in range(len(data)):
+                notes.append(scale[data[i]])
 
         # Check results
         if(len(notes) == 0):
@@ -1132,7 +1156,7 @@ class generate():
         # Error check
         if(scale is not None):
             if(len(scale) == 0):
-                print("ERROR: no input!")
+                print("\nnewChord - ERROR: no input!")
                 return -1
         # If we dont get a source scale
         if(scale is None):
@@ -1307,8 +1331,8 @@ class generate():
                 return -1
         else:
             # Otherwise just add single string to list
-            data = 'None Inputted'
-            newMelody.sourceData.append(data)
+            nodata = 'None Inputted'
+            newMelody.sourceData.append(nodata)
 
         #-----------------------Generate!------------------------#
 
@@ -1331,10 +1355,14 @@ class generate():
         #         newMelody.notes = self.newNotes()
         #     else:
         #         newMelody.notes = self.newNotes(newScale=True)
-        if(data is not None):
-            newMelody.notes = self.newNotes(data)
-        else:
+        if(data is None):
             newMelody.notes = self.newNotes()
+            if(newMelody.notes == -1):
+                print("\nnewMelody() - ERROR: unable to generate notes!")
+                return -1
+        else:
+            newMelody.notes = self.newNotes(data)
+
         # Pick rhythms
         newMelody.rhythms = self.newRhythms(len(newMelody.notes))
         # Pick dynamics
