@@ -660,7 +660,6 @@ class generate():
         note = "{}{}".format(note, octave)
         return note
 
-    '''NOTE: THIS VERSION HAS THE OPTION TO GENERATE A NEW SCALE'''
     # Generate a series of notes based off an inputted array of integers
     def newNotes(self, data=None):
         '''
@@ -689,17 +688,26 @@ class generate():
                 # print("\nnewNotes() - ERROR: list does not contain integers!")
                 return -1
 
-
         # Pick starting octave (2 or 3)
         octave = randint(2, 3)
 
         # Pick initial root/starting scale (major or minor)
         root = self.scales[randint(1, len(self.scales) - 1)]
         # Will this be a minor scale (0 = no, 1 = yes)?
-        isMinor = False
         if(randint(0, 1) == 1):
-            isMinor = True
             root = self.convertToMinor(root)
+
+        '''
+        NOTE: replace above lines from octave assignment to convertToMinor() with block
+        below once newScale()'s mido bug is resolved.
+
+        if(randint(1, 2) == 1):
+            root = self.scales[randint(1, len(self.scales) - 1)]
+            if(randint(1, 2) == 1):
+                root = self.convertToMinor(root)
+        else:
+            root = self.newScale(octave)
+        '''
 
         # Use either the max value of the supplied data set...
         if(data is not None):
@@ -728,16 +736,7 @@ class generate():
                     root = self.scales[randint(1, len(self.scales) - 1)]
                     # Re-decide if we're using minor (1) or major (2) again
                     if(randint(1, 2) == 1):
-                        isMinor = True
-                        # print("Switching to a minor key!")
-                    # else:
-                    #     isMinor = False
-                    #     print("Choosing another a major key!")
-                    if(isMinor == True):
                         root = self.convertToMinor(root)
-                        # print("Key-change! Now using", root[0], "minor")
-                    # else:
-                    #     print("Key-change! Now using", root[0], "major")
                 # Reset n to stay within len(root)
                 n = 0
 
