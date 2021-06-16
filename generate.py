@@ -775,7 +775,7 @@ class generate():
         # print("\nGenerating new root scale...")
         if(octave is not None):
             if(octave < 1 or octave > 6):
-                print("\nERROR: octave out of range!")
+                print("\nnewScale() - ERROR: octave out of range!")
                 return -1
         elif(octave is None):
             octave = 4
@@ -799,7 +799,7 @@ class generate():
                 note = "{}{}".format(self.chromaticScaleFlats[pcs[i]], octave)
             scale.append(note)
         if(len(scale) == 0):
-            print("newScale() - ERROR: unable to generate scale!")
+            print("\nnewScale() - ERROR: unable to generate scale!")
             return -1
         # print("new scale:", scale, "\n")
         return scale
@@ -808,7 +808,7 @@ class generate():
     def convertToMinor(self, scale):
         # print("\nConverting major scale to relative minor...")
         if(len(scale) == 0):
-            print("ERROR: no scale inputted!")
+            print("\nconvertToMinor() - ERROR: no scale inputted!")
             return -1
         k = 5
         minorScale = []
@@ -818,7 +818,7 @@ class generate():
             if(k > len(scale) - 1):
                 k = 0
         if(len(minorScale) == 0):
-            print("ERROR: unable to generate minor scale!")
+            print("\nconvertToMinor() - ERROR: unable to generate minor scale!")
             return -1
         return minorScale
 
@@ -838,7 +838,6 @@ class generate():
         if(not scale):
             return -1 
         variants = []
-        print("\nGenerating derived scales...")
         for i in range(len(scale) - 1):
             #Retrieve note from prime scale
             note = scale[i]
@@ -853,7 +852,7 @@ class generate():
                 #scaleVariant.sort() #Sort new derived scale 
             variants.append(scaleVariant) #Add to list of derived scales.
         if(not variants):
-            print("...Unable to generate derived scales!")
+            print("deriveScales() - ERROR: Unable to generate derived scales!")
             return -1
         # print("\nTotal derivisions:", len(scaleVariant))
         # print("Derivitions:", variants)
@@ -864,7 +863,7 @@ class generate():
         '''
         Generate a 12-tone row.
         '''
-        print("\nGenerating new 12-tone row...")
+        # print("\nGenerating new 12-tone row...")
         row = []
         while(len(row) < 11):
             note = self.newNote(randint(0, 11), 4)
@@ -872,7 +871,7 @@ class generate():
                 row.append(note)
         #Test outputs
         if(len(row) == 0):
-            print("...No row generated!")
+            print("newTwelveToneRow() - ERROR: No row generated!")
             return -1
         # print("New row:", row)
         return row
@@ -984,13 +983,13 @@ class generate():
         if(total is None):
             total = randint(5, 31)
         newDurations = []
-        print("\nGenerating", total, "non-repeating rhythms...")
+        # print("\nGenerating", total, "non-repeating rhythms...")
         while(len(newDurations) < total):
             rhythm = self.newRhythm()
             if(rhythm not in newDurations):
                 newDurations.append(newDurations)
         if(len(newDurations) == 0):
-            print("newRhythmsNonRep() - ERROR: Unable to generate durations!")
+            print("\nnewRhythmsNonRep() - ERROR: Unable to generate durations!")
             return -1
         return newDurations
 
@@ -1046,7 +1045,7 @@ class generate():
                 if(dynamic not in dynamics):
                     dynamics.append(dynamic)
         if(len(dynamics) == 0):
-            print("ERROR: Unable to generate pattern!")
+            print("\nnewDynamics() - ERROR: Unable to generate pattern!")
             return -1
         return dynamics
 
@@ -1149,7 +1148,7 @@ class generate():
             newchord.notes.append(note)
         # Error check
         if(len(newchord.notes) == 0):
-            print("\nERROR: no chord generated!")
+            print("\nnewChord() - ERROR: no chord generated!")
             return -1
         # Remove duplicate notes/doublings
         '''NOTE: This is avoids getting the while loop stuck
@@ -1188,7 +1187,7 @@ class generate():
         elif(total is not None and scale is not None):
             # Error check
             if(len(scale) == 0):
-                print("newChordsfromScale() - ERROR: no scale inputted!")
+                print("\nnewChordsfromScale() - ERROR: no scale inputted!")
                 return -1
             # Picks total equivalent to between 30-100% of total elements in the scale
             total = randint(math.floor(len(scale) * 0.3), len(scale))
@@ -1201,7 +1200,7 @@ class generate():
             newchord = self.newChord(tempo, scale)
             chords.append(newchord)
         if(len(chords) == 0):
-            print("newChordsfromScale() - ERROR: Unable to generate chords!")
+            print("\nnewChordsfromScale() - ERROR: Unable to generate chords!")
             return -1
         # Display chords
         # self.displayChords(chords)
@@ -1229,7 +1228,7 @@ class generate():
             note = scale[randint(0, len(scale) - 1)]
             newchord.notes.append(note)
         if(len(newchord.notes) == 0):
-            print("\nERROR: no chord generated!")
+            print("\nnewChordFromScale() - ERROR: no chord generated!")
             return -1
         # Remove duplicate notes/doublings
         '''NOTE: This is avoids getting the while loop stuck
@@ -1256,7 +1255,7 @@ class generate():
               variance and color. 
         '''
         if(len(scale) == 0):
-            print("newChordsfromScale() - ERROR: no scale inputted!")
+            print("\nnewChordsfromScale() - ERROR: no scale inputted!")
             return -1
         # How many chords?
         chords = []
@@ -1271,7 +1270,7 @@ class generate():
             newchord = self.newChordFromScale(scale, tempo)
             chords.append(newchord)
         if(len(chords) == 0):
-            print("newChordsfromScale() - ERROR: Unable to generate chords!")
+            print("\nnewChordsfromScale() - ERROR: Unable to generate chords!")
             return -1
         # Display chords
         # self.displayChords(chords)
@@ -1386,7 +1385,7 @@ class generate():
         newMelody.tempo = self.newTempo()
         # Pick instrument
         newMelody.instrument = self.newInstrument()
-        '''NOTE: this calls the ability to generate new root scale'''
+        '''NOTE: this calls newScale()!'''
         # Pick notes
         # if(data is not None):
         #     # Use existing scale (0) or generate a new one (1)?
@@ -1435,11 +1434,11 @@ class generate():
         Returns 0 on succcess, -1 on failure.
         '''
         if(data is not None and len(data) == 0):
-            print("\nnewMelody() - ERROR: no data inputted!")
+            print("\naNewMelody() - ERROR: no data inputted!")
             return -1
         if(dataType is not None and 
            dataType > 4 or dataType < 1):
-            print("\nnewMelody() - ERROR")
+            print("\naNewMelody() - ERROR: dataType out of range!")
             return -1
 
         # Generate melody
@@ -1459,7 +1458,7 @@ class generate():
             if(mid.saveMelody(self, title1, newTune) != -1):
                 print('')  # print("\nMIDI file saved as:", title1)
             else:
-                print("\nERROR:Unable to export piece to MIDI file!")
+                print("\n\naNewMelody() - ERROR: Unable to export piece to MIDI file!")
                 return -1
 
             # Save composition data to a .txt file (fileName)
