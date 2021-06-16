@@ -25,16 +25,13 @@ class melody():
         '''
         Is there complete melody data? 
         If True, all data fields have been used.
-
-        NOTE: doesn't check for original source data!
-        Need to find a way to save either hex or array of ints/chars
-        Separate fields? That would require two versions of hasData()
         '''
         if(self.tempo != 0.0
             and self.instrument != "" 
             and len(self.notes) > 0
             and len(self.rhythms) > 0
-            and len(self.dynamics) > 0):
+            and len(self.dynamics) > 0
+            and len(self.sourceData) > 0):
             return True
         else:
             if(self.tempo == 0.0):

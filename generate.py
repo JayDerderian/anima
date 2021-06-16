@@ -703,7 +703,7 @@ class generate():
         if(data is not None and self.rightType(data) != 4):
             # print("\nnewNotes() - ERROR: data inutted is type: ", type(data))
             return -1
-        # And is this an array of *ints*??
+        # And is this a list of *ints*??
         if(data is not None):
             for i in range(len(data)):
                 if(type(data[i]) != int):
