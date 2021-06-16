@@ -692,12 +692,12 @@ class generate():
             1. Total notes is equivalent to *highest single integer* in supplied data set.
             2. Generate a starting key/scale, and a starting octave.
             3. Cycle through this scale appending each note to a list
-                of available notes until we reach the last note in the scale
-                in octave 5.
+               of available notes until we reach the last note in the scale
+               in octave 5.
             4. If we reach this note, reset octave to a new starting point, and 
-                pick a new starting scale at random.
+               pick a new starting scale at random.
             5. Repeat steps 3-4 until we have as many notes as the highest single
-                integer from the supplied data set.
+               integer from the supplied data set.
         '''
         # Did we get a list?
         if(data is not None and self.rightType(data) != 4):
@@ -744,12 +744,13 @@ class generate():
         n = 0
         scale = []
         for i in range(total + 1):
+            # Pick note and add to list
             note = "{}{}".format(root[n], octave)
             scale.append(note)
             n += 1
-            '''NOTE: At most, the alphabet will map to 4 1/3 octaves.
-                     Still didn't want to exceed octave 6'''
+            # Every 7th iteration
             if(i % 7 == 0):
+                # Increment octave
                 octave += 1
                 # Have we reached the octave limit?
                 if(octave > 5):
