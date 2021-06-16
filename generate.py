@@ -964,60 +964,6 @@ class generate():
             return -1
         return rhythms
 
-    # Generate list of a single repeated rhythm
-    def newSingleRhythmRep(self, total):
-        '''
-        Generate list of a SINGLE repeating rhythm n times, where
-        n is supplied from elsewhere.
-
-        Algorithm:
-            1. Pick duration.
-            2. Pick n repetitions.
-            3. Copy into list[i] n times.
-        '''
-        rhythms = []
-        rhythm = self.rhythms[randint(0, len(self.rhythms) - 1)]
-        # print("\nGenerating", total, "rhythms...")
-        while(len(rhythms) < total):
-            rhythms.append(rhythm)
-        return rhythms
-
-    # Generate list of immediatly repeated rhythms
-    def newRepeatedRhythms(self):
-        '''
-        Generates a list of 5-21 immediately repeated rhythms
-        ex: [1, 1, 0.25, 0.25., 0.25, 0.125, 0.125, 0.125, 0.125...n] etc...
-        '''
-        rhythms = []
-        total = randint(5, 21)
-        for i in range(total):
-            reps = randint(1, total - len(rhythms))
-            rhythm = self.newRhythm()
-            for j in range(reps):
-                rhythms.append(rhythm)
-                if(len(rhythms) == total):
-                    break
-        return rhythms
-
-    # Generate list of non-repeating durations
-    def newRhythmsNonRep(self, total=None):
-        '''
-        Generate list non-repeating rhythms of n length, where
-        n could be inputted or self-determined.
-        '''
-        if(total is None):
-            total = randint(5, 31)
-        newDurations = []
-        # print("\nGenerating", total, "non-repeating rhythms...")
-        while(len(newDurations) < total):
-            rhythm = self.newRhythm()
-            if(rhythm not in newDurations):
-                newDurations.append(newDurations)
-        if(len(newDurations) == 0):
-            print("\nnewRhythmsNonRep() - ERROR: Unable to generate durations!")
-            return -1
-        return newDurations
-
 
     #--------------------------------------------------------------------------------#
     #-------------------------------------Dynamics-----------------------------------#
