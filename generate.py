@@ -1167,7 +1167,7 @@ class generate():
             if(total == 0):
                 total = randint(1, len(scale))
         # Display total chords
-        print("\nGenerating harmonies...")
+        # print("\nGenerating harmonies...")
         # Pick notes
         while(len(chords) < total):
             newchord = self.newChord(tempo, scale)
@@ -1283,7 +1283,7 @@ class generate():
 
         #-----------------------Generate!------------------------#
 
-        print("\nGenerating melody...")
+        # print("\nGenerating melody...")
         # Pick tempo
         newMelody.tempo = self.newTempo()
         # Pick instrument

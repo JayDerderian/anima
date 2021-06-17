@@ -629,7 +629,7 @@ def testNewChords():
     i = 0
     j = 0
     for i in range(len(c)):
-        for j in range(len(c[i].notes[j]) - 1):
+        for j in range(len(c[i].notes) - 1):
             if(type(c[i].notes[j]) != str):
                 print("...wrong data type in chord note list!")
                 print("***Test failed!***\n")
@@ -665,7 +665,7 @@ def testNewChords():
     i = 0
     j = 0
     for i in range(len(c)):
-        for j in range(len(c[i].notes[j]) - 1):
+        for j in range(len(c[i].notes) - 1):
             if(type(c[i].notes[j]) != str):
                 print("...wrong data type in chord note list!")
                 print("***Test failed!***\n")
@@ -793,4 +793,4 @@ def runAllTests():
     testsPassed()
 
 # run it 
-# runAllTests()
+runAllTests()
