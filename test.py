@@ -7,6 +7,7 @@
 from random import uniform
 from random import randint
 from generate import generate
+from instruments import INSTRUMENT_MAP
 
 
 #-----------------------------------------test data generation------------------------------------------#
@@ -251,10 +252,10 @@ def testNewInstrument():
     # are the actually on the original instrument list?
     found = 0
     # search instruments list
-    for i in range(instruments):
+    for i in range(len(instruments)):
         # compare each one (probably a better way to do this...)
-        for j in range(generate.instruments):
-             if(instruments[i] == generate.instruments[j]):
+        for j in range(len(INSTRUMENT_MAP)):
+             if(instruments[i] == INSTRUMENT_MAP[j]):
                  found += 1
     # if we found any
     if(found > 0):
