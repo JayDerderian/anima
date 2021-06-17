@@ -91,6 +91,12 @@ def testFloats():
     '''
     print("\ntesting float conversion...")
     result = generate().floatToInt(newFloats())
+    # did we get a list back?
+    if(type(result) != list):
+        print("...no list returned! test failed!")
+        print("***Test failed!***\n")
+        print("\nexiting...\n")
+        exit()
     # see if we got any data at all
     if(len(result) == 0):
         print("...no conversion created!")
@@ -113,6 +119,12 @@ def testCharToInt():
     print("\ntesting string to int list conversion...")
     test = "test input"
     result = generate().mapLettersToNumbers(test)
+    # did we get a list back?
+    if(type(result) != list):
+        print("...no list returned! test failed!")
+        print("***Test failed!***\n")
+        print("\nexiting...\n")
+        exit()
     # ensure the list isn't empty
     if(len(result) == 0):
         print("...no conversion! test failed!")
@@ -135,6 +147,12 @@ def testHexToInt():
     '''
     print("\ntesting hext to int array conversion...")
     result = generate().hexToIntArray(newHex())
+    # did we get a list back?
+    if(type(result) != list):
+        print("...no list returned! test failed!")
+        print("***Test failed!***\n")
+        print("\nexiting...\n")
+        exit()
     # did anything return?
     if(len(result) == 0):
         print("...no conversion created!")
@@ -155,7 +173,10 @@ def testScaleTheScale():
     tests integer array scaling method
     '''
     print("\ntesting integer array scaling method...")
+    # generate random test data
     test = newInts()
+    # set limit (results[i] must be within i <= sizeOf(test)) since
+    # it's supposed to alter individual ints as-needed
     limit = len(test) - 1
     result = generate().scaleTheScale(test)
     for i in range(len(result)):
@@ -184,7 +205,7 @@ def testNewTempo():
         print("\nexiting...\n")
         exit()
     # bounds check
-    if(t > generate().tempos[len(generate().tempos) - 1] or t < generate().tempos[0]):
+    if(t > 208.0 or t < 40.0):
         print("...tempo generated out of range!")
         print("***Test failed!***\n")
         print("\nexiting...\n")
@@ -206,7 +227,7 @@ def testNewInstrument():
         print("***Test failed!***\n")
         print("\nexiting...\n")
         exit()
-    # instrument list
+    # instrument list. picks 2 - 10 randomly chosen instruments
     instruments = generate().newInstruments(randint(2, 10))
     # did we get a list back?
     if(type(instruments) != list):
@@ -227,8 +248,22 @@ def testNewInstrument():
             print("***Test failed!***\n")
             print("\nexiting...\n")
             exit()
-
-    print("ok!")
+    # are the actually on the original instrument list?
+    found = 0
+    # search instruments list
+    for i in range(instruments):
+        # compare each one (probably a better way to do this...)
+        for j in range(generate.instruments):
+             if(instruments[i] == generate.instruments[j]):
+                 found += 1
+    # if we found any
+    if(found > 0):
+        print("ok!")       
+    else:
+        print("...unable to validate instrument choice!")
+        print("***Test failed!***\n")
+        print("\nexiting...\n")
+        exit()
 
 # test single-note generation
 def testNewNote():
