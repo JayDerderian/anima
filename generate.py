@@ -506,29 +506,18 @@ class generate():
         values within the bounds of the scale array. These values function as a 
         collection of index numbers to randomly chose from in order to pick note 
         strings from the scale array.
-
-        NOTE: Current method introduces a bias towards the notes in the lower indices
-              of the total array (at least the first third). 
         '''
         # print("\nScaling input...")
         if(len(data) == 0):
             print("ERROR: no data inputted")
             return -1
         for i in range(len(data)):
-            if(data[i] > len(data) - 1):
-                # Which scaling method should we use?
-                s = randint(1, 3)
-                # Divide data[i] by len(data) - 1
-                if(s == 1):
-                    data[i] = math.floor(data[i] / len(data) - 1)
-                # Subtract by len(data) - 1
-                elif(s == 2):
-                    while(data[i] > len(data) - 1):
-                        data[i] -= len(data) - 1
-                # Subtract by 1
-                else:
-                    while(data[i] > len(data) - 1):
-                        data[i] -= 1
+            # Repeat this subtraction until we're under our threshold.
+            # probably a more efficent way to do this. experiment with division
+            # amounts instead of subtracting by 1.
+            while(data[i] > len(data) - 1):
+                # data[i] = math.floor(data[i] / len(data) - 1)
+                data[i] -= 1
         return data
 
     # Maps letters to index numbers

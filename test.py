@@ -146,7 +146,7 @@ def testHexToInt():
     '''
     tests hex num (in str form) to int array conversion
     '''
-    print("\ntesting hext to int array conversion...")
+    print("\ntesting hex to int array conversion...")
     result = generate().hexToIntArray(newHex())
     # did we get a list back?
     if(type(result) != list):
@@ -582,7 +582,7 @@ def testNewDynamics():
         print("\nexiting...\n")
         exit()
     # did we get anything?
-    elif(len(d) == 0):
+    if(len(d) == 0):
         print("...nothing returned!")
         print("***Test failed!***")
         print("\nexiting...\n")
