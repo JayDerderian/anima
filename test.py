@@ -829,4 +829,4 @@ def runAllTests():
     testsPassed()
 
 # run it 
-runAllTests()
+# runAllTests()

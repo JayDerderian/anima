@@ -390,7 +390,7 @@ class run():
                         data = input("\nYour name: ")
                         d = 3
 
-                    # Generate melody
+                    # Generate composition
                     if(create.newComposition(data, d) != - 1):
                         print("\nEnjoy your new music! :)\n")
                     else:

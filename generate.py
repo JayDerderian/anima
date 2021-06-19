@@ -701,13 +701,11 @@ class generate():
 
         # Pick starting octave (2 or 3)
         octave = randint(2, 3)
-
         # Pick initial root/starting scale (major or minor)
         root = self.scales[randint(1, len(self.scales) - 1)]
         # Will this be a minor scale (0 = no, 1 = yes)?
         if(randint(0, 1) == 1):
             root = self.convertToMinor(root)
-
         '''
         NOTE: replace above lines from octave assignment to convertToMinor() with block
         below once newScale()'s mido bug is resolved.
@@ -719,12 +717,10 @@ class generate():
         else:
             root = self.newScale(octave)
         '''
-
         # Pick total: 3 - 50 if we're generating random notes
         if(data is None):
             # Note that the main loop uses total + 1!
             total = randint(2, 49)
-
         # Or the max value of the supplied data set
         else:
             total = max(data)
@@ -762,7 +758,7 @@ class generate():
             for i in range(total):
                 notes.append(scale[randint(0, len(scale) - 1)])
 
-        # Pick notes according to integers in data array
+        # ...Or pick notes according to integers in data array
         else:
             # Total number of notes is equivalent to the 
             # number of elements in the data set
@@ -852,7 +848,7 @@ class generate():
         if(not scale):
             return -1 
         variants = []
-        for i in range(len(scale) - 1):
+        for i in range(len(scale)):
             #Retrieve note from prime scale
             note = scale[i]
             scaleVariant = []
@@ -865,8 +861,9 @@ class generate():
                 #scaleVariant = list(set(scaleVariant)) #Remove duplicates
                 #scaleVariant.sort() #Sort new derived scale 
             variants.append(scaleVariant) #Add to list of derived scales.
-        if(not variants):
-            print("deriveScales() - ERROR: Unable to generate derived scales!")
+        # Did we get anything?
+        if(len(variants) == 0):
+            print("\nderiveScales() - ERROR: Unable to generate derived scales!")
             return -1
         # print("\nTotal derivisions:", len(scaleVariant))
         # print("Derivitions:", variants)
@@ -885,7 +882,7 @@ class generate():
                 row.append(note)
         #Test outputs
         if(len(row) == 0):
-            print("newTwelveToneRow() - ERROR: No row generated!")
+            print("\nnewTwelveToneRow() - ERROR: No row generated!")
             return -1
         # print("New row:", row)
         return row
@@ -898,6 +895,7 @@ class generate():
         while(pitch > 12):
             pitch -= 12
         return pitch 
+
 
     #-----------------------------------------------------------------------------------#
     #--------------------------------------Rhythm---------------------------------------#
