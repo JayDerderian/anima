@@ -501,23 +501,42 @@ class generate():
     # Scale individual data set integers such that i = i < len(dataSet) - 1
     def scaleTheScale(self, data):
         '''
-        Returns no. of times data[i] is divisible by the total number of elements 
-        in the structure it's in. This will keep the newly inputted data array's 
+        Returns inputted integer array with any ints i > len(data) - 1 altered to 
+        adhere to this limit. This will keep the newly inputted data array's 
         values within the bounds of the scale array. These values function as a 
-        collection of index numbers to randomly chose from in order to pick note 
-        strings from the scale array.
+        collection of index numbers to sequentially map to a new source
+        scale to generate melodic ideas.
+
+        NOTE: The goal is to generate a modified integer array such that any int
+              whose value is greater than len(data) - 1  be modified to adhere to this
+              limit. Ideally only to i = len(data) - 1, no less. This would provide the
+              greatest possible range of index values and maximize the usage of our source
+              scale.
+        
+              Currently need a different way to reduce any data[i] > len(data) - 1 other than 
+              by subtracting by 1 x no. of times. This gets us the highest possible index
+              (exactly len(data) - 1) but with the most potential to run longest (especially
+              with data sets where there might be one extremely high number among a set that's
+              within a limitied-ish range).  
+
+              subtract by len(data) - 1 n times? 
+
+              divide data[i] by len(data) - 1 n times? Might introduce a bias towards
+              loward end of source scale? Maybe? I don't know.  
+
         '''
         # print("\nScaling input...")
+        if(type(data) != list):
+            print("\nscaleTheScale() - ERROR: wrong data type inputted!")
+            return -1
         if(len(data) == 0):
-            print("ERROR: no data inputted")
+            print("\nscaleTheScale() - ERROR: no data inputted")
             return -1
         for i in range(len(data)):
             # Repeat this subtraction until we're under our threshold.
-            # probably a more efficent way to do this. experiment with division
-            # amounts instead of subtracting by 1.
             while(data[i] > len(data) - 1):
-                # data[i] = math.floor(data[i] / len(data) - 1)
                 data[i] -= 1
+                # data[i] = math.floor(data[i] / len(data) - 1)
         return data
 
     # Maps letters to index numbers
