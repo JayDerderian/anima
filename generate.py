@@ -702,6 +702,9 @@ class generate():
             3. Cycle through this scale appending each note to a list
                of available notes until we reach the last note in the scale
                in octave 5.
+               NOTE: Add option to randomly modify root scale a little bit? Maybe pick 1 - 3
+                     notes to augment or diminish by a half-step or something. 
+                     Basically an option to slowly introduce some chromaticism randomly?
             4. If we reach this note, reset octave to a new starting point, and 
                pick a new starting scale at random.
             5. Repeat steps 3-4 until we have as many notes as the highest single
@@ -1233,7 +1236,7 @@ class generate():
         print("Dynamics:", newMelody.dynamics)
         return 0
 
-    # Generate a melody from an array of integers.
+    # Generate a melody from an array of integers (or not).
     def newMelody(self, data=None, dataType=None):
         '''
         Picks a tempo, notes, rhythms, and dynamics. Rhythms and dynamics are picked randomly (total
@@ -1444,7 +1447,7 @@ class generate():
         #     print("\ERROR: unable to create music() object")
         #     return -1
 
-        #-------Generate title, .txt file, and save to MIDI file--------#
+        #-------Generate title and save to MIDI file--------#
         title = self.newTitle()
         # Create MIDI file name
         title1 = title + '.mid'
