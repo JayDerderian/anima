@@ -549,6 +549,9 @@ class generate():
         '''
         # print("\nMapping letters to index numbers...")
         # Convert given string to array of chars
+        if(type(letters) != str):
+            print("\nmapLettersToNumbers() - ERROR: wrong data type inputted!")
+            return -1
         letters = list(letters)
         # Make all uppercase characters lowercase
         for i in range(len(letters) - 1):
@@ -572,15 +575,7 @@ class generate():
     def hexToIntArray(self, hex):
         '''
         Converts a prefixed hex number to an array of integers.
-
-        Algorithm:
-            1. Convert to integer
-            2. Break single integer into array of individual integers (ex 108 to [1, 0, 8])
-               using list comprehension
         '''
-        if(hex == 0 or hex == None):
-            print("ERROR: Invalid input!")
-            return -1
         # Convert to int
         hexStr = int(hex, 0)
         # Convert to array of ints (ie. 132 -> [1, 3, 2])
@@ -599,8 +594,6 @@ class generate():
         durations against to get the new tempo-accurate durations.
 
         '''
-        if(not newMelody):
-            return -1
         diff = 60/newMelody.tempo
         for i in range(len(newMelody.rhythms) - 1):
             newMelody.rhythms[i] *= diff
