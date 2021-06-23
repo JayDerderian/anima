@@ -1412,6 +1412,8 @@ class generate():
 
 
         #--------------------Check incoming data------------------------#
+
+        # Did we get an empty list?
         if(data is not None and len(data) == 0):
             print("\nnewComposition() - ERROR: no data inputted!")
             return -1
@@ -1423,8 +1425,9 @@ class generate():
             #     print("\nnewComposition() - ERROR: wrong type for dataType variable!")
         
 
-        '''NOTE: append at start or end of lists???'''
         #----------------------Generate melody--------------------------#
+
+        '''NOTE: append at start or end of lists???'''
         if(data is not None and dataType is not None):
             newTune = self.newMelody(data, dataType)
             # music.melodies.append(newTune)
@@ -1434,12 +1437,14 @@ class generate():
 
 
         #---------------------Generate harmonies------------------------#
+
         # newChords = self.newChordsFromScale(newTune.notes, newTune.tempo)
         newChords = self.newChords(None, newTune.tempo, newTune.notes)
         # music.chords.append(newChords)
 
 
         #------------------------Check data-----------------------------#
+
         if(newTune.hasData() == False or len(newChords) == 0):
             print("\nnewComposition() - ERROR: No composition data created")
             return -1
@@ -1448,6 +1453,7 @@ class generate():
         #     return -1
 
         #-------Generate title and save to MIDI file--------#
+        
         title = self.newTitle()
         # Create MIDI file name
         title1 = title + '.mid'
