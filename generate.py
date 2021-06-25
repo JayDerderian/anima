@@ -1431,8 +1431,7 @@ class generate():
 
         #---------------------Generate harmonies------------------------#
 
-        # newChords = self.newChordsFromScale(newTune.notes, newTune.tempo)
-        newChords = self.newChords(None, newTune.tempo, newTune.notes)
+        newChords = self.newChords(len(newTune.notes), newTune.tempo, newTune.notes)
         # music.chords.append(newChords)
 
 
