@@ -704,11 +704,13 @@ class generate():
                integer from the supplied data set.
         '''
         # Did we get a list?
-        if(data is not None and self.rightType(data) != 4):
+        # if(data is not None and self.rightType(data) != 4):
+        if(data is not None and type(data) != list):
             # print("\nnewNotes() - ERROR: data inutted is type: ", type(data))
             return -1
         # And is this a list of *ints*??
-        if(data is not None):
+        # if(data is not None):
+        if(data is not None and type(data) == list):
             for i in range(len(data)):
                 if(type(data[i]) != int):
                     # print("\nnewNotes() - ERROR: data is list but with wrong element type: ", type(data[i]))
@@ -725,10 +727,12 @@ class generate():
         NOTE: replace above lines from octave assignment to convertToMinor() with block
         below once newScale()'s mido bug is resolved.
 
+        # Pick from dictionary
         if(randint(1, 2) == 1):
             root = self.scales[randint(1, len(self.scales) - 1)]
             if(randint(1, 2) == 1):
                 root = self.convertToMinor(root)
+        # OR generate a new one
         else:
             root = self.newScale(octave)
         '''
@@ -763,7 +767,31 @@ class generate():
                         root = self.convertToMinor(root)
                 # Reset n to stay within len(root)
                 n = 0
+        '''
+        NOTE: Alternative ways of generating ascending scales that should
+              probably be stand-alone functions that are called at random in 
+              newNotes().
 
+              1. Random interval selection with each note. 
+
+                    This will necessitate using PC notation and should use PC numbers 
+                    as index numbers to pick from a single scale. Each set of interval 
+                    selections should comprise a 5 to 7 note scale within the span of 
+                    one octave. Each scale will be daisychained up to a certain octave, 
+                    afterwhich the cycle will continue like above. 
+
+              2. Calling newScale() n times (removing random extrainious notes after 
+                 n cycles to stay within a specified threshold, if necessary)
+
+              3. Symmetrical intervals (see modes of limit transposition, stacking in 
+                 alternating 2nds, 3rds, 4ths (per or aug), 5ths (per or aug)
+
+              4. Calling newNote() n times with only ascending octave supplied as an arg.
+
+              Each will need to return an accurate array of strings (i.e. "C#4") representing
+              the process applied to them. Single harmonic spellings (only sharps or flats) 
+              will probably be used to maintain simplicity. 
+        '''
         # Randomly pick notes from the generated scale
         notes = []
         if(data is None):
@@ -1168,9 +1196,8 @@ class generate():
             total = randint(math.floor(len(scale) * 0.3), len(scale))
             if(total == 0):
                 total = randint(1, len(scale))
-        # Display total chords
         # print("\nGenerating harmonies...")
-        # Pick notes
+        # Pick chords
         while(len(chords) < total):
             newchord = self.newChord(tempo, scale)
             chords.append(newchord)
@@ -1221,6 +1248,7 @@ class generate():
         # Display data
         print("\n-----------MELODY Data:------------")
         print("\nTempo:", newMelody.tempo, "bpm")
+        print("\nSource data:", newMelody.sourceData)
         print("\nTotal Notes:", len(newMelody.notes))
         print("Notes:", newMelody.notes)
         print("\nTotal rhythms:", len(newMelody.rhythms))
