@@ -1445,7 +1445,6 @@ class generate():
         # New composition() object
         # music = composition()
 
-
         #--------------------Check incoming data------------------------#
 
         # Did we get an empty list?
@@ -1458,7 +1457,6 @@ class generate():
                 return -1
             # else:
             #     print("\nnewComposition() - ERROR: wrong type for dataType variable!")
-        
 
         #----------------------Generate melody--------------------------#
 
@@ -1470,12 +1468,10 @@ class generate():
             newTune = self.newMelody()
             # music.melodies.append(newTune)
 
-
         #---------------------Generate harmonies------------------------#
 
         newChords = self.newChords(len(newTune.notes), newTune.tempo, newTune.notes)
         # music.chords.append(newChords)
-
 
         #------------------------Check data-----------------------------#
 
@@ -1499,6 +1495,7 @@ class generate():
             return -1
 
         #---------Save composition data to a .txt file (fileName)--------#
+
         fileName = "{}{}".format(title, '.txt')
         print("\nText file saved as:", fileName)
         title2 = "{}{}{}{}".format(title, ' for ', newTune.instrument, ' and piano')
