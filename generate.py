@@ -595,11 +595,11 @@ class generate():
         numArr = [int(x) for x in str(hexStr)]
         return numArr
 
-    #Convert base rhythms to values in a specified tempo
+    # Convert base rhythms to values in a specified tempo
     def tempoConvert(self, newMelody):
         '''
         A rhythm converter function to translate durations in self.rhythms
-        to actual value in seconds for that rhythm in a specified tempo. 
+        to actual value in seconds for a specified tempo. 
         
         ex: [base] q = 60, quarterNote = 1 sec, [new tempo] q = 72, quarterNote = 0.8333(...) sec
 
@@ -1245,6 +1245,7 @@ class generate():
             return -1
         return chord
 
+
     #---------------------------------------------------------------------------------#
     #-------------------------------MELODIC GENERATION--------------------------------#
     #---------------------------------------------------------------------------------#
@@ -1356,6 +1357,12 @@ class generate():
 
         # Pick rhythms
         newMelody.rhythms = self.newRhythms(len(newMelody.notes))
+        '''NOTE: Add rhythm scaling method here? May need to scale
+                 rhythms to tempo since I think they're all coming out as 
+                 the same clock-time values regardless of chosen tempo
+        '''
+        # Convert rhythms to time durations in given tempo
+        # newMelody.rhythms = self.tempoConvert(newMelody)
         # Pick dynamics
         newMelody.dynamics = self.newDynamics(len(newMelody.notes))
         
@@ -1372,9 +1379,11 @@ class generate():
 
         return newMelody
 
+
     #-------------------------------------------------------------------------------------#
     #-------------------------------COMPOSITION GENERATION--------------------------------#
     #-------------------------------------------------------------------------------------#
+
 
     # Wrapper for newMelody() function. 
     # Exports MIDI file + generates title + .txt data file
