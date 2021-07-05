@@ -129,7 +129,7 @@ class midiStuff():
 
     # Generates a MIDI file of the chords created by newChord()
 
-    def saveChords(self, newChords):
+    def saveChords(self, fileName, newChords):
         '''
         Takes a chord() object as an argument and generates a MIDI file.
         Returns a pretty_midi object. Returns 0.
@@ -163,7 +163,7 @@ class midiStuff():
         myChords.instruments.append(chord)
 
         # Write out file from MIDI object
-        myChords.write('new-chords.mid')
+        myChords.write(f'./midi/{fileName}')
         print("\n'new-chords.mid' saved successfully!")
         return 0
 

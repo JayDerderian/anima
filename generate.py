@@ -1434,6 +1434,33 @@ class generate():
             print("\naNewMelody() - ERROR: unable to generate melody!")
             return -1
 
+    # Wrapper for newChords(). Outputs chords as a MIDI file and
+    # exports a .txt file with relevant data
+    def newProgression(self, total=None, tempo=None, sourceScale=None):
+        '''
+        Wrapper for newChords(). Outputs chords as a MIDI file and
+        exports a .txt file with relevant data. 
+        
+        Needs *ALL* required data or none. 
+        
+        Returns a list of chord() objects
+        '''
+        # check inputs
+        if(total is None and tempo is None and sourceScale is None):
+            total = randint(3, 15)
+            tempo = self.newTempo()
+            soureScale = self.newNotes()
+            chords = self.newChords(total, tempo, sourceScale)
+        else:
+            chords = self.newChords()
+        # save to .txt file
+        title = 'new progression.mid'
+        self.saveInfo(data=sourceScale, fileName=title, newChords=chords)
+        # save to MIDI file
+        mid.saveChords(chords)
+
+        return chords
+
     # Outputs a single melody with chords in a MIDI file
     def newComposition(self, data=None, dataType=None):
         '''
