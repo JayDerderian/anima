@@ -716,19 +716,20 @@ class generate():
             5. Repeat steps 3-4 until we have as many notes as the highest single
                integer from the supplied data set.
         '''
+        #-------------------Error checks----------------------#
         # Did we get a list?
-        # if(data is not None and self.rightType(data) != 4):
         if(data is not None and type(data) != list):
-            # print("\nnewNotes() - ERROR: data inutted is type: ", type(data))
+            print("\nnewNotes() - ERROR: data inutted is type: ", type(data))
             return -1
         # And is this a list of *ints*??
         # if(data is not None):
         if(data is not None and type(data) == list):
             for i in range(len(data)):
                 if(type(data[i]) != int):
-                    # print("\nnewNotes() - ERROR: data is list but with wrong element type: ", type(data[i]))
+                    print("\nnewNotes() - ERROR: data is list but with wrong element type: ", type(data[i]))
                     return -1             
 
+        #-----------------Generate seed scale------------------#
         # Pick starting octave (2 or 3)
         octave = randint(2, 3)
         # Pick initial root/starting scale (major or minor)
@@ -757,7 +758,7 @@ class generate():
         else:
             total = max(data)
         
-        # Main loop
+        #-----------------Generate source scale-----------------#
         n = 0
         scale = []
         for i in range(total + 1):
@@ -805,7 +806,7 @@ class generate():
               the process applied to them. Single harmonic spellings (only sharps or flats) 
               will probably be used to maintain simplicity. 
         '''
-        # Randomly pick notes from the generated scale
+        # Randomly pick notes from the generated source scale
         notes = []
         if(data is None):
             # Total notes in melody will be between 3 and 
@@ -1003,7 +1004,7 @@ class generate():
                 if(rhythm not in rhythms):
                     rhythms.append(rhythm)
         if(len(rhythms) == 0):
-            print("newRhythms() - ERROR: Unable to generate pattern!")
+            print("\nnewRhythms() - ERROR: Unable to generate pattern!")
             return -1
         return rhythms
 
