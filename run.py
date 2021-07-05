@@ -416,7 +416,7 @@ class run():
 
                 # run full test
                 if(t == 2):
-                    test.runAllTests()
+                    test.runAll()
 
             # Again?
             going = self.keepGoing()

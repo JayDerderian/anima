@@ -790,7 +790,7 @@ def quickTest():
         return "ERROR"
 
 # RUN ALL TESTS
-def runAllTests():
+def runAll():
     '''
     Main driver code for running all tests.
     '''
@@ -829,4 +829,4 @@ def runAllTests():
     testsPassed()
 
 # run it 
-# runAllTests()
+# runAll()
