@@ -529,9 +529,17 @@ class generate():
         if(type(data) != list):
             print("\nscaleTheScale() - ERROR: wrong data type inputted!")
             return -1
+        # did we get a list of ints??
+        if(type(data) == list):
+            for i in range(len(data)):
+                if(type(data[i]) != int):
+                    print("\nscaleTheScale() - ERROR: not a list of ints!")
+                    return -1
+        # is this list empty?
         if(len(data) == 0):
             print("\nscaleTheScale() - ERROR: no data inputted")
             return -1
+        # scale it
         for i in range(len(data)):
             # Repeat this subtraction until we're under our threshold.
             while(data[i] > len(data) - 1):
@@ -552,19 +560,20 @@ class generate():
         if(type(letters) != str):
             print("\nmapLettersToNumbers() - ERROR: wrong data type inputted!")
             return -1
+        # convert to list of str's
         letters = list(letters)
-        # Make all uppercase characters lowercase
+        # make all uppercase characters lowercase
         for i in range(len(letters) - 1):
             if(letters[i].isupper() == True):
                 letters[i] = letters[i].lower()
         numbers = []
         for char in letters:
-            # Check if each character is a letter
+            # check if each character is a letter
             if char.isalpha():
-                # Add its index to the numbers list
+                # add its index to the numbers list
                 numbers.append(self.alphabet.index(char))
             elif char.isnumeric():
-                # If it's already a number, add it as an int
+                # if it's already a number, add it as an int
                 numbers.append(int(char))
         if(len(numbers) == 0):
             print("ERROR: no index numbers found!")
@@ -576,9 +585,13 @@ class generate():
         '''
         Converts a prefixed hex number to an array of integers.
         '''
-        # Convert to int
+        # error check
+        if(type(hex) != str):
+            print("\nhexToIntoArray() - ERROR: wront type inputted!")
+            return -1
+        # convert to int
         hexStr = int(hex, 0)
-        # Convert to array of ints (ie. 132 -> [1, 3, 2])
+        # convert to array of ints (ie. 132 -> [1, 3, 2])
         numArr = [int(x) for x in str(hexStr)]
         return numArr
 
