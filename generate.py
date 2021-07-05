@@ -1457,8 +1457,7 @@ class generate():
         title = 'new progression.mid'
         self.saveInfo(data=sourceScale, fileName=title, newChords=chords)
         # save to MIDI file
-        mid.saveChords(chords)
-
+        mid.saveChords(title, chords)
         return chords
 
     # Outputs a single melody with chords in a MIDI file
