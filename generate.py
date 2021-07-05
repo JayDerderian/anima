@@ -596,7 +596,7 @@ class generate():
         return numArr
 
     # Convert base rhythms to values in a specified tempo
-    def tempoConvert(self, newMelody):
+    def tempoConvert(self, tempo, rhythms):
         '''
         A rhythm converter function to translate durations in self.rhythms
         to actual value in seconds for a specified tempo. 
@@ -607,10 +607,10 @@ class generate():
         durations against to get the new tempo-accurate durations.
 
         '''
-        diff = 60/newMelody.tempo
-        for i in range(len(newMelody.rhythms) - 1):
-            newMelody.rhythms[i] *= diff
-        return newMelody
+        diff = 60/tempo
+        for i in range(len(rhythms) - 1):
+            rhythms[i] *= diff
+        return rhythms
         
 
     #--------------------------------------------------------------------------------#
@@ -1362,11 +1362,10 @@ class generate():
                  the same clock-time values regardless of chosen tempo
         '''
         # Convert rhythms to time durations in given tempo
-        # newMelody.rhythms = self.tempoConvert(newMelody)
+        newMelody.rhythms = self.tempoConvert(newMelody.tempo, newMelody.rhythms)
         # Pick dynamics
         newMelody.dynamics = self.newDynamics(len(newMelody.notes))
         
-
         #------------Check data, display, and export-------------#
 
         # Make sure all data was inputted
