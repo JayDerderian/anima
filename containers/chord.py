@@ -45,6 +45,9 @@ class chord():
     
     # Remove all data
     def erase(self):
+        '''
+        Erase all chord data. Returns True if succesfull. 
+        '''
         if(self.anyData() == True):
             self.tempo = 0.0
             self.notes.clear()

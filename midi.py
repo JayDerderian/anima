@@ -128,19 +128,33 @@ class midiStuff():
         return 0
 
     # Generates a MIDI file of the chords created by newChord()
-
     def saveChords(self, fileName, newChords):
         '''
-        Takes a chord() object as an argument and generates a MIDI file.
-        Returns a pretty_midi object. Returns 0.
+        Takes a list of chord() objects as an argument and generates a MIDI file.
         '''
-        # Create PrettyMIDI object
-        myChords = pm.PrettyMIDI(initial_tempo=newChords.tempo)
+        # error checks
+        if(type(fileName) != str):
+            print("\nsaveChords() - ERROR: fileName wrong type!")
+            return -1
+        # is this a list
+        if(type(newChords) != list):
+            print("\nsaveChords() - ERROR: wrong data type inputted!")
+            return -1
+        # is this a list of chord objects with lists of note strings?
+        for i in range(len(newChords)):
+            # check *these* notes
+            for j in range(len(newChords[i].notes)):
+                if(type(newChords[i].notes[j]) != str):
+                    print("\nsaveChords() - ERROR: list does not contain note strings!")
+                    return -1
 
-        # Create instrument object.
+        # create PrettyMIDI object
+        mid = pm.PrettyMIDI(initial_tempo=newChords.tempo)
+        # create instrument object.
         instrument = pm.instrument_name_to_program('Acoustic Grand Piano')
         chord = pm.Instrument(program=instrument)
-
+        
+        # main loop
         strt = 0
         end = newChords[0].rhythm
         for i in range(len(newChords)):
@@ -160,15 +174,13 @@ class midiStuff():
                 break
 
         # Add chord to instrument list
-        myChords.instruments.append(chord)
-
+        mid.instruments.append(chord)
         # Write out file from MIDI object
-        myChords.write(f'./midi/{fileName}')
-        print("\n'new-chords.mid' saved successfully!")
+        mid.write(f'./midi/{fileName}')
+        # print("\n'new-chords.mid' saved successfully!")
         return 0
 
     # Save a melody and chords
-
     def saveComposition(self, newMelody, newChords, fileName):
         '''
         Save a single-line melody with chords generated to a MIDI file. 

@@ -1445,19 +1445,27 @@ class generate():
         
         Returns a list of chord() objects
         '''
-        # check inputs
+        # check inputs and generate from scratch
         if(total is None and tempo is None and sourceScale is None):
             total = randint(3, 15)
             tempo = self.newTempo()
             soureScale = self.newNotes()
             chords = self.newChords(total, tempo, sourceScale)
+        # otherwise use source data
         else:
-            chords = self.newChords()
-        # save to .txt file
-        title = 'new progression.mid'
-        self.saveInfo(data=sourceScale, fileName=title, newChords=chords)
+            chords = self.newChords(total, tempo, sourceScale)
+        # generate title
+        title = self.newTitle()
+        # create MIDI file name
+        title1 = title + '.mid'
         # save to MIDI file
-        mid.saveChords(title, chords)
+        if(mid.saveChords(title, chords) != -1):
+            print("\nMIDI file saved as:", title1)
+        else:
+            print("\nnewProgression() - ERROR: unable to save MIDI file!")
+            return -1
+        # export to .txt file
+        self.saveInfo(data=sourceScale, fileName=title, newChords=chords)
         return chords
 
     # Outputs a single melody with chords in a MIDI file
