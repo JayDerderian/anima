@@ -150,7 +150,7 @@ class midiStuff():
 
         # create PrettyMIDI object
         mid = pm.PrettyMIDI(initial_tempo=newChords.tempo)
-        # create instrument object.
+        # create instrument.
         instrument = pm.instrument_name_to_program('Acoustic Grand Piano')
         chord = pm.Instrument(program=instrument)
         
@@ -164,7 +164,7 @@ class midiStuff():
                 note = pm.note_name_to_number(newChords[i].notes[j])
                 achord = pm.Note(
                     velocity=newChords[i].dynamics[j], pitch=note, start=strt, end=end)
-                # Add to instrument object
+                # Add to instrument
                 chord.notes.append(achord)
             try:
                 # Increment strt/end times

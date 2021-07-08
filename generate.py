@@ -246,29 +246,11 @@ class generate():
         # Loud dynamics (0-8)
         self.dynamicsLoud = [92, 96, 100, 104, 108, 112, 116, 120, 124]
 
+
     #-----------------------------------------------------------------------------------------#
     #-----------------------------------Utility Functions-------------------------------------#
     #-----------------------------------------------------------------------------------------#
 
-    # Checks data type of incoming data
-    def rightType(self, data):
-        '''
-        Checks data type of incoming data.
-
-        1 = int, 2 = float, 3 = str, 4 = list
-
-        Returns -1 upon failure
-        '''
-        if(type(data) == int):
-            return 1
-        elif(type(data) == float):
-            return 2
-        elif(type(data) == str):
-            return 3
-        elif(type(data) == list):
-            return 4
-        else:
-            return -1
 
     # Auto generate a composition title from two random words
     def newTitle(self):
@@ -344,7 +326,7 @@ class generate():
         header = '\n*****************************************************************'
         f.write(header)
 
-        # ------------------------------Add Meta-Data---------------------------#
+        #------------------------------Add Meta-Data---------------------------#
 
         # Add title, instrument(s), and save inputted data
         if(name is not None and newMelody is not None):
@@ -1441,7 +1423,7 @@ class generate():
         Wrapper for newChords(). Outputs chords as a MIDI file and
         exports a .txt file with relevant data. 
         
-        Needs *ALL* required data or none. 
+        Needs *ALL* required data or none. No in-between at the moment.
         
         Returns a list of chord() objects
         '''
@@ -1454,6 +1436,10 @@ class generate():
         # otherwise use source data
         else:
             chords = self.newChords(total, tempo, sourceScale)
+        # make sure it worked
+        if(len(chords) == 0):
+            print("\nnewProgression() - ERROR: no chords generated!")
+            return -1
         # generate title
         title = self.newTitle()
         # create MIDI file name
