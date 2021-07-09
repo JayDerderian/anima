@@ -1204,7 +1204,7 @@ class generate():
         # self.displayChords(chords)
         return chords
 
-   # Generate a chord off a given interval i (between 1 and 6) to total notes for the chord n
+    # Generate a chord off a given interval i (between 1 and 6) to total notes for the chord n
     # starting with root r (integer)
     def newSymTriad(self, r, i, n):
         '''
