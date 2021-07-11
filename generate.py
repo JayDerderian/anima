@@ -797,9 +797,6 @@ class generate():
                         root = self.convertToMinor(root)
                 # Reset n to stay within len(root)
                 n = 0
-        # Display seed scale (for now)
-        print("\nTotal notes:", len(scale))
-        print("Seed scale:", scale)
         # Randomly pick notes from the generated source scale
         notes = []
         if(data is None):
