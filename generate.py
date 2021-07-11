@@ -580,8 +580,8 @@ class generate():
     # Convert base rhythms to values in a specified tempo
     def tempoConvert(self, tempo, rhythms):
         '''
-        A rhythm converter function to translate durations in self.rhythms
-        to actual value in seconds for a specified tempo. 
+        A rhythm converter function to translate durations in self.rhythms (list)
+        or self.rhythm (float) to actual value in seconds for a specified tempo. 
         
         ex: [base] q = 60, quarterNote = 1 sec, [new tempo] q = 72, quarterNote = 0.8333(...) sec
 
@@ -590,8 +590,14 @@ class generate():
 
         '''
         diff = 60/tempo
-        for i in range(len(rhythms) - 1):
-            rhythms[i] *= diff
+        if(type(rhythms) == list):
+            for i in range(len(rhythms) - 1):
+                rhythms[i] *= diff
+        elif(type(rhythms) == float):
+            rhythms *= diff
+        else:
+            print("\ntempoConvert() - ERROR: wrong type inputted!")
+            return -1
         return rhythms
         
 
@@ -683,7 +689,7 @@ class generate():
         Data is used as index numbers to select notes from this series in order
         to generate a melody.
 
-        Note generation algorithm:
+        Algorithm:
 
             1. Total notes is equivalent to *highest single integer* in supplied data set.
             2. Generate a starting key/scale, and a starting octave.
@@ -697,8 +703,34 @@ class generate():
                pick a new starting scale at random.
             5. Repeat steps 3-4 until we have as many notes as the highest single
                integer from the supplied data set.
+
+        NOTE: Alternative ways of generating ascending scales that should
+              probably be stand-alone functions that are called at random in 
+              newNotes().
+
+              1. Random interval selection with each note. 
+
+                    This will necessitate using PC notation and should use PC numbers 
+                    as index numbers to pick from a single scale. Each set of interval 
+                    selections should comprise a 5 to 7 note scale within the span of 
+                    one octave. Each scale will be daisychained up to a certain octave, 
+                    afterwhich the cycle will continue like above. 
+
+              2. Calling newScale() n times (removing random extrainious notes after 
+                 n cycles to stay within a specified threshold, if necessary)
+
+              3. Symmetrical intervals (see modes of limit transposition, stacking in 
+                 alternating 2nds, 3rds, 4ths (per or aug), 5ths (per or aug)
+
+              4. Calling newNote() n times with only ascending octave supplied as an arg.
+
+              Each will need to return an accurate array of strings (i.e. "C#4") representing
+              the process applied to them. Single harmonic spellings (only sharps or flats) 
+              will probably be used to maintain simplicity. 
         '''
+
         #-------------------Error checks----------------------#
+
         # Did we get a list?
         if(data is not None and type(data) != list):
             print("\nnewNotes() - ERROR: data inutted is type: ", type(data))
@@ -712,6 +744,7 @@ class generate():
                     return -1             
 
         #-----------------Generate seed scale------------------#
+
         # Pick starting octave (2 or 3)
         octave = randint(2, 3)
         # Pick initial root/starting scale (major or minor)
@@ -741,6 +774,7 @@ class generate():
             total = max(data)
         
         #-----------------Generate source scale-----------------#
+
         n = 0
         scale = []
         for i in range(total + 1):
@@ -756,38 +790,16 @@ class generate():
                 if(octave > 5):
                     # Reset starting octave
                     octave = randint(2, 3)
-                    # Generate another new scale, if that's what we want
+                    # Generate another new scale
                     root = self.scales[randint(1, len(self.scales) - 1)]
                     # Re-decide if we're using minor (1) or major (2) again
                     if(randint(1, 2) == 1):
                         root = self.convertToMinor(root)
                 # Reset n to stay within len(root)
                 n = 0
-        '''
-        NOTE: Alternative ways of generating ascending scales that should
-              probably be stand-alone functions that are called at random in 
-              newNotes().
-
-              1. Random interval selection with each note. 
-
-                    This will necessitate using PC notation and should use PC numbers 
-                    as index numbers to pick from a single scale. Each set of interval 
-                    selections should comprise a 5 to 7 note scale within the span of 
-                    one octave. Each scale will be daisychained up to a certain octave, 
-                    afterwhich the cycle will continue like above. 
-
-              2. Calling newScale() n times (removing random extrainious notes after 
-                 n cycles to stay within a specified threshold, if necessary)
-
-              3. Symmetrical intervals (see modes of limit transposition, stacking in 
-                 alternating 2nds, 3rds, 4ths (per or aug), 5ths (per or aug)
-
-              4. Calling newNote() n times with only ascending octave supplied as an arg.
-
-              Each will need to return an accurate array of strings (i.e. "C#4") representing
-              the process applied to them. Single harmonic spellings (only sharps or flats) 
-              will probably be used to maintain simplicity. 
-        '''
+        # Display seed scale (for now)
+        print("\nTotal notes:", len(scale))
+        print("Seed scale:", scale)
         # Randomly pick notes from the generated source scale
         notes = []
         if(data is None):
@@ -1156,8 +1168,9 @@ class generate():
             newchord.tempo = 60.0
         else:
             newchord.tempo = tempo
-        # Pick a rhythm
-        newchord.rhythm = self.newRhythm()
+        # Pick a rhythm & scale to tempo
+        rhythm = self.newRhythm()
+        newchord.rhythm = self.tempoConvert(newchord.tempo, rhythm)
         # Pick a dynamic (randomize for each note? probably)
         dynamic = self.newDynamic()
         while(len(newchord.dynamics) < len(newchord.notes)):
@@ -1270,7 +1283,8 @@ class generate():
         newMelody = melody()
 
         #----------------Process any incoming data---------------#
-
+        '''NOTE: Might be able to remove the dataType variable by
+                 using type() in the body of the method instead'''
         if(dataType is not None and data is not None):
             print("\nProcessing incoming data...")
             # If ints, scale as necessary

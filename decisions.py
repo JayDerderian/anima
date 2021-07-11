@@ -10,6 +10,7 @@
     Class hierarchy:
         
         decide():
+        
             generate():
                 note()
                 rhythms()

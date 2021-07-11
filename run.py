@@ -315,7 +315,6 @@ class run():
                         else:
                             scale = create.scales[randint(1, 12)]
                             scale = create.convertToMinor(scale)
-                        # chords = create.newChordsFromScale(scale, tempo)
                         chords = create.newChords(randint(3, len(scale)), tempo, scale)
                         if(chords != -1):
                             create.displayChords(chords)
@@ -327,7 +326,6 @@ class run():
                         tempo = create.newTempo()
                         scale = create.newScale(octave=4)
                         if(scale != -1):
-                            # chords = create.newChordsFromScale(scale, tempo)
                             chords = create.newChords(randint(3, len(scale)),tempo, scale)
                         else:
                             print("\nERROR: unable to generate scale! Exiting...")
