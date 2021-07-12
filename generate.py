@@ -797,6 +797,7 @@ class generate():
                         root = self.convertToMinor(root)
                 # Reset n to stay within len(root)
                 n = 0
+
         # Randomly pick notes from the generated source scale
         notes = []
         if(data is None):
@@ -1438,16 +1439,13 @@ class generate():
         
         Returns a list of chord() objects
         '''
-        # check inputs and generate from scratch
-        if(total is None and tempo is None and sourceScale is None):
+        if(total is None):
             total = randint(3, 15)
+        elif(tempo is None):
             tempo = self.newTempo()
-            soureScale = self.newNotes()
-            chords = self.newChords(total, tempo, sourceScale)
-        # otherwise use source data
-        else:
-            chords = self.newChords(total, tempo, sourceScale)
-        # make sure it worked
+        elif(sourceScale is None):
+            sourceScale = self.newNotes()
+        chords = self.newChords(total, tempo, sourceScale)
         if(len(chords) == 0):
             print("\nnewProgression() - ERROR: no chords generated!")
             return -1
@@ -1456,13 +1454,13 @@ class generate():
         # create MIDI file name
         title1 = title + '.mid'
         # save to MIDI file
-        if(mid.saveChords(title, chords) != -1):
+        if(mid.saveChords(self, title, chords) != -1):
             print("\nMIDI file saved as:", title1)
         else:
             print("\nnewProgression() - ERROR: unable to save MIDI file!")
             return -1
         # export to .txt file
-        self.saveInfo(data=sourceScale, fileName=title, newChords=chords)
+        self.saveInfo(name=title, data=sourceScale, fileName=title1, newChords=chords)
         return chords
 
     # Outputs a single melody with chords in a MIDI file

@@ -9,12 +9,11 @@
     representation very messy. 
   
 '''
+# Imports
 import pretty_midi as pm
 import urllib.request
 from random import randint
 from datetime import datetime
-
-
 
 class midiStuff():
     '''
@@ -60,7 +59,6 @@ class midiStuff():
         return fileName
 
     # Outputs a single melody/instrument to a MIDI file
-
     def saveMelody(self, fileName, newMelody):
         '''
         Outputs a single instrument MIDI file (ideally). Returns 0 on success, -1 on failure. 
@@ -99,11 +97,10 @@ class midiStuff():
 
         # Write out file from MIDI object
         mid.instruments.append(melody)
-        mid.write(fileName)
+        mid.write(f'./midi/{fileName}')
         return 0
 
     # Outputs a single MIDI chord.
-
     def saveChord(self, newChord):
         '''
         Takes a single chord() object and outputs a MIDI file of that chord.
@@ -123,8 +120,9 @@ class midiStuff():
 
         # Write out file from MIDI object
         mid.instruments.append(chord)
-        mid.write('new-chord.mid')
-        print("'new-chord.mid' file saved!")
+        fileName = 'new-chord.mid'
+        mid.write(f'./midi/{fileName}')
+        print("\n'new-chord.mid' file saved!")
         return 0
 
     # Generates a MIDI file of the chords created by newChord()
@@ -149,11 +147,12 @@ class midiStuff():
                     return -1
 
         # create PrettyMIDI object
-        mid = pm.PrettyMIDI(initial_tempo=newChords.tempo)
-        # create instrument.
+        '''NOTE: takes tempo from first chord object''' 
+        mid = pm.PrettyMIDI(initial_tempo=newChords[0].tempo)
+        # Create instrument object.
         instrument = pm.instrument_name_to_program('Acoustic Grand Piano')
         chord = pm.Instrument(program=instrument)
-        
+
         # main loop
         strt = 0
         end = newChords[0].rhythm
@@ -164,7 +163,7 @@ class midiStuff():
                 note = pm.note_name_to_number(newChords[i].notes[j])
                 achord = pm.Note(
                     velocity=newChords[i].dynamics[j], pitch=note, start=strt, end=end)
-                # Add to instrument
+                # Add to instrument object
                 chord.notes.append(achord)
             try:
                 # Increment strt/end times

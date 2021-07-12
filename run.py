@@ -208,12 +208,12 @@ class run():
             # Generate chord
             elif(choice == 2):
                 print("\nNew random chord (1) or from scale (2)?")
-                c = int(input("Selection (1 or 2):"))
+                c = int(input("Selection (1 or 2): "))
                 # Error check...
                 attempts = 0
                 while(c > 2 or c < 1):
                     print("\ntry again bub\n")
-                    c = int(input("Selection (1 or 2):"))
+                    c = int(input("Selection (1 or 2): "))
                     attempts += 1
                     if(attempts > 9):
                         print("\njust about had enough of yer shinanigans!")
@@ -230,12 +230,12 @@ class run():
                 # From scale
                 elif(c == 2):
                     print("\nUse existing scale (1) or generate a new one (2)?")
-                    d = int(input("Selection (1 or 2):"))
+                    d = int(input("Selection (1 or 2): "))
                     # Error check...
                     attempts = 0
                     while(d > 2 or d < 1):
                         print("\ntry again bub\n")
-                        d = int(input("Selection (1 or 2):"))
+                        d = int(input("Selection (1 or 2): "))
                         attempts += 1
                         if(attempts > 10):
                             print("\njust about had enough of yer shinanigans!")
@@ -286,7 +286,9 @@ class run():
                 if(c == 1):
                     total = int(input("How many? "))
                     tempo = create.newTempo()
-                    chords = create.newChords(total, tempo, None)
+                    scale = create.newScale()
+                    # chords = create.newChords(total, tempo, None)
+                    chords = create.newProgression(total, tempo, scale)
                     if(len(chords) == 0):
                         print("\nERROR: unable to generate chords! :(\n")
                     elif(len(chords) != 0):
@@ -295,7 +297,7 @@ class run():
                 # From scale
                 elif(c == 2):
                     print("\nUse existing scale (1) or generate a new one (2)?")
-                    d = int(input("Selection (1 or 2):"))
+                    d = int(input("Selection (1 or 2): "))
                     # Error check...
                     attempts = 0
                     while(d > 2 or d < 1):
@@ -425,5 +427,5 @@ class run():
 
 #------------------------Driver Code------------------------#
 
-# Run it!
+# Run via terminal in the program's directory using 'python run.py'
 run().start()
