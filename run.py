@@ -425,7 +425,7 @@ class run():
         self.goodBye()
         return 0
 
-#------------------------Driver Code------------------------#
+#----------------------------Driver Code---------------------------#
 
 # Run via terminal in the program's directory using 'python run.py'
 run().start()

@@ -8,7 +8,8 @@
     This class handles all generative functions. It contains a set of resource data
     that is accessed by a variety of generative algorithms and mapping functions. 
 
-    NOTE:
+    General Notes:
+
         Long data sets will have the same note associated with different 
         values elsewhere in the array. 
         
@@ -18,6 +19,71 @@
         the amount of repeated notes associated with different elements in 
         the data array (unless we get the same scale chosen again, or there's
         a lot of common tones between the scales that are picked) .
+
+    Method notes:
+
+        newNotes()
+        
+            Algorithm:
+
+            1.  Total notes is equivalent to *highest single integer* in supplied data set.
+            2.  Generate a starting key/scale, and a starting octave.
+            3.  Cycle through this scale appending each note to a list
+                of available notes until we reach the last note in the scale
+                in octave 5.
+               
+                NOTE: 
+                Add option to randomly modify root scale a little bit? Maybe pick 1 - 3
+                notes to augment or diminish by a half-step or something. 
+                Basically an option to slowly introduce some chromaticism randomly?
+
+            4.  If we reach this note, reset octave to a new starting point, and 
+                pick a new starting scale at random.
+            5.  Repeat steps 3-4 until we have as many notes as the highest single
+                integer from the supplied data set.
+
+            Alternative ways of generating ascending scales that should
+            probably be stand-alone functions that are called at random in 
+            newNotes().
+
+            1.  Random interval selection with each note. 
+                This will necessitate using PC notation and should use PC numbers 
+                as index numbers to pick from a single scale. Each set of interval 
+                selections should comprise a 5 to 7 note scale within the span of 
+                one octave. Each scale will be daisychained up to a certain octave, 
+                afterwhich the cycle will continue like above. 
+
+            2.  Calling newScale() n times (removing random extrainious notes after 
+                n cycles to stay within a specified threshold, if necessary)
+
+            3.  Symmetrical intervals (see modes of limit transposition, stacking in 
+                alternating 2nds, 3rds, 4ths (per or aug), 5ths (per or aug)
+
+            4.  Calling newNote() n times with only ascending octave supplied as an arg.
+
+            Each will need to return an accurate array of strings (i.e. "C#4") representing
+            the process applied to them. Single harmonic spellings (only sharps or flats) 
+            will probably be used to maintain simplicity. 
+           
+           
+        scaleTheScale()
+
+            The goal is to generate a modified integer array such that any int
+            whose value is greater than len(data) - 1  be modified to adhere to this
+            limit. Ideally only to i = len(data) - 1, no less. This would provide the
+            greatest possible range of index values and maximize the usage of our source
+            scale.
+    
+            Currently need a different way to reduce any data[i] > len(data) - 1 other than 
+            by subtracting by 1 x no. of times. This gets us the highest possible index
+            (exactly len(data) - 1) but with the most potential to run longest (especially
+            with data sets where there might be one extremely high number among a set that's
+            within a limitied-ish range).  
+
+            subtract by len(data) - 1 n times? 
+
+            divide data[i] by len(data) - 1 n times? Might introduce a bias towards
+            loward end of source scale? Maybe? I don't know. 
 
 ----------------------------------------------------------------------------------------------------------------
 '''
@@ -487,25 +553,7 @@ class generate():
         adhere to this limit. This will keep the newly inputted data array's 
         values within the bounds of the scale array. These values function as a 
         collection of index numbers to sequentially map to a new source
-        scale to generate melodic ideas.
-
-        NOTE: The goal is to generate a modified integer array such that any int
-              whose value is greater than len(data) - 1  be modified to adhere to this
-              limit. Ideally only to i = len(data) - 1, no less. This would provide the
-              greatest possible range of index values and maximize the usage of our source
-              scale.
-        
-              Currently need a different way to reduce any data[i] > len(data) - 1 other than 
-              by subtracting by 1 x no. of times. This gets us the highest possible index
-              (exactly len(data) - 1) but with the most potential to run longest (especially
-              with data sets where there might be one extremely high number among a set that's
-              within a limitied-ish range).  
-
-              subtract by len(data) - 1 n times? 
-
-              divide data[i] by len(data) - 1 n times? Might introduce a bias towards
-              loward end of source scale? Maybe? I don't know.  
-
+        scale to generate melodic ideas. 
         '''
         # print("\nScaling input...")
         if(type(data) != list):
@@ -688,45 +736,6 @@ class generate():
         Generates a set of notes based on inputted data (an array of integers).
         Data is used as index numbers to select notes from this series in order
         to generate a melody.
-
-        Algorithm:
-
-            1. Total notes is equivalent to *highest single integer* in supplied data set.
-            2. Generate a starting key/scale, and a starting octave.
-            3. Cycle through this scale appending each note to a list
-               of available notes until we reach the last note in the scale
-               in octave 5.
-               NOTE: Add option to randomly modify root scale a little bit? Maybe pick 1 - 3
-                     notes to augment or diminish by a half-step or something. 
-                     Basically an option to slowly introduce some chromaticism randomly?
-            4. If we reach this note, reset octave to a new starting point, and 
-               pick a new starting scale at random.
-            5. Repeat steps 3-4 until we have as many notes as the highest single
-               integer from the supplied data set.
-
-        NOTE: Alternative ways of generating ascending scales that should
-              probably be stand-alone functions that are called at random in 
-              newNotes().
-
-              1. Random interval selection with each note. 
-
-                    This will necessitate using PC notation and should use PC numbers 
-                    as index numbers to pick from a single scale. Each set of interval 
-                    selections should comprise a 5 to 7 note scale within the span of 
-                    one octave. Each scale will be daisychained up to a certain octave, 
-                    afterwhich the cycle will continue like above. 
-
-              2. Calling newScale() n times (removing random extrainious notes after 
-                 n cycles to stay within a specified threshold, if necessary)
-
-              3. Symmetrical intervals (see modes of limit transposition, stacking in 
-                 alternating 2nds, 3rds, 4ths (per or aug), 5ths (per or aug)
-
-              4. Calling newNote() n times with only ascending octave supplied as an arg.
-
-              Each will need to return an accurate array of strings (i.e. "C#4") representing
-              the process applied to them. Single harmonic spellings (only sharps or flats) 
-              will probably be used to maintain simplicity. 
         '''
 
         #-------------------Error checks----------------------#
@@ -1149,8 +1158,9 @@ class generate():
         newchord = chord()
         # How many notes in this chord? 2 to 9 (for now)
         total = randint(2, 9)
+        # Pick note and add to list
+        '''NOTE: this allows for dublings!'''
         while(len(newchord.notes) < total):
-            # Pick note and add to list
             note = scale[randint(0, len(scale) - 1)]
             newchord.notes.append(note)
         # Error check
@@ -1341,6 +1351,10 @@ class generate():
         #         newMelody.notes = self.newNotes()
         #     else:
         #         newMelody.notes = self.newNotes(newScale=True)
+        '''
+        NOTE: Note melody picking should happen here!! Not new newNotes(), that should only
+        provide the notes to pick from, not the actually mapping moment.
+        '''
         if(data is None):
             newMelody.notes = self.newNotes()
             if(newMelody.notes == -1):
@@ -1348,13 +1362,12 @@ class generate():
                 return -1
         else:
             newMelody.notes = self.newNotes(data)
+        # Pick rhythms & scale to tempo
+        # newMelody.rhythms = self.newRhythms(len(newMelody.notes))
+        rhythmsRaw = self.newRhythms(len(newMelody.notes))
+        rhythms = self.tempoConvert(rhythmsRaw)
+        newMelody.rhythms = rhythms
 
-        # Pick rhythms
-        newMelody.rhythms = self.newRhythms(len(newMelody.notes))
-        '''NOTE: Add rhythm scaling method here? May need to scale
-                 rhythms to tempo since I think they're all coming out as 
-                 the same clock-time values regardless of chosen tempo
-        '''
         # Convert rhythms to time durations in given tempo
         newMelody.rhythms = self.tempoConvert(newMelody.tempo, newMelody.rhythms)
         # Pick dynamics
