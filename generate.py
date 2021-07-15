@@ -751,13 +751,15 @@ class generate():
                     return -1             
 
         #-----------------Generate seed scale------------------#
-        '''# Pick initial root/starting scale (major or minor)
+        '''
         # Pick starting octave (2 or 3)
         octave = randint(2, 3)
+        # Pick initial root/starting scale (major or minor)
         root = self.scales[randint(1, len(self.scales) - 1)]
         # # Will this be a minor scale (0 = no, 1 = yes)?
         if(randint(0, 1) == 1):
-             root = self.convertToMinor(root)'''     
+             root = self.convertToMinor(root)
+        '''     
         '''
         NOTE: replace above lines from octave assignment to convertToMinor() with block
         below once newScale()'s mido bug is resolved.
@@ -767,6 +769,7 @@ class generate():
         # Pick from dictionary
         if(randint(1, 2) == 1):
             root = self.scales[randint(1, len(self.scales) - 1)]
+            # Convert to relative minor randomly
             if(randint(1, 2) == 1):
                 root = self.convertToMinor(root)
         # OR generate a new one
@@ -1507,17 +1510,14 @@ class generate():
             # else:
             #     print("\nnewComposition() - ERROR: wrong type for dataType variable!")
 
-        #----------------------Generate melody--------------------------#
+        #----------------------Generate melody and Harmony--------------------------#
 
-        '''NOTE: append at start or end of lists???'''
         if(data is not None and dataType is not None):
             newTune = self.newMelody(data, dataType)
             # music.melodies.append(newTune)
         else:
             newTune = self.newMelody()
             # music.melodies.append(newTune)
-
-        #---------------------Generate harmonies------------------------#
 
         newChords = self.newChords(len(newTune.notes), newTune.tempo, newTune.notes)
         # music.chords.append(newChords)
