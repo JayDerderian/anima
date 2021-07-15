@@ -951,7 +951,11 @@ class generate():
             randomly chosen interval. Ex; 0 + 2 = 2,
             2 + 1 = 3, 3 + 2 = 5, creating [2, 3, 5,...] etc.
             3. Repeat step 2 with next note in prime scale
-            up to end of scale.            
+            up to end of scale.
+
+        NOTE: Modify to return a dictionary of variants, rather
+              than an list of lists. It'll hopefully make access syntax
+              cleaner.            
         '''
         if(not scale):
             return -1 
@@ -980,7 +984,8 @@ class generate():
     # Generate a 12-tone row.
     def newTwelveToneRow(self):
         '''
-        Generate a 12-tone row.
+        Generate a 12-tone row. 
+        Returns a list of ints/pitch classes/index numbers.
         '''
         # print("\nGenerating new 12-tone row...")
         row = []
@@ -1195,17 +1200,18 @@ class generate():
 
         NOTE: Will eventually replace newChordFromScale()
         '''
-        # Error check
-        if(scale is not None):
-            if(len(scale) == 0):
-                print("\nnewChord - ERROR: no input!")
-                return -1
         # If we dont get a source scale
         if(scale is None):
             '''NOTE: See notes for newScale()! '''
-            scale = self.newScale()
+            # scale = self.newScale()
+            scale = self.newNotes()
         # New chord() object
         newchord = chord()
+        # Add tempo
+        if(tempo is None):
+            newchord.tempo = 60.0
+        else:
+            newchord.tempo = tempo
         # How many notes in this chord? 2 to 9 (for now)
         total = randint(2, 9)
         # Pick note and add to list
@@ -1221,11 +1227,7 @@ class generate():
         '''NOTE: This is avoids getting the while loop stuck
                  if there's a lot of repeated notes in the melody '''
         newchord.notes = list(dict.fromkeys(newchord.notes))
-        # Add tempo
-        if(tempo is None):
-            newchord.tempo = 60.0
-        else:
-            newchord.tempo = tempo
+
         # Pick a rhythm & scale to tempo
         rhythm = self.newRhythm()
         newchord.rhythm = self.tempoConvert(newchord.tempo, rhythm)
