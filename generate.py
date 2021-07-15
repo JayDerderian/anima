@@ -663,8 +663,6 @@ class generate():
         # print("\nPicking tempo...")
         tempo = 0.0
         tempo = self.tempos[randint(0, len(self.tempos) - 1)]
-        if(tempo == 0.0):
-            return 60.0
         return tempo
 
 
@@ -753,18 +751,19 @@ class generate():
                     return -1             
 
         #-----------------Generate seed scale------------------#
-
+        '''# Pick initial root/starting scale (major or minor)
         # Pick starting octave (2 or 3)
         octave = randint(2, 3)
-        # Pick initial root/starting scale (major or minor)
         root = self.scales[randint(1, len(self.scales) - 1)]
-        # Will this be a minor scale (0 = no, 1 = yes)?
+        # # Will this be a minor scale (0 = no, 1 = yes)?
         if(randint(0, 1) == 1):
-            root = self.convertToMinor(root)
+             root = self.convertToMinor(root)'''     
         '''
         NOTE: replace above lines from octave assignment to convertToMinor() with block
         below once newScale()'s mido bug is resolved.
-
+        '''
+        # Pick starting octave (2 or 3)
+        octave = randint(2, 3)
         # Pick from dictionary
         if(randint(1, 2) == 1):
             root = self.scales[randint(1, len(self.scales) - 1)]
@@ -773,7 +772,7 @@ class generate():
         # OR generate a new one
         else:
             root = self.newScale(octave)
-        '''
+
         # Pick total: 3 - 50 if we're generating random notes
         if(data is None):
             # Note that the main loop uses total + 1!
