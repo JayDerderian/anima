@@ -892,7 +892,10 @@ class generate():
         '''
         # print("\nGenerating new root scale...")
         if(octave is not None):
-            if(octave < 1 or octave > 6):
+            if(type(octave) != int):
+                print("\nnewScale() - ERROR: octave wasn't an int!")
+                return -1
+            elif(octave < 1 or octave > 6):
                 print("\nnewScale() - ERROR: octave out of range!")
                 return -1
         elif(octave is None):
@@ -900,8 +903,9 @@ class generate():
         pcs = []
         # Use sharps (1) or flats (2)?
         sof = randint(1, 2)
-        # generate an ascending set of 7 integers/note array indices
-        while(len(pcs) < 7):
+        # generate an ascending set of 5-9 integers/note array indices
+        total = randint(5, 9)
+        while(len(pcs) < total):
             # pick note
             n = randint(0, 11)
             if(n not in pcs):
