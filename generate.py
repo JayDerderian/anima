@@ -8,7 +8,40 @@
     This class handles all generative functions. It contains a set of resource data
     that is accessed by a variety of generative algorithms and mapping functions. 
 
-    General Notes:
+    
+    TODO: Replace self.scales with 5-9 note forte prime forms. These
+    will be used as index numbers against either sharps or flats spellings
+    of the chormatic scale in pickScale(). Ideally pickScale() will be used
+    wherever a new "root" needs to be generated. 
+
+    TODO: Implement alternative ways of generating ascending scales that 
+    should probably be stand-alone functions that are called at random in 
+    newNotes().
+
+    1.  Random interval selection with each note. 
+        This will necessitate using PC notation and should use PC numbers 
+        as index numbers to pick from a single scale. Each set of interval 
+        selections should comprise a 5 to 7 note scale within the span of 
+        one octave. Each scale will be daisychained up to a certain octave, 
+        afterwhich the cycle will continue like above. 
+
+    2.  Calling newScale() n times (removing random extrainious notes after 
+        n cycles to stay within a specified threshold, if necessary)
+
+    3.  Symmetrical intervals (see modes of limit transposition, stacking in 
+        alternating 2nds, 3rds, 4ths (per or aug), 5ths (per or aug)
+
+    4.  Calling newNote() n times with only ascending octave supplied as an arg.
+
+    Each will need to return an accurate array of strings (i.e. "C#4") representing
+    the process applied to them. Single harmonic spellings (only sharps or flats) 
+    will probably be used to maintain simplicity.
+
+    GENERAL NOTES:
+
+        Move all the hard coded "resource data" to a stand-alone file?
+        Maybe try to find ways to increase modularity instead of cramming
+        everything into one monster generate() class. 
 
         Long data sets will have the same note associated with different 
         values elsewhere in the array. 
@@ -20,7 +53,8 @@
         the data array (unless we get the same scale chosen again, or there's
         a lot of common tones between the scales that are picked) .
 
-    Method notes:
+
+    METHOD NOTES:
 
         newNotes()
         
@@ -41,30 +75,7 @@
                 pick a new starting scale at random.
             5.  Repeat steps 3-4 until we have as many notes as the highest single
                 integer from the supplied data set.
-
-            Alternative ways of generating ascending scales that should
-            probably be stand-alone functions that are called at random in 
-            newNotes().
-
-            1.  Random interval selection with each note. 
-                This will necessitate using PC notation and should use PC numbers 
-                as index numbers to pick from a single scale. Each set of interval 
-                selections should comprise a 5 to 7 note scale within the span of 
-                one octave. Each scale will be daisychained up to a certain octave, 
-                afterwhich the cycle will continue like above. 
-
-            2.  Calling newScale() n times (removing random extrainious notes after 
-                n cycles to stay within a specified threshold, if necessary)
-
-            3.  Symmetrical intervals (see modes of limit transposition, stacking in 
-                alternating 2nds, 3rds, 4ths (per or aug), 5ths (per or aug)
-
-            4.  Calling newNote() n times with only ascending octave supplied as an arg.
-
-            Each will need to return an accurate array of strings (i.e. "C#4") representing
-            the process applied to them. Single harmonic spellings (only sharps or flats) 
-            will probably be used to maintain simplicity. 
-           
+   
            
         scaleTheScale()
 
@@ -84,6 +95,7 @@
 
             divide data[i] by len(data) - 1 n times? Might introduce a bias towards
             loward end of source scale? Maybe? I don't know. 
+
 
 ----------------------------------------------------------------------------------------------------------------
 '''
@@ -637,10 +649,15 @@ class generate():
         durations against to get the new tempo-accurate durations.
 
         '''
+        if(type(tempo) != float):
+            print("\ntempoConvert() - ERROR: tempo needs to be a float!")
+            return -1
         diff = 60/tempo
         if(type(rhythms) == list):
             for i in range(len(rhythms) - 1):
                 rhythms[i] *= diff
+                '''NOTE: Truncate float a bit here??? Might help
+                         with sheet music generation'''
         elif(type(rhythms) == float):
             rhythms *= diff
         else:
@@ -751,7 +768,7 @@ class generate():
                     return -1             
 
         #-----------------Generate seed scale------------------#
-        '''
+
         # Pick starting octave (2 or 3)
         octave = randint(2, 3)
         # Pick initial root/starting scale (major or minor)
@@ -759,22 +776,22 @@ class generate():
         # # Will this be a minor scale (0 = no, 1 = yes)?
         if(randint(0, 1) == 1):
              root = self.convertToMinor(root)
-        '''     
+     
         '''
         NOTE: replace above lines from octave assignment to convertToMinor() with block
         below once newScale()'s mido bug is resolved.
         '''
-        # Pick starting octave (2 or 3)
-        octave = randint(2, 3)
-        # Pick from dictionary
-        if(randint(1, 2) == 1):
-            root = self.scales[randint(1, len(self.scales) - 1)]
-            # Convert to relative minor randomly
-            if(randint(1, 2) == 1):
-                root = self.convertToMinor(root)
-        # OR generate a new one
-        else:
-            root = self.newScale(octave)
+        # # Pick starting octave (2 or 3)
+        # octave = randint(2, 3)
+        # # Pick from dictionary
+        # if(randint(1, 2) == 1):
+        #     root = self.scales[randint(1, len(self.scales) - 1)]
+        #     # Convert to relative minor randomly
+        #     if(randint(1, 2) == 1):
+        #         root = self.convertToMinor(root)
+        # # OR generate a new one
+        # else:
+        #     root = self.newScale(octave)
 
         # Pick total: 3 - 50 if we're generating random notes
         if(data is None):
@@ -830,6 +847,37 @@ class generate():
             print("\nnewNotes() - ERROR: Unable to generate notes!")
             return -1
         return notes
+
+    # Pick a forte prime form from self.scales, then convert to 
+    # list of strings
+    def pickScale(self, octave=None):
+        '''
+        Picks a 5 to 9 note Forte pitch class prime form, then
+        converts to a string of note names (i.e. ["C#","D#",...etc])
+
+        Returns a list of note name strings.
+
+        NOTE: NOT READY. Need to create a prime form dictionary first! Yay...
+        '''
+        # pick forte pcs/index values
+        scale= []
+        # use sharps or flats?
+        sof = randint(1, 2)
+        # pick prime form
+        pcs = self.scales[randint(0, len(self.scales) - 1)]
+        # pick octave if necessary
+        if(octave is None):
+            octave = randint(2, 3)
+        # convert accordingly
+        for i in range(len(pcs)):
+            if(sof == 1):
+                note = "{}{}".format(self.chromaticScaleSharps[pcs[i]], octave)
+                scale.append(note)
+            else:
+                note = "{}{}".format(self.chromaticScaleFlats[pcs[i]], octave)
+                scale.append(note)
+        return scale
+
 
     # Generate a new scale to function as a "root"
     def newScale(self, octave=None):
@@ -1367,7 +1415,7 @@ class generate():
         # Pick rhythms & scale to tempo
         # newMelody.rhythms = self.newRhythms(len(newMelody.notes))
         rhythmsRaw = self.newRhythms(len(newMelody.notes))
-        rhythms = self.tempoConvert(rhythmsRaw)
+        rhythms = self.tempoConvert(newMelody.tempo, rhythmsRaw)
         newMelody.rhythms = rhythms
 
         # Convert rhythms to time durations in given tempo
