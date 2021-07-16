@@ -56,15 +56,15 @@ class composition():
         -List of melodies (melody() objects)
         -List of harmonies (chord() objects)
         '''
-        if(self.title != "" and
-            self.composer != "" and
-            self.date != "" and
-            self.fileName != "" and
-            self.tempo != 0.0 and
-            len(self.sourceData) != 0 and
-            len(self.instruments) != 0 and
-            len(self.melodies) != 0 and 
-            len(self.chords) != 0):
+        if(self.title != "" 
+            and self.composer != "" 
+            and self.date != ""
+            and self.fileName != ""
+            and self.tempo != 0.0
+            and len(self.sourceData) != 0
+            and len(self.instruments) != 0
+            and len(self.melodies) != 0 
+            and len(self.chords) != 0):
             return True
         else:
             if(self.title == ""):

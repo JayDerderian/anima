@@ -15,6 +15,7 @@ class melody():
         # Data
         self.tempo = 0.0
         self.instrument = ""
+        self.genMethod = ""
         self.sourceData = []
         self.notes = []
         self.rhythms = []
@@ -27,7 +28,8 @@ class melody():
         If True, all data fields have been used.
         '''
         if(self.tempo != 0.0
-            and self.instrument != "" 
+            and self.instrument != ""
+            and len(self.sourceData) > 0 
             and len(self.notes) > 0
             and len(self.rhythms) > 0
             and len(self.dynamics) > 0

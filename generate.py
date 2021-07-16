@@ -110,7 +110,6 @@ from random import randint
 from midi import midiStuff as mid
 from containers.melody import melody
 from containers.chord import chord
-from containers.composition import composition
 
 # Generative functions
 class generate():
@@ -1334,14 +1333,13 @@ class generate():
     # Generate a melody from an array of integers (or not).
     def newMelody(self, data=None, dataType=None):
         '''
-        Picks a tempo, notes, rhythms, and dynamics. Rhythms and dynamics are picked randomly (total
-        for each is len(data), notes come from user. Should (ideally) handle either a character
-        array for a person's name (or any random set of characters), or an array of 
-        either floats or integers of n length.
+        Picks tempo, notes, rhythms, and dynamics, with or without a 
+        supplied list from the user. It can process a list of ints (dataType == 1),
+        floats(2), single char strings/letters(3), or a hex number, represented as a single string(4)
 
         If no data is supplied, then it will generate a melody anyways. 
 
-        Appends to newMelody() object and exports a MIDI file. Returns a newMelody() object.
+        Returns a melody() object if successfull, -1 on failure.
         '''
         # Melody container object
         newMelody = melody()
@@ -1418,14 +1416,9 @@ class generate():
                 return -1
         else:
             newMelody.notes = self.newNotes(data)
-        # Pick rhythms & scale to tempo
-        # newMelody.rhythms = self.newRhythms(len(newMelody.notes))
-        rhythmsRaw = self.newRhythms(len(newMelody.notes))
-        rhythms = self.tempoConvert(newMelody.tempo, rhythmsRaw)
-        newMelody.rhythms = rhythms
-
-        # Convert rhythms to time durations in given tempo
-        newMelody.rhythms = self.tempoConvert(newMelody.tempo, newMelody.rhythms)
+        # Pick rhythms (in seconds/floats @ 60bpm) & scale to tempo
+        rhythms = self.newRhythms(len(newMelody.notes))
+        newMelody.rhythms = self.tempoConvert(newMelody.tempo, rhythms)
         # Pick dynamics
         newMelody.dynamics = self.newDynamics(len(newMelody.notes))
         
@@ -1435,10 +1428,8 @@ class generate():
         if(newMelody.hasData() == False):
             print("\nnewMelody() - ERROR: missing melody data!")
             return -1
-
         # Display results
         # self.displayMelody(newMelody)
-
         return newMelody
 
 
