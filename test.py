@@ -479,6 +479,12 @@ def testNewScale():
     print("\ntesting random scale generation...")
     s = []
     s = generate().newScale()
+    # is this a list?
+    if(type(s) != list):
+        print("...no returned!")
+        print("***Test failed!***")
+        print("\nexiting...\n")
+        exit()        
     # did we get anything?
     if(len(s) == 0):
         print("...no scale generated!")

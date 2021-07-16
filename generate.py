@@ -650,17 +650,19 @@ class generate():
         durations against to get the new tempo-accurate durations.
 
         '''
-        if(type(tempo) != float):
-            print("\ntempoConvert() - ERROR: tempo needs to be a float!")
+        if(type(tempo) != float or type(tempo) != int):
+            print("\ntempoConvert() - ERROR: tempo needs to be a float or int!")
             return -1
         diff = 60/tempo
-        if(type(rhythms) == list):
+        # is this a single float?
+        if(type(rhythms) == float):
+            rhythms *= diff
+        # or a list of floats?
+        elif(type(rhythms) == list):
             for i in range(len(rhythms) - 1):
                 rhythms[i] *= diff
                 '''NOTE: Truncate float a bit here??? Might help
                          with sheet music generation'''
-        elif(type(rhythms) == float):
-            rhythms *= diff
         else:
             print("\ntempoConvert() - ERROR: wrong type inputted!")
             return -1
@@ -865,7 +867,8 @@ class generate():
         # use sharps or flats?
         sof = randint(1, 2)
         # pick prime form
-        pcs = self.scales[randint(0, len(self.scales) - 1)]
+        # pcs = self.scales[randint(0, len(self.scales) - 1)]
+        pcs = [0, 2, 4, 5, 7, 9, 11]
         # pick octave if necessary
         if(octave is None):
             octave = randint(2, 3)
@@ -889,7 +892,10 @@ class generate():
         NOTE: There is an error being raised by the mido library whenever
               I try to use this. This gets the exception error saying the data_byte
               is outside the bounds 0...127. Maybe something gets weird when going
-              from ints to chars. 
+              from ints to chars.
+
+              May try just randomly picking from either self.chromaticScale____ n times,
+              then trying to sort the strings as ascending pitches? 
         '''
         # print("\nGenerating new root scale...")
         if(octave is not None):
