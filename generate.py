@@ -595,6 +595,8 @@ class generate():
         then maps the letters to index numbers, which will then be 
         translated into notes (strings). Accounts for number chars 
         as well
+
+        Thank yout to Eric Dale for getting this method in better shape.
         '''
         # print("\nMapping letters to index numbers...")
         # Convert given string to array of chars
@@ -1480,7 +1482,7 @@ class generate():
             title2 = "{}{}{}{}".format(
                 title, ' for ', newTune.instrument, ' and piano')
             # Export composition data
-            print("\nTitle:", title2)
+            print("\nnew melody title:", title2)
             self.saveInfo(title2, data, fileName, newTune)
 
             return 0
