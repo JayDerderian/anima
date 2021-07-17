@@ -10,8 +10,8 @@
   
 '''
 # Imports
-import pretty_midi as pm
 import urllib.request
+import pretty_midi as pm
 from random import randint
 from datetime import datetime
 

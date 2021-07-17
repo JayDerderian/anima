@@ -13,6 +13,10 @@
     will be used as index numbers against either sharps or flats spellings
     of the chormatic scale in pickScale(). Ideally pickScale() will be used
     wherever a new "root" needs to be generated. 
+    
+    TODO: Create separate file for forte pitch class sets to be imported and called
+    in pickScale(). Create a constant called SCALES (a dictionary) of all the 
+    5-9 note sets (for now, may add more later). 
 
     TODO: Implement alternative ways of generating ascending scales that 
     should probably be stand-alone functions that are called at random in 
@@ -36,6 +40,7 @@
     Each will need to return an accurate array of strings (i.e. "C#4") representing
     the process applied to them. Single harmonic spellings (only sharps or flats) 
     will probably be used to maintain simplicity.
+
 
     GENERAL NOTES:
 
@@ -596,7 +601,7 @@ class generate():
         translated into notes (strings). Accounts for number chars 
         as well
 
-        Thank yout to Eric Dale for getting this method in better shape.
+        Thank you to Eric Dale for getting this method in better shape.
         '''
         # print("\nMapping letters to index numbers...")
         # Convert given string to array of chars
@@ -814,6 +819,10 @@ class generate():
             scale.append(note)
             n += 1
             # Every 7th iteration
+            '''
+            NOTE: 7 might need to be replaced with however many
+            notes in the root scale in a randomly generated one are.
+            '''
             if(i % 7 == 0):
                 # Increment octave
                 octave += 1
@@ -845,10 +854,6 @@ class generate():
             for i in range(len(data)):
                 notes.append(scale[data[i]])
 
-        # Check results
-        if(len(notes) == 0):
-            print("\nnewNotes() - ERROR: Unable to generate notes!")
-            return -1
         return notes
 
     # Pick a forte prime form from self.scales, then convert to 
@@ -1004,10 +1009,6 @@ class generate():
             note = self.newNote(randint(0, 11), 4)
             if(note not in row):
                 row.append(note)
-        #Test outputs
-        if(len(row) == 0):
-            print("\nnewTwelveToneRow() - ERROR: No row generated!")
-            return -1
         # print("New row:", row)
         return row
 
@@ -1230,10 +1231,6 @@ class generate():
         while(len(newchord.notes) < total):
             note = scale[randint(0, len(scale) - 1)]
             newchord.notes.append(note)
-        # Error check
-        if(len(newchord.notes) == 0):
-            print("\nnewChord() - ERROR: no chord generated!")
-            return -1
         # Remove duplicate notes/doublings
         '''NOTE: This is avoids getting the while loop stuck
                  if there's a lot of repeated notes in the melody '''
@@ -1259,11 +1256,14 @@ class generate():
               variance and color. 
         '''
         chords = []
-        # Is there a total, tempo, and scale provided?
-        if(total is None):
-            total = randint(3, 10)
-        elif(scale is None):
-            scale = self.newScale()
+        # Has a scale, tempo, and total been provided?
+        if(scale is None):
+            # scale = self.newScale()
+            scale = self.newNotes()
+        elif(total is None):
+            total = randint(math.floor(len(scale) * 0.3), len(scale))
+            if(total == 0):
+                total += 2
         elif(tempo is None):   
             tempo = self.newTempo()
         elif(total is not None and scale is not None):
@@ -1281,9 +1281,6 @@ class generate():
         while(len(chords) < total):
             newchord = self.newChord(tempo, scale)
             chords.append(newchord)
-        if(len(chords) == 0):
-            print("\nnewChordsfromScale() - ERROR: Unable to generate chords!")
-            return -1
         # Display chords
         # self.displayChords(chords)
         return chords
@@ -1301,6 +1298,10 @@ class generate():
         '''
         if(i > 6 or i < 1):
             return -1
+        if(n < 0):
+            return -1
+        if(r > 11):
+            r = self.octaveEquiv(r)
         chord = []
         while(len(chord) < n):
             chord.append(r)
@@ -1454,16 +1455,17 @@ class generate():
         Exports MIDI file + generates title + .txt data file. 
         Returns 0 on succcess, -1 on failure.
         '''
-        if(data is not None and len(data) == 0):
-            print("\naNewMelody() - ERROR: no data inputted!")
-            return -1
-        if(dataType is not None and 
-           dataType > 4 or dataType < 1):
-            print("\naNewMelody() - ERROR: dataType out of range!")
-            return -1
+        if(data is not None):
+            if(type(data) == list and len(data) == 0):
+                print("\naNewMelody() - ERROR: no data inputted!")
+                return -1
+        if(dataType is not None): 
+            if(type(dataType) == int and dataType > 4 or dataType < 1):
+                print("\naNewMelody() - ERROR: dataType out of range!")
+                return -1
 
         # Generate melody
-        if(data is not None and dataType is not None):
+        elif(data is not None and dataType is not None):
             newTune = self.newMelody(data, dataType)
         else:
             newTune = self.newMelody()
@@ -1488,10 +1490,10 @@ class generate():
             title2 = "{}{}{}{}".format(
                 title, ' for ', newTune.instrument, ' and piano')
             # Export composition data
-            print("\nnew melody title:", title2)
+            print("\nNew melody title:", title2)
             self.saveInfo(title2, data, fileName, newTune)
-
             return 0
+
         else:
             print("\naNewMelody() - ERROR: unable to generate melody!")
             return -1
@@ -1514,9 +1516,6 @@ class generate():
         elif(sourceScale is None):
             sourceScale = self.newNotes()
         chords = self.newChords(total, tempo, sourceScale)
-        if(len(chords) == 0):
-            print("\nnewProgression() - ERROR: no chords generated!")
-            return -1
         # generate title
         title = self.newTitle()
         # create MIDI file name
