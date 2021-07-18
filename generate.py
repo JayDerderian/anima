@@ -108,13 +108,13 @@
 # IMPORTS
 import math
 import toabc
-import datetime
 import urllib.request
 import constants as c
 from random import randint
 from midi import midiStuff as mid
 from containers.melody import melody
 from containers.chord import chord
+from datetime import datetime as date
 
 # Generative functions
 class generate():
@@ -172,9 +172,9 @@ class generate():
         Format: "<words> - <ensemble> - <date: d-m-y hh:mm:ss>"
         '''
         # get date and time.
-        date = datetime.datetime.now()
+        d = date.now()
         # convert to str d-m-y hh:mm:ss
-        dateStr = date.strftime("%d-%b-%y %H:%M:%S")
+        dateStr = d.strftime("%d-%b-%y %H:%M:%S")
         # combine name, ensemble, and date, plus add file extension
         fileName = '{}{}.mid'.format(title, dateStr)
         return fileName
@@ -221,9 +221,9 @@ class generate():
             f.write(instrument)
 
             # Add date and time.
-            date = datetime.datetime.now()
+            d = date.now()
             # convert to str d-m-y hh:mm:ss
-            dateStr = date.strftime("%d-%b-%y %H:%M:%S")
+            dateStr = d.strftime("%d-%b-%y %H:%M:%S")
             dateStr = '\n\nDate: ' + dateStr
             f.write(dateStr)
 
@@ -233,9 +233,9 @@ class generate():
             f.write(title)
 
             # Add date and time.
-            date = datetime.datetime.now()
+            d = date.now()
             # convert to str d-m-y hh:mm:ss
-            dateStr = date.strftime("%d-%b-%y %H:%M:%S")
+            dateStr = d.strftime("%d-%b-%y %H:%M:%S")
             dateStr = '\n\nDate: ' + dateStr
             f.write(dateStr)
 
