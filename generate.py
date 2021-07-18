@@ -424,7 +424,7 @@ class generate():
                 # if it's already a number, add it as an int
                 numbers.append(int(char))
         if(len(numbers) == 0):
-            print("ERROR: no index numbers found!")
+            print("\nmapLettersToNumbers() - ERROR: no index numbers found!")
             return -1
         return numbers
 
@@ -435,7 +435,7 @@ class generate():
         '''
         # error check
         if(type(hex) != str):
-            print("\nhexToIntoArray() - ERROR: wront type inputted!")
+            print("\nhexToIntoArray() - ERROR: wrong type inputted!")
             return -1
         # convert to int
         hexStr = int(hex, 0)
@@ -532,6 +532,12 @@ class generate():
             note = "{}{}".format(c.NOTES[randint(0, len(c.NOTES) - 1)], randint(2, 5))
         elif(i is not None and octave is not None):
             note = "{}{}".format(c.NOTES[i], octave)
+        else:
+            if(i is None):
+                note = c.NOTES[randint(0, len(c.NOTES) - 1)]
+            elif(octave is None):
+                octave = randint(2, 5)
+            note = "{}{}".format(note, octave)
         return note
             
 
