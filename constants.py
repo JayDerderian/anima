@@ -1,6 +1,9 @@
 '''
-A rather large dictionary containing all of Allen Forte's 5 to 9 note prime form 
-pitch class sets. 
+A file for managing all constants realting to scales, tempos, dynamics,
+rhythms, and instruments. 
+
+There's a rather large dictionary containing all of Allen Forte's 5 to 9 
+note prime form pitch class sets. 
 
 A correspnding list called FORTE_NUMBERS is used with randint() to pick
 a prime form from the dictionary in pickScale(). 
@@ -8,9 +11,7 @@ a prime form from the dictionary in pickScale().
 Info taken from here: https://en.wikipedia.org/wiki/List_of_pitch-class_sets
 '''
 
-
 SCALES = {    
-
     # 5-note scales
     "5-1":      [0,1,2,3,4],
     "5-2A":	    [0,1,2,3,5],
@@ -77,7 +78,6 @@ SCALES = {
     "5-z37":    [0,3,4,5,8],
     "5-z38A":   [0,1,2,5,8],
     "5-z38B":   [0,3,6,7,8],
-
     # 6-note chords
     "6-1":	    [0,1,2,3,4,5],
     "6-2A":	    [0,1,2,3,4,6],
@@ -159,7 +159,6 @@ SCALES = {
     "6-z48":	[0,1,2,5,7,9],
     "6-z49":	[0,1,3,4,7,9],
     "6-z50":	[0,1,4,6,7,9],
-
     # 7-note scales
     "7-1": 	    [0,1,2,3,4,5,6],
     "7-2B": 	[0,2,3,4,5,6,7],
@@ -227,7 +226,6 @@ SCALES = {
     "7-z37":	[0,1,3,4,5,7,8],
     "7-z38B":	[0,1,3,4,6,7,8],
     "7-z38A":	[0,1,2,4,5,7,8],
-
     # 8-note scales
     "8-1":	    [0,1,2,3,4,5,6,7],
     "8-2B":	    [0,2,3,4,5,6,7,8],
@@ -272,8 +270,26 @@ SCALES = {
     "8-28":	    [0,1,3,4,6,7,9,10],
     "8-z29B":	[0,2,3,4,6,7,8,9],
     "8-z29A":	[0,1,2,3,5,6,7,9],
-
-
+    # 9-note scales
+    "9-1":	    [0,1,2,3,4,5,6,7,8],
+    "9-2A":	    [0,1,2,3,4,5,6,7,9],
+    "9-2B":	    [0,2,3,4,5,6,7,8,9],
+    "9-3B":	    [0,1,3,4,5,6,7,8,9],
+    "9-3A":	    [0,1,2,3,4,5,6,8,9],
+    "9-4B":	    [0,1,2,4,5,6,7,8,9],
+    "9-4A":	    [0,1,2,3,4,5,7,8,9],
+    "9-5B":	    [0,1,2,3,5,6,7,8,9],
+    "9-5A":	    [0,1,2,3,4,6,7,8,9],
+    "9-6":	    [0,1,2,3,4,5,6,8,10],
+    "9-7B":	    [0,1,2,3,4,5,7,9,10],
+    "9-7A":	    [0,1,2,3,4,5,7,8,10],
+    "9-8B":	    [0,1,2,3,4,6,8,9,10],
+    "9-8A":	    [0,1,2,3,4,6,7,8,10],
+    "9-9":	    [0,1,2,3,5,6,7,8,10],
+    "9-10":	    [0,1,2,3,4,6,7,9,10],
+    "9-11B":	[0,1,2,3,5,6,8,9,10],
+    "9-11A":	[0,1,2,3,5,6,7,9,10],
+    "9-12":	    [0,1,2,4,5,6,8,9,10]
 }
 
 FORTE_NUMBERS = [
@@ -342,7 +358,6 @@ FORTE_NUMBERS = [
     "5-z37",
     "5-z38A",
     "5-z38B",
-
     # 6-note chords
     "6-1",
     "6-2A",
@@ -424,7 +439,6 @@ FORTE_NUMBERS = [
     "6-z48",
     "6-z49",
     "6-z50",
-
     # 7-note scales
     "7-1",
     "7-2B",	
@@ -492,7 +506,6 @@ FORTE_NUMBERS = [
     "7-z37",
     "7-z38B",
     "7-z38A"
-
     # 8-note scales
     "8-1",
     "8-2B",
@@ -537,6 +550,184 @@ FORTE_NUMBERS = [
     "8-28",
     "8-z29B",
     "8-z29A",
+    # 9-note scales
+    "9-1",
+    "9-2A",
+    "9-2B",
+    "9-3B",
+    "9-3A",	
+    "9-4B",
+    "9-4A",	
+    "9-5B",
+    "9-5A",	
+    "9-6",
+    "9-7B",
+    "9-7A",	
+    "9-8B",
+    "9-8A",	
+    "9-9",
+    "9-10",
+    "9-11B",
+    "9-11A",
+    "9-12"	
 ]
 
+# All 12 major scales
+MAJOR_SCALES = {1: ["C", "D", "E", "F", "G", "A", "B"],
+                2: ["Db", "Eb", "F", "Gb", "Ab", "Bb", "C"],
+                3: ["D", "E", "F#", "G", "A", "B", "C#"],
+                4: ["Eb", "F", "G", "Ab", "Bb", "C", "D"],
+                5: ["E", "F#", "G#", "A", "B", "C#", "D#"],
+                6: ["F", "G", "A", "Bb", "C", "D", "E"],
+                7: ["F#", "G#", "A#", "B", "C#", "D#", "E#"],
+                8: ["G", "A", "B", "C", "D", "E", "F#"],
+                9: ["Ab", "Bb", "C", "Db", "Eb", "F", "G"],
+                10: ["A", "B", "C#", "D", "E", "F#", "G#"],
+                11: ["Bb", "C", "D", "Eb", "F", "G", "A"],
+                12: ["B", "C#", "D#", "E", "F#", "G#", "A#"]}
 
+
+# Tempos
+TEMPOS = [40.0, 42.0, 44.0, 46.0, 50.0, 52.0, 54.0, 56.0, 58.0,  # 1-9 (0-8)
+          60.0, 63.0, 66.0, 69.0, 72.0, 76.0, 80.0, 84.0, 88.0, # 10-18 (9-17)
+          92.0, 96.0, 100.0, 104.0, 108.0, 112.0, 116.0, 120.0, # 19-27 (18-26)
+          126.0, 132.0, 128.0, 144.0, 152.0, 160.0, 168.0, 176.0, # 28-36 (27-35)
+          184.0, 200.0, 208.0]  # 37-39 (36-38)
+
+
+# Dynamics (MIDI velocities: 0 - 127)
+DYNAMICS = [20, 24, 28, 32, 36, 40, 44, 48, 52,
+            56, 60, 64, 68, 72, 76, 80, 84, 88,
+            92, 96, 100, 104, 108, 112, 116, 120, 124]
+
+
+# INSTRUMENTS[program_number] maps the program_number to an instrument name
+INSTRUMENTS = [
+    'Acoustic Grand Piano', 
+    'Bright Acoustic Piano',              
+    'Electric Grand Piano', 
+    'Honky-tonk Piano',
+    'Electric Piano 1', 
+    'Electric Piano 2', 
+    'Harpsichord',
+    'Clavinet', 
+    'Celesta', 
+    'Glockenspiel', 
+    'Music Box',
+    'Vibraphone', 
+    'Marimba', 
+    'Xylophone', 
+    'Tubular Bells',
+    'Dulcimer', 
+    'Drawbar Organ', 
+    'Percussive Organ',
+    'Rock Organ', 
+    'Church Organ', 
+    'Reed Organ', 
+    'Accordion',
+    'Harmonica', 
+    'Tango Accordion', 
+    'Acoustic Guitar (nylon)',
+    'Acoustic Guitar (steel)', 
+    'Electric Guitar (jazz)',
+    'Electric Guitar (clean)', 
+    'Electric Guitar (muted)',
+    'Overdriven Guitar', 
+    'Distortion Guitar',
+    'Guitar Harmonics', 
+    'Acoustic Bass',
+    'Electric Bass (finger)', 
+    'Electric Bass (pick)',
+    'Fretless Bass', 
+    'Slap Bass 1', 
+    'Slap Bass 2',
+    'Synth Bass 1', 
+    'Synth Bass 2', 
+    'Violin', 
+    'Viola', 
+    'Cello',
+    'Contrabass', 
+    'Tremolo Strings', 
+    'Pizzicato Strings',
+    'Orchestral Harp', 
+    'Timpani', 
+    'String Ensemble 1',
+    'String Ensemble 2', 
+    'Synth Strings 1', 
+    'Synth Strings 2',
+    'Choir Aahs', 
+    'Voice Oohs', 
+    'Synth Choir', 
+    'Orchestra Hit',
+    'Trumpet', 
+    'Trombone', 
+    'Tuba', 
+    'Muted Trumpet',
+    'French Horn', 
+    'Brass Section', 
+    'Synth Brass 1',
+    'Synth Brass 2', 
+    'Soprano Sax', 
+    'Alto Sax', 
+    'Tenor Sax',
+    'Baritone Sax', 
+    'Oboe', 
+    'English Horn', 
+    'Bassoon',
+    'Clarinet', 
+    'Piccolo', 
+    'Flute', 
+    'Recorder', 
+    'Pan Flute',
+    'Blown bottle', 
+    'Shakuhachi', 
+    'Whistle', 
+    'Ocarina',
+    'Lead 1 (square)', 
+    'Lead 2 (sawtooth)',
+    'Lead 3 (calliope)', 
+    'Lead 4 chiff', 
+    'Lead 5 (charang)',
+    'Lead 6 (voice)', 
+    'Lead 7 (fifths)',
+    'Lead 8 (bass + lead)', 
+    'Pad 1 (new age)', 
+    'Pad 2 (warm)',
+    'Pad 3 (polysynth)', 
+    'Pad 4 (choir)', 
+    'Pad 5 (bowed)',
+    'Pad 6 (metallic)', 
+    'Pad 7 (halo)', 
+    'Pad 8 (sweep)',
+    'FX 1 (rain)', 
+    'FX 2 (soundtrack)', 
+    'FX 3 (crystal)',
+    'FX 4 (atmosphere)', 
+    'FX 5 (brightness)', 
+    'FX 6 (goblins)',
+    'FX 7 (echoes)', 
+    'FX 8 (sci-fi)', 
+    'Sitar', 
+    'Banjo',
+    'Shamisen', 
+    'Koto', 
+    'Kalimba', 
+    'Bagpipe', 
+    'Fiddle',
+    'Shanai', 
+    'Tinkle Bell', 
+    'Agogo', 
+    'Steel Drums',
+    'Woodblock', 
+    'Taiko Drum', 
+    'Melodic Tom', 
+    'Synth Drum',
+    'Reverse Cymbal', 
+    'Guitar Fret Noise', 
+    'Breath Noise',
+    'Seashore', 
+    'Bird Tweet', 
+    'Telephone Ring', 
+    'Helicopter',
+    'Applause', 
+    'Gunshot']
