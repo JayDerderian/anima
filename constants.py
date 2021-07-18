@@ -11,6 +11,9 @@ a prime form from the dictionary in pickScale().
 Info taken from here: https://en.wikipedia.org/wiki/List_of_pitch-class_sets
 '''
 
+# 5 to 9 note prime form scales. Each integer/pitch class
+# functions as an index number against CHROMATIC_SCALE to 
+# generate a scale represented by strings.
 SCALES = {    
     # 5-note scales
     "5-1":      [0,1,2,3,4],
@@ -292,6 +295,8 @@ SCALES = {
     "9-12":	    [0,1,2,4,5,6,8,9,10]
 }
 
+# List of Forte numbers. Use randint() to select
+# the string/key value to be used with SCALES. 
 FORTE_NUMBERS = [
     "5-1",
     "5-2A",
@@ -600,8 +605,22 @@ DYNAMICS = [20, 24, 28, 32, 36, 40, 44, 48, 52,
             56, 60, 64, 68, 72, 76, 80, 84, 88,
             92, 96, 100, 104, 108, 112, 116, 120, 124]
 
+# Ensemble sizes
+ENSEMBLE_SIZES = {1: 'solo',
+                  2: 'duo',
+                  3: 'trio',
+                  4: 'quartet',
+                  5: 'quintet',
+                  6: 'sextet',
+                  7: 'septet',
+                  8: 'octet',
+                  9: 'nonet',
+                  10: 'decet',
+                  11: 'large ensemble',
+                  12: 'open instrumentation'}
 
-# INSTRUMENTS[program_number] maps the program_number to an instrument name
+
+# INSTRUMENTS [program_number] maps the program_number to an instrument name
 INSTRUMENTS = [
     'Acoustic Grand Piano', 
     'Bright Acoustic Piano',              
