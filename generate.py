@@ -602,7 +602,7 @@ class generate():
         translated into notes (strings). Accounts for number chars 
         as well
 
-        Thank you to Eric Dale for getting this method in better shape.
+        Thank you Eric Dale for getting this method in better shape.
         '''
         # print("\nMapping letters to index numbers...")
         # Convert given string to array of chars
