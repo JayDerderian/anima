@@ -12,6 +12,7 @@ Notes:
 #IMPORTS
 import pretty_midi
 import midi as mid
+from random import randint
 from analyze import analysis
 from decisions import decide as choice
 from generate import generate as create
@@ -36,15 +37,13 @@ class modification(create):
         '''
         if(not row):
             return None
-        i = 0
-        while (i < len(row)):
+        for i in range(len(row)):
             row[i] += distance
-            if(row[i] > 12):
+            if(row[i] > 11):
                 create.octaveEquiv(row[i])
             elif(row[i] < 0):
-                while(row[i] < 0 and row[i] < 12):
-                    row[i] += 12
-            i += 1
+                while(row[i] < 0 and row[i] < 11):
+                    row[i] += 11
         return row
 
     #Generates list of transposition distances
@@ -56,11 +55,8 @@ class modification(create):
         transpositions = []
         print("\nGenerating transpositions...")
         while(n < len(notesToModify)):
-            transpositions.append(choice.distance(self))
+            transpositions.append(randint(0, 11))
             n += 1
-        #Test outputs
-        if(not transpositions):
-            print("...Unable to generate transposition list!")
         print("Transpositions: ", transpositions)
         return transpositions
 

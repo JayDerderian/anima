@@ -115,6 +115,7 @@ from random import randint
 from midi import midiStuff as mid
 from containers.melody import melody
 from containers.chord import chord
+from constants import SCALES, FORTE_NUMBERS
 
 # Generative functions
 class generate():
