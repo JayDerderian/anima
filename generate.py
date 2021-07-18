@@ -528,11 +528,23 @@ class generate():
         NOTE: use randint(0, 11) and randint(2, 5) for num/octave args to get a 
               randomly chosen note, or leave arg fields empty
         '''
+        # error check
+        if(i is not None):
+            if(type(i) == int and i > len(c.NOTES) - 1 or i < 0):
+                print("\nnewNotes() - ERROR: index out of range!")
+                return -1
+            else:
+                print("\nnewNotes() - ERROR: wrong type inputted for index!")
+                return -1
+        # was no args used?
         if(i is None and octave is None):
             note = "{}{}".format(c.NOTES[randint(0, len(c.NOTES) - 1)], randint(2, 5))
+        # were all args used?
         elif(i is not None and octave is not None):
             note = "{}{}".format(c.NOTES[i], octave)
+        # were *some* args used?
         else:
+            # if so, which?
             if(i is None):
                 note = c.NOTES[randint(0, len(c.NOTES) - 1)]
             elif(octave is None):

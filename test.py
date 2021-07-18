@@ -4,10 +4,10 @@
 ---------------------------------------------------------------------------------------------------------
 '''
 # Imports
+import constants as c
 from random import uniform
 from random import randint
 from generate import generate
-from instruments import INSTRUMENT_MAP
 
 
 #-----------------------------------------test data generation------------------------------------------#
@@ -254,8 +254,8 @@ def testNewInstrument():
     # search instruments list
     for i in range(len(instruments)):
         # compare each one (probably a better way to do this...)
-        for j in range(len(INSTRUMENT_MAP)):
-             if(instruments[i] == INSTRUMENT_MAP[j]):
+        for j in range(len(c.INSTRUMENTS)):
+             if(instruments[i] == c.INSTRUMENTS[j]):
                  found += 1
     # if we found any
     if(found > 0):

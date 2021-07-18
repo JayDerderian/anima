@@ -62,7 +62,8 @@ NOTES = ["C ", "C#", "Db", "D ", "D#", "Eb", "E ",
 """NOTE: Spellings were arbitrarily chosen. 
 Probably won't matter much from a MIDI file's POV"""
 # indicies 0 - 11
-CHROMATIC_SCALE = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "Bb", "B"]
+CHROMATIC_SCALE = ["C", "C#", "D", "D#", "E", "F", 
+                   "F#", "G", "G#", "A", "Bb", "B"]
 
 
 # All 12 major scales
@@ -80,6 +81,21 @@ MAJOR_SCALES = {1: ["C", "D", "E", "F", "G", "A", "B"],
                 12: ["B", "C#", "D#", "E", "F#", "G#", "A#"]}
 
 
+# All 12 relative/natural minor scales
+MINOR_SCALES = {1: ["A", "B", "C", "D", "E", "F", "G"],
+                2: ["Bb", "C","Db", "Eb", "F", "Gb", "Ab"],
+                3: ["B", "C#", "D", "E", "F#", "G", "A"],
+                4: ["C", "D","Eb", "F", "G", "Ab", "Bb"],
+                5: ["C#", "D#","E", "F#", "G#", "A", "B"],
+                6: ["D", "E", "F", "G", "A", "Bb", "C"],
+                7: ["D#", "E#", "F#", "G#", "A#", "B", "C#"],
+                8: ["E", "F#", "G", "A", "B", "C", "D"],
+                9: ["F", "G", "Ab", "Bb", "C", "Db", "Eb"],
+                10: ["F#", "G#", "A", "B", "C#", "D", "E"],
+                11: ["G", "A", "Bb", "C", "D", "Eb", "F"],
+                12: ["G#", "A#", "B", "C#", "D#", "E", "F#"]}
+
+
 # Interval list/dictonary
 '''
 Notes:
@@ -95,28 +111,26 @@ Notes:
         db, eb, f, g, ab, bB, cb, db,
         d, e, f#, g#, a, b, c, d ...ect.  
 '''
-INTERVALS = {        
-    # Major
-    1: [2, 2, 1, 2, 2, 2, 1],
-    # Natural minor
-    2: [2, 1, 2, 2, 1, 2, 2],
-    # Melodic minor
-    3: [2, 1, 2, 2, 2, 2, 1],
-    # Harmonic minor
-    4: [2, 1, 2, 2, 1, 3],
-    # Whole tone
-    5: [2, 2, 2, 2, 2],
-    # Octatonic
-    6: [2, 1, 2, 1, 2, 1, 2],
-    # Major triad
-    7: [4, 3],
-    # Minor triad
-    8: [3, 4],
-    # Diminished triad
-    9: [3, 3],
-    # Augmented triad
-    10: [4, 4]
-}
+INTERVALS = {# Major
+             1: [2, 2, 1, 2, 2, 2, 1],
+             # Natural minor
+             2: [2, 1, 2, 2, 1, 2, 2],
+             # Melodic minor
+             3: [2, 1, 2, 2, 2, 2, 1],
+             # Harmonic minor
+             4: [2, 1, 2, 2, 1, 3],
+             # Whole tone
+             5: [2, 2, 2, 2, 2],
+             # Octatonic
+             6: [2, 1, 2, 1, 2, 1, 2],
+             # Major triad
+             7: [4, 3],
+             # Minor triad
+             8: [3, 4],
+             # Diminished triad
+             9: [3, 3],
+             # Augmented triad
+             10: [4, 4]}
 
 
 '''
