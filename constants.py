@@ -1,19 +1,120 @@
+#-------------------------------------------------------------------------------#
+#--------------------------------Resource data----------------------------------#
+#-------------------------------------------------------------------------------#
+
+
 '''
 A file for managing all constants realting to scales, tempos, dynamics,
 rhythms, and instruments. 
+'''
 
-There's a rather large dictionary containing all of Allen Forte's 5 to 9 
+
+# The alphabet. 
+ALPHABET = ['a', 'b', 'c', 'd', 'e', 'f', 'g',
+            'h', 'i', 'j', 'k', 'l', 'm', 'n',
+            'o', 'p', 'q', 'r', 's', 't', 'u',
+            'v', 'w', 'x', 'y', 'z']
+# Tempos
+
+TEMPOS = [40.0, 42.0, 44.0, 46.0, 50.0, 52.0, 54.0, 56.0, 58.0,  # 1-9 (0-8)
+          60.0, 63.0, 66.0, 69.0, 72.0, 76.0, 80.0, 84.0, 88.0, # 10-18 (9-17)
+          92.0, 96.0, 100.0, 104.0, 108.0, 112.0, 116.0, 120.0, # 19-27 (18-26)
+          126.0, 132.0, 128.0, 144.0, 152.0, 160.0, 168.0, 176.0, # 28-36 (27-35)
+          184.0, 200.0, 208.0]  # 37-39 (36-38)
+
+
+# Dynamics (MIDI velocities: 0 - 127)
+DYNAMICS = [20, 24, 28, 32, 36, 40, 44, 48, 52,
+            56, 60, 64, 68, 72, 76, 80, 84, 88,
+            92, 96, 100, 104, 108, 112, 116, 120, 124]
+
+# Base rhythms in seconds at 60bpm (or q = 60). Converted to 
+# tempo using tempoConvert() when called.
+'''
+Durations in seconds (1 = quarter note (60bpm))
+Whole note to 32nd note
+
+    [0] 4 = whole note                                                          
+    [1] 3 = dotted half
+    [2] 2 = half note           
+    [3] 1.5 = dotted quarter    
+    [4] 1 = quarter             
+    [5] 0.75 = dotted eighth
+    [6] 0.5 = eighth
+    [7] 0.375 = dotted sixteenth
+    [8] 0.25 = sixteenth 
+    [9] 0.125 = thirty-second
+''' 
+RHYTHMS = [4.0, 3.0, 2.0, 1.5, 1.0, 0.75, 0.5, 0.375, 0.25, 0.125]
+
+
+# All 12 major scales
+MAJOR_SCALES = {1: ["C", "D", "E", "F", "G", "A", "B"],
+                2: ["Db", "Eb", "F", "Gb", "Ab", "Bb", "C"],
+                3: ["D", "E", "F#", "G", "A", "B", "C#"],
+                4: ["Eb", "F", "G", "Ab", "Bb", "C", "D"],
+                5: ["E", "F#", "G#", "A", "B", "C#", "D#"],
+                6: ["F", "G", "A", "Bb", "C", "D", "E"],
+                7: ["F#", "G#", "A#", "B", "C#", "D#", "E#"],
+                8: ["G", "A", "B", "C", "D", "E", "F#"],
+                9: ["Ab", "Bb", "C", "Db", "Eb", "F", "G"],
+                10: ["A", "B", "C#", "D", "E", "F#", "G#"],
+                11: ["Bb", "C", "D", "Eb", "F", "G", "A"],
+                12: ["B", "C#", "D#", "E", "F#", "G#", "A#"]}
+
+# Interval list/dictonary
+'''
+Notes:
+
+    Develop interval sets that begin with 2 and end with 2,
+    making the next cycle of intervals begin on a tone a half
+    step higher than originally.
+
+    "Self-transposing interval sets"
+
+    ex. 
+        c, d, e, f#, g, a, bb, c,
+        db, eb, f, g, ab, bB, cb, db,
+        d, e, f#, g#, a, b, c, d ...ect.  
+'''
+INTERVALS = {        
+        # Major
+        1: [2, 2, 1, 2, 2, 2, 1],
+        # Natural minor
+        2: [2, 1, 2, 2, 1, 2, 2],
+        # Melodic minor
+        3: [2, 1, 2, 2, 2, 2, 1],
+        # Harmonic minor
+        4: [2, 1, 2, 2, 1, 3],
+        # Whole tone
+        5: [2, 2, 2, 2, 2],
+        # Octatonic
+        6: [2, 1, 2, 1, 2, 1, 2],
+        # Major triad
+        7: [4, 3],
+        # Minor triad
+        8: [3, 4],
+        # Diminished triad
+        9: [3, 3],
+        # Augmented triad
+        10: [4, 4]
+}
+
+
+# 5 to 9 note prime form scales. Each integer/pitch class
+# functions as an index number against CHROMATIC_SCALE to 
+# generate a scale represented by strings.
+
+'''
+A rather large dictionary containing all of Allen Forte's 5 to 9 
 note prime form pitch class sets. 
 
 A correspnding list called FORTE_NUMBERS is used with randint() to pick
 a prime form from the dictionary in pickScale(). 
 
-Info taken from here: https://en.wikipedia.org/wiki/List_of_pitch-class_sets
-'''
+Info taken from here: 
+https://en.wikipedia.org/wiki/List_of_pitch-class_sets'''
 
-# 5 to 9 note prime form scales. Each integer/pitch class
-# functions as an index number against CHROMATIC_SCALE to 
-# generate a scale represented by strings.
 SCALES = {    
     # 5-note scales
     "5-1":      [0,1,2,3,4],
@@ -576,97 +677,6 @@ FORTE_NUMBERS = [
     "9-11A",
     "9-12"	
 ]
-
-# All 12 major scales
-MAJOR_SCALES = {1: ["C", "D", "E", "F", "G", "A", "B"],
-                2: ["Db", "Eb", "F", "Gb", "Ab", "Bb", "C"],
-                3: ["D", "E", "F#", "G", "A", "B", "C#"],
-                4: ["Eb", "F", "G", "Ab", "Bb", "C", "D"],
-                5: ["E", "F#", "G#", "A", "B", "C#", "D#"],
-                6: ["F", "G", "A", "Bb", "C", "D", "E"],
-                7: ["F#", "G#", "A#", "B", "C#", "D#", "E#"],
-                8: ["G", "A", "B", "C", "D", "E", "F#"],
-                9: ["Ab", "Bb", "C", "Db", "Eb", "F", "G"],
-                10: ["A", "B", "C#", "D", "E", "F#", "G#"],
-                11: ["Bb", "C", "D", "Eb", "F", "G", "A"],
-                12: ["B", "C#", "D#", "E", "F#", "G#", "A#"]}
-
-# Interval list/dictonary
-'''
-Notes:
-
-    Develop interval sets that begin with 2 and end with 2,
-    making the next cycle of intervals begin on a tone a half
-    step higher than originally.
-
-    "Self-transposing interval sets"
-
-    ex. 
-        c, d, e, f#, g, a, bb, c,
-        db, eb, f, g, ab, bB, cb, db,
-        d, e, f#, g#, a, b, c, d ...ect.  
-'''
-INTERVALS = {        
-        # Major
-        1: [2, 2, 1, 2, 2, 2, 1],
-        # Natural minor
-        2: [2, 1, 2, 2, 1, 2, 2],
-        # Melodic minor
-        3: [2, 1, 2, 2, 2, 2, 1],
-        # Harmonic minor
-        4: [2, 1, 2, 2, 1, 3],
-        # Whole tone
-        5: [2, 2, 2, 2, 2],
-        # Octatonic
-        6: [2, 1, 2, 1, 2, 1, 2],
-        # Major triad
-        7: [4, 3],
-        # Minor triad
-        8: [3, 4],
-        # Diminished triad
-        9: [3, 3],
-        # Augmented triad
-        10: [4, 4]
-}
-
-
-# Tempos
-TEMPOS = [40.0, 42.0, 44.0, 46.0, 50.0, 52.0, 54.0, 56.0, 58.0,  # 1-9 (0-8)
-          60.0, 63.0, 66.0, 69.0, 72.0, 76.0, 80.0, 84.0, 88.0, # 10-18 (9-17)
-          92.0, 96.0, 100.0, 104.0, 108.0, 112.0, 116.0, 120.0, # 19-27 (18-26)
-          126.0, 132.0, 128.0, 144.0, 152.0, 160.0, 168.0, 176.0, # 28-36 (27-35)
-          184.0, 200.0, 208.0]  # 37-39 (36-38)
-
-
-# Dynamics (MIDI velocities: 0 - 127)
-DYNAMICS = [20, 24, 28, 32, 36, 40, 44, 48, 52,
-            56, 60, 64, 68, 72, 76, 80, 84, 88,
-            92, 96, 100, 104, 108, 112, 116, 120, 124]
-
-# Base rhythms in seconds at 60bpm (or q = 60). Converted to 
-# tempo using tempoConvert() when called.
-'''
-Durations in seconds (1 = quarter note (60bpm))
-Whole note to 32nd note
-
-    [0] 4 = whole note                                                          
-    [1] 3 = dotted half
-    [2] 2 = half note           
-    [3] 1.5 = dotted quarter    
-    [4] 1 = quarter             
-    [5] 0.75 = dotted eighth
-    [6] 0.5 = eighth
-    [7] 0.375 = dotted sixteenth
-    [8] 0.25 = sixteenth 
-    [9] 0.125 = thirty-second
-''' 
-RHYTHMS = [4.0, 3.0, 2.0, 1.5, 1.0, 0.75, 0.5, 0.375, 0.25, 0.125]
-
-# The alphabet. 
-ALPHABET = ['a', 'b', 'c', 'd', 'e', 'f', 'g',
-            'h', 'i', 'j', 'k', 'l', 'm', 'n',
-            'o', 'p', 'q', 'r', 's', 't', 'u',
-            'v', 'w', 'x', 'y', 'z']
 
 # Ensemble sizes
 ENSEMBLE_SIZES = {1: 'solo',

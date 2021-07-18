@@ -126,105 +126,104 @@ class generate():
 
     # Constructor
     def __init__(self):
-
-        #---------------------------------------------------------------------#
-        #--------------------------Resource data------------------------------#
-        #---------------------------------------------------------------------#
-
-        # ----------------------------Letters---------------------------------#
-        '''
-        Used to search against and return an integer representing an 
-        array index. 
-        '''
-        self.alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g',
-                         'h', 'i', 'j', 'k', 'l', 'm', 'n',
-                         'o', 'p', 'q', 'r', 's', 't', 'u',
-                         'v', 'w', 'x', 'y', 'z']
-
-        #----------------------------Tempo-----------------------------------#
-
-        # Tempos (indices: 0-38)
-        self.tempos = [40.0, 42.0, 44.0, 46.0, 50.0, 52.0, 54.0, 56.0, 58.0,  # 1-9 (0-8)
-                       # 10-18 (9-17)
-                       60.0, 63.0, 66.0, 69.0, 72.0, 76.0, 80.0, 84.0, 88.0,
-                       # 19-27 (18-26)
-                       92.0, 96.0, 100.0, 104.0, 108.0, 112.0, 116.0, 120.0,
-                       # 28-36 (27-35)
-                       126.0, 132.0, 128.0, 144.0, 152.0, 160.0, 168.0, 176.0,
-                       184.0, 200.0, 208.0]  # 37-39 (36-38)
+        self.alive = True
 
 
-        #-----------------------Notes and Scales------------------------------#
 
-        # Enharmonically spelled note names starting on A. Indicies: 0-16.
-        '''
-        Interval mappings for enhamonicly spelled chromatic scale array starting on C
-            0 - 0        = unison
-            0 - 1 or 2   = half-step
-            0 - 3        = whole-step
-            0 - 4        = minor third
-            0 - 5 or 6   = major third
-            0 - 7        = perfect 4th
-            0 - 8 or 9   = tritone
-            0 - 10       = perfect 5th
-            0 - 11       = minor 6th
-            0 - 12 or 13 = major 6th/dim 7th
-            0 - 14       = minor 7th
-            0 - 15 or 16 = major 7th
-        '''
-        self.notes = ["C ", "C#", "Db", "D ",
-                      "D#", "Eb", "E ", "F ",
-                      "F#", "Gb", "G ", "G#",
-                      "Ab", "A ", "A#", "Bb", "B "]
+        # # ----------------------------Letters---------------------------------#
+        # '''
+        # Used to search against and return an integer representing an 
+        # array index. 
+        # '''
+        # self.alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g',
+        #                  'h', 'i', 'j', 'k', 'l', 'm', 'n',
+        #                  'o', 'p', 'q', 'r', 's', 't', 'u',
+        #                  'v', 'w', 'x', 'y', 'z']
 
-        # Chormatic scale (using all sharps). Indicies 0 - 11.
-        self.chromaticScaleSharps = ["C", "C#", "D", "D#", "E", "F",
-                                     "F#", "G", "G#", "A", "A#", "B"]
+        # #----------------------------Tempo-----------------------------------#
 
-        # Chormatic scale (using all flats). Indicies 0 - 11.
-        self.chromaticScaleFlats = ["C", "Db", "D", "Eb", "E", "F",
-                                    "Gb", "G", "Ab", "A", "Bb", "B"]
-
-        # Major Scales
-        self.scales = {1: ["C", "D", "E", "F", "G", "A", "B"],
-                       2: ["Db", "Eb", "F", "Gb", "Ab", "Bb", "C"],
-                       3: ["D", "E", "F#", "G", "A", "B", "C#"],
-                       4: ["Eb", "F", "G", "Ab", "Bb", "C", "D"],
-                       5: ["E", "F#", "G#", "A", "B", "C#", "D#"],
-                       6: ["F", "G", "A", "Bb", "C", "D", "E"],
-                       7: ["F#", "G#", "A#", "B", "C#", "D#", "E#"],
-                       8: ["G", "A", "B", "C", "D", "E", "F#"],
-                       9: ["Ab", "Bb", "C", "Db", "Eb", "F", "G"],
-                       10: ["A", "B", "C#", "D", "E", "F#", "G#"],
-                       11: ["Bb", "C", "D", "Eb", "F", "G", "A"],
-                       12: ["B", "C#", "D#", "E", "F#", "G#", "A#"]}
+        # # Tempos (indices: 0-38)
+        # self.tempos = [40.0, 42.0, 44.0, 46.0, 50.0, 52.0, 54.0, 56.0, 58.0,  # 1-9 (0-8)
+        #                # 10-18 (9-17)
+        #                60.0, 63.0, 66.0, 69.0, 72.0, 76.0, 80.0, 84.0, 88.0,
+        #                # 19-27 (18-26)
+        #                92.0, 96.0, 100.0, 104.0, 108.0, 112.0, 116.0, 120.0,
+        #                # 28-36 (27-35)
+        #                126.0, 132.0, 128.0, 144.0, 152.0, 160.0, 168.0, 176.0,
+        #                184.0, 200.0, 208.0]  # 37-39 (36-38)
 
 
-        #---------------------------Rhythm-----------------------------------#
+        # #-----------------------Notes and Scales------------------------------#
 
-        # Rhythms (0-9)
-        self.rhythms = [4.0, 3.0, 2.0, 1.5, 1.0, 0.75, 0.5,
-                        0.375, 0.25, 0.125]
+        # # Enharmonically spelled note names starting on A. Indicies: 0-16.
+        # '''
+        # Interval mappings for enhamonicly spelled chromatic scale array starting on C
+        #     0 - 0        = unison
+        #     0 - 1 or 2   = half-step
+        #     0 - 3        = whole-step
+        #     0 - 4        = minor third
+        #     0 - 5 or 6   = major third
+        #     0 - 7        = perfect 4th
+        #     0 - 8 or 9   = tritone
+        #     0 - 10       = perfect 5th
+        #     0 - 11       = minor 6th
+        #     0 - 12 or 13 = major 6th/dim 7th
+        #     0 - 14       = minor 7th
+        #     0 - 15 or 16 = major 7th
+        # '''
+        # self.notes = ["C ", "C#", "Db", "D ",
+        #               "D#", "Eb", "E ", "F ",
+        #               "F#", "Gb", "G ", "G#",
+        #               "Ab", "A ", "A#", "Bb", "B "]
 
-        # Fast rhythms (0-8)
-        self.rhythmsFast = [0.375, 0.28125, 0.25, 0.1875, 0.125, 0.09375,
-                            0.0625, 0.046875, 0.03125]
+        # # Chormatic scale (using all sharps). Indicies 0 - 11.
+        # self.chromaticScaleSharps = ["C", "C#", "D", "D#", "E", "F",
+        #                              "F#", "G", "G#", "A", "A#", "B"]
 
-        # Slow rhythms (0-7) - [n2 = n1 + (n1/2)]
-        self.rhythmsSlow = [8.0, 12.0, 18.0, 27.0,
-                            40.5, 60.75, 91.125, 136.6875]
+        # # Chormatic scale (using all flats). Indicies 0 - 11.
+        # self.chromaticScaleFlats = ["C", "Db", "D", "Eb", "E", "F",
+        #                             "Gb", "G", "Ab", "A", "Bb", "B"]
+
+        # # Major Scales
+        # self.scales = {1: ["C", "D", "E", "F", "G", "A", "B"],
+        #                2: ["Db", "Eb", "F", "Gb", "Ab", "Bb", "C"],
+        #                3: ["D", "E", "F#", "G", "A", "B", "C#"],
+        #                4: ["Eb", "F", "G", "Ab", "Bb", "C", "D"],
+        #                5: ["E", "F#", "G#", "A", "B", "C#", "D#"],
+        #                6: ["F", "G", "A", "Bb", "C", "D", "E"],
+        #                7: ["F#", "G#", "A#", "B", "C#", "D#", "E#"],
+        #                8: ["G", "A", "B", "C", "D", "E", "F#"],
+        #                9: ["Ab", "Bb", "C", "Db", "Eb", "F", "G"],
+        #                10: ["A", "B", "C#", "D", "E", "F#", "G#"],
+        #                11: ["Bb", "C", "D", "Eb", "F", "G", "A"],
+        #                12: ["B", "C#", "D#", "E", "F#", "G#", "A#"]}
 
 
-        #--------------------------Dynamics---------------------------------#
+        # #---------------------------Rhythm-----------------------------------#
 
-        '''
-        MIDI velocity/dynamics range: 0 - 127
-        '''
+        # # Rhythms (0-9)
+        # self.rhythms = [4.0, 3.0, 2.0, 1.5, 1.0, 0.75, 0.5,
+        #                 0.375, 0.25, 0.125]
 
-        # Dynamics (0-26)
-        self.dynamics = [20, 24, 28, 32, 36, 40, 44, 48, 52,
-                         56, 60, 64, 68, 72, 76, 80, 84, 88,
-                         92, 96, 100, 104, 108, 112, 116, 120, 124]
+        # # Fast rhythms (0-8)
+        # self.rhythmsFast = [0.375, 0.28125, 0.25, 0.1875, 0.125, 0.09375,
+        #                     0.0625, 0.046875, 0.03125]
+
+        # # Slow rhythms (0-7) - [n2 = n1 + (n1/2)]
+        # self.rhythmsSlow = [8.0, 12.0, 18.0, 27.0,
+        #                     40.5, 60.75, 91.125, 136.6875]
+
+
+        # #--------------------------Dynamics---------------------------------#
+
+        # '''
+        # MIDI velocity/dynamics range: 0 - 127
+        # '''
+
+        # # Dynamics (0-26)
+        # self.dynamics = [20, 24, 28, 32, 36, 40, 44, 48, 52,
+        #                  56, 60, 64, 68, 72, 76, 80, 84, 88,
+        #                  92, 96, 100, 104, 108, 112, 116, 120, 124]
 
 
     #-----------------------------------------------------------------------------------------#
