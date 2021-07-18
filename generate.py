@@ -109,13 +109,13 @@
 import math
 import toabc
 import datetime
-import instruments
+# import instruments
 import urllib.request
 from random import randint
 from midi import midiStuff as mid
 from containers.melody import melody
 from containers.chord import chord
-from constants import SCALES, FORTE_NUMBERS, INSTRUMENTS, TEMPOS, DYNAMICS
+from constants import ALPHABET, SCALES, FORTE_NUMBERS, INSTRUMENTS, TEMPOS, RHYTHMS, DYNAMICS
 
 # Generative functions
 class generate():
@@ -153,24 +153,6 @@ class generate():
                        126.0, 132.0, 128.0, 144.0, 152.0, 160.0, 168.0, 176.0,
                        184.0, 200.0, 208.0]  # 37-39 (36-38)
 
-        #-----------------------Instrumentation------------------------------#
-
-        # Ensemble size
-        self.size = {1: 'solo',
-                     2: 'duo',
-                     3: 'trio',
-                     4: 'quartet',
-                     5: 'quintet',
-                     6: 'sextet',
-                     7: 'septet',
-                     8: 'octet',
-                     9: 'nonet',
-                     10: 'decet',
-                     11: 'large ensemble',
-                     12: 'open instrumentation'}
-
-        # Instrument list
-        self.instruments = instruments.INSTRUMENT_MAP
 
         #-----------------------Notes and Scales------------------------------#
 
@@ -217,85 +199,9 @@ class generate():
                        11: ["Bb", "C", "D", "Eb", "F", "G", "A"],
                        12: ["B", "C#", "D#", "E", "F#", "G#", "A#"]}
 
-        # Major scale in PC notation.
-        self.majorScale = [0, 2, 4, 5, 7, 9, 11]
-
-        # Natural minor scale in PC notation
-        self.minorScale = [0, 2, 3, 5, 7, 8, 10]
-
-        # Harmonic minor scale in PC notation
-        self.harMinScale = [0, 2, 3, 5, 7, 8, 11]
-
-        # Melodic minor scalale in PC notation
-        self.melMinorScale = [0, 2, 3, 5, 7, 9, 11]
-
-        #---------------------------Interval Lists---------------------------#
-        '''
-        Notes:
-
-            Develop interval sets that begin with 2 and end with 2,
-            making the next cycle of intervals begin on a tone a half
-            step higher than originally.
-
-            "Self-transposing interval sets"
-
-            ex. 
-                c, d, e, f#, g, a, bb, c,
-                db, eb, f, g, ab, bB, cb, db,
-                d, e, f#, g#, a, b, c, d ...ect.  
-        '''
-
-        # Major
-        self.major = [2, 2, 1, 2, 2, 2, 1]
-
-        # Natural minor
-        self.natMinor = [2, 1, 2, 2, 1, 2, 2]
-
-        # Melodic minor
-        self.melMinor = [2, 1, 2, 2, 2, 2, 1]
-
-        # Harmonic minor
-        self.harMinor = [2, 1, 2, 2, 1, 3]
-
-        # Whole tone
-        self.wholeTone = [2, 2, 2, 2, 2]
-
-        # Octatonic
-        self.octatonic = [2, 1, 2, 1, 2, 1, 2]
-
-        # Triads
-        self.majorTriad = [4, 3]
-        self.minorTriad = [3, 4]
-        self.diminishedTriad = [3, 3]
-        self.augmentedTriad = [4, 4]
-
-        #---------------------------Chords-----------------------------------#
-
-        # Major, minor, augmented, and diminished triads
-        self.triads = {1: [0,4,7], 2: [0,3,7], 
-                       3: [0,4,8], 4: [0,3,6]}
-        
-        # Diminished, augmented, quartal, quintal chords
-        self.symChords = {1: [0,3,6], 2: [0,4,8],
-                          3: [0,5,10], 4: [0,2,7]}
 
         #---------------------------Rhythm-----------------------------------#
 
-        '''
-        Durations in seconds (1 = quarter note (60bpm))
-        Whole note to 32nd note
-        
-            [0] 4 = whole note                                                          
-            [1] 3 = dotted half
-            [2] 2 = half note           
-            [3] 1.5 = dotted quarter    
-            [4] 1 = quarter             
-            [5] 0.75 = dotted eighth
-            [6] 0.5 = eighth
-            [7] 0.375 = dotted sixteenth
-            [8] 0.25 = sixteenth 
-            [9] 0.125 = thirty-second
-        '''
         # Rhythms (0-9)
         self.rhythms = [4.0, 3.0, 2.0, 1.5, 1.0, 0.75, 0.5,
                         0.375, 0.25, 0.125]
@@ -319,15 +225,6 @@ class generate():
         self.dynamics = [20, 24, 28, 32, 36, 40, 44, 48, 52,
                          56, 60, 64, 68, 72, 76, 80, 84, 88,
                          92, 96, 100, 104, 108, 112, 116, 120, 124]
-
-        # Soft dynamics (0-8)
-        self.dynamicsSoft = [20, 24, 28, 32, 36, 40, 44, 48, 52]
-
-        # Medium dynamics (0-8)
-        self.dynamicsMed = [56, 60, 64, 68, 72, 76, 80, 84, 88]
-
-        # Loud dynamics (0-8)
-        self.dynamicsLoud = [92, 96, 100, 104, 108, 112, 116, 120, 124]
 
 
     #-----------------------------------------------------------------------------------------#

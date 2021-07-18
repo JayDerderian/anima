@@ -591,6 +591,44 @@ MAJOR_SCALES = {1: ["C", "D", "E", "F", "G", "A", "B"],
                 11: ["Bb", "C", "D", "Eb", "F", "G", "A"],
                 12: ["B", "C#", "D#", "E", "F#", "G#", "A#"]}
 
+# Interval list/dictonary
+'''
+Notes:
+
+    Develop interval sets that begin with 2 and end with 2,
+    making the next cycle of intervals begin on a tone a half
+    step higher than originally.
+
+    "Self-transposing interval sets"
+
+    ex. 
+        c, d, e, f#, g, a, bb, c,
+        db, eb, f, g, ab, bB, cb, db,
+        d, e, f#, g#, a, b, c, d ...ect.  
+'''
+INTERVALS = {        
+        # Major
+        1: [2, 2, 1, 2, 2, 2, 1],
+        # Natural minor
+        2: [2, 1, 2, 2, 1, 2, 2],
+        # Melodic minor
+        3: [2, 1, 2, 2, 2, 2, 1],
+        # Harmonic minor
+        4: [2, 1, 2, 2, 1, 3],
+        # Whole tone
+        5: [2, 2, 2, 2, 2],
+        # Octatonic
+        6: [2, 1, 2, 1, 2, 1, 2],
+        # Major triad
+        7: [4, 3],
+        # Minor triad
+        8: [3, 4],
+        # Diminished triad
+        9: [3, 3],
+        # Augmented triad
+        10: [4, 4]
+}
+
 
 # Tempos
 TEMPOS = [40.0, 42.0, 44.0, 46.0, 50.0, 52.0, 54.0, 56.0, 58.0,  # 1-9 (0-8)
@@ -604,6 +642,31 @@ TEMPOS = [40.0, 42.0, 44.0, 46.0, 50.0, 52.0, 54.0, 56.0, 58.0,  # 1-9 (0-8)
 DYNAMICS = [20, 24, 28, 32, 36, 40, 44, 48, 52,
             56, 60, 64, 68, 72, 76, 80, 84, 88,
             92, 96, 100, 104, 108, 112, 116, 120, 124]
+
+# Base rhythms in seconds at 60bpm (or q = 60). Converted to 
+# tempo using tempoConvert() when called.
+'''
+Durations in seconds (1 = quarter note (60bpm))
+Whole note to 32nd note
+
+    [0] 4 = whole note                                                          
+    [1] 3 = dotted half
+    [2] 2 = half note           
+    [3] 1.5 = dotted quarter    
+    [4] 1 = quarter             
+    [5] 0.75 = dotted eighth
+    [6] 0.5 = eighth
+    [7] 0.375 = dotted sixteenth
+    [8] 0.25 = sixteenth 
+    [9] 0.125 = thirty-second
+''' 
+RHYTHMS = [4.0, 3.0, 2.0, 1.5, 1.0, 0.75, 0.5, 0.375, 0.25, 0.125]
+
+# The alphabet. 
+ALPHABET = ['a', 'b', 'c', 'd', 'e', 'f', 'g',
+            'h', 'i', 'j', 'k', 'l', 'm', 'n',
+            'o', 'p', 'q', 'r', 's', 't', 'u',
+            'v', 'w', 'x', 'y', 'z']
 
 # Ensemble sizes
 ENSEMBLE_SIZES = {1: 'solo',
