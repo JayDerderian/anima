@@ -176,13 +176,13 @@ class generate():
         #               "F#", "Gb", "G ", "G#",
         #               "Ab", "A ", "A#", "Bb", "B "]
 
-        # # Chormatic scale (using all sharps). Indicies 0 - 11.
-        # self.chromaticScaleSharps = ["C", "C#", "D", "D#", "E", "F",
-        #                              "F#", "G", "G#", "A", "A#", "B"]
+        # Chormatic scale (using all sharps). Indicies 0 - 11.
+        self.chromaticScaleSharps = ["C", "C#", "D", "D#", "E", "F",
+                                     "F#", "G", "G#", "A", "A#", "B"]
 
-        # # Chormatic scale (using all flats). Indicies 0 - 11.
-        # self.chromaticScaleFlats = ["C", "Db", "D", "Eb", "E", "F",
-        #                             "Gb", "G", "Ab", "A", "Bb", "B"]
+        # Chormatic scale (using all flats). Indicies 0 - 11.
+        self.chromaticScaleFlats = ["C", "Db", "D", "Eb", "E", "F",
+                                    "Gb", "G", "Ab", "A", "Bb", "B"]
 
         # # Major Scales
         # self.scales = {1: ["C", "D", "E", "F", "G", "A", "B"],
@@ -583,9 +583,7 @@ class generate():
         Returns a float upon success, 60.0 if fail.
         '''
         # print("\nPicking tempo...")
-        tempo = 0.0
-        tempo = self.tempos[randint(0, len(self.tempos) - 1)]
-        return tempo
+        return TEMPOS[randint(0, len(TEMPOS) - 1)]
 
 
     #--------------------------------------------------------------------------------#
@@ -598,8 +596,8 @@ class generate():
         '''
         Randomly picks an instrument from a given list. Returns a string.
         '''
-        instrument = self.instruments[randint(0, 110)]
-        return instrument
+        # print("\nPicking instrument...")
+        return INSTRUMENTS[randint(0, 110)]
 
     # Picks a collection of instruments of n length.
     def newInstruments(self, total):
