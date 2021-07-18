@@ -111,11 +111,11 @@ import toabc
 import datetime
 # import instruments
 import urllib.request
+import constants as c
 from random import randint
 from midi import midiStuff as mid
 from containers.melody import melody
 from containers.chord import chord
-from constants import ALPHABET, SCALES, FORTE_NUMBERS, INSTRUMENTS, TEMPOS, RHYTHMS, DYNAMICS
 
 # Generative functions
 class generate():
@@ -516,7 +516,8 @@ class generate():
             # check if each character is a letter
             if char.isalpha():
                 # add its index to the numbers list
-                numbers.append(self.alphabet.index(char))
+                # numbers.append(self.alphabet.index(char))
+                numbers.append(c.ALPHABET.index(char))
             elif char.isnumeric():
                 # if it's already a number, add it as an int
                 numbers.append(int(char))
@@ -583,7 +584,7 @@ class generate():
         Returns a float upon success, 60.0 if fail.
         '''
         # print("\nPicking tempo...")
-        return TEMPOS[randint(0, len(TEMPOS) - 1)]
+        return c.TEMPOS[randint(0, len(c.TEMPOS) - 1)]
 
 
     #--------------------------------------------------------------------------------#
@@ -597,7 +598,7 @@ class generate():
         Randomly picks an instrument from a given list. Returns a string.
         '''
         # print("\nPicking instrument...")
-        return INSTRUMENTS[randint(0, 110)]
+        return c.INSTRUMENTS[randint(0, 110)]
 
     # Picks a collection of instruments of n length.
     def newInstruments(self, total):
@@ -617,7 +618,7 @@ class generate():
 
 
     # Converts a given integer to a pitch in a specified octave (ex C#6)
-    def newNote(self, num=None, octave=None):
+    def newNote(self, i=None, octave=None):
         '''
         Converts a given integer to a pitch in a specified octave (ex C#6).
         Requires an integer and the required octave. Returns a single string.
@@ -625,28 +626,12 @@ class generate():
         NOTE: use randint(0, 11) and randint(2, 5) for num/octave args to get a 
               randomly chosen note, or leave arg fields empty
         '''
-        # If we get *all* supplied data, pick note
-        if(num is not None and octave is not None):
-            if(num < 0 or num > 11 or
-               octave > 6 or octave < 0):
-                return -1
-            # Sharps (1) or flats (2)
-            if(randint(1, 2) == 1):
-                note = self.chromaticScaleSharps[num]
-            else:
-                note = self.chromaticScaleFlats[num]
-        # Otherwise, pick a random note
-        else:
-            # Pick octave (3 - 5)
-            octave = randint(3, 5)
-            # Sharps (1) or flats (2)
-            if(randint(1, 2) == 1):
-                note = self.chromaticScaleSharps[randint(0, 11)]
-            else:
-                note = self.chromaticScaleFlats[randint(0, 11)]
-        # Add octave
-        note = "{}{}".format(note, octave)
+        if(i is None and octave is None):
+            note = "{}{}".format(c.NOTES[randint(0, len(c.NOTES) - 1)], randint(2, 5))
+        elif(i is not None and octave is not None):
+            note = "{}{}".format(c.NOTES[i], octave)
         return note
+            
 
     # Generate a series of notes based off an inputted array of integers
     def newNotes(self, data=None):
@@ -674,27 +659,8 @@ class generate():
 
         # Pick starting octave (2 or 3)
         octave = randint(2, 3)
-        # Pick initial root/starting scale (major or minor)
-        root = self.scales[randint(1, len(self.scales) - 1)]
-        # # Will this be a minor scale (0 = no, 1 = yes)?
-        if(randint(0, 1) == 1):
-             root = self.convertToMinor(root)
-     
-        '''
-        NOTE: replace above lines from octave assignment to convertToMinor() with block
-        below once newScale()'s mido bug is resolved.
-        '''
-        # # Pick starting octave (2 or 3)
-        # octave = randint(2, 3)
-        # # Pick from dictionary
-        # if(randint(1, 2) == 1):
-        #     root = self.scales[randint(1, len(self.scales) - 1)]
-        #     # Convert to relative minor randomly
-        #     if(randint(1, 2) == 1):
-        #         root = self.convertToMinor(root)
-        # # OR generate a new one
-        # else:
-        #     root = self.newScale(octave)
+        # Pick initial root/starting scale (either a prime form or major scale)
+        root = self.pickScale(octave)
 
         # Pick total: 3 - 50 if we're generating random notes
         if(data is None):
@@ -713,23 +679,17 @@ class generate():
             note = "{}{}".format(root[n], octave)
             scale.append(note)
             n += 1
-            # Every 7th iteration
-            '''
-            NOTE: 7 might need to be replaced with however many
-            notes in the root scale in a randomly generated one are.
-            '''
-            if(i % 7 == 0):
+            # Every nth iteration, where n is
+            # the number of notes in the root scale
+            if(i % len(root) == 0):
                 # Increment octave
                 octave += 1
                 # Have we reached the octave limit?
                 if(octave > 5):
                     # Reset starting octave
                     octave = randint(2, 3)
-                    # Generate another new scale
-                    root = self.scales[randint(1, len(self.scales) - 1)]
-                    # Re-decide if we're using minor (1) or major (2) again
-                    if(randint(1, 2) == 1):
-                        root = self.convertToMinor(root)
+                    # Generate another new root scale & starting octave
+                    root = self.pickScale(octave)
                 # Reset n to stay within len(root)
                 n = 0
 
@@ -753,32 +713,24 @@ class generate():
 
     # Pick a forte prime form from self.scales, then convert to 
     # list of strings
-    def pickScale(self, octave=None):
+    def pickScale(self):
         '''
-        Picks a 5 to 9 note Forte pitch class prime form, then
-        converts to a string of note names (i.e. ["C#","D#",...etc])
+        Picks either 1 of 12 major scales, or a 5 to 9 note 
+        Forte pitch class prime form.
 
-        Returns a list of note name strings.
-
-        NOTE: NOT READY. Need to create a prime form dictionary first! Yay...
+        Returns a list of note name strings without an assigned octave.
         '''
-        # pick forte pcs/index values
-        scale= []
-        # use sharps or flats?
-        sof = randint(1, 2)
-        # pick prime form
-        # pcs = self.scales[randint(0, len(self.scales) - 1)]
-        pcs = [0, 2, 4, 5, 7, 9, 11]
-        # pick octave if necessary
-        if(octave is None):
-            octave = randint(2, 3)
-        # convert accordingly
-        for i in range(len(pcs)):
-            if(sof == 1):
-                note = "{}{}".format(self.chromaticScaleSharps[pcs[i]], octave)
-                scale.append(note)
-            else:
-                note = "{}{}".format(self.chromaticScaleFlats[pcs[i]], octave)
+        scale = []
+        # use a major scale(1) or pick a prime form(2)?
+        if(randint(1, 2) == 1):
+            # pick major scale
+            scale = c.MAJOR_SCALES[randint(0, len(c.MAJOR_SCALES) - 1)]
+        else:
+            # pick prime form
+            pcs = c.SCALES[c.FORTE_NUMBERS[randint(0, len(c.FORTE_NUMBERS) - 1)]]
+            # convert pcs to a list of note names / strings
+            for i in range(len(pcs)):
+                note = "{}".format(c.CHROMATIC_SCALE[pcs[i]])
                 scale.append(note)
         return scale
 

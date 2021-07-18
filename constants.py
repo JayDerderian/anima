@@ -4,8 +4,7 @@
 
 
 '''
-A file for managing all constants realting to scales, tempos, dynamics,
-rhythms, and instruments. 
+A file for managing all constants used throughout the program. 
 '''
 
 
@@ -14,8 +13,9 @@ ALPHABET = ['a', 'b', 'c', 'd', 'e', 'f', 'g',
             'h', 'i', 'j', 'k', 'l', 'm', 'n',
             'o', 'p', 'q', 'r', 's', 't', 'u',
             'v', 'w', 'x', 'y', 'z']
-# Tempos
 
+
+# Tempos
 TEMPOS = [40.0, 42.0, 44.0, 46.0, 50.0, 52.0, 54.0, 56.0, 58.0,  # 1-9 (0-8)
           60.0, 63.0, 66.0, 69.0, 72.0, 76.0, 80.0, 84.0, 88.0, # 10-18 (9-17)
           92.0, 96.0, 100.0, 104.0, 108.0, 112.0, 116.0, 120.0, # 19-27 (18-26)
@@ -27,6 +27,7 @@ TEMPOS = [40.0, 42.0, 44.0, 46.0, 50.0, 52.0, 54.0, 56.0, 58.0,  # 1-9 (0-8)
 DYNAMICS = [20, 24, 28, 32, 36, 40, 44, 48, 52,
             56, 60, 64, 68, 72, 76, 80, 84, 88,
             92, 96, 100, 104, 108, 112, 116, 120, 124]
+
 
 # Base rhythms in seconds at 60bpm (or q = 60). Converted to 
 # tempo using tempoConvert() when called.
@@ -45,7 +46,23 @@ Whole note to 32nd note
     [8] 0.25 = sixteenth 
     [9] 0.125 = thirty-second
 ''' 
-RHYTHMS = [4.0, 3.0, 2.0, 1.5, 1.0, 0.75, 0.5, 0.375, 0.25, 0.125]
+RHYTHMS = [4.0, 3.0, 2.0, 1.5, 1.0, 
+           0.75, 0.5, 0.375, 0.25, 0.125]
+
+
+# Notes in all (reasonable) harmonic spellings
+# indicies 0 - 18. To be used specifically by randint()
+# when trying to "randomly" pick a number.
+NOTES = ["C ", "C#", "Db", "D ", "D#", "Eb", "E ", 
+         "Fb", "F ", "F#", "Gb", "G ", "G#", "Ab", 
+         "A ", "A#", "Bb", "B ", "Cb"]
+
+
+# Chromatic scale
+"""NOTE: Spellings were arbitrarily chosen. 
+Probably won't matter much from a MIDI file's POV"""
+# indicies 0 - 11
+CHROMATIC_SCALE = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "Bb", "B"]
 
 
 # All 12 major scales
@@ -61,6 +78,7 @@ MAJOR_SCALES = {1: ["C", "D", "E", "F", "G", "A", "B"],
                 10: ["A", "B", "C#", "D", "E", "F#", "G#"],
                 11: ["Bb", "C", "D", "Eb", "F", "G", "A"],
                 12: ["B", "C#", "D#", "E", "F#", "G#", "A#"]}
+
 
 # Interval list/dictonary
 '''
@@ -78,39 +96,36 @@ Notes:
         d, e, f#, g#, a, b, c, d ...ect.  
 '''
 INTERVALS = {        
-        # Major
-        1: [2, 2, 1, 2, 2, 2, 1],
-        # Natural minor
-        2: [2, 1, 2, 2, 1, 2, 2],
-        # Melodic minor
-        3: [2, 1, 2, 2, 2, 2, 1],
-        # Harmonic minor
-        4: [2, 1, 2, 2, 1, 3],
-        # Whole tone
-        5: [2, 2, 2, 2, 2],
-        # Octatonic
-        6: [2, 1, 2, 1, 2, 1, 2],
-        # Major triad
-        7: [4, 3],
-        # Minor triad
-        8: [3, 4],
-        # Diminished triad
-        9: [3, 3],
-        # Augmented triad
-        10: [4, 4]
+    # Major
+    1: [2, 2, 1, 2, 2, 2, 1],
+    # Natural minor
+    2: [2, 1, 2, 2, 1, 2, 2],
+    # Melodic minor
+    3: [2, 1, 2, 2, 2, 2, 1],
+    # Harmonic minor
+    4: [2, 1, 2, 2, 1, 3],
+    # Whole tone
+    5: [2, 2, 2, 2, 2],
+    # Octatonic
+    6: [2, 1, 2, 1, 2, 1, 2],
+    # Major triad
+    7: [4, 3],
+    # Minor triad
+    8: [3, 4],
+    # Diminished triad
+    9: [3, 3],
+    # Augmented triad
+    10: [4, 4]
 }
 
 
-# 5 to 9 note prime form scales. Each integer/pitch class
-# functions as an index number against CHROMATIC_SCALE to 
-# generate a scale represented by strings.
-
 '''
 A rather large dictionary containing all of Allen Forte's 5 to 9 
-note prime form pitch class sets. 
+note prime form pitch class sets. A correspnding list called FORTE_NUMBERS 
+is used with randint() to pick a prime form from the dictionary in pickScale().
 
-A correspnding list called FORTE_NUMBERS is used with randint() to pick
-a prime form from the dictionary in pickScale(). 
+Each integer/pitch class functions as an index number against CHROMATIC_SCALE to 
+generate a scale represented by strings.
 
 Info taken from here: 
 https://en.wikipedia.org/wiki/List_of_pitch-class_sets'''
@@ -396,6 +411,7 @@ SCALES = {
     "9-12":	    [0,1,2,4,5,6,8,9,10]
 }
 
+
 # List of Forte numbers. Use randint() to select
 # the string/key value to be used with SCALES. 
 FORTE_NUMBERS = [
@@ -678,6 +694,7 @@ FORTE_NUMBERS = [
     "9-12"	
 ]
 
+
 # Ensemble sizes
 ENSEMBLE_SIZES = {1: 'solo',
                   2: 'duo',
@@ -822,4 +839,5 @@ INSTRUMENTS = [
     'Telephone Ring', 
     'Helicopter',
     'Applause', 
-    'Gunshot']
+    'Gunshot'
+]
