@@ -695,9 +695,9 @@ class generate():
         scale = []
         for i in range(len(pcs)):
             if(sof == 1):
-                note = "{}{}".format(self.chromaticScaleSharps[pcs[i]], octave)
+                note = "{}{}".format(c.CHROMATIC_SCALE[pcs[i]], octave)
             else:
-                note = "{}{}".format(self.chromaticScaleFlats[pcs[i]], octave)
+                note = "{}{}".format(c.CHROMATIC_SCALE[pcs[i]], octave)
             scale.append(note)
         if(len(scale) == 0):
             print("\nnewScale() - ERROR: unable to generate scale!")
