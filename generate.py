@@ -641,10 +641,15 @@ class generate():
         Returns a list of note name strings without an assigned octave.
         '''
         scale = []
-        # use a major scale(1) or pick a prime form(2)?
+        # use a major or minor scale(1), or pick a prime form(2)?
         if(randint(1, 2) == 1):
-            # pick major scale
-            scale = c.MAJOR_SCALES[randint(0, len(c.MAJOR_SCALES) - 1)]
+            # pick major
+            if(randint(1, 2) == 1):
+                scale = c.MAJOR_SCALES[randint(0, len(c.MAJOR_SCALES) - 1)]
+            # pick minor
+            else:
+                scale = c.MAJOR_SCALES[randint(0, len(c.MAJOR_SCALES) - 1)]
+                scale = self.convertToMinor(scale)
         else:
             # pick prime form
             pcs = c.SCALES[c.FORTE_NUMBERS[randint(0, len(c.FORTE_NUMBERS) - 1)]]
