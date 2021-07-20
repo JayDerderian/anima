@@ -680,8 +680,6 @@ class generate():
         elif(octave is None):
             octave = 4
         pcs = []
-        # Use sharps (1) or flats (2)?
-        sof = randint(1, 2)
         # generate an ascending set of 5-9 integers/note array indices
         total = randint(5, 9)
         while(len(pcs) < total):
@@ -694,14 +692,8 @@ class generate():
         # convert to strings
         scale = []
         for i in range(len(pcs)):
-            if(sof == 1):
-                note = "{}{}".format(c.CHROMATIC_SCALE[pcs[i]], octave)
-            else:
-                note = "{}{}".format(c.CHROMATIC_SCALE[pcs[i]], octave)
+            note = "{}{}".format(c.CHROMATIC_SCALE[pcs[i]], octave)
             scale.append(note)
-        if(len(scale) == 0):
-            print("\nnewScale() - ERROR: unable to generate scale!")
-            return -1
         # print("new scale:", scale, "\n")
         return scale
 
