@@ -600,7 +600,7 @@ class generate():
             n += 1
             # Every nth iteration, where n is
             # the number of notes in the root scale
-            if(i % len(root) == 0 and i != 0):
+            if(n == len(root)):
                 # Increment octave
                 octave += 1
                 # Have we reached the octave limit?
@@ -829,7 +829,7 @@ class generate():
         # print("\nGenerating", total, "rhythms...")
         while(len(rhythms) < total):
             # Pick rhythm and add to list
-            rhythm = self.rhythms[randint(0, len(self.rhythms) - 1)]
+            rhythm = c.RHYTHMS[randint(0, len(c.RHYTHMS) - 1)]
             # Repeat this rhythm or not? 1 = yes, 2 = no
             if(randint(1, 2) == 1):
                 # Limit reps to no more than roughly 1/3 of the supplied total
@@ -885,7 +885,7 @@ class generate():
         # print("\nGenerating", total, "dynamics...")
         while(len(dynamics) < total):
             # Pick dynamic (medium range for now)
-            dynamic = self.dynamics[randint(0, 8)]
+            dynamic = c.DYNAMICS[randint(0, 8)]
             # Repeat this dynamic or not? 1 = yes, 2 = no
             if(randint(1, 2) == 1):
                 # Limit reps to no more than roughly 1/3 of the supplied total
@@ -934,9 +934,9 @@ class generate():
         while(len(elements) < total):
             # Pick rhythm (1) or dynamic(2)?
             if(dataType == 1):
-                item = self.rhythms[randint(0, len(self.rhythms) - 1)]
+                item = c.RHYTHMS[randint(0, len(c.RHYTHMS) - 1)]
             else:
-                item = self.dynamics[randint(0, len(self.dynamics) - 1)]
+                item = c.DYNAMICS[randint(0, len(c.DYNAMICS) - 1)]
             # Repeat this rhythm or not? 1 = yes, 2 = no
             if(randint(1, 2) == 1):
                 # Limit reps to no more than  approx 1/3 of the total no. of rhythms
