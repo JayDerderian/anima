@@ -53,11 +53,11 @@ RHYTHMS = [4.0, 3.0, 2.0, 1.5, 1.0,
 
 
 # Notes in all (reasonable) harmonic spellings
-# indicies 0 - 18. To be used specifically by randint()
+# indicies 0 - 17. To be used specifically by randint()
 # when trying to "randomly" pick a number.
 NOTES = ["C ", "C#", "Db", "D ", "D#", "Eb", "E ", 
-         "Fb", "F ", "F#", "Gb", "G ", "G#", "Ab", 
-         "A ", "A#", "Bb", "B ", "Cb"]
+        "F ", "F#", "Gb", "G ", "G#", "Ab", "A ", 
+        "A#", "Bb", "B "]
 
 
 # Chromatic scale

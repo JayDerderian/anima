@@ -632,29 +632,47 @@ class generate():
 
     # Pick a forte prime form from self.scales, then convert to 
     # list of strings
-    def pickScale(self):
+    def pickScale(self, octave):
         '''
         Picks either 1 of 12 major  or minor scales for a tonal flavor, 
         or a 5 to 9 note Forte pitch class prime form for an atonal source.
 
-        Returns a list of note name strings *without* an assigned octave.
+        Returns a list of note name strings with an assigned octave (either 
+        from the user or on it's own).
         '''
-        scale = []
+        # check if we got an octave int and make sure it's right.
+        if(octave is None):
+            octave = 4
+        elif(octave is not None):
+            if(type(octave) != int):
+                print("\npickScale() - ERROR: wrong type inputted for octave!")
+                return -1
+            elif(type(octave) == int):
+                if(octave > 5 or octave < 2):
+                    print("\npickScale() - ERROR: octave out of range!")
+                    return -1
+        origScale = []
         # use a major or minor scale(1), or pick a prime form(2)?
         if(randint(1, 2) == 1):
             # pick major
             if(randint(1, 2) == 1):
-                scale = c.MAJOR_SCALES[randint(0, len(c.MAJOR_SCALES) - 1)]
+                origScale = c.MAJOR_SCALES[randint(0, len(c.MAJOR_SCALES) - 1)]
             # pick minor
             else:
-                scale = c.MINOR_SCALES[randint(0, len(c.MINOR_SCALES) - 1)]
+                origScale = c.MINOR_SCALES[randint(0, len(c.MINOR_SCALES) - 1)]
         else:
             # pick prime form
             pcs = c.SCALES[c.FORTE_NUMBERS[randint(0, len(c.FORTE_NUMBERS) - 1)]]
             # convert pcs to a list of note names / strings
             for i in range(len(pcs)):
                 note = "{}".format(c.CHROMATIC_SCALE[pcs[i]])
-                scale.append(note)
+                origScale.append(note)
+        # append octave
+        scale = []
+        for i in range(len(origScale)):
+            note = origScale[i]
+            note = "{}{}".format(note, octave)
+            scale.append(note)        
         return scale
 
 
