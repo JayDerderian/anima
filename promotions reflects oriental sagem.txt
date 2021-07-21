@@ -1,0 +1,46 @@
+
+
+*****************************************************************
+--------------------------NEW COMPOSITION------------------------
+*****************************************************************
+
+
+TITLE: promotions reflects oriental sagem
+
+Instrument(s): Choir Aahs and piano
+
+Date: 21-Jul-21 16:17:28
+
+Inputted data: 0xdce9cf
+
+
+----------------MELODY INFO-------------------
+
+Tempo: 80.0bpm
+
+Total Notes: 8
+
+Notes: C#2, F2, F2, C3, C3, C3, C3, G2
+
+Total rhythms:8
+Rhythms: 0.375, 0.375, 2.25, 0.375, 0.09375, 0.5625, 1.5, 0.375
+
+Total dynamics: 8
+Dynamics: 24, 24, 68, 124, 40, 40, 108, 80
+
+
+----------------HARMONY INFO-------------------
+
+Total chords: 3
+
+Notes: C#2, C3, G2, F2
+Rhythm: 0.75
+Dynamics: 32, 32, 32, 32
+
+Notes: C#2, F2, G2
+Rhythm: 2.25
+Dynamics: 28, 28, 28
+
+Notes: C3, G2, C#2
+Rhythm: 0.1875
+Dynamics: 36, 36, 36
