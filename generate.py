@@ -581,7 +581,6 @@ class generate():
         octave = randint(2, 3)
         # Pick initial root/starting scale (either a prime form or major scale)
         root = self.pickScale(octave)
-
         # Pick total: 3 - 50 if we're generating random notes
         if(data is None):
             # Note that the main loop uses total + 1!
@@ -601,7 +600,7 @@ class generate():
             n += 1
             # Every nth iteration, where n is
             # the number of notes in the root scale
-            if(i % len(root) == 0):
+            if(i % len(root) == 0 and i != 0):
                 # Increment octave
                 octave += 1
                 # Have we reached the octave limit?
@@ -635,10 +634,10 @@ class generate():
     # list of strings
     def pickScale(self):
         '''
-        Picks either 1 of 12 major scales, or a 5 to 9 note 
-        Forte pitch class prime form.
+        Picks either 1 of 12 major  or minor scales for a tonal flavor, 
+        or a 5 to 9 note Forte pitch class prime form for an atonal source.
 
-        Returns a list of note name strings without an assigned octave.
+        Returns a list of note name strings *without* an assigned octave.
         '''
         scale = []
         # use a major or minor scale(1), or pick a prime form(2)?
@@ -648,8 +647,7 @@ class generate():
                 scale = c.MAJOR_SCALES[randint(0, len(c.MAJOR_SCALES) - 1)]
             # pick minor
             else:
-                scale = c.MAJOR_SCALES[randint(0, len(c.MAJOR_SCALES) - 1)]
-                scale = self.convertToMinor(scale)
+                scale = c.MINOR_SCALES[randint(0, len(c.MINOR_SCALES) - 1)]
         else:
             # pick prime form
             pcs = c.SCALES[c.FORTE_NUMBERS[randint(0, len(c.FORTE_NUMBERS) - 1)]]
@@ -663,23 +661,25 @@ class generate():
     # Generate a new scale to function as a "root"
     def newScale(self, octave=None):
         '''
-        Requires a starting octave. Returns a randomly generated scale 
-        within one octave to be used as a 'root'. Returns -1 on failure.
+        Returns a randomly generated scale within one octave to be used as a 'root'.
+        Can take an int as a starting octave (between 2 and 5) or not.  
+        Returns -1 on failure.
 
         NOTE: There is an error being raised by the mido library whenever
               I try to use this. This gets the exception error saying the data_byte
               is outside the bounds 0...127. Maybe something gets weird when going
               from ints to chars.
 
-              May try just randomly picking from either self.chromaticScale____ n times,
-              then trying to sort the strings as ascending pitches? 
+              May try just randomly picking from c.CHROMATIC_SCALE n times,
+              then trying to sort the strings as ascending pitches? Might be tougher
+              but we'll see. 
         '''
         # print("\nGenerating new root scale...")
         if(octave is not None):
             if(type(octave) != int):
                 print("\nnewScale() - ERROR: octave wasn't an int!")
                 return -1
-            elif(octave < 1 or octave > 6):
+            elif(octave < 2 or octave > 5):
                 print("\nnewScale() - ERROR: octave out of range!")
                 return -1
         elif(octave is None):
@@ -715,9 +715,6 @@ class generate():
             k += 1
             if(k > len(scale) - 1):
                 k = 0
-        if(len(minorScale) == 0):
-            print("\nconvertToMinor() - ERROR: unable to generate minor scale!")
-            return -1
         return minorScale
 
     # Generate derivative scales based on each note in a given scale.
@@ -753,10 +750,6 @@ class generate():
                 #scaleVariant = list(set(scaleVariant)) #Remove duplicates
                 #scaleVariant.sort() #Sort new derived scale 
             variants.append(scaleVariant) #Add to list of derived scales.
-        # Did we get anything?
-        if(len(variants) == 0):
-            print("\nderiveScales() - ERROR: Unable to generate derived scales!")
-            return -1
         # print("\nTotal derivisions:", len(scaleVariant))
         # print("Derivitions:", variants)
         return variants
