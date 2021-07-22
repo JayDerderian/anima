@@ -6,7 +6,6 @@
 '''
 A file for managing all constants used throughout the program. 
 '''
-# from random import randint
 
 # The alphabet. 
 ALPHABET = ['a', 'b', 'c', 'd', 'e', 'f', 'g',
@@ -208,7 +207,7 @@ SCALES = {
     "5-33":	    [0,2,4,6,8],
     "5-34":	    [0,2,4,6,9],
     "5-35":	    [0,2,4,7,9],
-    "5-z36A":   [0,1,2,4,7,],
+    "5-z36A":   [0,1,2,4,7],
     "5-z36B":   [0,3,5,6,7],
     "5-z37":    [0,3,4,5,8],
     "5-z38A":   [0,1,2,5,8],
@@ -270,7 +269,7 @@ SCALES = {
     "6-33B":	[0,2,4,6,7,9],
     "6-34A":	[0,1,3,5,7,9],
     "6-34B":	[0,2,4,6,8,9],
-    "6-35":	    [0,2,4,6,8,10],
+    "6-35":	    [0,2,4,6,8,10], # whole-tone scale
     "6-z36B":	[0,3,4,5,6,7],
     "6-z36A":	[0,1,2,3,4,7],
     "6-z37":	[0,1,2,3,4,8],
@@ -349,7 +348,7 @@ SCALES = {
     "7-29A":	[0,1,2,4,6,7,9],
     "7-30B":	[0,1,3,5,7,8,9],
     "7-30A":	[0,1,2,4,6,8,9],
-    "7-31B":	[0,2,3,5,6,8,9],
+    "7-31B":	[0,2,3,5,6,8,9], #octatonic scale
     "7-31A":	[0,1,3,4,6,7,9],
     "7-32B":	[0,1,3,5,6,8,9],
     "7-32A":	[0,1,3,4,6,8,9],
@@ -857,16 +856,3 @@ INSTRUMENTS = [
     'Applause', 
     'Gunshot'
 ]
-
-
-# testing scale generation
-# scale = []
-# octave = 4
-# pcs = SCALES[FORTE_NUMBERS[randint(0, len(FORTE_NUMBERS) - 1)]]
-# for i in range(len(pcs)):
-#     note = CHROMATIC_SCALE[pcs[i]]
-#     note = "{}{}".format(note, octave)
-#     scale.append(note)
-
-# print("\n\npitch class set:", pcs)
-# print("\nnew scale:", scale, "\n\n")

@@ -773,13 +773,48 @@ class generate():
         # print("New row:", row)
         return row
 
+    # Transpose a pitch class set by n semi-tones
+    def transpose(self, pcs, n):
+        '''
+        Transposes a list of integers representing pitch-classes
+        by n semi tones, where n is supplied by the user (must be 
+        between -11 -> 11).
+
+        Returns a list of modified ints or -1 if a failure occures.
+        '''
+        # error checks
+        if(type(n) != int):
+            print("\ntranspose() - ERROR: n is not an int!")
+            return -1
+        elif(type(n) == int and n > 11 or n < -11):
+            print("\ntranspose() - ERROR: transposition distance out of bounds!")
+            return -1
+        if(type(pcs) != list):
+            print("\ntranspose() - ERROR: no list inputted!")
+            return -1
+        elif(type(pcs) == list):
+            for i in range(len(pcs)):
+                if(type(pcs[i]) != int):
+                    print("\ntranspose() - ERROR: list has values other than ints!")
+                    return -1
+        # transpose
+        for i in range(len(pcs)):
+            pcs[i] += n
+            if pcs[i] > 11:
+                pcs[i] = self.octaveEquiv(pcs[i])
+
+        return pcs
+
     # Keeps a single pitch within span of an octave (0 - 11)
     def octaveEquiv(self, pitch):
         '''
         Keeps a single pitch within span of an octave (0 - 11). 
         '''
-        while(pitch > 12):
-            pitch -= 12
+        if(type(pitch) != int):
+            print("\noctaveEquiv() - ERROR: pitch not an int!")
+            return -1
+        while(pitch > 11):
+            pitch -= 11
         return pitch 
 
 
