@@ -556,7 +556,10 @@ class generate():
     # Generate a series of notes based off an inputted array of integers
     def newNotes(self, data=None):
         '''
-        Generates a set of notes based on inputted data (an array of integers).
+        Generates a set of notes to be used as a melody based on inputted data (an array of integers). 
+        Can also return a list of notes without any data input. If this is the case,
+        then newNotes() will decide how many to generate (between 3 and 50).
+
         Data is used as index numbers to select notes from this series in order
         to generate a melody.
         '''
@@ -579,7 +582,7 @@ class generate():
 
         # Pick starting octave (2 or 3)
         octave = randint(2, 3)
-        # Pick initial root/starting scale (either a prime form or major scale)
+        # Pick initial root/starting scale (either a prime form, or major or minor scale)
         root = self.pickScale()
         # Pick total: 3 - 50 if we're generating random notes
         if(data is None):
@@ -590,7 +593,6 @@ class generate():
             total = max(data)
         
         #-----------------Generate source scale-----------------#
-
         n = 0
         scale = []
         for i in range(total + 1):
@@ -598,8 +600,7 @@ class generate():
             note = "{}{}".format(root[n], octave)
             scale.append(note)
             n += 1
-            # Every nth iteration, where n is
-            # the number of notes in the root scale
+            # when we get to the end of the scale...   
             if(n == len(root)):
                 # Increment octave
                 octave += 1
@@ -612,7 +613,8 @@ class generate():
                 # Reset n to stay within len(root)
                 n = 0
 
-        # Randomly pick notes from the generated source scale
+        # Randomly pick notes from the generated source scale to 
+        # create an arhythmic melody.
         notes = []
         if(data is None):
             # Total notes in melody will be between 3 and 
@@ -630,12 +632,12 @@ class generate():
 
         return notes
 
-    # Pick a forte prime form from self.scales, then convert to 
-    # list of strings
+    # Picks either a prime form pitch-class set, or a major or minor
+    # scale.
     def pickScale(self):
         '''
         Picks either 1 of 12 major  or minor scales for a tonal flavor, 
-        or a 5 to 9 note Forte pitch class prime form for an atonal source.
+        or a 5 to 9 note Forte pitch class prime form for an atonal flavor.
 
         Returns a list of note name strings with an assigned octave (either 
         from the user or on it's own).
@@ -653,12 +655,11 @@ class generate():
             else:
                 scale = c.MINOR_SCALES[randint(0, len(c.MINOR_SCALES) - 1)]
         else:
-            # pick prime form
+            # pick prime form pitch-class set
             pcs = c.SCALES[c.FORTE_NUMBERS[randint(0, len(c.FORTE_NUMBERS) - 1)]]
             # convert pcs to a list of note names / strings
             for i in range(len(pcs)):
-                note = "{}".format(c.CHROMATIC_SCALE[pcs[i]])
-                scale.append(note)      
+                scale.append(c.CHROMATIC_SCALE[pcs[i]])      
         return scale
 
 

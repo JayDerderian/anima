@@ -141,7 +141,7 @@ note prime form pitch class sets. A correspnding list called FORTE_NUMBERS
 is used with randint() to pick a prime form from the dictionary in pickScale().
 
 Each integer/pitch class functions as an index number against CHROMATIC_SCALE to 
-generate a scale represented by strings.
+generate a scale represented by a list of strings (i.e. ["C#4", "D5"... etc]).
 
 Info taken from here: 
 https://en.wikipedia.org/wiki/List_of_pitch-class_sets'''
