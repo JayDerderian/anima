@@ -184,6 +184,9 @@ class generate():
         '''
         Generates a new .txt file to save a new composition's data and meta-data to.
 
+        NOTE: remove name and data variables, since source data is stored in newMelody and names/titles
+        are stored in newMelody and newMusic. fileName should not be None, and instead be a default argument
+
         NOTE: Should take a music() object containing all data currently required by
               this method:
               -Source data
@@ -590,6 +593,12 @@ class generate():
         octave = randint(2, 3)
         # Pick initial root/starting scale (either a prime form, or major or minor scale)
         root, fn = self.pickScale()
+        '''
+        if(randint(1, 2) == 1):
+            root, fn = self.pickScale()
+        else:
+            root, pcs = self.newScale()
+        '''
         # Pick total: 3 - 50 if we're generating random notes
         if(data is None):
             # Note that the main loop uses total + 1!
@@ -645,11 +654,7 @@ class generate():
         Picks either 1 of 12 major  or minor scales for a tonal flavor, 
         or a 5 to 9 note Forte pitch class prime form for an atonal flavor.
 
-        Returns a list of note name strings with an assigned octave (either 
-        from the user or on it's own).
-
-        NOTE: do a databyte check here??? getting the mido error again...
-              see p.54 here - https://readthedocs.org/projects/mido/downloads/pdf/latest/
+        Returns a list of note name strings and a 
         '''
         scale = []
         # use a major or minor scale(1), or pick a prime form(2)?
@@ -660,6 +665,7 @@ class generate():
             # pick minor
             else:
                 scale = c.MINOR_SCALES[randint(0, len(c.MINOR_SCALES) - 1)]
+            fn = "None"
         else:
             # pick prime form pitch-class set
             fn = c.FORTE_NUMBERS[randint(0, len(c.FORTE_NUMBERS) - 1)]
@@ -671,31 +677,17 @@ class generate():
 
 
     # Generate a new scale to function as a "root"
-    def newScale(self, octave=None):
+    def newScale(self):
         '''
-        Returns a randomly generated scale within one octave to be used as a 'root'.
+        Returns a randomly generated scale without an octave to be used as a 'root'.
         Can take an int as a starting octave (between 2 and 5) or not.  
         Returns -1 on failure.
 
-        NOTE: There is an error being raised by the mido library whenever
-              I try to use this. This gets the exception error saying the data_byte
-              is outside the bounds 0...127. Maybe something gets weird when going
-              from ints to chars.
-
-              May try just randomly picking from c.CHROMATIC_SCALE n times,
+        NOTE: May try just randomly picking from c.CHROMATIC_SCALE n times,
               then trying to sort the strings as ascending pitches? Might be tougher
               but we'll see. 
         '''
         # print("\nGenerating new root scale...")
-        if(octave is not None):
-            if(type(octave) != int):
-                print("\nnewScale() - ERROR: octave wasn't an int!")
-                return -1
-            elif(octave < 2 or octave > 5):
-                print("\nnewScale() - ERROR: octave out of range!")
-                return -1
-        elif(octave is None):
-            octave = 4
         pcs = []
         # generate an ascending set of 5-9 integers/note array indices
         total = randint(5, 9)
@@ -709,7 +701,7 @@ class generate():
         # convert to strings
         scale = []
         for i in range(len(pcs)):
-            note = "{}{}".format(c.CHROMATIC_SCALE[pcs[i]], octave)
+            note = c.CHROMATIC_SCALE[pcs[i]]
             scale.append(note)
         # print("new scale:", scale, "\n")
         return scale
@@ -1116,7 +1108,8 @@ class generate():
         '''
         Picks tempo, notes, rhythms, and dynamics, with or without a 
         supplied list from the user. It can process a list of ints (dataType == 1),
-        floats(2), single char strings/letters(3), or a hex number, represented as a single string(4)
+        floats(2), single char strings/letters(3), or a hex number, 
+        represented as a single string(4)
 
         If no data is supplied, then it will generate a melody anyways. 
 
@@ -1130,6 +1123,20 @@ class generate():
                  using type() in the body of the method instead
                  
                  See: https://stackoverflow.com/questions/13252333/check-if-all-elements-of-a-list-are-of-the-same-type
+        '''
+        '''
+        if(data is not None):
+            if(type(data) == list):
+                # ints?
+
+                # floats?
+
+                # strs?
+
+                # single string (hex number)?
+
+            else:
+                return -1
         '''
     
         if(dataType is not None and data is not None):
@@ -1176,20 +1183,6 @@ class generate():
         newMelody.tempo = self.newTempo()
         # Pick instrument
         newMelody.instrument = self.newInstrument()
-        '''NOTE: this calls newScale()!'''
-        # Pick notes
-        # if(data is not None):
-        #     # Use existing scale (0) or generate a new one (1)?
-        #     if(randint(0, 1) == 0):
-        #         newMelody.notes = self.newNotes(data)
-        #     else:
-        #         newMelody.notes = self.newNotes(data, newScale=True)
-        # else:
-        #     # Use existing scale (0) or generate a new one (1)?
-        #     if(randint(0, 1) == 0):
-        #         newMelody.notes = self.newNotes()
-        #     else:
-        #         newMelody.notes = self.newNotes(newScale=True)
         '''
         NOTE: Note melody picking should happen here!! Not new newNotes(), that should only
         provide the notes to pick from, not the actually mapping moment.

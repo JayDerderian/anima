@@ -259,7 +259,12 @@ class run():
 
                     # Generate a new one
                     elif(d == 2):
-                        scale = create.newScale(octave=4)
+                        octave = 4
+                        scale = []
+                        s = create.newScale()
+                        for i in range(len(s)):
+                            note = "{}{}".format(s[i], octave)
+                            scale.append(note)
                         tempo = create.newTempo()
                         # chord = create.newChordFromScale(scale, tempo)
                         chord = create.newChord(tempo, scale)
@@ -326,7 +331,12 @@ class run():
                     # Generate a new one
                     elif(d == 2):
                         tempo = create.newTempo()
-                        scale = create.newScale(octave=4)
+                        octave = 4
+                        scale = []
+                        s = create.newScale()
+                        for i in range(len(s)):
+                            note = "{}{}".format(s[i], octave)
+                            scale.append(note)
                         if(scale != -1):
                             chords = create.newChords(randint(3, len(scale)),tempo, scale)
                         else:
