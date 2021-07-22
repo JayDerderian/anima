@@ -1127,13 +1127,10 @@ class generate():
 
         #----------------Process any incoming data---------------#
         '''NOTE: Might be able to remove the dataType variable by
-                 using type() in the body of the method instead'''
-
+                 using type() in the body of the method instead
+                 
+                 See: https://stackoverflow.com/questions/13252333/check-if-all-elements-of-a-list-are-of-the-same-type
         '''
-        if(type(data) == list):
-            
-        '''
-
     
         if(dataType is not None and data is not None):
             print("\nProcessing incoming data...")
