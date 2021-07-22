@@ -239,6 +239,12 @@ class generate():
             dateStr = '\n\nDate: ' + dateStr
             f.write(dateStr)
 
+        # Add Forte number, if applicable
+        if(newMelody is not None and newMelody.fn != ""):
+            fn = ''.join(newMelody.fn)
+            fnInfo = '\n\n\Forte Number: ' + fn
+            f.write(fnInfo)
+
         # Add original source data
         if(data is not None):
             dataStr = ''.join([str(i) for i in data])
@@ -583,7 +589,7 @@ class generate():
         # Pick starting octave (2 or 3)
         octave = randint(2, 3)
         # Pick initial root/starting scale (either a prime form, or major or minor scale)
-        root = self.pickScale()
+        root, fn = self.pickScale()
         # Pick total: 3 - 50 if we're generating random notes
         if(data is None):
             # Note that the main loop uses total + 1!
@@ -630,7 +636,7 @@ class generate():
             for i in range(len(data)):
                 notes.append(scale[data[i]])
 
-        return notes
+        return notes, fn, scale
 
     # Picks either a prime form pitch-class set, or a major or minor
     # scale.
@@ -656,11 +662,12 @@ class generate():
                 scale = c.MINOR_SCALES[randint(0, len(c.MINOR_SCALES) - 1)]
         else:
             # pick prime form pitch-class set
-            pcs = c.SCALES[c.FORTE_NUMBERS[randint(0, len(c.FORTE_NUMBERS) - 1)]]
+            fn = c.FORTE_NUMBERS[randint(0, len(c.FORTE_NUMBERS) - 1)]
+            pcs = c.SCALES[fn]
             # convert pcs to a list of note names / strings
             for i in range(len(pcs)):
                 scale.append(c.CHROMATIC_SCALE[pcs[i]])      
-        return scale
+        return scale, fn
 
 
     # Generate a new scale to function as a "root"
@@ -797,11 +804,13 @@ class generate():
         return c.RHYTHMS[randint(0, len(c.RHYTHMS) - 1)]
 
     # Generate a list containing a rhythmic pattern
-    def newRhythms(self, total=None):
+    def newRhythms(self, total=None, tempo=None):
         '''
         Generates a series of rhythms of n length, where n is supplied
         from elsewhere. Can also decide to pick 3 and 30 rhythms
-        if no desired total is supplied. 
+        if no desired total is supplied. Will convert raw rhythm values
+        to a given tempo, if provided. Otherwise it'll just return an
+        unaltered float list.
         
         Uses infrequent repetition.
 
@@ -832,6 +841,9 @@ class generate():
             else:
                 if(rhythm not in rhythms):
                     rhythms.append(rhythm)
+        # convert to given tempo, if provided.
+        if(tempo is not None):
+            rhythms = self.tempoConvert(rhythms)
         if(len(rhythms) == 0):
             print("\nnewRhythms() - ERROR: Unable to generate pattern!")
             return -1
@@ -1116,6 +1128,13 @@ class generate():
         #----------------Process any incoming data---------------#
         '''NOTE: Might be able to remove the dataType variable by
                  using type() in the body of the method instead'''
+
+        '''
+        if(type(data) == list):
+            
+        '''
+
+    
         if(dataType is not None and data is not None):
             print("\nProcessing incoming data...")
             # If ints, scale as necessary
@@ -1150,8 +1169,8 @@ class generate():
                 return -1
         else:
             # Otherwise just add single string to list
-            nodata = 'None Inputted'
-            newMelody.sourceData.append(nodata)
+            # nodata = 'None Inputted'
+            newMelody.sourceData.append('None Inputted')
 
         #-----------------------Generate!------------------------#
 
@@ -1179,15 +1198,14 @@ class generate():
         provide the notes to pick from, not the actually mapping moment.
         '''
         if(data is None):
-            newMelody.notes = self.newNotes()
+            newMelody.notes, newMelody.fn, newMelody.sourceScale = self.newNotes()
             if(newMelody.notes == -1):
                 print("\nnewMelody() - ERROR: unable to generate notes!")
                 return -1
         else:
-            newMelody.notes = self.newNotes(data)
+            newMelody.notes, newMelody.fn, newMelody.sourceScale = self.newNotes(data)
         # Pick rhythms (in seconds/floats @ 60bpm) & scale to tempo
-        rhythms = self.newRhythms(len(newMelody.notes))
-        newMelody.rhythms = self.tempoConvert(newMelody.tempo, rhythms)
+        newMelody.rhythms = self.newRhythms(len(newMelody.notes), newMelody.tempo)
         # Pick dynamics
         newMelody.dynamics = self.newDynamics(len(newMelody.notes))
         

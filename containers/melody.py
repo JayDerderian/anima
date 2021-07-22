@@ -7,16 +7,23 @@ class melody():
     '''
     A class/container for managing all data relevant to melodies. This contains a 
     list for notes, rhythms, and dynamics, and their respective setters and getters.
+
+    Stores: tempo, instrument, generation method, original Forte number(if applicable), 
+    inputted source data, notes, rhythms, and dynamics.
     '''
 
     # Constructor
     def __init__(self):
             
+        # Meta-data
+        self.genMethod = ""
+        self.fn = ""
+        self.sourceData = []
+        self.sourceScale = []
+
         # Data
         self.tempo = 0.0
         self.instrument = ""
-        self.genMethod = ""
-        self.sourceData = []
         self.notes = []
         self.rhythms = []
         self.dynamics = []
