@@ -1,8 +1,3 @@
-#-------------------------------------------------------------------------------#
-#--------------------------------Resource data----------------------------------#
-#-------------------------------------------------------------------------------#
-
-
 '''
 A file for managing all constants used throughout the program. 
 '''
@@ -99,7 +94,7 @@ MINOR_SCALES = {1: ["A", "B", "C", "D", "E", "F", "G"],
 
 # Interval list/dictonary
 '''
-Notes:
+NOTE:
 
     Develop interval sets that begin with 2 and end with 2,
     making the next cycle of intervals begin on a tone a half

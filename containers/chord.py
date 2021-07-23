@@ -12,6 +12,9 @@ class chord():
     # Constructor
     def __init__(self):
 
+        # Metadata
+        self.sourceNotes = []
+
         # Data
         self.tempo = 0.0
         self.notes = []

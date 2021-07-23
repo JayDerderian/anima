@@ -14,6 +14,7 @@
 
 # Imports
 import test
+import constants as c
 from test import newData
 from random import randint
 from generate import generate
@@ -245,10 +246,9 @@ class run():
                     if(d == 1):
                         # Randomly decide between major or minor because why not
                         if(randint(1, 2) == 1):
-                            scale = create.scales[randint(1, 12)]
+                            scale = c.MAJOR_SCALES[randint(0, len(c.MAJOR_SCALES) - 1)]
                         else:
-                            scale = create.scales[randint(1, 12)]
-                            scale = create.convertToMinor(scale)
+                            scale = c.MINOR_SCALES[randint(0, len(c.MINOR_SCALES) - 1)]
                         tempo = create.newTempo()
                         # chord = create.newChordFromScale(scale, tempo)
                         chord = create.newChord(tempo, scale)
@@ -318,10 +318,9 @@ class run():
                         tempo = create.newTempo()
                         # Randomly decide between major or minor because why not
                         if(randint(1, 2) == 1):
-                            scale = create.scales[randint(1, 12)]
+                            scale = c.MAJOR_SCALES[randint(0, len(c.MAJOR_SCALES) - 1)]
                         else:
-                            scale = create.scales[randint(1, 12)]
-                            scale = create.convertToMinor(scale)
+                            scale = c.MINOR_SCALES[randint(0, len(c.MAJOR_SCALES) - 1)]
                         chords = create.newChords(randint(3, len(scale)), tempo, scale)
                         if(chords != -1):
                             create.displayChords(chords)

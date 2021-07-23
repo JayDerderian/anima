@@ -3,10 +3,13 @@
 #****************************************************************************************************************#
 
 '''
+This class handles all generative functions. It contains a set of resource data
+that is accessed by a variety of generative algorithms and mapping functions.
+'''
+
+
+'''
 ----------------------------------------------------NOTES-------------------------------------------------------
-    
-    This class handles all generative functions. It contains a set of resource data
-    that is accessed by a variety of generative algorithms and mapping functions. 
 
     
     TODO: Replace self.scales with 5-9 note forte prime forms. These
@@ -783,6 +786,9 @@ class generate():
         Returns a list of modified ints or -1 if a failure occures.
         '''
         # error checks
+        '''
+        NOTE: There's gotta be a better way to do this...
+        '''
         if(type(n) != int):
             print("\ntranspose() - ERROR: n is not an int!")
             return -1
@@ -792,17 +798,11 @@ class generate():
         if(type(pcs) != list):
             print("\ntranspose() - ERROR: no list inputted!")
             return -1
-        elif(type(pcs) == list):
-            for i in range(len(pcs)):
-                if(type(pcs[i]) != int):
-                    print("\ntranspose() - ERROR: list has values other than ints!")
-                    return -1
         # transpose
         for i in range(len(pcs)):
             pcs[i] += n
             if pcs[i] > 11:
                 pcs[i] = self.octaveEquiv(pcs[i])
-
         return pcs
 
     # Keeps a single pitch within span of an octave (0 - 11)
@@ -869,7 +869,7 @@ class generate():
                 if(rhythm not in rhythms):
                     rhythms.append(rhythm)
         # convert to given tempo, if provided.
-        if(tempo is not None):
+        if(tempo is not None and tempo != 60.0):
             rhythms = self.tempoConvert(rhythms)
         if(len(rhythms) == 0):
             print("\nnewRhythms() - ERROR: Unable to generate pattern!")
@@ -1011,18 +1011,18 @@ class generate():
 
         NOTE: Will eventually replace newChordFromScale()
         '''
-        # If we dont get a source scale
-        if(scale is None):
-            '''NOTE: See notes for newScale()! '''
-            # scale = self.newScale()
-            scale = self.newNotes()
         # New chord() object
         newchord = chord()
+        # If we dont get a source scale or tempo
+        if(scale is None):
+            scale = self.pickScale()
         # Add tempo
         if(tempo is None):
             newchord.tempo = 60.0
         else:
             newchord.tempo = tempo
+        # Save source scale
+        newchord.sourceNotes = scale
         # How many notes in this chord? 2 to 9 (for now)
         total = randint(2, 9)
         # Pick note and add to list
@@ -1034,10 +1034,12 @@ class generate():
         '''NOTE: This is avoids getting the while loop stuck
                  if there's a lot of repeated notes in the melody '''
         newchord.notes = list(dict.fromkeys(newchord.notes))
-
-        # Pick a rhythm & scale to tempo
+        # Pick a rhythm & scale to tempo if needed
         rhythm = self.newRhythm()
-        newchord.rhythm = self.tempoConvert(newchord.tempo, rhythm)
+        if(newchord.tempo != 60.0):
+            newchord.rhythm = self.tempoConvert(newchord.tempo, rhythm)
+        else:
+            newchord.rhythm = rhythm
         # Pick a dynamic (randomize for each note? probably)
         dynamic = self.newDynamic()
         while(len(newchord.dynamics) < len(newchord.notes)):
@@ -1218,10 +1220,6 @@ class generate():
         newMelody.tempo = self.newTempo()
         # Pick instrument
         newMelody.instrument = self.newInstrument()
-        '''
-        NOTE: Note melody picking should happen here!! Not new newNotes(), that should only
-        provide the notes to pick from, not the actually mapping moment.
-        '''
         if(data is None):
             newMelody.notes, newMelody.fn, newMelody.sourceScale = self.newNotes()
             if(newMelody.notes == -1):
