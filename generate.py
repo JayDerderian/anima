@@ -540,7 +540,7 @@ class generate():
         if i is None:
             note = c.NOTES[randint(0, len(c.NOTES) - 1)]
         else:
-            if type(note) == int and i > -1 and i < len(c.NOTES):
+            if type(i) == int and i > -1 and i < len(c.NOTES):
                 note = c.NOTES[i]
             else:
                 print("\nnewNote() - ERROR: int out of range!")
@@ -690,8 +690,7 @@ class generate():
         # convert to strings
         scale = []
         for i in range(len(pcs)):
-            note = c.CHROMATIC_SCALE[pcs[i]]
-            scale.append(note)
+            scale.append(c.CHROMATIC_SCALE[pcs[i]])
         # print("new scale:", scale, "\n")
         return scale
 
@@ -857,9 +856,6 @@ class generate():
         # convert to given tempo, if provided.
         if(tempo is not None and tempo != 60.0):
             rhythms = self.tempoConvert(rhythms)
-        if(len(rhythms) == 0):
-            print("\nnewRhythms() - ERROR: Unable to generate pattern!")
-            return -1
         return rhythms
 
 
@@ -912,9 +908,6 @@ class generate():
             else:
                 if(dynamic not in dynamics):
                     dynamics.append(dynamic)
-        if(len(dynamics) == 0):
-            print("\nnewDynamics() - ERROR: Unable to generate pattern!")
-            return -1
         return dynamics
 
 
@@ -963,9 +956,6 @@ class generate():
             else:
                 if(item not in elements):
                     elements.append(item)
-        if(len(elements) == 0):
-            print("\nnewElements() - ERROR: Unable rhythms or dynamics!")
-            return -1
         return elements
 
 
@@ -1063,13 +1053,10 @@ class generate():
             total = randint(math.floor(len(scale) * 0.3), len(scale))
             if(total == 0):
                 total = randint(1, len(scale))
-        # print("\nGenerating harmonies...")
         # Pick chords
         while(len(chords) < total):
             newchord = self.newChord(tempo, scale)
             chords.append(newchord)
-        # Display chords
-        # self.displayChords(chords)
         return chords
 
     # Generate a chord off a given interval i (between 1 and 6) to total notes for the chord n
@@ -1095,8 +1082,6 @@ class generate():
             r += i
             if(r > 11):
                 r = self.octaveEquiv(r)
-        if(len(chord) == 0):
-            return -1
         return chord
 
 
@@ -1224,8 +1209,6 @@ class generate():
         if(newMelody.hasData() == False):
             print("\nnewMelody() - ERROR: missing melody data!")
             return -1
-        # Display results
-        # self.displayMelody(newMelody)
         return newMelody
 
 
@@ -1272,8 +1255,7 @@ class generate():
         # Save composition data to a .txt file (fileName)
         fileName = "{}{}".format(title, '.txt')
         # print("\nText file saved as:", fileName)
-        title2 = "{}{}{}{}".format(
-            title, ' for ', newTune.instrument, ' and piano')
+        title2 = "{}{}{}{}".format(title, ' for ', newTune.instrument, ' and piano')
         # Export composition data
         print("\nNew melody title:", title2)
         self.saveInfo(title2, data, fileName, newTune)
