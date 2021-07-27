@@ -412,7 +412,7 @@ class generate():
         translated into notes (strings). Accounts for number chars 
         as well
 
-        Thank you Eric Dale for getting this method in better shape.
+        Thanks to Eric Dale for getting this method in better shape.
         '''
         # print("\nMapping letters to index numbers...")
         # Convert given string to array of chars
@@ -430,14 +430,11 @@ class generate():
             # check if each character is a letter
             if char.isalpha():
                 # add its index to the numbers list
-                # numbers.append(self.alphabet.index(char))
                 numbers.append(c.ALPHABET.index(char))
             elif char.isnumeric():
-                # if it's already a number, add it as an int
-                numbers.append(int(char))
-        if(len(numbers) == 0):
-            print("\nmapLettersToNumbers() - ERROR: no index numbers found!")
-            return -1
+                # if it's already a number, add it's *index* since it might be out of range'
+                # numbers.append(int(char))
+                numbers.append(c.ALPHABET.index(char))
         return numbers
 
     # Convert a hex number representing a color to an array of integers
@@ -540,28 +537,17 @@ class generate():
         NOTE: use randint(0, 11) and randint(2, 5) for num/octave args to get a 
               randomly chosen note, or leave arg fields empty
         '''
-        # error check
-        if(i is not None):
-            if(type(i) == int and i > len(c.NOTES) - 1 or i < 0):
-                print("\nnewNotes() - ERROR: index out of range!")
-                return -1
-            else:
-                print("\nnewNotes() - ERROR: wrong type inputted for index!")
-                return -1
-        # was no args used?
-        if(i is None and octave is None):
-            note = "{}{}".format(c.NOTES[randint(0, len(c.NOTES) - 1)], randint(2, 5))
-        # were all args used?
-        elif(i is not None and octave is not None):
-            note = "{}{}".format(c.NOTES[i], octave)
-        # were *some* args used?
+        if i is None:
+            note = c.NOTES[randint(0, len(c.NOTES) - 1)]
         else:
-            # if so, which?
-            if(i is None):
-                note = c.NOTES[randint(0, len(c.NOTES) - 1)]
-            elif(octave is None):
-                octave = randint(2, 5)
-            note = "{}{}".format(note, octave)
+            if type(note) == int and i > -1 and i < len(c.NOTES):
+                note = c.NOTES[i]
+            else:
+                print("\nnewNote() - ERROR: int out of range!")
+                return -1
+        if octave is None:
+            octave = randint(2, 5)
+        note = "".format(note, octave)
         return note
             
 
@@ -1271,33 +1257,27 @@ class generate():
         else:
             newTune = self.newMelody()
 
-        # If successfull, export
-        if(newTune.hasData() == True):
-            # Generate title
-            title = self.newTitle()
-            # Create MIDI file name
-            title1 = title + '.mid'
+        # Generate title
+        title = self.newTitle()
+        # Create MIDI file name
+        title1 = title + '.mid'
 
-            # Save to MIDI file
-            if(mid.saveMelody(self, title1, newTune) != -1):
-                print('')  # print("\nMIDI file saved as:", title1)
-            else:
-                print("\n\naNewMelody() - ERROR: Unable to export piece to MIDI file!")
-                return -1
-
-            # Save composition data to a .txt file (fileName)
-            fileName = "{}{}".format(title, '.txt')
-            # print("\nText file saved as:", fileName)
-            title2 = "{}{}{}{}".format(
-                title, ' for ', newTune.instrument, ' and piano')
-            # Export composition data
-            print("\nNew melody title:", title2)
-            self.saveInfo(title2, data, fileName, newTune)
-            return 0
-
+        # Save to MIDI file
+        if(mid.saveMelody(self, title1, newTune) != -1):
+            print('')  # print("\nMIDI file saved as:", title1)
         else:
-            print("\naNewMelody() - ERROR: unable to generate melody!")
+            print("\n\naNewMelody() - ERROR: Unable to export piece to MIDI file!")
             return -1
+
+        # Save composition data to a .txt file (fileName)
+        fileName = "{}{}".format(title, '.txt')
+        # print("\nText file saved as:", fileName)
+        title2 = "{}{}{}{}".format(
+            title, ' for ', newTune.instrument, ' and piano')
+        # Export composition data
+        print("\nNew melody title:", title2)
+        self.saveInfo(title2, data, fileName, newTune)
+        return 0
 
     # Wrapper for newChords(). Outputs chords as a MIDI file and
     # exports a .txt file with relevant data
@@ -1353,36 +1333,35 @@ class generate():
         #--------------------Check incoming data------------------------#
 
         # Did we get an empty list?
-        if(data is not None and len(data) == 0):
-            print("\nnewComposition() - ERROR: no data inputted!")
-            return -1
-        if(dataType is not None):
+        if(data is not None and type(data) == list):
+            if(len(data) == 0):
+                print("\nnewComposition() - ERROR: no data inputted!")
+                return -1
+        if(dataType is not None and type(dataType) == int):
             if(dataType < 1 or dataType > 4):
                 print("\nnewComposition() - ERROR: bad data type!")
                 return -1
-            # else:
-            #     print("\nnewComposition() - ERROR: wrong type for dataType variable!")
 
         #----------------------Generate melody and Harmony--------------------------#
 
         if(data is not None and dataType is not None):
             newTune = self.newMelody(data, dataType)
+            if(newTune == -1):
+                print("newComposition() - ERROR: unable to generate melody!")
+                return -1
             # music.melodies.append(newTune)
         else:
             newTune = self.newMelody()
+            if(newTune == -1):
+                print("newComposition() - ERROR: unable to generate melody!")
+                return -1
             # music.melodies.append(newTune)
 
         newChords = self.newChords(len(newTune.notes), newTune.tempo, newTune.notes)
-        # music.chords.append(newChords)
-
-        #------------------------Check data-----------------------------#
-
-        if(newTune.hasData() == False or len(newChords) == 0):
-            print("\nnewComposition() - ERROR: No composition data created")
+        if(newChords == -1):
+            print("\nnewComposition() - ERROR: unable to generate harmonies!")
             return -1
-        # if(len(music.melodies) == 0 or len(music.chords) == 0):
-        #     print("\ERROR: unable to create music() object")
-        #     return -1
+        # music.chords.append(newChords)
 
         #-------Generate title and save to MIDI file--------#
         
