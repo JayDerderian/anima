@@ -1,12 +1,6 @@
-#****************************************************************************************************************#
-#-----------------------------------This class handles generative functions--------------------------------------#
-#****************************************************************************************************************#
-
 '''
-This class handles all generative functions. It contains a set of resource data
-that is accessed by a variety of generative algorithms and mapping functions.
+This module/class handles all generative methods. 
 '''
-
 
 '''
 ----------------------------------------------------NOTES-------------------------------------------------------
@@ -95,6 +89,12 @@ that is accessed by a variety of generative algorithms and mapping functions.
             divide data[i] by len(data) - 1 n times? Might introduce a bias towards
             loward end of source scale? Maybe? I don't know. 
 
+        newScale()
+            
+            Maybe try just randomly picking from c.CHROMATIC_SCALE n times,
+            then trying to sort the strings as ascending pitches? Might be tougher
+            but we'll see. 
+
 
 ----------------------------------------------------------------------------------------------------------------
 '''
@@ -173,18 +173,14 @@ class generate():
         fileName = '{}{}.mid'.format(title, dateStr)
         return fileName
 
-    # Converts an array of pitch class integers to note strings (with or without an octave)
-    def toStr(self, pcs, octave=None):
+    # Converts a list of pitch class integers to note strings (with or without an octave)
+    def toStr(self, pcs):
         '''
-        Converts a list of pitch class integers to note name strings (with or without a supplied octave)
-        If no octave is supplied, method will pick an octave between 2 and 5.
+        Converts a list of pitch class integers to note name strings without a supplied octave
         '''
-        if octave == None:
-            octave = randint(2, 5)
         scale = []
         for i in range(len(pcs)):
-            note = "{}{}".join(c.CHROMATIC_SCALE[pcs[i]], octave)
-            scale.append(note)
+            scale.append(c.CHROMATIC_SCALE[pcs[i]])
         return scale
 
 
@@ -429,7 +425,7 @@ class generate():
         return numbers
 
     # Convert a hex number representing a color to an array of integers
-    def hexToIntArray(self, hex):
+    def hexToIntList(self, hex):
         '''
         Converts a prefixed hex number to an array of integers.
         '''
@@ -440,8 +436,8 @@ class generate():
         # convert to int
         hexStr = int(hex, 0)
         # convert to array of ints (ie. 132 -> [1, 3, 2])
-        numArr = [int(x) for x in str(hexStr)]
-        return numArr
+        hexList = [int(x) for x in str(hexStr)]
+        return hexList
 
     # Convert base rhythms to values in a specified tempo
     def tempoConvert(self, tempo, rhythms):
@@ -533,7 +529,7 @@ class generate():
                 return -1
         if octave is None:
             octave = randint(2, 5)
-        note = "".format(note, octave)
+        note = "{}{}".format(note, octave)
         return note
             
 
@@ -660,17 +656,12 @@ class generate():
         Returns a randomly generated scale without an octave to be used as a 'root'.
         Can take an int as a starting octave (between 2 and 5) or not.  
         Returns -1 on failure.
-
-        NOTE: May try just randomly picking from c.CHROMATIC_SCALE n times,
-              then trying to sort the strings as ascending pitches? Might be tougher
-              but we'll see. 
         '''
-        # print("\nGenerating new root scale...")
         pcs = []
         # generate an ascending set of 5-9 integers/note array indices
         total = randint(5, 9)
         while(len(pcs) < total):
-            # pick note
+            # pick pitch class integer
             n = randint(0, 11)
             if(n not in pcs):
                 pcs.append(n)
@@ -680,7 +671,6 @@ class generate():
         scale = []
         for i in range(len(pcs)):
             scale.append(c.CHROMATIC_SCALE[pcs[i]])
-        # print("new scale:", scale, "\n")
         return scale
 
     # Converts a major scale to its relative minor
@@ -1164,7 +1154,7 @@ class generate():
                 data = str(data)
                 # Save original source data
                 newMelody.sourceData.append(data)
-                data = self.hexToIntArray(data)
+                data = self.hexToIntList(data)
             else:
                 print("\nnewMelody() - ERROR: dataType value out of range!")
                 return -1
