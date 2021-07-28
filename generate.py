@@ -11,15 +11,6 @@ that is accessed by a variety of generative algorithms and mapping functions.
 '''
 ----------------------------------------------------NOTES-------------------------------------------------------
 
-    
-    TODO: Replace self.scales with 5-9 note forte prime forms. These
-    will be used as index numbers against either sharps or flats spellings
-    of the chormatic scale in pickScale(). Ideally pickScale() will be used
-    wherever a new "root" needs to be generated. 
-    
-    TODO: Create separate file for forte pitch class sets to be imported and called
-    in pickScale(). Create a constant called SCALES (a dictionary) of all the 
-    5-9 note sets (for now, may add more later). 
 
     TODO: Implement alternative ways of generating ascending scales that 
     should probably be stand-alone functions that are called at random in 
@@ -182,6 +173,19 @@ class generate():
         fileName = '{}{}.mid'.format(title, dateStr)
         return fileName
 
+    # Converts an array of pitch class integers to note strings (with or without an octave)
+    def toStr(self, pcs, octave=None):
+        '''
+        Converts a list of pitch class integers to note name strings (with or without a supplied octave)
+        '''
+        if octave == None:
+            octave = randint(2, 5)
+        scale = []
+        for i in range(len(pcs)):
+            scale.append(c.CHROMATIC_SCALE[pcs[i]])
+        return scale
+
+
     # Generates a new .txt file to save a new composition's meta-data to
     def saveInfo(self, name, data=None, fileName=None, newMelody=None, newChords=None, newMusic=None):
         '''
@@ -310,14 +314,10 @@ class generate():
                 rhythm = '\nRhythm: ' + str(newChords[j].rhythm)
                 f.write(rhythm)
 
-                dynamicsStr = ', '.join([str(i)
-                                        for i in newChords[j].dynamics])
+                dynamicsStr = ', '.join([str(i) for i in newChords[j].dynamics])
                 dynamics = '\nDynamics: ' + dynamicsStr
                 f.write(dynamics)
 
-        '''
-        NOTE: Use this loop when composition() objects are functional
-        '''
         # Input all
         if(newMusic is not None):
             # Save composition data
@@ -338,13 +338,11 @@ class generate():
                 notes = '\n\nNotes: ' + noteStr
                 f.write(notes)
 
-                rhythmStr = ', '.join([str(i)
-                                      for i in newMusic.melodies[j].rhythms])
+                rhythmStr = ', '.join([str(i) for i in newMusic.melodies[j].rhythms])
                 rhythms = '\n\nRhythms: ' + rhythmStr
                 f.write(rhythms)
 
-                dynamicStr = ', '.join([str(i)
-                                       for i in newMusic.melodies[j].dynamics])
+                dynamicStr = ', '.join([str(i) for i in newMusic.melodies[j].dynamics])
                 dynamics = '\n\nDynamics:' + dynamicStr
                 f.write(dynamics)
 
@@ -365,9 +363,6 @@ class generate():
         if(type(data) != list):
             print("floatToInt() - ERROR: wrong data type inputted!")
             return -1
-        if(len(data) == 0):
-            print("floatToInt() - ERROR: no data inputted!")
-            return -1
         result = []
         for i in range(len(data)):
             result.append(int(data[i]))
@@ -386,14 +381,8 @@ class generate():
         if(type(data) != list):
             print("\nscaleTheScale() - ERROR: wrong data type inputted!")
             return -1
-        # did we get a list of ints??
-        if(type(data) == list):
-            for i in range(len(data)):
-                if(type(data[i]) != int):
-                    print("\nscaleTheScale() - ERROR: not a list of ints!")
-                    return -1
         # is this list empty?
-        if(len(data) == 0):
+        elif(type(data) == list and len(data) == 0):
             print("\nscaleTheScale() - ERROR: no data inputted")
             return -1
         # scale it
@@ -464,9 +453,6 @@ class generate():
         durations against to get the new tempo-accurate durations.
 
         '''
-        # if(type(tempo) != float or type(tempo) != int):
-        #     print("\ntempoConvert() - ERROR: tempo needs to be a float or int!")
-        #     return -1
         diff = 60/tempo
         # is this a single float?
         if(type(rhythms) == float):
@@ -494,7 +480,6 @@ class generate():
         Picks tempo between 40-208bpm.
         Returns a float upon success, 60.0 if fail.
         '''
-        # print("\nPicking tempo...")
         return c.TEMPOS[randint(0, len(c.TEMPOS) - 1)]
 
 
@@ -508,7 +493,6 @@ class generate():
         '''
         Randomly picks an instrument from a given list. Returns a string.
         '''
-        # print("\nPicking instrument...")
         return c.INSTRUMENTS[randint(0, 110)]
 
     # Picks a collection of instruments of n length.
@@ -583,6 +567,9 @@ class generate():
         # Pick initial root/starting scale (either a prime form, or major or minor scale)
         root, fn = self.pickScale()
         '''
+        # Pick starting octave (2 or 3)
+        octave = randint(2, 3)
+        # Pick a scale or generate a new one
         if(randint(1, 2) == 1):
             root, fn = self.pickScale()
         else:

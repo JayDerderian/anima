@@ -107,7 +107,7 @@ class run():
     # Driver code for using the generative functions in the terminal
     def start(self):
         '''
-        Main driver code. 
+        Main terminal driver code. 
         
         User options include: 
         -single melody generation (random or using source data) 
