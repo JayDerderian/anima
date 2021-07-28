@@ -177,12 +177,14 @@ class generate():
     def toStr(self, pcs, octave=None):
         '''
         Converts a list of pitch class integers to note name strings (with or without a supplied octave)
+        If no octave is supplied, method will pick an octave between 2 and 5.
         '''
         if octave == None:
             octave = randint(2, 5)
         scale = []
         for i in range(len(pcs)):
-            scale.append(c.CHROMATIC_SCALE[pcs[i]])
+            note = "{}{}".join(c.CHROMATIC_SCALE[pcs[i]], octave)
+            scale.append(note)
         return scale
 
 
