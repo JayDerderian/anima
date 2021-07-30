@@ -542,28 +542,16 @@ class generate():
 
         Data is used as index numbers to select notes from this series in order
         to generate a melody.
-        '''
-
-        #-------------------Error checks----------------------#
-
-        # Did we get a list?
-        if(data is not None and type(data) != list):
-            print("\nnewNotes() - ERROR: data inutted is type: ", type(data))
-            return -1
-        # And is this a list of *ints*??
-        # if(data is not None):
-        if(data is not None and type(data) == list):
-            for i in range(len(data)):
-                if(type(data[i]) != int):
-                    print("\nnewNotes() - ERROR: data is list but with wrong element type: ", type(data[i]))
-                    return -1             
+        '''           
 
         #-----------------Generate seed scale------------------#
 
+        forte_numbers = []
         # Pick starting octave (2 or 3)
         octave = randint(2, 3)
         # Pick initial root/starting scale (either a prime form, or major or minor scale)
         root, fn = self.pickScale()
+        forte_numbers.append(fn)
         '''
         # Pick starting octave (2 or 3)
         octave = randint(2, 3)
@@ -597,8 +585,9 @@ class generate():
                 if(octave > 5):
                     # Reset starting octave
                     octave = randint(2, 3)
-                    # Generate another new root scale & starting octave
-                    root = self.pickScale(octave)
+                    # Generate another new root scale & starting octave + save forte number, if applicable
+                    root, fn = self.pickScale(octave)
+                    forte_numbers.append(fn)
                 # Reset n to stay within len(root)
                 n = 0
 
@@ -619,7 +608,7 @@ class generate():
             for i in range(len(data)):
                 notes.append(scale[data[i]])
 
-        return notes, fn, scale
+        return notes, forte_numbers, scale
 
     # Picks either a prime form pitch-class set, or a major or minor
     # scale.
@@ -671,7 +660,7 @@ class generate():
         scale = []
         for i in range(len(pcs)):
             scale.append(c.CHROMATIC_SCALE[pcs[i]])
-        return scale
+        return scale, pcs
 
     # Converts a major scale to its relative minor
     def convertToMinor(self, scale):
@@ -968,10 +957,13 @@ class generate():
         '''
         # New chord() object
         newchord = chord()
-        # If we dont get a source scale or tempo
+        # Pick or generate a new scale if we don't get one supplied
         if(scale is None):
-            scale = self.pickScale()
-        # Add tempo
+            if randint(1, 2) == 1:
+                scale = self.pickScale()
+            else:
+                scale,  = self.newScale()
+        # Add tempo if one isn't supplied
         if(tempo is None):
             newchord.tempo = 60.0
         else:

@@ -48,10 +48,10 @@ RHYTHMS = [4.0, 3.0, 2.0, 1.5, 1.0,
 
 # Notes in all (reasonable) harmonic spellings
 # indicies 0 - 17. To be used specifically by randint()
-# when trying to "randomly" pick a number.
-NOTES = ["C ", "C#", "Db", "D ", "D#", "Eb", "E ", 
-        "F ", "F#", "Gb", "G ", "G#", "Ab", "A ", 
-        "A#", "Bb", "B "]
+# when trying to "randomly" pick a note.
+NOTES = ["C", "C#", "Db", "D", "D#", "Eb", "E", 
+         "F", "F#", "Gb", "G", "G#", "Ab", "A", 
+         "A#", "Bb", "B"]
 
 
 # Chromatic scale
@@ -490,7 +490,7 @@ FORTE_NUMBERS = [
     "5-z37",
     "5-z38A",
     "5-z38B",
-    # 6-note chords
+    # 6-note sets
     "6-1",
     "6-2A",
     "6-2B",
@@ -571,7 +571,7 @@ FORTE_NUMBERS = [
     "6-z48",
     "6-z49",
     "6-z50",
-    # 7-note scales
+    # 7-note sets
     "7-1",
     "7-2B",	
     "7-2A",	
@@ -638,7 +638,7 @@ FORTE_NUMBERS = [
     "7-z37",
     "7-z38B",
     "7-z38A"
-    # 8-note scales
+    # 8-note sets
     "8-1",
     "8-2B",
     "8-2A",
@@ -678,11 +678,11 @@ FORTE_NUMBERS = [
     "8-25",
     "8-26",
     "8-27B",
-    "8-27A",
+    "8-27A",-
     "8-28",
     "8-z29B",
     "8-z29A",
-    # 9-note scales
+    # 9-note sets
     "9-1",
     "9-2A",
     "9-2B",

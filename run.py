@@ -266,7 +266,6 @@ class run():
                             note = "{}{}".format(s[i], octave)
                             scale.append(note)
                         tempo = create.newTempo()
-                        # chord = create.newChordFromScale(scale, tempo)
                         chord = create.newChord(tempo, scale)
                         if(chord != -1):
                             create.displayChord(chord)
@@ -292,7 +291,6 @@ class run():
                     total = int(input("How many? "))
                     tempo = create.newTempo()
                     scale = create.newScale()
-                    # chords = create.newChords(total, tempo, None)
                     chords = create.newProgression(total, tempo, scale)
                     if(len(chords) == 0):
                         print("\nERROR: unable to generate chords! :(\n")
@@ -320,7 +318,7 @@ class run():
                         if(randint(1, 2) == 1):
                             scale = c.MAJOR_SCALES[randint(0, len(c.MAJOR_SCALES) - 1)]
                         else:
-                            scale = c.MINOR_SCALES[randint(0, len(c.MAJOR_SCALES) - 1)]
+                            scale = c.MINOR_SCALES[randint(0, len(c.MINOR_SCALES) - 1)]
                         chords = create.newChords(randint(3, len(scale)), tempo, scale)
                         if(chords != -1):
                             create.displayChords(chords)

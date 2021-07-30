@@ -17,7 +17,7 @@ class melody():
             
         # Meta-data
         self.genMethod = ""
-        self.fn = ""
+        self.fn = []
         self.sourceData = []
         self.sourceScale = []
 
