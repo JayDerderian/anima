@@ -386,7 +386,7 @@ class generate():
         # scale it
         for i in range(len(data)):
             # Repeat this subtraction until we're under our threshold.
-            while(data[i] > len(data) - 1):
+            while data[i] > len(data) - 1:
                 data[i] -= 1
                 # data[i] = math.floor(data[i] / len(data) - 1)
         return data
