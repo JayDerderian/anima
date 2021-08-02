@@ -500,7 +500,7 @@ class generate():
         Returns a list.
         '''
         instruments = []
-        while(len(instruments) < total):
+        while len(instruments) < total:
             instruments.append(self.newInstrument())
         return instruments
 
