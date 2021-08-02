@@ -710,8 +710,6 @@ class generate():
                 #scaleVariant = list(set(scaleVariant)) #Remove duplicates
                 #scaleVariant.sort() #Sort new derived scale 
             variants.append(scaleVariant) #Add to list of derived scales.
-        # print("\nTotal derivisions:", len(scaleVariant))
-        # print("Derivitions:", variants)
         return variants
 
     # Generate a 12-tone row.
@@ -720,13 +718,11 @@ class generate():
         Generate a 12-tone row. 
         Returns a list of ints/pitch classes/index numbers.
         '''
-        # print("\nGenerating new 12-tone row...")
         row = []
         while(len(row) < 11):
             note = self.newNote(randint(0, 11), 4)
             if(note not in row):
                 row.append(note)
-        # print("New row:", row)
         return row
 
     # Transpose a pitch class set by n semi-tones
@@ -801,7 +797,6 @@ class generate():
         rhythms = []
         if(total is None):
             total = randint(3, 30)
-        # print("\nGenerating", total, "rhythms...")
         while(len(rhythms) < total):
             # Pick rhythm and add to list
             rhythm = self.newRhythm()
@@ -856,7 +851,6 @@ class generate():
         dynamics = []
         if(total is None):
             total = randint(3, 30)
-        # print("\nGenerating", total, "dynamics...")
         while(len(dynamics) < total):
             # Pick dynamic (medium range for now)
             dynamic = self.newDynamic()
@@ -896,11 +890,6 @@ class generate():
         # Check input
         if(total is None):
             total = randint(3, 30)
-        # if(dataType == 1):
-        #     print("\nGenerating", total, "rhythms...")
-        # else:
-        #     print("\nGenerating", total, "dynamics...")
-        # Main loop
         elements = []
         while(len(elements) < total):
             # Pick rhythm (1) or dynamic(2)?
@@ -1152,12 +1141,10 @@ class generate():
                 return -1
         else:
             # Otherwise just add single string to list
-            # nodata = 'None Inputted'
             newMelody.sourceData.append('None Inputted')
 
         #-----------------------Generate!------------------------#
 
-        # print("\nGenerating melody...")
         # Pick tempo
         newMelody.tempo = self.newTempo()
         # Pick instrument
@@ -1188,11 +1175,11 @@ class generate():
     #-------------------------------------------------------------------------------------#
 
 
-    # Wrapper for newMelody() function. 
+    # Wrapper for newMelody() method. 
     # Exports MIDI file + generates title + .txt data file
     def aNewMelody(self, data=None, dataType=None):
         '''
-        Wrapper for newMelody() function. 
+        Wrapper for the newMelody() method. 
         Exports MIDI file + generates title + .txt data file. 
         Returns 0 on succcess, -1 on failure.
         '''
@@ -1204,28 +1191,23 @@ class generate():
             if(type(dataType) == int and dataType > 4 or dataType < 1):
                 print("\naNewMelody() - ERROR: dataType out of range!")
                 return -1
-
         # Generate melody
         elif(data is not None and dataType is not None):
             newTune = self.newMelody(data, dataType)
         else:
             newTune = self.newMelody()
-
         # Generate title
         title = self.newTitle()
         # Create MIDI file name
         title1 = title + '.mid'
-
         # Save to MIDI file
         if(mid.saveMelody(self, title1, newTune) != -1):
-            print('')  # print("\nMIDI file saved as:", title1)
+            print('')  
         else:
             print("\n\naNewMelody() - ERROR: Unable to export piece to MIDI file!")
             return -1
-
         # Save composition data to a .txt file (fileName)
         fileName = "{}{}".format(title, '.txt')
-        # print("\nText file saved as:", fileName)
         title2 = "{}{}{}{}".format(title, ' for ', newTune.instrument, ' and piano')
         # Export composition data
         print("\nNew melody title:", title2)
@@ -1270,7 +1252,7 @@ class generate():
         Takes an 0x-xxxxxx hex humber representing a color, or 
         an array of ints, floats or chars of any length as arguments, 
         plus the data type represented by a int 
-        (int (1), float (2), char (3), or hex number (4)).
+        (int (1), float (2), char (3), or hex number (4)). Or nothing at all!
 
         Outputs a single melody with chords in a MIDI file, as
         well as a .txt file with the compositions title, inputted data, 
@@ -1283,7 +1265,7 @@ class generate():
         # New composition() object
         # music = composition()
 
-        #--------------------Check incoming data------------------------#
+        #--------------------------Check incoming data------------------------------#
 
         # Did we get an empty list?
         if(data is not None and type(data) == list):
@@ -1316,7 +1298,7 @@ class generate():
             return -1
         # music.chords.append(newChords)
 
-        #-------Generate title and save to MIDI file--------#
+        #-----------------Generate title and save to MIDI file----------------------#
         
         title = self.newTitle()
         # Create MIDI file name
@@ -1328,7 +1310,7 @@ class generate():
             print("\nnewComposition() - ERROR:Unable to export piece to MIDI file!")
             return -1
 
-        #---------Save composition data to a .txt file (fileName)--------#
+        #------------Save composition data to a .txt file (fileName)----------------#
 
         fileName = "{}{}".format(title, '.txt')
         print("\nText file saved as:", fileName)
