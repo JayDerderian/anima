@@ -147,7 +147,7 @@ def testHexToInt():
     tests hex num (in str form) to int array conversion
     '''
     print("\ntesting hex to int array conversion...")
-    result = generate().hexToIntArray(newHex())
+    result = generate().hexToIntList(newHex())
     # did we get a list back?
     if(type(result) != list):
         print("...no list returned! test failed!")
@@ -313,8 +313,8 @@ def testNewRhythm():
         exit()
     # make sure it's one from our list
     found = False
-    for i in range(len(generate().rhythms)):
-        if(r == generate().rhythms[i]):
+    for i in range(len(c.RHYTHMS)):
+        if(r == c.RHYTHMS[i]):
             found = True
             break
     if(found == False):
@@ -340,8 +340,8 @@ def testNewDynamic():
         exit()
     # make sure it's one of the ones we'd want...
     found = False
-    for i in range(len(generate().dynamics)):
-        if(d == generate().dynamics[i]):
+    for i in range(len(c.DYNAMICS)):
+        if(d == c.DYNAMICS[i]):
             found = True
             break
     if(found == False):

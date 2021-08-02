@@ -358,7 +358,7 @@ class generate():
         Converts an array of floats to an array of ints
         '''
         # print("\nConverting floats to ints...")
-        if(type(data) != list):
+        if type(data) != list:
             print("floatToInt() - ERROR: wrong data type inputted!")
             return -1
         result = []
@@ -376,11 +376,11 @@ class generate():
         scale to generate melodic ideas. 
         '''
         # print("\nScaling input...")
-        if(type(data) != list):
+        if type(data) != list:
             print("\nscaleTheScale() - ERROR: wrong data type inputted!")
             return -1
         # is this list empty?
-        elif(type(data) == list and len(data) == 0):
+        elif type(data) == list and len(data) == 0:
             print("\nscaleTheScale() - ERROR: no data inputted")
             return -1
         # scale it
@@ -403,14 +403,14 @@ class generate():
         '''
         # print("\nMapping letters to index numbers...")
         # Convert given string to array of chars
-        if(type(letters) != str):
+        if type(letters) != str:
             print("\nmapLettersToNumbers() - ERROR: wrong data type inputted!")
             return -1
         # convert to list of str's
         letters = list(letters)
         # make all uppercase characters lowercase
         for i in range(len(letters) - 1):
-            if(letters[i].isupper() == True):
+            if letters[i].isupper() == True:
                 letters[i] = letters[i].lower()
         numbers = []
         for char in letters:
@@ -430,7 +430,7 @@ class generate():
         Converts a prefixed hex number to an array of integers.
         '''
         # error check
-        if(type(hex) != str):
+        if type(hex) != str:
             print("\nhexToIntoArray() - ERROR: wrong type inputted!")
             return -1
         # convert to int
@@ -453,10 +453,10 @@ class generate():
         '''
         diff = 60/tempo
         # is this a single float?
-        if(type(rhythms) == float):
+        if type(rhythms) == float:
             rhythms *= diff
         # or a list of floats?
-        elif(type(rhythms) == list):
+        elif type(rhythms) == list:
             for i in range(len(rhythms) - 1):
                 rhythms[i] *= diff
                 '''NOTE: Truncate float a bit here??? Might help
@@ -562,7 +562,7 @@ class generate():
             root, pcs = self.newScale()
         '''
         # Pick total: 3 - 50 if we're generating random notes
-        if(data is None):
+        if data is None:
             # Note that the main loop uses total + 1!
             total = randint(2, 49)
         # Or the max value of the supplied data set
@@ -578,15 +578,15 @@ class generate():
             scale.append(note)
             n += 1
             # when we get to the end of the scale...   
-            if(n == len(root)):
+            if n == len(root):
                 # Increment octave
                 octave += 1
                 # Have we reached the octave limit?
-                if(octave > 5):
+                if octave > 5:
                     # Reset starting octave
                     octave = randint(2, 3)
                     # Generate another new root scale & starting octave + save forte number, if applicable
-                    root, fn = self.pickScale(octave)
+                    root, fn = self.pickScale()
                     forte_numbers.append(fn)
                 # Reset n to stay within len(root)
                 n = 0
@@ -594,7 +594,7 @@ class generate():
         # Randomly pick notes from the generated source scale to 
         # create an arhythmic melody.
         notes = []
-        if(data is None):
+        if data is None:
             # Total notes in melody will be between 3 and 
             # however many notes are in the source scale
             total = randint(3, len(scale))
@@ -617,13 +617,13 @@ class generate():
         Picks either 1 of 12 major  or minor scales for a tonal flavor, 
         or a 5 to 9 note Forte pitch class prime form for an atonal flavor.
 
-        Returns a list of note name strings and a 
+        Returns a list of note name strings without an assigned octave
         '''
         scale = []
         # use a major or minor scale(1), or pick a prime form(2)?
-        if(randint(1, 2) == 1):
+        if randint(1, 2) == 1:
             # pick major
-            if(randint(1, 2) == 1):
+            if randint(1, 2) == 1:
                 scale = c.MAJOR_SCALES[randint(0, len(c.MAJOR_SCALES) - 1)]
             # pick minor
             else:
@@ -649,10 +649,10 @@ class generate():
         pcs = []
         # generate an ascending set of 5-9 integers/note array indices
         total = randint(5, 9)
-        while(len(pcs) < total):
+        while len(pcs) < total:
             # pick pitch class integer
             n = randint(0, 11)
-            if(n not in pcs):
+            if n not in pcs:
                 pcs.append(n)
         # sort in ascending order
         pcs.sort()
@@ -665,7 +665,7 @@ class generate():
     # Converts a major scale to its relative minor
     def convertToMinor(self, scale):
         # print("\nConverting major scale to relative minor...")
-        if(len(scale) == 0):
+        if len(scale) == 0:
             print("\nconvertToMinor() - ERROR: no scale inputted!")
             return -1
         k = 5
@@ -673,7 +673,7 @@ class generate():
         for i in range(len(scale)):
             minorScale.append(scale[k])
             k += 1
-            if(k > len(scale) - 1):
+            if k > len(scale) - 1:
                 k = 0
         return minorScale
 
@@ -694,17 +694,15 @@ class generate():
               than an list of lists. It'll hopefully make access syntax
               cleaner.            
         '''
-        if(not scale):
-            return -1 
         variants = []
         for i in range(len(scale)):
             #Retrieve note from prime scale
             note = scale[i]
             scaleVariant = []
-            while(len(scaleVariant) < len(scale)):
+            while len(scaleVariant) < len(scale):
                 # add note with random interval value
                 note += randint(1, 3)
-                if(note > 11):
+                if note > 11:
                     note = self.octaveEquiv(note)
                 scaleVariant.append(note)
                 #scaleVariant = list(set(scaleVariant)) #Remove duplicates
@@ -719,9 +717,9 @@ class generate():
         Returns a list of ints/pitch classes/index numbers.
         '''
         row = []
-        while(len(row) < 11):
+        while len(row) < 11:
             note = self.newNote(randint(0, 11), 4)
-            if(note not in row):
+            if note not in row:
                 row.append(note)
         return row
 
@@ -738,13 +736,13 @@ class generate():
         '''
         NOTE: There's gotta be a better way to do this...
         '''
-        if(type(n) != int):
+        if type(n) != int:
             print("\ntranspose() - ERROR: n is not an int!")
             return -1
-        elif(type(n) == int and n > 11 or n < -11):
+        elif type(n) == int and n > 11 or n < -11:
             print("\ntranspose() - ERROR: transposition distance out of bounds!")
             return -1
-        if(type(pcs) != list):
+        if type(pcs) != list:
             print("\ntranspose() - ERROR: no list inputted!")
             return -1
         # transpose
@@ -759,10 +757,10 @@ class generate():
         '''
         Keeps a single pitch within span of an octave (0 - 11). 
         '''
-        if(type(pitch) != int):
+        if type(pitch) != int:
             print("\noctaveEquiv() - ERROR: pitch not an int!")
             return -1
-        while(pitch > 11):
+        while pitch > 11:
             pitch -= 11
         return pitch 
 
@@ -795,30 +793,30 @@ class generate():
               be hard-coded.
         '''
         rhythms = []
-        if(total is None):
+        if total is None:
             total = randint(3, 30)
-        while(len(rhythms) < total):
+        while len(rhythms) < total:
             # Pick rhythm and add to list
             rhythm = self.newRhythm()
             # Repeat this rhythm or not? 1 = yes, 2 = no
-            if(randint(1, 2) == 1):
+            if randint(1, 2) == 1:
                 # Limit reps to no more than roughly 1/3 of the supplied total
                 limit = math.floor(total * 0.333333333333)
                 '''Note: This limit will increase rep levels w/longer list lengths
                          May need to scale for larger lists'''
-                if(limit == 0):
+                if limit == 0:
                     limit += 2
                 reps = randint(1, limit)
                 for i in range(reps):
                     rhythms.append(rhythm)
-                    if(len(rhythms) == total):
+                    if len(rhythms) == total:
                         break
             else:
-                if(rhythm not in rhythms):
+                if rhythm not in rhythms:
                     rhythms.append(rhythm)
         # convert to given tempo, if provided.
-        if(tempo is not None and tempo != 60.0):
-            rhythms = self.tempoConvert(rhythms)
+        if tempo is not None and tempo != 60.0:
+            rhythms = self.tempoConvert(tempo, rhythms)
         return rhythms
 
 
@@ -849,26 +847,26 @@ class generate():
               be hard-coded.
         '''
         dynamics = []
-        if(total is None):
+        if total is None:
             total = randint(3, 30)
-        while(len(dynamics) < total):
+        while len(dynamics) < total:
             # Pick dynamic (medium range for now)
             dynamic = self.newDynamic()
             # Repeat this dynamic or not? 1 = yes, 2 = no
-            if(randint(1, 2) == 1):
+            if randint(1, 2) == 1:
                 # Limit reps to no more than roughly 1/3 of the supplied total
                 limit = math.floor(total * 0.333333333333)
                 '''Note: This limit will increase rep levels w/longer totals
                          May need to scale for larger lists'''
-                if(limit == 0):
+                if limit == 0:
                     limit += 2
                 reps = randint(1, limit)
                 for i in range(reps):
                     dynamics.append(dynamic)
-                    if(len(dynamics) == total):
+                    if len(dynamics) == total:
                         break
             else:
-                if(dynamic not in dynamics):
+                if dynamic not in dynamics:
                     dynamics.append(dynamic)
         return dynamics
 
@@ -888,30 +886,30 @@ class generate():
         Uses infrequent repetition.
         '''
         # Check input
-        if(total is None):
+        if total is None:
             total = randint(3, 30)
         elements = []
-        while(len(elements) < total):
+        while len(elements) < total:
             # Pick rhythm (1) or dynamic(2)?
-            if(dataType == 1):
+            if dataType == 1:
                 item = self.newRhythm()
             else:
                 item = self.newDynamic()
             # Repeat this rhythm or not? 1 = yes, 2 = no
-            if(randint(1, 2) == 1):
+            if randint(1, 2) == 1:
                 # Limit reps to no more than  approx 1/3 of the total no. of rhythms
                 limit = math.floor(len(elements) * 0.3333333333333)
                 '''NOTE: This limit will increase rep levels w/longer list lengths
                          May need to scale for larger lists'''
-                if(limit == 0):
+                if limit == 0:
                     limit += 2
                 reps = randint(1, limit)
                 for i in range(reps):
                     elements.append(item)
-                    if(len(elements) == total):
+                    if len(elements) == total:
                         break
             else:
-                if(item not in elements):
+                if item not in elements:
                     elements.append(item)
         return elements
 
@@ -947,13 +945,13 @@ class generate():
         # New chord() object
         newchord = chord()
         # Pick or generate a new scale if we don't get one supplied
-        if(scale is None):
+        if scale is None:
             if randint(1, 2) == 1:
                 scale = self.pickScale()
             else:
-                scale,  = self.newScale()
+                scale, pcs = self.newScale()
         # Add tempo if one isn't supplied
-        if(tempo is None):
+        if tempo is None:
             newchord.tempo = 60.0
         else:
             newchord.tempo = tempo
@@ -963,7 +961,7 @@ class generate():
         total = randint(2, 9)
         # Pick note and add to list
         '''NOTE: this allows for dublings!'''
-        while(len(newchord.notes) < total):
+        while len(newchord.notes) < total:
             note = scale[randint(0, len(scale) - 1)]
             newchord.notes.append(note)
         # Remove duplicate notes/doublings
@@ -972,13 +970,13 @@ class generate():
         newchord.notes = list(dict.fromkeys(newchord.notes))
         # Pick a rhythm & scale to tempo if needed
         rhythm = self.newRhythm()
-        if(newchord.tempo != 60.0):
+        if newchord.tempo != 60.0:
             newchord.rhythm = self.tempoConvert(newchord.tempo, rhythm)
         else:
             newchord.rhythm = rhythm
         # Pick a dynamic (randomize for each note? probably)
         dynamic = self.newDynamic()
-        while(len(newchord.dynamics) < len(newchord.notes)):
+        while len(newchord.dynamics) < len(newchord.notes):
             newchord.dynamics.append(dynamic)
         return newchord
 
@@ -994,27 +992,27 @@ class generate():
         '''
         chords = []
         # Has a scale, tempo, and total been provided?
-        if(scale is None):
+        if scale is None:
             # scale = self.newScale()
             scale = self.newNotes()
-        elif(total is None):
+        elif total is None:
             total = randint(math.floor(len(scale) * 0.3), len(scale))
-            if(total == 0):
+            if total == 0:
                 total += 2
-        elif(tempo is None):   
+        elif tempo is None:   
             tempo = self.newTempo()
-        elif(total is not None and scale is not None):
+        elif total is not None and scale is not None:
             # Error check
-            if(type(scale) == list):
+            if type(scale) == list:
                 if(len(scale) == 0):
                     print("\nnewChordsfromScale() - ERROR: no scale inputted!")
                     return -1
             # Picks total equivalent to between 30-100% of total elements in the scale
             total = randint(math.floor(len(scale) * 0.3), len(scale))
-            if(total == 0):
+            if total == 0:
                 total = randint(1, len(scale))
         # Pick chords
-        while(len(chords) < total):
+        while len(chords) < total:
             newchord = self.newChord(tempo, scale)
             chords.append(newchord)
         return chords
@@ -1030,17 +1028,17 @@ class generate():
         
         Returns -1 if given interval is invalid.
         '''
-        if(i > 6 or i < 1):
+        if i > 6 or i < 1:
             return -1
-        if(n < 0):
+        if n < 0:
             return -1
-        if(r > 11):
+        if r > 11:
             r = self.octaveEquiv(r)
         chord = []
-        while(len(chord) < n):
+        while len(chord) < n:
             chord.append(r)
             r += i
-            if(r > 11):
+            if r > 11:
                 r = self.octaveEquiv(r)
         return chord
 
@@ -1055,7 +1053,7 @@ class generate():
         '''
         Displays newMelody() object data
         '''
-        if(newMelody.hasData() == False):
+        if newMelody.hasData() == False:
             print("ERROR: no melody data!")
             return -1
 
@@ -1107,29 +1105,29 @@ class generate():
                 return -1
         '''
     
-        if(dataType is not None and data is not None):
+        if dataType is not None and data is not None:
             print("\nProcessing incoming data...")
             # If ints, scale as necessary
-            if(dataType == 1):
+            if dataType == 1:
                 # Save original source data
                 newMelody.sourceData = data
                 data = self.scaleTheScale(data)
 
             # If floats then convert to ints and scale
-            elif(dataType == 2):
+            elif dataType == 2:
                 # Save original source data
                 newMelody.sourceData = data
                 data = self.floatToInt(data)
                 data = self.scaleTheScale(data)
 
             # If letters/chars then match letters to their corresponding index numbers.
-            elif(dataType == 3):
+            elif dataType == 3:
                 # Save original source data
                 newMelody.sourceData = data
                 data = self.mapLettersToNumbers(data)
 
             # If hex convert to array of ints and scale
-            elif(dataType == 4):
+            elif dataType == 4:
                 # Converts hex number to string, then saves
                 # that as the first item of a list. It's silly, I know.
                 data = str(data)
@@ -1149,14 +1147,14 @@ class generate():
         newMelody.tempo = self.newTempo()
         # Pick instrument
         newMelody.instrument = self.newInstrument()
-        if(data is None):
+        if data is None:
             newMelody.notes, newMelody.fn, newMelody.sourceScale = self.newNotes()
-            if(newMelody.notes == -1):
+            if newMelody.notes == -1:
                 print("\nnewMelody() - ERROR: unable to generate notes!")
                 return -1
         else:
             newMelody.notes, newMelody.fn, newMelody.sourceScale = self.newNotes(data)
-        # Pick rhythms (in seconds/floats @ 60bpm) & scale to tempo
+        # Pick rhythms
         newMelody.rhythms = self.newRhythms(len(newMelody.notes), newMelody.tempo)
         # Pick dynamics
         newMelody.dynamics = self.newDynamics(len(newMelody.notes))
@@ -1164,7 +1162,7 @@ class generate():
         #------------Check data, display, and export-------------#
 
         # Make sure all data was inputted
-        if(newMelody.hasData() == False):
+        if newMelody.hasData() == False:
             print("\nnewMelody() - ERROR: missing melody data!")
             return -1
         return newMelody
@@ -1183,16 +1181,16 @@ class generate():
         Exports MIDI file + generates title + .txt data file. 
         Returns 0 on succcess, -1 on failure.
         '''
-        if(data is not None):
-            if(type(data) == list and len(data) == 0):
+        if data is not None:
+            if type(data) == list and len(data) == 0:
                 print("\naNewMelody() - ERROR: no data inputted!")
                 return -1
-        if(dataType is not None): 
-            if(type(dataType) == int and dataType > 4 or dataType < 1):
+        if dataType is not None: 
+            if type(dataType) == int and dataType > 4 or dataType < 1:
                 print("\naNewMelody() - ERROR: dataType out of range!")
                 return -1
         # Generate melody
-        elif(data is not None and dataType is not None):
+        elif data is not None and dataType is not None:
             newTune = self.newMelody(data, dataType)
         else:
             newTune = self.newMelody()
@@ -1201,7 +1199,7 @@ class generate():
         # Create MIDI file name
         title1 = title + '.mid'
         # Save to MIDI file
-        if(mid.saveMelody(self, title1, newTune) != -1):
+        if mid.saveMelody(self, title1, newTune) != -1:
             print('')  
         else:
             print("\n\naNewMelody() - ERROR: Unable to export piece to MIDI file!")
@@ -1225,11 +1223,11 @@ class generate():
         
         Returns a list of chord() objects
         '''
-        if(total is None):
+        if total is None:
             total = randint(3, 15)
-        elif(tempo is None):
+        elif tempo is None:
             tempo = self.newTempo()
-        elif(sourceScale is None):
+        elif sourceScale is None:
             sourceScale = self.newNotes()
         chords = self.newChords(total, tempo, sourceScale)
         # generate title
@@ -1237,7 +1235,7 @@ class generate():
         # create MIDI file name
         title1 = title + '.mid'
         # save to MIDI file
-        if(mid.saveChords(self, title, chords) != -1):
+        if mid.saveChords(self, title, chords) != -1:
             print("\nMIDI file saved as:", title1)
         else:
             print("\nnewProgression() - ERROR: unable to save MIDI file!")
@@ -1268,32 +1266,32 @@ class generate():
         #--------------------------Check incoming data------------------------------#
 
         # Did we get an empty list?
-        if(data is not None and type(data) == list):
-            if(len(data) == 0):
+        if data is not None and type(data) == list:
+            if len(data) == 0:
                 print("\nnewComposition() - ERROR: no data inputted!")
                 return -1
-        if(dataType is not None and type(dataType) == int):
-            if(dataType < 1 or dataType > 4):
+        if dataType is not None and type(dataType) == int:
+            if dataType < 1 or dataType > 4:
                 print("\nnewComposition() - ERROR: bad data type!")
                 return -1
 
         #----------------------Generate melody and Harmony--------------------------#
 
-        if(data is not None and dataType is not None):
+        if data is not None and dataType is not None:
             newTune = self.newMelody(data, dataType)
-            if(newTune == -1):
+            if newTune == -1:
                 print("newComposition() - ERROR: unable to generate melody!")
                 return -1
             # music.melodies.append(newTune)
         else:
             newTune = self.newMelody()
-            if(newTune == -1):
+            if newTune == -1:
                 print("newComposition() - ERROR: unable to generate melody!")
                 return -1
             # music.melodies.append(newTune)
 
         newChords = self.newChords(len(newTune.notes), newTune.tempo, newTune.notes)
-        if(newChords == -1):
+        if newChords == -1:
             print("\nnewComposition() - ERROR: unable to generate harmonies!")
             return -1
         # music.chords.append(newChords)
@@ -1304,7 +1302,7 @@ class generate():
         # Create MIDI file name
         title1 = title + '.mid'
         # Save to MIDI file
-        if(mid.saveComposition(self, newTune, newChords, title1) != -1):
+        if mid.saveComposition(self, newTune, newChords, title1) != -1:
             print("\nMIDI file saved as:", title1)
         else:
             print("\nnewComposition() - ERROR:Unable to export piece to MIDI file!")
