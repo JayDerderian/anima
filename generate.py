@@ -250,7 +250,7 @@ class generate():
         # Add Forte number, if applicable
         if(newMelody is not None and newMelody.fn != ""):
             fn = ''.join(newMelody.fn)
-            fnInfo = '\n\n\Forte Number: ' + fn
+            fnInfo = '\n\nForte Number: ' + fn
             f.write(fnInfo)
 
         # Add original source data
