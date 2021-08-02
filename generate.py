@@ -218,7 +218,7 @@ class generate():
         #------------------------------Add Meta-Data---------------------------#
 
         # Add title, instrument(s), and save inputted data
-        if(name is not None and newMelody is not None):
+        if name is not None and newMelody is not None:
             # Generate full title
             title = '\n\n\nTITLE: ' + name
             f.write(title)
@@ -235,7 +235,7 @@ class generate():
             dateStr = '\n\nDate: ' + dateStr
             f.write(dateStr)
 
-        elif(name is not None):
+        elif name is not None:
             # Generate title
             title = '\n\n\nTITLE: ' + name
             f.write(title)
@@ -248,13 +248,13 @@ class generate():
             f.write(dateStr)
 
         # Add Forte number, if applicable
-        if(newMelody is not None and newMelody.fn != ""):
+        if newMelody is not None and newMelody.fn != "":
             fn = ''.join(newMelody.fn)
             fnInfo = '\n\nForte Number: ' + fn
             f.write(fnInfo)
 
         # Add original source data
-        if(data is not None):
+        if data is not None:
             dataStr = ''.join([str(i) for i in data])
             dataInfo = '\n\nInputted data: ' + dataStr
             f.write(dataInfo)
@@ -265,7 +265,7 @@ class generate():
         #-------------------------Add Melody and Harmony Info--------------------#
 
         # Save melody info
-        if(newMelody is not None):
+        if newMelody is not None:
             header = "\n\n\n----------------MELODY INFO-------------------"
             f.write(header)
 
@@ -295,7 +295,7 @@ class generate():
             dynamics = '\nDynamics: ' + dynamicStr
             f.write(dynamics)
 
-        if(newChords is not None):
+        if newChords is not None:
             # Save harmony data
             header = "\n\n\n----------------HARMONY INFO-------------------"
             f.write(header)
@@ -317,7 +317,7 @@ class generate():
                 f.write(dynamics)
 
         # Input all
-        if(newMusic is not None):
+        if newMusic is not None:
             # Save composition data
             header = "\n\n\n----------------COMPOSITION INFO-------------------"
             f.write(header)
