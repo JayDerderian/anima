@@ -174,13 +174,19 @@ class generate():
         return fileName
 
     # Converts a list of pitch class integers to note strings (with or without an octave)
-    def toStr(self, pcs):
+    def toStr(self, pcs, octave=None):
         '''
-        Converts a list of pitch class integers to note name strings without a supplied octave
+        Converts a list of pitch class integers to note name strings, with or without a supplied octave.
+        Returns a list of strings representing pitches, i.e. C#, Gb or D5, Ab6, etc.
         '''
         scale = []
-        for i in range(len(pcs)):
-            scale.append(c.CHROMATIC_SCALE[pcs[i]])
+        if octave is not None:
+            for i in range(len(pcs)):
+                note = "{}{}".format(c.CHROMATIC_SCALE[pcs[i]], octave)
+                scale.append(note)
+        else:
+            for i in range(len(pcs)):
+                scale.append(c.CHROMATIC_SCALE[pcs[i]])
         return scale
 
 
@@ -570,6 +576,7 @@ class generate():
             total = max(data)
         
         #-----------------Generate source scale-----------------#
+
         n = 0
         scale = []
         for i in range(total + 1):
@@ -577,7 +584,7 @@ class generate():
             note = "{}{}".format(root[n], octave)
             scale.append(note)
             n += 1
-            # when we get to the end of the scale...   
+            # when we get to the end of the root scale...   
             if n == len(root):
                 # Increment octave
                 octave += 1
@@ -597,7 +604,7 @@ class generate():
         if data is None:
             # Total notes in melody will be between 3 and 
             # however many notes are in the source scale
-            total = randint(3, len(scale))
+            total = randint(3, len(scale) - 1)
             for i in range(total):
                 notes.append(scale[randint(0, len(scale) - 1)])
 
@@ -617,18 +624,22 @@ class generate():
         Picks either 1 of 12 major  or minor scales for a tonal flavor, 
         or a 5 to 9 note Forte pitch class prime form for an atonal flavor.
 
-        Returns a list of note name strings without an assigned octave
+        Returns a list of note name strings without an assigned octave, plus
+        the forte number of the chosen scale.
         '''
         scale = []
         # use a major or minor scale(1), or pick a prime form(2)?
         if randint(1, 2) == 1:
+            '''NOTE: find forte number for minor scale since thats the 
+                        number for both maj/min scales'''
             # pick major
             if randint(1, 2) == 1:
                 scale = c.MAJOR_SCALES[randint(0, len(c.MAJOR_SCALES) - 1)]
+                fn = "{}{}{}".format('None - ', scale[0], ' major')
             # pick minor
             else:
                 scale = c.MINOR_SCALES[randint(0, len(c.MINOR_SCALES) - 1)]
-            fn = "None"
+                fn = "{}{}{}".format('None - ', scale[0], ' minor')
         else:
             # pick prime form pitch-class set
             fn = c.FORTE_NUMBERS[randint(0, len(c.FORTE_NUMBERS) - 1)]
@@ -802,7 +813,7 @@ class generate():
             if randint(1, 2) == 1:
                 # Limit reps to no more than roughly 1/3 of the supplied total
                 limit = math.floor(total * 0.333333333333)
-                '''Note: This limit will increase rep levels w/longer list lengths
+                '''NOTE: This limit will increase rep levels w/longer list lengths
                          May need to scale for larger lists'''
                 if limit == 0:
                     limit += 2
@@ -856,7 +867,7 @@ class generate():
             if randint(1, 2) == 1:
                 # Limit reps to no more than roughly 1/3 of the supplied total
                 limit = math.floor(total * 0.333333333333)
-                '''Note: This limit will increase rep levels w/longer totals
+                '''NOTE: This limit will increase rep levels w/longer totals
                          May need to scale for larger lists'''
                 if limit == 0:
                     limit += 2
@@ -869,49 +880,6 @@ class generate():
                 if dynamic not in dynamics:
                     dynamics.append(dynamic)
         return dynamics
-
-
-    #--------------------------------------------------------------------------------#
-    #---------------------------------Rhythm/Dynamics--------------------------------#
-    #--------------------------------------------------------------------------------#
-
-
-    # Generate a list containing either a rhythmic pattern or series of dynamics
-    def newElements(self, dataType, total=None):
-        '''
-        Generates a series of rhythms or dynamics of n length, where n is supplied
-        from elsewhere. Can also generate 3-30 rhythms or dynamics if no total is 
-        supplied. dataType (int - 1 or 2) determines which data set to use.
-
-        Uses infrequent repetition.
-        '''
-        # Check input
-        if total is None:
-            total = randint(3, 30)
-        elements = []
-        while len(elements) < total:
-            # Pick rhythm (1) or dynamic(2)?
-            if dataType == 1:
-                item = self.newRhythm()
-            else:
-                item = self.newDynamic()
-            # Repeat this rhythm or not? 1 = yes, 2 = no
-            if randint(1, 2) == 1:
-                # Limit reps to no more than  approx 1/3 of the total no. of rhythms
-                limit = math.floor(len(elements) * 0.3333333333333)
-                '''NOTE: This limit will increase rep levels w/longer list lengths
-                         May need to scale for larger lists'''
-                if limit == 0:
-                    limit += 2
-                reps = randint(1, limit)
-                for i in range(reps):
-                    elements.append(item)
-                    if len(elements) == total:
-                        break
-            else:
-                if item not in elements:
-                    elements.append(item)
-        return elements
 
 
     #--------------------------------------------------------------------------------#
@@ -1081,10 +1049,6 @@ class generate():
 
         Returns a melody() object if successfull, -1 on failure.
         '''
-        # Melody container object
-        newMelody = melody()
-
-        #----------------Process any incoming data---------------#
         '''NOTE: Might be able to remove the dataType variable by
                  using type() in the body of the method instead
                  
@@ -1104,7 +1068,12 @@ class generate():
             else:
                 return -1
         '''
-    
+
+        #----------------Process any incoming data---------------#
+
+        # Melody container object
+        newMelody = melody()
+
         if dataType is not None and data is not None:
             print("\nProcessing incoming data...")
             # If ints, scale as necessary
@@ -1207,7 +1176,6 @@ class generate():
         # Save composition data to a .txt file (fileName)
         fileName = "{}{}".format(title, '.txt')
         title2 = "{}{}{}{}".format(title, ' for ', newTune.instrument, ' and piano')
-        # Export composition data
         print("\nNew melody title:", title2)
         self.saveInfo(title2, data, fileName, newTune)
         return 0
@@ -1305,7 +1273,7 @@ class generate():
         if mid.saveComposition(self, newTune, newChords, title1) != -1:
             print("\nMIDI file saved as:", title1)
         else:
-            print("\nnewComposition() - ERROR:Unable to export piece to MIDI file!")
+            print("\nnewComposition() - ERROR: Unable to export piece to MIDI file!")
             return -1
 
         #------------Save composition data to a .txt file (fileName)----------------#
