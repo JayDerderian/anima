@@ -46,24 +46,21 @@ def newRandomComposition():
     # new composition object
     comp = composition()
 
-    # pick global tempo
-    comp.tempo = create.newTempo()
     # pick title
     comp.title = create.newTitle()
     # add composer info
     comp.composer = "Rando Calrissian"
 
+    # pick global tempo
+    comp.tempo = create.newTempo()
+
     # pick ensemble size (1 - 11 isntruments for now)
-    size = randint(1, len(c.ENSEMBLE_SIZES))
+    size = randint(1, len(c.ENSEMBLE_SIZES) - 1)
     comp.ensemble = c.ENSEMBLE_SIZES[size]
     comp.instruments = create.newInstruments(size)
     
     # how many melody instruments?
-    total_melodies = randint(1, size - 1)
-    # how many harmony instruments? use remaining number
-    # will be 0 if 1 is chosen as the ensemble size.
-    total_harmonies = size - total_melodies
-
+    total_melodies = randint(1, size)
     # pick melodies.
     for i in range(total_melodies):
         melody = create.newMelody(tempo=comp.tempo)
@@ -80,7 +77,10 @@ def newRandomComposition():
         else:
             print("\nnewRandomComposition() - ERROR: unable to generate melody!")
             return -1
-
+            
+    # how many harmony instruments? use remaining number
+    # will be 0 if 1 is chosen as the ensemble size.
+    total_harmonies = size - total_melodies
     # pick harmonies, if applicable
     if total_harmonies > 0:
         for i in range(total_harmonies):
@@ -93,12 +93,29 @@ def newRandomComposition():
                 return -1
 
     # export to MIDI file
-    if m.save(comp) != -1:
-        print("\n")
-    else:
-        print("\nUnable to generate random composition!")
-        return -1
+    # if m.save(comp) != -1:
+    #     print("\n")
+    # else:
+    #     print("\nUnable to generate random composition!")
+    #     return -1
 
     # generate .txt file
+    comp.fileName = "{}{}".format(comp.title, '.txt')
+    print("\nText file saved as:", comp.fileName)
+    if size == 1:
+        title_full = "{}{}{}".format(comp.title, 'for solo', comp.melodies[0].instrument)
+    elif size > 1:
+        title_full = "{}{}".format(comp.title, 'for', comp.melodies[0].instrument)
+        for i in range(size):
+            if i == size - 1:
+                title_full += "and " 
+                title_full += comp.melodies[i].instrument
+                break
+            title_full += ", " 
+            title_full += comp.melodies[i].instrument
+
+
+    print("\nTitle:", title_full)
+    create.saveInfo(name=comp.title, fileName=comp.fileName, newMusic=comp)
 
     return comp

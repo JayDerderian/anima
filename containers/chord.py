@@ -16,6 +16,7 @@ class chord():
         self.sourceNotes = []
         self.fn = ""
         self.pcs = []
+        self.instrument = ""
 
         # Data
         self.tempo = 0.0

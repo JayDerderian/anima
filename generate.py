@@ -661,7 +661,7 @@ class generate():
         # use a major or minor scale(1), or pick a prime form(2)?
         if randint(1, 2) == 1:
             '''NOTE: find forte number for minor scale since thats the 
-                        number for both maj/min scales'''
+                     number for both maj/min scales'''
             # pick major
             if randint(1, 2) == 1:
                 scale = c.MAJOR_SCALES[randint(0, len(c.MAJOR_SCALES) - 1)]
@@ -681,7 +681,7 @@ class generate():
 
 
     # Generate a new scale to function as a "root"
-    def newScale(self):
+    def newScale(self, octave=None):
         '''
         Returns a randomly generated scale without an octave to be used as a 'root'.
         Can take an int as a starting octave (between 2 and 5) or not.  
@@ -697,10 +697,16 @@ class generate():
                 pcs.append(n)
         # sort in ascending order
         pcs.sort()
-        # convert to strings
+        # convert to strings (with or without supplied octave)
         scale = []
-        for i in range(len(pcs)):
-            scale.append(c.CHROMATIC_SCALE[pcs[i]])
+        if octave==None:
+            for i in range(len(pcs)):
+                scale.append(c.CHROMATIC_SCALE[pcs[i]])
+        else:
+            for i in range(len(pcs)):
+                note = c.CHROMATIC_SCALE[pcs[i]]
+                note += octave
+                scale.append(note)
         return scale, pcs
 
     # Converts a major scale to its relative minor
@@ -955,7 +961,7 @@ class generate():
                 scale, pcs = self.newScale()
                 newchord.sourceNotes = scale
                 newchord.pcs = pcs
-                
+
         # Add tempo if one isn't supplied
         if tempo is None:
             newchord.tempo = 60.0
