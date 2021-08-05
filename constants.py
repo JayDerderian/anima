@@ -716,12 +716,12 @@ ENSEMBLE_SIZES = {1: 'solo',
                   8: 'octet',
                   9: 'nonet',
                   10: 'decet',
-                  11: 'large ensemble',
-                  12: 'open instrumentation'}
+                  11: 'large ensemble'}
 
 
 # INSTRUMENTS [program_number] maps the program_number to an instrument name
 INSTRUMENTS = [
+    # Indicies 0 - 110 are MELODIC/HARMONIC instruments!
     'Acoustic Grand Piano', 
     'Bright Acoustic Piano',              
     'Electric Grand Piano', 
@@ -833,7 +833,8 @@ INSTRUMENTS = [
     'Kalimba', 
     'Bagpipe', 
     'Fiddle',
-    'Shanai', 
+    'Shanai',
+    # Indices 111 onward are PERCUSSION instruments! 
     'Tinkle Bell', 
     'Agogo', 
     'Steel Drums',

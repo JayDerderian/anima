@@ -37,6 +37,8 @@ class composition():
         NOTE: instrument and melody lists need to coinicide so that the MIDI
         file can select the proper instruments. 
         '''
+        # Ensemble size string ("duo", "trio", etc...)
+        self.ensemble = ""
         # List of instruments (strings)
         self.instruments = []
         # List of melody() objects. 

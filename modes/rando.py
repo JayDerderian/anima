@@ -1,12 +1,13 @@
-#****************************************************************************************************************#
-#---------------------------This class handles creating a purely "random" composition----------------------------#
-#****************************************************************************************************************#
+'''
+This module handles creating a purely "random" composition. Tempo, ensemble size, instruments, title, 
+'''
 
 #IMPORTS
-import mido
-import pretty_midi
-from create import generate as create
-
+import midi as m
+import constants as c
+from random import randint
+from generate import generate as create
+from containers.composition import composition
 '''
 ------------------------------------------------------NOTES--------------------------------------------------------------
     ALGORITHM:
@@ -31,40 +32,52 @@ from create import generate as create
 
 ------------------------------------------------------------------------------------------------------------------------
 '''
-
-
 #Pure "random" mode
-class randomMode(generate):
-    def __init__(self):
-        super().__init__()
+def newRandomComposition(self):
+    '''
+    Generates a composition with n number of harmony and melody instruments. Each part creates its own
+    source material at random. Exports a MIDI file, a .txt file with composition info, and returns a 
+    composition() object.
+    '''
+    # new composition object
+    comp = composition()
 
-        ''''
-        1.Pick tempo and instrument(s).
-            1.1. If more than one, create a while-loop that iterates n times
-                 while randomly selecting indicies of a dictionary containing 
-                 MIDI instrument names.
+    # indicate no inputted source data
+    comp.sourceData.append("None")
+    # pick global tempo
+    comp.tempo = create.newTempo()
+    # pick title
+    comp.title = create.newTitle()
 
-                 ex.
+    # pick ensemble size (1 - 11 isntruments for now)
+    size = randint(1, len(c.ENSEMBLE_SIZES))
+    # ensemble size string ("duo, trio," etc...)
+    comp.ensemble = c.ENSEMBLE_SIZES[size]
+    comp.instruments = create.newInstruments(size)
+    
+    # how many melody instruments?
+    total_melodies = randint(1, size - 1)
+    # how many harmony instruments? use remaining number
+    total_harmonies = size - total_melodies
 
-                 tempo = self.newTempo(choice.howFast(self)) (pick from list of standard metronome markings)
+    # pick melodies.
+    for i in range(total_melodies):
+        melody = create.newMelody(tempo=comp.tempo)
+        if(melody != -1):
+            comp.melodies.append(melody)
+        else:
+            continue
 
-                 num_instr = choice.howManyInstruments(self) (1 - n)
+    # pick harmonies
+    for i in range(total_harmonies):
+        chord = create.newChord(tempo=comp.tempo)
+        if(chord != -1):
+            comp.chords.append(chord)
+        else:
+            continue
 
-                 pm = pretty_midi.PrettyMidi(initial_tempo = tempo) Create object w/ specified tempo (refer to docs for other param's...)
-                 while (i < num_instr):
-                     instrument = choice.whichInstrument(self) (0 - n)
-                     instrument = pretty_midi.instrument_to_name_program(instrument)
-                     pm.instruments.append(pretty_midi.Instrument(instrument))
-                     i+=1
+    # export to MIDI file
 
-        2.????
+    # generate .txt file
 
-        3.???? 
-        '''
-
-    #def pickTempo(self):
-
-    #def pickInstrument(self):
-
-    #def createPiece(self):
-
+    return comp

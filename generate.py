@@ -1038,7 +1038,7 @@ class generate():
         return 0
 
     # Generate a melody from an array of integers (or not).
-    def newMelody(self, data=None, dataType=None):
+    def newMelody(self, tempo=None, data=None, dataType=None):
         '''
         Picks tempo, notes, rhythms, and dynamics, with or without a 
         supplied list from the user. It can process a list of ints (dataType == 1),
@@ -1113,7 +1113,10 @@ class generate():
         #-----------------------Generate!------------------------#
 
         # Pick tempo
-        newMelody.tempo = self.newTempo()
+        if tempo == None:
+            newMelody.tempo = self.newTempo()
+        else:
+            newMelody.tempo = tempo
         # Pick instrument
         newMelody.instrument = self.newInstrument()
         if data is None:
@@ -1158,11 +1161,12 @@ class generate():
             if type(dataType) == int and dataType > 4 or dataType < 1:
                 print("\naNewMelody() - ERROR: dataType out of range!")
                 return -1
-        # Generate melody
         elif data is not None and dataType is not None:
-            newTune = self.newMelody(data, dataType)
+            tempo = c.TEMPOS[randint(0, len(c.TEMPOS) - 1)]
+            newTune = self.newMelody(tempo, data, dataType)
         else:
-            newTune = self.newMelody()
+            tempo = c.TEMPOS[randint(0, len(c.TEMPOS) - 1)]
+            newTune = self.newMelody(tempo=tempo)
         # Generate title
         title = self.newTitle()
         # Create MIDI file name
