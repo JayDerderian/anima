@@ -3,6 +3,9 @@
 #*******************************************************************************************************#
 
 ''' 
+    Utility functions for working with MIDI I/O
+
+
     NOTE: Double check the math for how strt and end are incremented according to
     the supplied durations. Either Finale is doing something weird or the compounding
     values are creating highly precice floating point numbers that might make sheet music

@@ -942,19 +942,26 @@ class generate():
         '''
         # New chord() object
         newchord = chord()
+
         # Pick or generate a new scale if we don't get one supplied
         if scale is None:
             if randint(1, 2) == 1:
-                scale = self.pickScale()
+                # Pick scale and save forte number/scale info
+                scale, fn = self.pickScale()
+                newchord.sourceNotes = scale
+                newchord.fn = fn
             else:
+                # Create a scale and save original pitch class set
                 scale, pcs = self.newScale()
+                newchord.sourceNotes = scale
+                newchord.pcs = pcs
+                
         # Add tempo if one isn't supplied
         if tempo is None:
             newchord.tempo = 60.0
         else:
             newchord.tempo = tempo
-        # Save source scale
-        newchord.sourceNotes = scale
+
         # How many notes in this chord? 2 to 9 (for now)
         total = randint(2, 9)
         # Pick note and add to list
@@ -962,16 +969,19 @@ class generate():
         while len(newchord.notes) < total:
             note = scale[randint(0, len(scale) - 1)]
             newchord.notes.append(note)
+
         # Remove duplicate notes/doublings
         '''NOTE: This is avoids getting the while loop stuck
                  if there's a lot of repeated notes in the melody '''
         newchord.notes = list(dict.fromkeys(newchord.notes))
+
         # Pick a rhythm & scale to tempo if needed
         rhythm = self.newRhythm()
         if newchord.tempo != 60.0:
             newchord.rhythm = self.tempoConvert(newchord.tempo, rhythm)
         else:
             newchord.rhythm = rhythm
+
         # Pick a dynamic (randomize for each note? probably)
         dynamic = self.newDynamic()
         while len(newchord.dynamics) < len(newchord.notes):
@@ -989,6 +999,7 @@ class generate():
               variance and color. 
         '''
         chords = []
+
         # Has a scale, tempo, and total been provided?
         if scale is None:
             # scale = self.newScale()
@@ -1009,6 +1020,7 @@ class generate():
             total = randint(math.floor(len(scale) * 0.3), len(scale))
             if total == 0:
                 total = randint(1, len(scale))
+
         # Pick chords
         while len(chords) < total:
             newchord = self.newChord(tempo, scale)

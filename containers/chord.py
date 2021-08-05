@@ -14,6 +14,8 @@ class chord():
 
         # Metadata
         self.sourceNotes = []
+        self.fn = ""
+        self.pcs = []
 
         # Data
         self.tempo = 0.0

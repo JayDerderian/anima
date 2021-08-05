@@ -131,8 +131,10 @@ INTERVALS = {# Major
 
 '''
 A rather large dictionary containing all of Allen Forte's 5 to 9 
-note prime form pitch class sets. A correspnding list called FORTE_NUMBERS 
+note prime form pitch class sets. A corresponding list called FORTE_NUMBERS 
 is used with randint() to pick a prime form from the dictionary in pickScale().
+The choice using FORTE_NUMBERS can be used to save which number was used for analytical
+purposes.
 
 Each integer/pitch class functions as an index number against CHROMATIC_SCALE to 
 generate a scale represented by a list of strings (i.e. ["C#4", "D5"... etc]).

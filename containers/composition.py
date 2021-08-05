@@ -26,11 +26,6 @@ class composition():
         # Original inputted data (array of ints, floats, chars, or str copy
         # of hex number) for each melody() object.
         self.sourceData = []
-        '''
-        NOTE: Need a way to generate a single instrument list from the
-        melodies and chord lists. Both object list elements are considered
-        individual instruments.  
-        '''
         # Global tempo (float)
         self.tempo = 0.0
         '''

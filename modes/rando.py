@@ -33,50 +33,71 @@ from containers.composition import composition
 ------------------------------------------------------------------------------------------------------------------------
 '''
 #Pure "random" mode
-def newRandomComposition(self):
+def newRandomComposition():
     '''
-    Generates a composition with n number of harmony and melody instruments. Each part creates its own
-    source material at random. Exports a MIDI file, a .txt file with composition info, and returns a 
-    composition() object.
+    Generates a composition with n number of harmony and melody instruments. At least 1 melody will be generated,
+    though up to 11 parts - both melodic and harmonic - could be created.
+    
+    Each part creates its own source material at random. 
+    
+    Exports a MIDI file, a .txt file with composition info, and returns a 
+    composition() object, or -1 on failure.
     '''
     # new composition object
     comp = composition()
 
-    # indicate no inputted source data
-    comp.sourceData.append("None")
     # pick global tempo
     comp.tempo = create.newTempo()
     # pick title
     comp.title = create.newTitle()
+    # add composer info
+    comp.composer = "Rando Calrissian"
 
     # pick ensemble size (1 - 11 isntruments for now)
     size = randint(1, len(c.ENSEMBLE_SIZES))
-    # ensemble size string ("duo, trio," etc...)
     comp.ensemble = c.ENSEMBLE_SIZES[size]
     comp.instruments = create.newInstruments(size)
     
     # how many melody instruments?
     total_melodies = randint(1, size - 1)
     # how many harmony instruments? use remaining number
+    # will be 0 if 1 is chosen as the ensemble size.
     total_harmonies = size - total_melodies
 
     # pick melodies.
     for i in range(total_melodies):
         melody = create.newMelody(tempo=comp.tempo)
-        if(melody != -1):
+        '''NOTE: need a way to terminate function without ending calling
+                 method '''
+        if melody != -1:
+            # assign an instrument to this melody
+            melody.instrument = comp.instruments[i]
+            # save each melody's source data, as applicable.
+            # this will just be a list of "none inputted" strings, in this mode.
+            comp.sourceData.append(melody.sourceData)
+            # save the melody
             comp.melodies.append(melody)
         else:
-            continue
+            print("\nnewRandomComposition() - ERROR: unable to generate melody!")
+            return -1
 
-    # pick harmonies
-    for i in range(total_harmonies):
-        chord = create.newChord(tempo=comp.tempo)
-        if(chord != -1):
-            comp.chords.append(chord)
-        else:
-            continue
+    # pick harmonies, if applicable
+    if total_harmonies > 0:
+        for i in range(total_harmonies):
+            # harmonies are NOT generated from melodies here!
+            chord = create.newChord(tempo=comp.tempo)
+            if chord != -1:
+                comp.chords.append(chord)
+            else:
+                print("\nnewRandomComposition() - ERROR: unable to generate harmony!")
+                return -1
 
     # export to MIDI file
+    if m.save(comp) != -1:
+        print("\n")
+    else:
+        print("\nUnable to generate random composition!")
+        return -1
 
     # generate .txt file
 
