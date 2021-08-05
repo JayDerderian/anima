@@ -42,7 +42,7 @@ class composition():
         self.chords = []
     
     # Check if there's data in this instance
-    def hasData(self):
+    def isComplete(self):
         '''
         Check if this composition has all required data:
 
