@@ -258,7 +258,7 @@ class midiStuff():
         return mid
 
     # exports a MIDI file for any sized composition (1 solo melody to ensemble sized n)
-    def save(self, fileName, comp):
+    def save(self, comp):
         '''
         Exports a MIDI file for any sized composition (1 solo melody to ensemble sized n). 
         Requires a composition() object. Returns 0 on success, -1 on failure.
@@ -269,23 +269,24 @@ class midiStuff():
         mid = pm.PrettyMIDI(initial_tempo=comp.tempo)
  
         #----------------------------Add Melodies----------------------------------#
+
         end = comp.melodies[0].rhythms[0]
         for i in range(len(comp.melodies)):
             # Create melody instruments (strings)
             instrument = pm.instrument_name_to_program(comp.instrument[i])
             melody = pm.Instrument(program=instrument)
-            # Add *this* chord's notes
+            # Add *this* melodie's notes
             for j in range(len(comp.melodies[i].notes)):
                 # Translate note to MIDI note
                 note = pm.note_name_to_number(comp.melodies[i].notes[j])
-                amelody = pm.Note(
+                anote = pm.Note(
                     velocity=comp.melodies[i].dynamics[j], pitch=note, start=strt, end=end)
                 # Add to instrument object
-                melody.notes.append(amelody)
+                melody.notes.append(anote)
             try:
                 # Increment strt/end times
                 strt += comp.melodies[i].rhythms[i]
-                end += comp.melodies[i+1].rhythms[i+1]
+                end += comp.melodies[i].rhythms[i+1]
             except IndexError:
                 break
             # Add melody to instrument list
@@ -306,10 +307,10 @@ class midiStuff():
             for l in range(len(comp.chords[k].notes)):
                 # Translate note to MIDI note
                 note = pm.note_name_to_number(comp.chords[k].notes[l])
-                achord = pm.Note(
+                anote = pm.Note(
                     velocity=comp.chords[k].dynamics[l], pitch=note, start=strt, end=end)
                 # Add to instrument object
-                chord.notes.append(achord)
+                chord.notes.append(anote)
             try:
                 # Increment strt/end times
                 strt += comp.chords[k].rhythm
@@ -321,6 +322,6 @@ class midiStuff():
             mid.instruments.append(chord)
 
         # Write to MIDI file
-        mid.write(f'./midi/{fileName}')
+        mid.write(f'./midi/{comp.fileName}')
 
         return 0
