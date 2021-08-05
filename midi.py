@@ -258,47 +258,38 @@ class midiStuff():
         return mid
 
     # exports a MIDI file for any sized composition (1 solo melody to ensemble sized n)
-    def save(self, comp):
+    def save(self, fileName, comp):
         '''
         Exports a MIDI file for any sized composition (1 solo melody to ensemble sized n). 
         Requires a composition() object. Returns 0 on success, -1 on failure.
         '''
-        # Check incoming data
-        if(comp.hasData() == False):
-            return -1
-
-        # Variables
         strt = 0
         end = 0
-
         # Create PM object PM object is used to just write out the file.
         mid = pm.PrettyMIDI(initial_tempo=comp.tempo)
-
-        # Create melody instruments (strings)
-        instrument = pm.instrument_name_to_program(newMelody.instrument)
-        melody = pm.Instrument(program=instrument)
-
+ 
         #----------------------------Add Melodies----------------------------------#
-
-        # Attach notes, rhythms, and dynamics to melody instrument/MIDI object
-        end += newMelody.rhythms[0]
-        for i in range(len(newMelody.notes)):
-            # Converts note name strings to MIDI note numbers
-            note = pm.note_name_to_number(newMelody.notes[i])
-            # Attaches MIDI note number, dynamic, and strt/end time to pm.Note container
-            note = pm.Note(
-                velocity=newMelody.dynamics[i], pitch=note, start=strt, end=end)
-            # Then places container in melody notes list.
-            melody.notes.append(note)
-            # Increment rhythms (note event strt/end times)
+        end = comp.melodies[0].rhythms[0]
+        for i in range(len(comp.melodies)):
+            # Create melody instruments (strings)
+            instrument = pm.instrument_name_to_program(comp.instrument[i])
+            melody = pm.Instrument(program=instrument)
+            # Add *this* chord's notes
+            for j in range(len(comp.melodies[i].notes)):
+                # Translate note to MIDI note
+                note = pm.note_name_to_number(comp.melodies[i].notes[j])
+                amelody = pm.Note(
+                    velocity=comp.melodies[i].dynamics[j], pitch=note, start=strt, end=end)
+                # Add to instrument object
+                melody.notes.append(amelody)
             try:
-                strt += newMelody.rhythms[i]
-                end += newMelody.rhythms[i+1]
+                # Increment strt/end times
+                strt += comp.melodies[i].rhythms[i]
+                end += comp.melodies[i+1].rhythms[i+1]
             except IndexError:
                 break
-
-        # Add melody to instrument list
-        mid.instruments.append(melody)
+            # Add melody to instrument list
+            mid.instruments.append(melody)
 
         #----------------------------Add Harmonies-------------------------------#
 
@@ -307,28 +298,29 @@ class midiStuff():
         chord = pm.Instrument(program=instrument)
 
         strt = 0
-        end = newChords[0].rhythm
-        for i in range(len(newChords)):
+        end = comp.chords[0].rhythm
+        for k in range(len(comp.chords)):
+            instrument = pm.instrument_name_to_program('Acoustic Grand Piano')
+            chord = pm.Instrument(program=instrument)
             # Add *this* chord's notes
-            for j in range(len(newChords[i].notes)):
+            for l in range(len(comp.chords[k].notes)):
                 # Translate note to MIDI note
-                note = pm.note_name_to_number(newChords[i].notes[j])
+                note = pm.note_name_to_number(comp.chords[k].notes[l])
                 achord = pm.Note(
-                    velocity=newChords[i].dynamics[j], pitch=note, start=strt, end=end)
+                    velocity=comp.chords[k].dynamics[l], pitch=note, start=strt, end=end)
                 # Add to instrument object
                 chord.notes.append(achord)
             try:
                 # Increment strt/end times
-                strt += newChords[i].rhythm
-                end += newChords[i+1].rhythm
+                strt += comp.chords[k].rhythm
+                end += comp.chords[k+1].rhythm
             except IndexError:
                 break
 
-        # Add chord to instrument list
-        mid.instruments.append(chord)
+            # Add chord to instrument list
+            mid.instruments.append(chord)
+
         # Write to MIDI file
-        # print("\nSaving", fileName, "...")
         mid.write(f'./midi/{fileName}')
-        # mid.write(fileName)
-        # Return PrettyMIDI() object
+
         return 0
