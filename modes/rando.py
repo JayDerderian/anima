@@ -68,6 +68,7 @@ def newRandomComposition():
     # pick ensemble size (1 - 11 isntruments for now)
     size = randint(1, len(c.ENSEMBLE_SIZES) - 1)
     comp.ensemble = c.ENSEMBLE_SIZES[size]
+    # NOTE: the first entries will always be melodic instruments! 
     comp.instruments = create.newInstruments(size)
     
     # how many melody instruments?
@@ -78,8 +79,8 @@ def newRandomComposition():
         if randint(1, 2) == 1:
             # which data?
             d = randint(1, 4)
-            rand_data = newData(d)
-            melody = create.newMelody(tempo=comp.tempo, data=rand_data, dataType=d)
+            randData = newData(d)
+            melody = create.newMelody(tempo=comp.tempo, data=randData, dataType=d)
         else:
             melody = create.newMelody(tempo=comp.tempo)
         if melody != -1:
@@ -120,7 +121,7 @@ def newRandomComposition():
 
     # generate .txt file
     comp.txtFileName = "{}{}".format(comp.title, '.txt')
-    print("\nText file saved as:", comp.fileName)
+
     if size == 1:
         title_full = "{}{}{}".format(comp.title, 'for solo', comp.melodies[0].instrument)
     elif size > 1:
@@ -133,6 +134,7 @@ def newRandomComposition():
             title_full += ", " 
             title_full += comp.melodies[i].instrument
     if create.saveInfo(name=title_full, fileName=comp.txtFileName, newMusic=comp) != 0:
+        print("\nText file saved as:", comp.txtFileName)
         return -1
 
     # display results

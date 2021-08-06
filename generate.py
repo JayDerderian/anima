@@ -7,34 +7,44 @@ This module/class handles all generative methods.
 
 
     TODO: Implement alternative ways of generating ascending scales that 
-    should probably be stand-alone functions that are called at random in 
-    newNotes().
+          should probably be stand-alone functions that are called at random in 
+          newNotes().
 
-    1.  Random interval selection with each note. 
-        This will necessitate using PC notation and should use PC numbers 
-        as index numbers to pick from a single scale. Each set of interval 
-        selections should comprise a 5 to 7 note scale within the span of 
-        one octave. Each scale will be daisychained up to a certain octave, 
-        afterwhich the cycle will continue like above. 
+    0.  Construct a scale using symmetrical intervals 
+        (see modes of limit transposition, stacking in alternating 2nds, 
+         3rds, 4ths (per or aug), 5ths (per or aug)
 
-    2.  Calling newScale() n times (removing random extrainious notes after 
-        n cycles to stay within a specified threshold, if necessary)
+    1.  Calling newScale() n times (removing random extrainious notes after 
+        n cycles to stay within a specified threshold, if necessary) where n
+        starts at 2 goes to 5. Supplying n as the octave arg will generate
+        ascending scales. n will therefore be between 1 and 3 each time this method
+        is used.
 
-    3.  Symmetrical intervals (see modes of limit transposition, stacking in 
-        alternating 2nds, 3rds, 4ths (per or aug), 5ths (per or aug)
+    2.  Calling pickScale() n times and removing random extranious notes after
+        n cycles to stay within a predefined threshold. Supply ascending octave
+        arg as in 1.
 
-    4.  Calling newNote() n times with only ascending octave supplied as an arg.
+    3.  Calling newNote() n times with only ascending octave supplied as an arg.
+        Each octave will have an unordered scale associated with it (i.e. each scale
+        in each octave won't necessarily be ascending). The over all trend will
+        still be ascension though.
+
+    4.  Calling newNote() n times with specified octaves repeated n times 
+        (i.e. 4, 4, 4, 3, 3, 5, 5, 5, 5,5 etc. where the number of repetitions 
+        for each octave is determined by randint()). This will randomize each
+        octaves sub-set and not give the whole set an ascending trajectory.
+
+    5.  Calling newNote() n times without any supplied args (or using randint()
+        as two different args). If this is used, then no picking loop may be necessary
+        since the arrangement will already be pretty randomized.
 
     Each will need to return an accurate array of strings (i.e. "C#4") representing
-    the process applied to them. Single harmonic spellings (only sharps or flats) 
-    will probably be used to maintain simplicity.
+    the process applied to them (and possibly some sort of data log about how the process
+    was actually applied? Gonna use a lot of memory). Single harmonic spellings 
+    (only sharps or flats) will probably be used to maintain simplicity.
 
 
     GENERAL NOTES:
-
-        Move all the hard coded "resource data" to a stand-alone file?
-        Maybe try to find ways to increase modularity instead of cramming
-        everything into one monster generate() class. 
 
         Long data sets will have the same note associated with different 
         values elsewhere in the array. 
@@ -45,6 +55,7 @@ This module/class handles all generative methods.
         the amount of repeated notes associated with different elements in 
         the data array (unless we get the same scale chosen again, or there's
         a lot of common tones between the scales that are picked) .
+
 
 
     METHOD NOTES:
@@ -384,9 +395,11 @@ class generate():
         f.close()
         return 0
 
+
     #-----------------------------------------------------------------------------------------#
     #----------------------------------Conversion Functions-----------------------------------#
     #-----------------------------------------------------------------------------------------#
+
 
     # Converts an array of floats to an array of ints
     def floatToInt(self, data):
@@ -651,15 +664,14 @@ class generate():
 
         return notes, forte_numbers, scale
 
-    # Picks either a prime form pitch-class set, or a major or minor
-    # scale.
+    # Picks either a prime form pitch-class set, or a major or minor scale.
     def pickScale(self, octave=None):
         '''
-        Picks either 1 of 12 major  or minor scales for a tonal flavor, 
+        Picks either 1 of 12 major or minor scales for a tonal flavor, 
         or a 5 to 9 note Forte pitch class prime form for an atonal flavor.
 
-        Returns a list of note name strings without an assigned octave, plus
-        the forte number of the chosen scale.
+        Returns tuple with a list of note name strings with or without an 
+        assigned octave, plus the forte number of the chosen scale.
         '''
         scale = []
         # use a major or minor scale(1), or pick a prime form(2)?
@@ -696,12 +708,13 @@ class generate():
     # Generate a new scale to function as a "root"
     def newScale(self, octave=None):
         '''
-        Returns a randomly generated scale  with or without an octave 
+        Returns a randomly generated 4 to 9 note scale with or without an octave 
         to be used as a 'root'. Can take an int as a starting octave 
-        (between 2 and 5) or not.  Returns -1 on failure.
+        (between 2 and 5), or not.  
+        
+        Returns a list of note name strings.
         '''
         pcs = []
-        # generate an ascending set of 5-9 integers/note array indices
         total = randint(5, 9)
         while len(pcs) < total:
             # pick pitch class integer
@@ -794,20 +807,6 @@ class generate():
 
         Returns a list of modified ints or -1 if a failure occures.
         '''
-        # error checks
-        '''
-        NOTE: There's gotta be a better way to do this...
-        '''
-        if type(n) != int:
-            print("\ntranspose() - ERROR: n is not an int!")
-            return -1
-        elif type(n) == int and n > 11 or n < -11:
-            print("\ntranspose() - ERROR: transposition distance out of bounds!")
-            return -1
-        if type(pcs) != list:
-            print("\ntranspose() - ERROR: no list inputted!")
-            return -1
-        # transpose
         for i in range(len(pcs)):
             pcs[i] += n
             if pcs[i] > 11:
@@ -1079,21 +1078,18 @@ class generate():
         '''
         Displays newMelody() object data
         '''
-        if newMelody.hasData() == False:
-            print("ERROR: no melody data!")
-            return -1
-
-        # Display data
         print("\n-----------MELODY Data:------------")
         print("\nTempo:", newMelody.tempo, "bpm")
-        print("\nSource data:", newMelody.sourceData)
-        print("\nTotal Notes:", len(newMelody.notes))
+        print("\nInstrument:", newMelody.instrument)
+        print("\n\nSource data:", newMelody.sourceData)
+        print("\nSource scale:", newMelody.sourceScale)
+        print("\nForte Numbers:", newMelody.fn)
+        print("\n\nTotal Notes:", len(newMelody.notes))
         print("Notes:", newMelody.notes)
         print("\nTotal rhythms:", len(newMelody.rhythms))
         print("Rhythms:", newMelody.rhythms)
         print("\nTotal dynamics:", len(newMelody.dynamics))
         print("Dynamics:", newMelody.dynamics)
-        return 0
 
     # Generate a melody from an array of integers (or not).
     def newMelody(self, tempo=None, data=None, dataType=None):

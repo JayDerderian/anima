@@ -18,6 +18,7 @@ import constants as c
 from test import newData
 from random import randint
 from generate import generate
+from modes.rando import newRandomComposition
 
 
 # Main menu
@@ -29,13 +30,31 @@ def mainMenu():
     print("-------------------Main Menu-----------------")
     print("                                             ")
     print("   0. Exit                                   ")
-    print("   1. New melody                             ")
-    print("   2. New chord                              ")
+    print("   1. Single new melody                      ")
+    print("   2. Single new chord                       ")
     print("   3. New chord progression                  ")
     print("   4. New composition (1 melody + chords)    ")
+    print("   5. More comp modes                        ")
     print("                                             ")
     print("---------------------------------------------")
     print("\n")
+
+# Composition modes menu
+def modesMenu():
+    '''
+    what are ya in the mood for?
+    '''
+    print("\n")
+    print("------------Comp Modes------------")
+    print("                                  ")
+    print("      0. Pure random              ")
+    print("      1. Tonal/modal              ")
+    print("      2. Atonal                   ")
+    print("      3. Serialist                ")
+    print("      4. Minimalist               ")
+    print("                                  ")
+    print("----------------------------------")
+    print("\n")    
 
 # Data menu
 def dataMenu():
@@ -389,6 +408,44 @@ def start():
                     print("\nEnjoy your new music! :)\n")
                 else:
                     print("\n:(\n")
+
+        # Comp modes
+        elif choice == 5:
+            modesMenu()
+            m = int(input("Selection (0 - 4): "))
+            # Error check...
+            attempts = 0
+            while m > 4 or m < 0:
+                print("\ntry again bub\n")
+                m = int(input("Selection (0 - 4): "))
+                attempts += 1
+                if attempts > 9:
+                    print("\njust about had enough of yer shinanigans!")
+                    exit()
+
+            # Pure random
+            if m == 0:
+                if newRandomComposition() != -1:
+                    print("\nEnjoy your new music! :)\n")
+                else:
+                    print("\n:(\n")
+
+
+            # Tonal/modal
+            elif m == 1:
+                print("\nNot ready yet :(\n")
+
+            # Atonal
+            elif m == 2:
+                print("\nNot ready yet :(\n")
+
+            # 12-tone
+            elif m == 3:
+                print("\nNot ready yet :(\n")
+
+            # Minimalist
+            elif m == 4:
+                print("\nNot ready yet :(\n")
 
         # Again?
         going = keepGoing()
