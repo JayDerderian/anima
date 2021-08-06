@@ -201,7 +201,7 @@ class midiStuff():
         # Create PM object PM object is used to just write out the file.
         mid = pm.PrettyMIDI(initial_tempo=newMelody.tempo)
 
-        # Create melody instrument (strings)
+        # Create melody instrumen
         instrument = pm.instrument_name_to_program(newMelody.instrument)
         melody = pm.Instrument(program=instrument)
 

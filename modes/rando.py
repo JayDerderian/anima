@@ -5,6 +5,7 @@ This module handles creating a purely "random" composition. Tempo, ensemble size
 #IMPORTS
 import midi as m
 import constants as c
+from test import newData
 from random import randint
 from generate import generate as create
 from containers.composition import composition
@@ -63,21 +64,23 @@ def newRandomComposition():
     total_melodies = randint(1, size)
     # pick melodies.
     for i in range(total_melodies):
-        melody = create.newMelody(tempo=comp.tempo)
-        '''NOTE: need a way to terminate function without ending calling
-                 method '''
+        # use random source data (1)?
+        if randint(1, 2) == 1:
+            # which data?
+            d = randint(1, 4)
+            rand_data = newData(d)
+            melody = create.newMelody(tempo=comp.tempo, data=rand_data, dataType=d)
+        else:
+            melody = create.newMelody(tempo=comp.tempo)
         if melody != -1:
             # assign an instrument to this melody
             melody.instrument = comp.instruments[i]
-            # save each melody's source data, as applicable.
-            # this will just be a list of "none inputted" strings, in this mode.
-            comp.sourceData.append(melody.sourceData)
             # save the melody
             comp.melodies.append(melody)
         else:
             print("\nnewRandomComposition() - ERROR: unable to generate melody!")
             return -1
-            
+
     # how many harmony instruments? use remaining number
     # will be 0 if 1 is chosen as the ensemble size.
     total_harmonies = size - total_melodies

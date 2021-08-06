@@ -943,24 +943,21 @@ class generate():
         '''
         Generates a chord with randomly chosen notes, rhythm, and dynamic.  
         Returns a chord() object.
-
-        NOTE: Will eventually replace newChordFromScale()
         '''
         # New chord() object
         newchord = chord()
 
         # Pick or generate a new scale if we don't get one supplied
         if scale is None:
+            # pick a scale (1) or create a new one (2)?
             if randint(1, 2) == 1:
                 # Pick scale and save forte number/scale info
-                scale, fn = self.pickScale()
+                scale, newchord.fn = self.pickScale()
                 newchord.sourceNotes = scale
-                newchord.fn = fn
             else:
                 # Create a scale and save original pitch class set
-                scale, pcs = self.newScale()
+                scale, newchord.pcs = self.newScale()
                 newchord.sourceNotes = scale
-                newchord.pcs = pcs
 
         # Add tempo if one isn't supplied
         if tempo is None:
@@ -1096,25 +1093,8 @@ class generate():
         If no data is supplied, then it will generate a melody anyways. 
 
         Returns a melody() object if successfull, -1 on failure.
-        '''
-        '''NOTE: Might be able to remove the dataType variable by
-                 using type() in the body of the method instead
-                 
-                 See: https://stackoverflow.com/questions/13252333/check-if-all-elements-of-a-list-are-of-the-same-type
-        '''
-        '''
-        if(data is not None):
-            if(type(data) == list):
-                # ints?
 
-                # floats?
-
-                # strs?
-
-                # single string (hex number)?
-
-            else:
-                return -1
+        NOTE: Instrument is not picked! 
         '''
 
         #----------------Process any incoming data---------------#
@@ -1165,8 +1145,7 @@ class generate():
             newMelody.tempo = self.newTempo()
         else:
             newMelody.tempo = tempo
-        # Pick instrument
-        newMelody.instrument = self.newInstrument()
+        # Pick notes    
         if data is None:
             newMelody.notes, newMelody.fn, newMelody.sourceScale = self.newNotes()
             if newMelody.notes == -1:
@@ -1178,13 +1157,7 @@ class generate():
         newMelody.rhythms = self.newRhythms(len(newMelody.notes), newMelody.tempo)
         # Pick dynamics
         newMelody.dynamics = self.newDynamics(len(newMelody.notes))
-        
-        #------------Check data, display, and export-------------#
 
-        # Make sure all data was inputted
-        if newMelody.hasData() == False:
-            print("\nnewMelody() - ERROR: missing melody data!")
-            return -1
         return newMelody
 
 
@@ -1215,6 +1188,8 @@ class generate():
         else:
             tempo = c.TEMPOS[randint(0, len(c.TEMPOS) - 1)]
             newTune = self.newMelody(tempo=tempo)
+        # Pick instrument
+        newTune.instrument = self.newInstrument()
         # Generate title
         title = self.newTitle()
         # Create MIDI file name
@@ -1297,14 +1272,17 @@ class generate():
 
         #----------------------Generate melody and Harmony--------------------------#
 
+
         if data is not None and dataType is not None:
             newTune = self.newMelody(data, dataType)
+            newTune.instrument = self.newInstrument()
             if newTune == -1:
                 print("newComposition() - ERROR: unable to generate melody!")
                 return -1
             # music.melodies.append(newTune)
         else:
             newTune = self.newMelody()
+            newTune.instrument = self.newInstrument()
             if newTune == -1:
                 print("newComposition() - ERROR: unable to generate melody!")
                 return -1
