@@ -21,7 +21,7 @@ from generate import generate
 
 
 # Main menu
-def mainMenu(self):
+def mainMenu():
     '''
     it's in the title
     '''
@@ -38,7 +38,7 @@ def mainMenu(self):
     print("\n")
 
 # Data menu
-def dataMenu(self):
+def dataMenu():
     '''
     displays data input options
     '''
@@ -55,7 +55,7 @@ def dataMenu(self):
     print("\n")
 
 # Test menu
-def testMenu(self):
+def testMenu():
     '''
     displays testing options
     '''
@@ -69,21 +69,21 @@ def testMenu(self):
     print("\n")
 
 # Welcoming message
-def hello(self):
+def hello():
     '''
     what's up
     '''
     print("\n*~*~*~*~*~Let's make some music!~*~*~*~*~*~*~\n")
 
 # Exit message
-def goodBye(self):
+def goodBye():
     '''
     smell ya later, chump
     '''
     print("\n~~~~Have a nice day!~~~~\n\n")
 
 # Keep going?
-def keepGoing(self):
+def keepGoing():
     '''
     Must we?
     '''
@@ -96,7 +96,7 @@ def keepGoing(self):
         return False
 
 # Driver code for using the generative functions in the terminal
-def start(self):
+def start():
     '''
     Main terminal driver code. 
     
@@ -107,7 +107,7 @@ def start(self):
     -composition (1 random inst + pno) generation (random or using source data)
     '''
     # Hello
-    self.hello()
+    hello()
     
     # Create generator instance
     create = generate()
@@ -116,7 +116,7 @@ def start(self):
     going = True
     while(going):
         # Main menu 
-        self.mainMenu()
+        mainMenu()
         choice = int(input("Selection (0 - 5): "))
         # Error check...
         attempts = 0
@@ -130,7 +130,7 @@ def start(self):
 
         # Exit
         if choice == 0:
-            self.goodBye()
+            goodBye()
             exit()
 
         # Generate melody
@@ -159,7 +159,7 @@ def start(self):
             # Using supplied data
             elif c == 2:
                 # List options
-                self.dataMenu()
+                dataMenu()
                 d = int(input("Selection (1 - 5): "))
                 # Error check...
                 attempts = 0
@@ -355,7 +355,7 @@ def start(self):
             # Using supplied data
             elif c == 2:
                 # List options
-                self.dataMenu()
+                dataMenu()
                 d = int(input("Selection (1 - 5): "))
                 # Error check...
                 attempts = 0
@@ -391,10 +391,10 @@ def start(self):
                     print("\n:(\n")
 
         # Again?
-        going = self.keepGoing()
+        going = keepGoing()
 
     # Exit message
-    self.goodBye()
+    goodBye()
     return 0
 
 #----------------------------Call Driver Code---------------------------#
