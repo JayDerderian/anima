@@ -6,6 +6,7 @@ This module handles creating a purely "random" composition. Tempo, ensemble size
 import midi as m
 import constants as c
 from test import newData
+from math import floor
 from random import randint
 from datetime import datetime as date
 from generate import generate as create
@@ -37,8 +38,8 @@ from containers.composition import composition
 #Pure "random" mode
 def newRandomComposition():
     '''
-    Generates a composition with n number of harmony and melody instruments. At least 1 melody will be generated,
-    though up to 11 parts - both melodic and harmonic - could be created.
+    Generates a composition with n number of harmony and melody instruments. 
+    At least 1 melody will be generated, though up to 11 parts - both melodic and harmonic - could be created.
     
     Each part creates its own source material at random. 
     
@@ -107,14 +108,15 @@ def newRandomComposition():
                 return -1
 
     # export to MIDI file
-    # if m.save(comp) != -1:
-    #     print("\n")
-    # else:
-    #     print("\nUnable to generate random composition!")
-    #     return -1
+    comp.midiFileName = "{}{}".format(comp.title, ".mid")
+    if m.save(comp) != -1:
+        print("\n...", comp.title, "saved as", comp.midiFileName)
+    else:
+        print("\nUnable to generate random composition!")
+        return -1
 
     # generate .txt file
-    comp.fileName = "{}{}".format(comp.title, '.txt')
+    comp.txtFileName = "{}{}".format(comp.title, '.txt')
     print("\nText file saved as:", comp.fileName)
     if size == 1:
         title_full = "{}{}{}".format(comp.title, 'for solo', comp.melodies[0].instrument)
@@ -127,7 +129,13 @@ def newRandomComposition():
                 break
             title_full += ", " 
             title_full += comp.melodies[i].instrument
-    print("\nTitle:", title_full)
-    if create.saveInfo(name=comp.title, fileName=comp.fileName, newMusic=comp) != 0:
+    if create.saveInfo(name=title_full, fileName=comp.txtFileName, newMusic=comp) != 0:
         return -1
+
+    # display results
+    if comp.ensemble == "solo":
+        print("\nNew composition:", comp.title, "for solo", comp.instruments[0])
+    else:
+        print("\nNew composition:", comp.title, "for mixed", comp.ensemble)
+
     return comp

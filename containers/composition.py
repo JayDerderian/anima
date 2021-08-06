@@ -20,9 +20,11 @@ class composition():
         self.composer = ""
         # Date of composition
         self.date = ""
-        # File name for associated .txt file. 
+        # MIDI file name
         # NOTE: May need to store individual user's file path here?
-        self.fileName = ""
+        self.midiFileName = ""
+        # File name for associated .txt file. 
+        self.txtFileName = ""
 
         # Global tempo (float)
         self.tempo = 0.0
