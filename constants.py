@@ -1,5 +1,5 @@
 '''
-A file for managing all constants used throughout the program. 
+A module for managing all constants used throughout the program. 
 '''
 
 # The alphabet. 

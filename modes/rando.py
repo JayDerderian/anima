@@ -1,16 +1,18 @@
 '''
 This module handles creating a purely "random" composition. Tempo, ensemble size, instruments, title, 
+melodies, and harmonies are all independtly generated, united only by a global tempo. Length of each part
+may vary substantially, as well as the instrumentation.
 '''
 
 #IMPORTS
 import midi as m
 import constants as c
 from test import newData
-from math import floor
 from random import randint
 from datetime import datetime as date
 from generate import generate as create
 from containers.composition import composition
+
 '''
 ------------------------------------------------------NOTES--------------------------------------------------------------
     ALGORITHM:
@@ -35,6 +37,7 @@ from containers.composition import composition
 
 ------------------------------------------------------------------------------------------------------------------------
 '''
+
 #Pure "random" mode
 def newRandomComposition():
     '''

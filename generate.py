@@ -578,25 +578,30 @@ class generate():
 
         Data is used as index numbers to select notes from this series in order
         to generate a melody.
+
+        Returns a tuple: notes list to be used as a melody (list[str]), 
+        a list of forte_numbers (list[str]), and the original source scale (list[str])
         '''           
 
         #-----------------Generate seed scale------------------#
 
         forte_numbers = []
-        # Pick starting octave (2 or 3)
-        octave = randint(2, 3)
-        # Pick initial root/starting scale (either a prime form, or major or minor scale)
-        root, fn = self.pickScale()
-        forte_numbers.append(fn)
-        '''
+        # # Pick starting octave (2 or 3)
+        # octave = randint(2, 3)
+        # # Pick initial root/starting scale (either a prime form, or major or minor scale)
+        # root, fn = self.pickScale()
+        # forte_numbers.append(fn)
+
         # Pick starting octave (2 or 3)
         octave = randint(2, 3)
         # Pick a scale or generate a new one
         if(randint(1, 2) == 1):
             root, fn = self.pickScale()
+            forte_numbers.append(fn)
         else:
-            root, pcs = self.newScale()
-        '''
+            root, pcs = self.newScale(octave=octave)
+            forte_numbers.append(pcs)
+
         # Pick total: 3 - 50 if we're generating random notes
         if data is None:
             # Note that the main loop uses total + 1!
@@ -634,7 +639,7 @@ class generate():
         if data is None:
             # Total notes in melody will be between 3 and 
             # however many notes are in the source scale
-            total = randint(3, len(scale) - 1)
+            total = randint(3, len(scale))
             for i in range(total):
                 notes.append(scale[randint(0, len(scale) - 1)])
 
@@ -649,7 +654,7 @@ class generate():
 
     # Picks either a prime form pitch-class set, or a major or minor
     # scale.
-    def pickScale(self):
+    def pickScale(self, octave=None):
         '''
         Picks either 1 of 12 major  or minor scales for a tonal flavor, 
         or a 5 to 9 note Forte pitch class prime form for an atonal flavor.
@@ -676,8 +681,18 @@ class generate():
             pcs = c.SCALES[fn]
             # convert pcs to a list of note names / strings
             for i in range(len(pcs)):
-                scale.append(c.CHROMATIC_SCALE[pcs[i]])      
-        return scale, fn
+                scale.append(c.CHROMATIC_SCALE[pcs[i]])
+        # append octave, if necessary
+        if octave is not None:
+            _scale = []
+            for i in range(len(scale)):
+                note = "{}{}".format(scale[i], octave) 
+                _scale.append(note)
+        # return whichever scale/list we end up needing
+        if(len(_scale) != 0):
+            return _scale, fn
+        else:
+            return scale, fn     
 
 
     # Generate a new scale to function as a "root"
@@ -705,7 +720,7 @@ class generate():
         else:
             for i in range(len(pcs)):
                 note = c.CHROMATIC_SCALE[pcs[i]]
-                note += octave
+                note = "{}{}".format(note, octave)
                 scale.append(note)
         return scale, pcs
 
@@ -967,11 +982,10 @@ class generate():
 
         # How many notes in this chord? 2 to 9 (for now)
         total = randint(2, 9)
-        # Pick note and add to list
+        # Pick notes and add to list
         '''NOTE: this allows for dublings!'''
         while len(newchord.notes) < total:
-            note = scale[randint(0, len(scale) - 1)]
-            newchord.notes.append(note)
+            newchord.notes.append(scale[randint(0, len(scale) - 1)])
 
         # Remove duplicate notes/doublings
         '''NOTE: This is avoids getting the while loop stuck
@@ -1005,7 +1019,6 @@ class generate():
 
         # Has a scale, tempo, and total been provided?
         if scale is None:
-            # scale = self.newScale()
             scale = self.newNotes()
         elif total is None:
             total = randint(math.floor(len(scale) * 0.3), len(scale))
