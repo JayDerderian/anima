@@ -511,8 +511,7 @@ class generate():
     # Picks the tempo
     def newTempo(self):
         '''
-        Picks tempo between 40-208bpm.
-        Returns a float upon success, 60.0 if fail.
+        Picks tempo (float) between 40-208bpm.
         '''
         return c.TEMPOS[randint(0, len(c.TEMPOS) - 1)]
 
@@ -525,7 +524,8 @@ class generate():
     # Picks an instrument
     def newInstrument(self):
         '''
-        Randomly picks an instrument from a given list. Returns a string.
+        Randomly picks a melodic/harmonic instrument from a given list. Returns a string.
+        Does NOT pick a percussion instrument!
         '''
         return c.INSTRUMENTS[randint(0, 110)]
 
@@ -1275,17 +1275,17 @@ class generate():
 
         if data is not None and dataType is not None:
             newTune = self.newMelody(data, dataType)
-            newTune.instrument = self.newInstrument()
             if newTune == -1:
                 print("newComposition() - ERROR: unable to generate melody!")
                 return -1
+            newTune.instrument = self.newInstrument()
             # music.melodies.append(newTune)
         else:
             newTune = self.newMelody()
-            newTune.instrument = self.newInstrument()
             if newTune == -1:
                 print("newComposition() - ERROR: unable to generate melody!")
                 return -1
+            newTune.instrument = self.newInstrument()
             # music.melodies.append(newTune)
 
         newChords = self.newChords(len(newTune.notes), newTune.tempo, newTune.notes)

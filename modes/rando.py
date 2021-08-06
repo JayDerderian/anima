@@ -7,6 +7,7 @@ import midi as m
 import constants as c
 from test import newData
 from random import randint
+from datetime import datetime as date
 from generate import generate as create
 from containers.composition import composition
 '''
@@ -52,6 +53,11 @@ def newRandomComposition():
     # add composer info
     comp.composer = "Rando Calrissian"
 
+    # Add date and time.
+    d = date.now()
+    # convert to str d-m-y hh:mm:ss
+    comp.date = d.strftime("%d-%b-%y %H:%M:%S")
+
     # pick global tempo
     comp.tempo = create.newTempo()
 
@@ -86,11 +92,16 @@ def newRandomComposition():
     total_harmonies = size - total_melodies
     # pick harmonies, if applicable
     if total_harmonies > 0:
-        for i in range(total_harmonies):
+        for j in range(total_harmonies):
             # harmonies are NOT generated from melodies here!
             chord = create.newChord(tempo=comp.tempo)
             if chord != -1:
+                # add instrument
+                chord.instrument = comp.instruments[i]
                 comp.chords.append(chord)
+                i+=1
+                if i == len(comp.instruments):
+                    break
             else:
                 print("\nnewRandomComposition() - ERROR: unable to generate harmony!")
                 return -1
@@ -116,9 +127,7 @@ def newRandomComposition():
                 break
             title_full += ", " 
             title_full += comp.melodies[i].instrument
-
-
     print("\nTitle:", title_full)
-    create.saveInfo(name=comp.title, fileName=comp.fileName, newMusic=comp)
-
+    if create.saveInfo(name=comp.title, fileName=comp.fileName, newMusic=comp) != 0:
+        return -1
     return comp

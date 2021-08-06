@@ -16,22 +16,16 @@ class composition():
 
         # Title
         self.title = ""
-        # Composer
+        # Composer name
         self.composer = ""
         # Date of composition
         self.date = ""
-        # File name for associated .txt file. May need to store
-        # individual user's file path here?
+        # File name for associated .txt file. 
+        # NOTE: May need to store individual user's file path here?
         self.fileName = ""
-        # Original inputted data (array of ints, floats, chars, or str copy
-        # of hex number) for each melody() object.
-        self.sourceData = []
+
         # Global tempo (float)
         self.tempo = 0.0
-        '''
-        NOTE: instrument and melody lists need to coinicide so that the MIDI
-        file can select the proper instruments. 
-        '''
         # Ensemble size string ("duo", "trio", etc...)
         self.ensemble = ""
         # List of instruments (strings)

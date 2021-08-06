@@ -13,6 +13,7 @@
   
 '''
 # Imports
+from os import write
 import urllib.request
 import pretty_midi as pm
 from random import randint
@@ -261,8 +262,10 @@ class midiStuff():
         Exports a MIDI file for any sized composition (1 solo melody to ensemble sized n). 
         Requires a composition() object. Returns 0 on success, -1 on failure.
         '''
-        # make sure there's at least 1 melody!
+        # make sure there's at least 1 melody or harmony!
         if len(comp.melodies) == 0:
+            return -1
+        elif len(comp.chords) == 0:
             return -1
 
         strt = 0
