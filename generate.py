@@ -549,20 +549,19 @@ class generate():
     # Converts a given integer to a pitch in a specified octave (ex C#6)
     def newNote(self, i=None, octave=None):
         '''
-        Converts a given integer to a pitch in a specified octave (ex C#6).
-        Requires an integer and the required octave. Returns a single string.
+        Converts a given integer to a pitch in a specified octave (ex C#6), 
+        or randomly picks a note between octaves 2 to 5. Returns a single 
+        string (i.e. "C#4"), or -1 on failure.
 
         NOTE: use randint(0, 11) and randint(2, 5) for num/octave args to get a 
               randomly chosen note, or leave arg fields empty
         '''
         if i is None:
             note = c.NOTES[randint(0, len(c.NOTES) - 1)]
+        elif type(i) == int and i > -1 and i < len(c.NOTES):
+            note = c.NOTES[i]
         else:
-            if type(i) == int and i > -1 and i < len(c.NOTES):
-                note = c.NOTES[i]
-            else:
-                print("\nnewNote() - ERROR: int out of range!")
-                return -1
+            return -1
         if octave is None:
             octave = randint(2, 5)
         note = "{}{}".format(note, octave)
@@ -688,8 +687,7 @@ class generate():
             for i in range(len(scale)):
                 note = "{}{}".format(scale[i], octave) 
                 _scale.append(note)
-        # return whichever scale/list we end up needing
-        if(len(_scale) != 0):
+            # return whichever scale/list we end up needing
             return _scale, fn
         else:
             return scale, fn     
@@ -698,9 +696,9 @@ class generate():
     # Generate a new scale to function as a "root"
     def newScale(self, octave=None):
         '''
-        Returns a randomly generated scale without an octave to be used as a 'root'.
-        Can take an int as a starting octave (between 2 and 5) or not.  
-        Returns -1 on failure.
+        Returns a randomly generated scale  with or without an octave 
+        to be used as a 'root'. Can take an int as a starting octave 
+        (between 2 and 5) or not.  Returns -1 on failure.
         '''
         pcs = []
         # generate an ascending set of 5-9 integers/note array indices
@@ -726,7 +724,9 @@ class generate():
 
     # Converts a major scale to its relative minor
     def convertToMinor(self, scale):
-        # print("\nConverting major scale to relative minor...")
+        '''
+        Converts a major scale (list[str]) to its relative natural minor.
+        '''
         if len(scale) == 0:
             print("\nconvertToMinor() - ERROR: no scale inputted!")
             return -1
@@ -776,7 +776,7 @@ class generate():
     def newTwelveToneRow(self):
         '''
         Generate a 12-tone row. 
-        Returns a list of ints/pitch classes/index numbers.
+        Returns a list of strings/note names without a specified octave.
         '''
         row = []
         while len(row) < 11:
