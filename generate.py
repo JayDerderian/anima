@@ -735,6 +735,139 @@ class generate():
                 scale.append(note)
         return scale, pcs
 
+    # Generates a raw source scale using a variety of methods
+    def newSourceScale(self, total=None):
+        '''
+        Generates a source scale to pick notes from in newNotes(). 
+        Chooses one of five methods, then returns a source scale
+        and an int representing which method was used.
+
+        NOTE: UPDATE MENU TO REFLECT CURRENT OPTIONS
+        '''
+        # if we don't get a supplied total, decide one (5 - 50 notes)
+        if total == None:
+            total = randint(5, 50)
+        # chose starting octave (2 or 3)
+        octave = randint(2, 3)
+        # chose which method to use
+        c = randint(0, 4)
+
+        if c == 0:
+            '''
+            0.  Construct a scale using symmetrical intervals 
+                (see modes of limit transposition, stacking in alternating 2nds, 
+                3rds, 4ths (per or aug), 5ths (per or aug)'''
+            # note
+            n = 0
+            # pitch class set (ints)
+            pcs = []
+            # choose which interval to build with 1 = semi tone to 5 = perfect 4th
+            i = randint(1, 5)
+            for k in range(total):
+                n += i
+                if n > 11:
+                    n = self.octaveEquiv(n)
+                pcs.append(n)
+            # convert to strings
+            strScale = self.toStr(pcs)
+            # append octave
+            scale = []
+            for i in range(len(strScale)):
+                note = "{}{}".format(strScale[i], octave)
+                scale.append(note)
+
+        elif c == 1:
+            '''
+            1.  Calling pickScale() n times and removing random extranious notes after
+                n cycles to stay within a predefined threshold. Supply ascending octave
+                arg.'''
+            scale = []
+            for i in range(total):
+                notes = self.pickScale(octave=octave)
+                for j in range(len(notes)):
+                    scale.append(notes[i])
+                octave += 1
+               # reset octave if we've hit our limit before our total
+                if octave > 5:
+                    octave = randint(2, 3)
+                if len(scale) == total:
+                    break
+            # remove notes from end if we exceed our total 
+            if len(scale) > total:
+                while len(scale) > total:
+                    scale.pop()
+
+        elif c == 2:
+            '''
+            2. Calling newScale() n times with the supplied octave, incremented with each call (up to octave 5)
+               Each octave will have an ordered scale with a unique identity.
+            '''
+            scale = []
+            for i in range(total):
+                notes = self.newScale(octave=octave)
+                for j in range(len(notes)):
+                    scale.append(notes[i])
+                octave += 1
+               # reset octave if we've hit our limit before our total
+                if octave > 5:
+                    octave = randint(2, 3)
+                if len(scale) == total:
+                    break
+            # remove notes from end if we exceed our total 
+            if len(scale) > total:
+                while len(scale) > total:
+                    scale.pop()
+
+        elif c == 3:
+            '''
+            3.  Calling newNote() n times with only the ascending octave supplied as an arg.
+                Each octave will have an unordered scale (5-9 notes) associated with it'''
+            scale = []
+            for i in range(total):
+                # how long should this scale be?
+                length = randint(5, 9)
+                for j in range(length):
+                    scale.append(self.newNote(octave=octave))
+                    if j == length:
+                        # increment octave if we've reached desired scale length
+                        octave += 1
+                        # reset octave if we've reached our limit before ending
+                        if octave > 5:
+                            octave = randint(2, 3)
+                
+        elif c == 4:
+            '''
+            4.  Calling newNote() n times with specified octaves repeated n times 
+                (i.e. 4, 4, 4, 3, 3, 5, 5, 5, 5,5 etc. where the number of repetitions 
+                for each octave is determined by randint()). This will randomize each
+                octaves sub-set and not give the whole set an ascending trajectory.'''
+            scale = []
+            for i in range(total):
+                # how many times will we repeat this octave?
+                r = 0
+                reps = randint(2, 5)
+                scale.append(self.newNote(octave=octave))
+                r += 1
+                if r == reps:
+                    # chose new octave
+                    octave = randint(2, 5)
+                    # reset reps and r if we're not done yet
+                    reps = randint(2, 5)
+                    r = 0
+                if len(scale) == total:
+                    break
+
+        elif c == 5:
+            '''
+            5.  Calling newNote() n times without any supplied args (or using randint()
+                as two different args). If this is used, then no picking loop may be necessary
+                since the arrangement will already be pretty randomized.'''
+            scale = []
+            for i in range(total):
+                scale.append(self.newNote())
+
+        return scale, c    
+
     # Converts a major scale to its relative minor
     def convertToMinor(self, scale):
         '''
