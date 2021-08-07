@@ -57,7 +57,6 @@ This module/class handles all generative methods.
         a lot of common tones between the scales that are picked) .
 
 
-
     METHOD NOTES:
 
         newNotes()
@@ -113,7 +112,7 @@ This module/class handles all generative methods.
 # IMPORTS
 import math
 import midi
-import toabc
+import utils.toabc
 import urllib.request
 import constants as c
 from random import randint
@@ -1517,4 +1516,4 @@ class generate():
         print("\nTitle:", title2)
         self.saveInfo(title, newTune.sourceData, fileName, newTune, newChords)
 
-        return title1, toabc.abc(title, newTune.tempo, newTune, newChords)
+        return title1, utils.toabc.abc(title, newTune.tempo, newTune, newChords)

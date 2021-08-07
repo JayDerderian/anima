@@ -1,17 +1,14 @@
-#*******************************************************************************************************#
-#-----------------------------Utility functions for working with MIDI I/O ------------------------------#
-#*******************************************************************************************************#
-
 ''' 
-    Utility functions for working with MIDI I/O
+Utility functions for working with MIDI I/O
 
 
-    NOTE: Double check the math for how strt and end are incremented according to
-    the supplied durations. Either Finale is doing something weird or the compounding
-    values are creating highly precice floating point numbers that might make sheet music
-    representation very messy. 
+NOTE: Double check the math for how strt and end are incremented according to
+the supplied durations. Either Finale is doing something weird or the compounding
+values are creating highly precice floating point numbers that might make sheet music
+representation very messy. 
   
 '''
+
 # Imports
 import urllib.request
 import pretty_midi as pm
@@ -50,7 +47,7 @@ def newFileName(self, ensemble):
     dateStr = date.strftime("%d-%b-%y (%H:%M:%S.%f)")
 
     # Name and date, and add file extension
-    fileName = '{}{}{}.mid'.format(name, ensemble, dateStr)
+    fileName = '{}{}.mid'.format(name, dateStr)
     return fileName
 
 # Outputs a single melody/instrument to a MIDI file
@@ -60,7 +57,7 @@ def saveMelody(self, fileName, newMelody):
     To be used with melody generation.
     '''
     # Check incoming data
-    if(newMelody.hasData() == False):
+    if newMelody.hasData() == False:
         return -1
 
     # Variables
@@ -126,11 +123,11 @@ def saveChords(self, fileName, newChords):
     Takes a list of chord() objects as an argument and generates a MIDI file.
     '''
     # error checks
-    if(type(fileName) != str):
+    if type(fileName) != str:
         print("\nsaveChords() - ERROR: fileName wrong type!")
         return -1
     # is this a list
-    if(type(newChords) != list):
+    if type(newChords) != list:
         print("\nsaveChords() - ERROR: wrong data type inputted!")
         return -1
     # is this a list of chord objects with lists of note strings?
@@ -181,9 +178,9 @@ def saveComposition(self, newMelody, newChords, fileName):
     Returns a PrettyMIDI() object, or -1 if failure
     '''
     # Check incoming data
-    if(newMelody.hasData() == False):
+    if newMelody.hasData() == False:
         return -1
-    if(len(newChords) == 0):
+    if len(newChords) == 0:
         return -1
 
     # Variables
@@ -261,7 +258,7 @@ def save(self, comp):
 
     strt = 0
     end = 0
-    # Create PM object PM object is used to just write out the file.
+    # Create PM object. PM object is used to just write out the file.
     mid = pm.PrettyMIDI(initial_tempo=comp.tempo)
 
     #----------------------------Add Melodies----------------------------------#
