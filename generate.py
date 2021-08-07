@@ -570,9 +570,9 @@ class generate():
               randomly chosen note, or leave arg fields empty
         '''
         if i is None:
-            note = c.NOTES[randint(0, len(c.NOTES) - 1)]
-        elif type(i) == int and i > -1 and i < len(c.NOTES):
-            note = c.NOTES[i]
+            note = c.CHROMATIC_SCALE[randint(0, len(c.CHROMATIC_SCALE) - 1)]
+        elif type(i) == int and i > -1 and i < len(c.CHROMATIC_SCALE):
+            note = c.CHROMATIC_SCALE[i]
         else:
             return -1
         if octave is None:
@@ -745,17 +745,21 @@ class generate():
         Returns a note list, the gen method (str), and a list of meta-data
         (forte numbers used or pitch class sets from new scales)
 
+        NOTE: NOT READY
         NOTE: UPDATE MENU TO REFLECT CURRENT OPTIONS
         '''
         # if we don't get a supplied total, decide one (5 - 50 notes)
         if total == None:
-            total = randint(5, 50)
+            total = randint(7, 50)
+        print("\nTotal notes:", total)
         # chose starting octave (2 or 3)
         octave = randint(2, 3)
         # chose which method to use
         c = randint(0, 6)
         # meta_data (forte numbers or pitch class sets)
         meta_data = []
+        # final scale
+        scale = []
 
         # Symmetrical scale
         if c == 0:
@@ -763,21 +767,24 @@ class generate():
             0.  Construct a scale using symmetrical intervals 
                 (see modes of limit transposition, stacking in alternating 2nds, 
                 3rds, 4ths (per or aug), 5ths (per or aug)'''
-           # assign method string
+            # assign method string
             c = "Symmetrical scales"
             # note
             n = 0
-            # pitch class set (ints)
-            pcs = []
             # choose which interval to build with 2 = maj 2nd to 5 = perfect 4th
             i = randint(2, 5)
             for k in range(total):
                 n += i
                 if n > 11:
                     n = self.octaveEquiv(n)
-                pcs.append(n)
-            # convert to strings and attach octave
-            strScale = self.toStr(pcs, octave)
+                scale.append(self.newNote(i=n, octave=octave))
+                # increment octave every 7 notes
+                if len(scale) % 7 == 0:
+                    octave += 1
+                    # reset octave and n if necessary
+                    if octave > 5:
+                        octave = randint(2, 3)
+                    n = 0
 
         # use pickScale() as needed
         elif c == 1:
@@ -787,12 +794,11 @@ class generate():
                 arg.'''
            # assign method string
             c = "Picked existing scale for each octave"
-            scale = []
             for i in range(total):
                 notes, fn = self.pickScale(octave=octave)
                 meta_data.append(fn)
                 for j in range(len(notes)):
-                    scale.append(notes[i])
+                    scale.append(notes[j])
                 octave += 1
                 # reset octave if we've hit our limit before our total
                 if octave > 5:
@@ -812,12 +818,11 @@ class generate():
             '''
            # assign method string
             c = "New scale per octave"
-            scale = []
             for i in range(total):
                 notes, pcs = self.newScale(octave=octave)
                 meta_data.append(pcs)
                 for j in range(len(notes)):
-                    scale.append(notes[i])
+                    scale.append(notes[j])
                 octave += 1
                 # reset octave if we've hit our limit before our total
                 if octave > 5:
@@ -829,13 +834,13 @@ class generate():
                 while len(scale) > total:
                     scale.pop()
 
+        # newNote() with incremented octave
         elif c == 3:
             '''
             3.  Calling newNote() n times with incremented octave supplied as an arg.
                 Each octave will have an unordered scale (5-9 notes) associated with it'''
            # assign method string
             c = "Random notes with incremented octaves"
-            scale = []
             for i in range(total):
                 # how long should this scale be?
                 length = randint(5, 9)
@@ -854,6 +859,7 @@ class generate():
                     while len(scale) > total:
                         scale.pop()
 
+        # newNote() with repeated octave n times
         elif c == 4:
             '''
             4.  Calling newNote() n times with specified octaves repeated n times 
@@ -862,22 +868,23 @@ class generate():
                 octaves sub-set and not give the whole set an ascending trajectory.'''
            # assign method string
             c = "Random notes with repeated octaves"
-            scale = []
+            r = 0
             for i in range(total):
                 # how many times will we repeat this octave?
-                r = 0
-                reps = randint(2, 5)
+                reps = randint(1, 5)
                 scale.append(self.newNote(octave=octave))
                 r += 1
                 if r == reps:
                     # chose new octave
                     octave = randint(2, 5)
                     # reset reps and r if we're not done yet
-                    reps = randint(2, 5)
+                    reps = randint(1, 5)
                     r = 0
                 if len(scale) == total:
                     break
+            meta_data.append("None")
 
+        # newNote() w/o any given octave
         elif c == 5:
             '''
             5.  Calling newNote() n times without any supplied args (or using randint()
@@ -885,10 +892,11 @@ class generate():
                 since the arrangement will already be pretty randomized.'''
             # assign method string
             c = "Pure random notes"
-            scale = []
             for i in range(total):
                 scale.append(self.newNote())
+            meta_data.append("None")
 
+        # original gen method
         elif c == 6:
             '''
             6. Original generation method. Pick a root scale, append octave until we reach our limit,
@@ -906,8 +914,7 @@ class generate():
                 meta_data.append(pcs)
         
             n = 0
-            scale = []
-            for i in range(total + 1):
+            for i in range(total):
                 # Pick note and add to list
                 note = "{}{}".format(root[n], octave)
                 scale.append(note)

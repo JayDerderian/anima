@@ -836,3 +836,9 @@ def runAll():
 
 # run it 
 # runAll()
+
+test_scale, method, data = generate().newSourceScale(total=randint(5, 20))
+print("\nfinal total:", len(test_scale))
+print("\ntest scale:", test_scale)
+print("\ngen method:", method)
+print("\nmeta-data:", data, "\n")
