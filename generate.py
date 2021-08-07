@@ -112,9 +112,9 @@ This module/class handles all generative methods.
 # IMPORTS
 import math
 import midi
-import utils.toabc
 import urllib.request
 import constants as c
+from utils import toabc
 from random import randint
 from containers.melody import melody
 from containers.chord import chord
@@ -1159,11 +1159,11 @@ class generate():
             # pick a scale (1) or create a new one (2)?
             if randint(1, 2) == 1:
                 # Pick scale and save forte number/scale info
-                scale, newchord.fn = self.pickScale()
+                scale, newchord.fn = self.pickScale(octave=randint(2, 5))
                 newchord.sourceNotes = scale
             else:
                 # Create a scale and save original pitch class set
-                scale, newchord.pcs = self.newScale()
+                scale, newchord.pcs = self.newScale(octave=randint(2, 5))
                 newchord.sourceNotes = scale
 
         # Add tempo if one isn't supplied
@@ -1211,7 +1211,7 @@ class generate():
 
         # Has a scale, tempo, and total been provided?
         if scale is None:
-            scale = self.newNotes()
+            scale, data, source = self.newNotes()
         elif total is None:
             total = randint(math.floor(len(scale) * 0.3), len(scale))
             if total == 0:
@@ -1516,4 +1516,4 @@ class generate():
         print("\nTitle:", title2)
         self.saveInfo(title, newTune.sourceData, fileName, newTune, newChords)
 
-        return title1, utils.toabc.abc(title, newTune.tempo, newTune, newChords)
+        return title1, toabc.abc(title, newTune.tempo, newTune, newChords)

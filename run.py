@@ -230,7 +230,8 @@ def start():
 
             # From scratch
             if c == 1:
-                chord = create.newChord() 
+                tempo = create.newTempo()
+                chord = create.newChord(tempo=tempo) 
                 if chord != -1:
                     create.displayChord(chord)
                 else:
@@ -253,10 +254,10 @@ def start():
                 # Use existing scale
                 if d == 1:
                     # Randomly decide between major or minor because why not
-                    scale, fn = create.pickScale()
                     tempo = create.newTempo()
+                    scale, data = create.pickScale(octave=randint(2, 5))
                     chord = create.newChord(tempo, scale)
-                    chord.fn = fn
+                    chord.fn = data
                     if chord != -1:
                         create.displayChord(chord)
                     else:
@@ -264,14 +265,10 @@ def start():
 
                 # Generate a new one
                 elif d == 2:
-                    octave = 4
-                    scale = []
-                    s = create.newScale()
-                    for i in range(len(s)):
-                        note = "{}{}".format(s[i], octave)
-                        scale.append(note)
                     tempo = create.newTempo()
+                    scale, data = create.newScale(octave=randint(2, 5))
                     chord = create.newChord(tempo, scale)
+                    chord.fn = data
                     if chord != -1:
                         create.displayChord(chord)
                     else:
@@ -295,8 +292,11 @@ def start():
             if c == 1:
                 total = int(input("How many? "))
                 tempo = create.newTempo()
-                scale = create.newScale()
+                scale, data = create.newScale(octave=randint(2, 5))
                 chords = create.newProgression(total, tempo, scale)
+                # append meta data to all chords
+                for i in range(len(chords)):
+                    chords[i].fn = data
                 if len(chords) == 0:
                     print("\nERROR: unable to generate chords! :(\n")
                 elif len(chords) != 0:
@@ -319,11 +319,7 @@ def start():
                 # Use existing scale
                 if d == 1:
                     tempo = create.newTempo()
-                    # Randomly decide between major or minor because why not
-                    if randint(1, 2) == 1:
-                        scale = c.MAJOR_SCALES[randint(0, len(c.MAJOR_SCALES) - 1)]
-                    else:
-                        scale = c.MINOR_SCALES[randint(0, len(c.MINOR_SCALES) - 1)]
+                    scale, data = create.pickScale(octave=randint(2, 5))
                     chords = create.newChords(randint(3, len(scale)), tempo, scale)
                     if chords != -1:
                         create.displayChords(chords)
@@ -333,14 +329,12 @@ def start():
                 # Generate a new one
                 elif d == 2:
                     tempo = create.newTempo()
-                    octave = 4
-                    scale = []
-                    s = create.newScale()
-                    for i in range(len(s)):
-                        note = "{}{}".format(s[i], octave)
-                        scale.append(note)
+                    scale, data = create.newScale(octave=4)
                     if scale != -1:
                         chords = create.newChords(randint(3, len(scale)),tempo, scale)
+                        # append meta data to all chords
+                        for i in range(len(chords)):
+                            chords[i].fn = data
                     else:
                         print("\nERROR: unable to generate scale! Exiting...")
                         break
@@ -349,7 +343,7 @@ def start():
                     else:
                         print("\n:(\n")                
 
-        # Generate composition
+        # Generate simple composition
         elif choice == 4:
             print("\nCreate a new composition (1) from scratch, or use source data (2)?")
             c = int(input("Selection (1 or 2):"))
