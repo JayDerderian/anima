@@ -834,10 +834,12 @@ def runAll():
     # we did it! hooray!
     testsPassed()
 
+#------------------------------------------------------------------------------------------------#
+
 # run it 
 # runAll()
 
-test_scale, method, data = generate().newSourceScale(total=randint(5, 20))
+test_scale, method, data = generate().newSourceScale(total=randint(7, 40))
 print("\nfinal total:", len(test_scale))
 print("\ntest scale:", test_scale)
 print("\ngen method:", method)

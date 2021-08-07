@@ -19,7 +19,7 @@ TEMPOS = [40.0, 42.0, 44.0, 46.0, 50.0, 52.0, 54.0, 56.0, 58.0,  # 1-9 (0-8)
 
 # Dynamics (MIDI velocities: 0 - 127)
 '''NOTE: use indicies 0-8 for soft dynamics only. 9-17 for med, and
-8-26 for loud dynamics'''
+         8-26 for loud dynamics'''
 DYNAMICS = [20, 24, 28, 32, 36, 40, 44, 48, 52,
             56, 60, 64, 68, 72, 76, 80, 84, 88,
             92, 96, 100, 104, 108, 112, 116, 120, 124]
