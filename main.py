@@ -26,7 +26,7 @@ def mainMenu():
     it's in the title
     '''
     print("\n")
-    print("-------------------Main Menu-----------------")
+    print("-------------------MAIN MENU-----------------")
     print("                                             ")
     print("   0. Exit                                   ")
     print("   1. Single new melody                      ")
@@ -114,7 +114,7 @@ def keepGoing():
         return False
 
 # Driver code for using the generative functions in the terminal
-def start():
+def run():
     '''
     Main terminal driver code. 
     
@@ -442,7 +442,6 @@ def start():
 
     # Exit message
     goodBye()
-    return 0
 
 #----------------------------Call Driver Code---------------------------#
 
