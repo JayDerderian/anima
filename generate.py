@@ -112,11 +112,11 @@ This module/class handles all generative methods.
 
 # IMPORTS
 import math
+import midi
 import toabc
 import urllib.request
 import constants as c
 from random import randint
-from midi import midiStuff as mid
 from containers.melody import melody
 from containers.chord import chord
 from datetime import datetime as date
@@ -1398,7 +1398,7 @@ class generate():
         # Create MIDI file name
         title1 = title + '.mid'
         # Save to MIDI file
-        if mid.saveMelody(self, title1, newTune) != -1:
+        if midi.saveMelody(self, title1, newTune) != -1:
             print('')  
         else:
             print("\n\naNewMelody() - ERROR: Unable to export piece to MIDI file!")
@@ -1433,7 +1433,7 @@ class generate():
         # create MIDI file name
         title1 = title + '.mid'
         # save to MIDI file
-        if mid.saveChords(self, title, chords) != -1:
+        if midi.saveChords(self, title, chords) != -1:
             print("\nMIDI file saved as:", title1)
         else:
             print("\nnewProgression() - ERROR: unable to save MIDI file!")
@@ -1503,7 +1503,7 @@ class generate():
         # Create MIDI file name
         title1 = title + '.mid'
         # Save to MIDI file
-        if mid.saveComposition(self, newTune, newChords, title1) != -1:
+        if midi.saveComposition(self, newTune, newChords, title1) != -1:
             print("\nMIDI file saved as:", title1)
         else:
             print("\nnewComposition() - ERROR: Unable to export piece to MIDI file!")
