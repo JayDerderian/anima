@@ -122,7 +122,9 @@ def start():
     -single melody generation (random or using source data) 
     -single chord generation (random or using source data) 
     -chord progression generation (random or using source data)
-    -composition (1 random inst + pno) generation (random or using source data)
+    -simple composition (1 random inst + pno) generation (random or using source data)
+    -use composition mode (1 of 5 options) generation for more elaborate, automatically 
+     generated pieces.
     '''
     # Hello
     hello()
@@ -422,20 +424,15 @@ def start():
                     print("\nEnjoy your new music! :)\n")
                 else:
                     print("\n:(\n")
-
-
             # Tonal/modal
             elif m == 1:
                 print("\nNot ready yet :(\n")
-
             # Atonal
             elif m == 2:
                 print("\nNot ready yet :(\n")
-
-            # 12-tone
+            # Serialist
             elif m == 3:
                 print("\nNot ready yet :(\n")
-
             # Minimalist
             elif m == 4:
                 print("\nNot ready yet :(\n")

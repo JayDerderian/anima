@@ -4,6 +4,7 @@ Simplified file for testing generative functions.
 
 
 # Imports
+import constants as c
 from random import randint
 from random import uniform
 from generate import generate
@@ -43,13 +44,9 @@ def newChars():
     '''Generates a random list of 10-50 letters/chars'''
     chars = []
     total = randint(10, 50)
-    alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g',
-                'h', 'i', 'j', 'k', 'l', 'm', 'n',
-                'o', 'p', 'q', 'r', 's', 't', 'u',
-                'v', 'w', 'x', 'y', 'z']
     for i in range(total):
         # Pick letter
-        char = alphabet[randint(0, 25)]
+        char = c.ALPHABET[randint(0, len(c.ALPHABET) - 1)]
         # Captitalize? 1 = yes, 2 = no
         if(randint(1, 2) == 1):
             char = char.upper()
@@ -59,29 +56,24 @@ def newChars():
 # Generate new data
 def newData(dataType):
     '''Select and generate some random data for input.
-       Enter in 1-4 to chose (1 = int list, 2 = float list, 
-       3 = char list, 4 =  0xXXXXXX hex number)'''
+       Enter in 1-4 to choose (1 = int list, 2 = float list, 
+       3 = char list, 4 = 0xXXXXXX hex number)'''
     # Generate ints
     if(dataType == 1):
-        print("\ninputting ints...")
         data = newInts()
     # Generate floats
     elif(dataType == 2):
-        print("\ninputting floats...")
         data = newFloats()
     # Generate chars
     elif(dataType == 3):
-        print("\ninputting letters...")
         data = newChars()
     # Generate a new hex
     else:
-        print("\ninputting hex number...")
         data = newHex()
-    print("\ntotal elements:", len(data))
     return data
 
-#-------------------------------------------------------------------------------------#
-'''Test random stuff here'''
+#-------------------------------------TEST STUFF HERE-------------------------------------------#
+
 
 test_scale, method, data = generate().newSourceScale(total=randint(7, 40))
 

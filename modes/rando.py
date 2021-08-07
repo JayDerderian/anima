@@ -46,8 +46,9 @@ def newRandomComposition():
     
     Each part creates its own source material at random. 
     
-    Exports a MIDI file, a .txt file with composition info, and returns a 
-    composition() object, or -1 on failure.
+    Exports a MIDI file, a .txt file with composition info. 
+    
+    Returns a composition() object, or -1 on failure.
     '''
     # new composition object
     comp = composition()

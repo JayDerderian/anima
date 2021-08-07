@@ -1,6 +1,6 @@
-#****************************************************************************************************************#
-#-------------------------------------This class handles decision functions------------=-------------------------#
-#****************************************************************************************************************#
+'''
+This module handles all large-scale decision making with regards to each composition mode. 
+'''
 
 '''
 ----------------------------------------------------NOTES-------------------------------------------------------
@@ -16,7 +16,7 @@
                 rhythms()
                 ect..
                 
-                Comp Modes:
+                comp Modes:
                     random()
                     minimalist()
                     tonal()
@@ -24,7 +24,7 @@
                     serialist()
                 ect...
 
-            variate()
+            variate/modify()
                 mainDecision():
                 howManyNotes():
                 ect..
@@ -33,13 +33,12 @@
 '''
 
 #IMPORTS
-import math
-import pretty_midi as pm
-from pretty_midi import constants as inst
+import constants as c
+from math import floor
 from random import randint
 
 #Decision functions
-class decide(object):
+class decide():
     '''
     These are the RNG functions that make "decisions" about a variety of creative questions.  
     Basically you roll some dice and see what happens.
@@ -49,143 +48,40 @@ class decide(object):
 
     # Constructor
     def __init__(self):
-
-        # Used for rhythm modifications
-        self.rhythms = [4.0, 3.0, 2.0, 1.5, 1.0, 0.75, 0.5, 
-                        0.375, 0.25, 0.125]
+        self.alive = True
 
     #-----------------------------------------------------------------------------------------------------------#
     #-----------------------------------------MATERIAL GENERATION-----------------------------------------------#
     #-----------------------------------------------------------------------------------------------------------#
+    '''
+    NOTE: This will eventually contain a series of decision trees that will determine how to execute 
+            different composition "modes"
 
-    # How many times should we repeat this note?
-    def howManyRepetitions(self, notes):
+    '''
+    
+    # Minimalist mode choices
+    def minChoices(self):
         '''
-        Determines how many times to repeat a note, scaled to
-        the amount of rhythms generated for this melody.
-
-        Returns 0 if supplied notes is null, and 1 if it
-        receives an empty list
+        Decides generation parameters for minimalist mode
         '''
-        if(notes is None):
-            return 0
-        elif(len(notes) == 0):
-            return 1
-        reps = 0
-        '''Note: change to if(len(notes)) % 3 == 0), etc?
-                 Use total notes as divisible by n as the decider rather than
-                 total notes itself. I dunno.'''
-        if(len(notes) > 10):
-            #Limit to 1/5
-            limit = math.floor(len(notes) / 5)
-            reps = randint(1, limit)
-        elif(len(notes) > 8):
-            #Limit to 1/4
-            limit = math.floor(len(notes) / 4)
-            reps = randint(1, limit)
-        elif(len(notes) > 6):
-            #Limit to 1/3
-            limit = math.floor(len(notes) / 3)
-            reps = randint(1, limit)
-        return reps
-
-    # Choose melody parameters
-    def melodyChoices(self):
-        '''
-        Choses parameters for melody generation. 
-        Returns a list with each decision at a corresponding
-        index.
-
-        0 = rhythm choice (1 - 3)
-        1 = dynamics choice (1 - 2)
-        2 = tonality choice (1 - 2)
-        3 = melodic range choice (1 - 4)
-        4 = which single octave to use, if chosen (single int or None)
-        5 = total elements (number of notes, rhythms, dynamics)
-        '''
-        choices = []
-
-        #0 - Total elements (2-20)
-        '''Determines total number of notes, rhythms, and dynamics.
-           Each will be whatever randint() returns here.'''
-        choices.append(randint(2, 20))
-
-        #1 - Rhythm 
-        '''Generate list of nonrepeating rhythms (1), a single repeated rhythm (2), 
-           or alternate between non-repeat and repeat(3)?'''
-        choices.append(randint(1, 3))
-
-        #2 - Dynamics 
-        '''Repeating single dynamic (1), non-repeating list(2), semi-repeating(3)?'''
-        choices.append(randint(1, 3))
-
-        #3 - Tonality: Tonal(1) or atonal(2)?
-        choices.append(randint(1, 2))
-
-        #4 - Melodic range
-        '''Place notes in specified octave (1), used fixed range (2), 
-           alternate between fixed octave and randomly chosen octaves (3),
-           use randomly chosen octaves only (4)'''
-        rangeChoice = randint(1, 4)
-        choices.append(rangeChoice)
-
-        #5 - Using one single octave (or not)
-        if(rangeChoice == 1):
-            # Which octave (2-6)?                     
-            choices.append(randint(2, 6))
-        else:
-            choices.append(None)
+        # Create an empty dictionary
+        choices = {}
 
         return choices
 
-    # Choses a single instrument
-    def newInstrument(self, tempo):
+    # Tonal/modal mode choices
+    def modalChoices(self):
         '''
-        Choses a MELODIC instrument from pretty_midi's container's module 
-        which contains a mapping of integers to available MIDI instruments. 
-
-        Returns a pretty_midi object containing the supplied tempo and the 
-        newly chosen instrument. To be used for single instrument pieces.
+        Decides generation parameters for tonal/modal mode
         '''
-        # Create new PrettyMIDI() instance
-        newInstrument = pm.PrettyMIDI(initial_tempo = tempo)
-        # Returns a string (I think) from the mapping
-        # NOTE: Indices 0 - 110 are the MELODIC instruments in INSTRUMENT_MAP!
-        instrument = inst.INSTRUMENT_MAP[randint(0, 110)]
-        # Append to pm Instrument instance
-        instrument = pm.Instrument(program = instrument)
-        # Add to PrettyMIDI instance
-        newInstrument.instruments.append(instrument)
-        return newInstrument
+        # Create an empty dictionary
+        choices = {}
 
-    # Choses how many instruments to create (2 - 13 (for now))
-    def howManyInstruments(self):
-        return randint(2, 13)
+        return choices
 
-    # Choses the instruments for a non-solo piece
-    def newEnsemble(self, tempo):
-        '''
-        Generates a list of 2 - 13 MELODIC instruments. Does not 
-        pick PERCUSSION instruments yet!
+    # Atonal mode choices
 
-        Returns a pretty_midi object containing the supplied tempo and list of
-        instruments. To be used for multi-instrument pieces.
-        '''
-        # Pick total number of instruments
-        total = randint(2, 13)
-        # Create new PrettyMIDI() instance
-        newEnsemble = pm.PrettyMIDI(initial_tempo = tempo)
-        # Select instruments
-        while(len(newEnsemble.instruments) < total):
-            # Returns a string (I think) from the mapping
-            # NOTE: Indices 0 - 110 are the MELODIC instruments in INSTRUMENT_MAP!
-            instrument = inst.INSTRUMENT_MAP[randint(0, 110)]
-            # Append to pm Instrument object
-            instrument = pm.Instrument(program = instrument)
-            # Add to PrettyMIDI instance
-            newEnsemble.instruments.append(instrument)
-        return newEnsemble
-
+    # 
 
     #---------------------------------------------------------------------------------------------------------------------#
     #------------------------------------------------VARIATION GENERATION-------------------------------------------------#
@@ -195,6 +91,9 @@ class decide(object):
         
         - These functions are intended to work off a given MIDI file. The variations.py file has more info.
         - Update variations.py with updated choices in mainChoice().
+    
+    TODO: Create a single wrapper method - decisions() - for executing all choices and returning them 
+          as a single dictionary.
 
     '''    
 
@@ -285,6 +184,35 @@ class decide(object):
         # print("Total:", totalModify)
         return totalModify
 
+    # How many times should we repeat this note?
+    def howManyRepetitions(self, notes):
+        '''
+        Determines how many times to repeat a note, scaled to
+        the amount of rhythms generated for this melody.
+
+        Returns 0 if supplied notes is null, and 1 if it
+        receives an empty list
+        '''
+        if(len(notes) == 0):
+            return 1
+        reps = 0
+        '''Note: change to if(len(notes)) % 3 == 0), etc?
+                 Use total notes as divisible by n as the decider rather than
+                 total notes itself. I dunno.'''
+        if(len(notes) > 10):
+            #Limit to 1/5
+            limit = floor(len(notes) / 5)
+            reps = randint(1, limit)
+        elif(len(notes) > 8):
+            #Limit to 1/4
+            limit = floor(len(notes) / 4)
+            reps = randint(1, limit)
+        elif(len(notes) > 6):
+            #Limit to 1/3
+            limit = floor(len(notes) / 3)
+            reps = randint(1, limit)
+        return reps
+
     # Scales howMany to different MIDI note file sizes
     def scaleHowMany(self, totalNotes):
         if(totalNotes == 0):
@@ -305,7 +233,7 @@ class decide(object):
             totalNotes *= 0.2
         elif(totalNotes > 500000):
             totalNotes *= 0.1 
-        return math.floor(totalNotes) 
+        return floor(totalNotes) 
 
     # Which notes should we modify given a list of note numbers?
     # Generates list of index numbers to be used with theNotes[] 
@@ -328,28 +256,3 @@ class decide(object):
             print("...Unable to decide!")
         # print("Notes to modify: ", notesToModify)
         return notesToModify
-
-    #How much do we want to augment or diminish a rhythm?   
-    def newDurations(self, totalModify):
-        '''
-        Returns a list of positive or negative floats representing
-        how much to augment or diminish a rhythmic value by. 
-        '''
-        n = 0
-        rhythmChanges = []  
-        while(len(rhythmChanges) < totalModify):
-            if(randint(1, 2) == 1):
-                n += self.rhythms[randint(0, 9)]
-                rhythmChanges.append(n)
-            else:
-                n -= self.rhythms[randint(0, 9)]
-                rhythmChanges.append(n)
-            n = 0
-        return rhythmChanges
-
-
-    #-----------------------------------------------------------------------------------------------------------------------#
-    #------------------------------------------------COMPOSITION GENERATION-------------------------------------------------#
-    #-----------------------------------------------------------------------------------------------------------------------#
-
-    
