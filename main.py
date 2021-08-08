@@ -446,4 +446,4 @@ def run():
 #----------------------------Call Driver Code---------------------------#
 
 # Run via terminal in the program's directory using 'python run.py'
-start()
+run()
