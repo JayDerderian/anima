@@ -1,21 +1,12 @@
 '''
-ABOUT
+---ABOUT---
 
-write a bunch of stuff about how this software works here...
+``AnimA`` contains a number of generative methods used to automatically create a music
+composition, it's sheet music, and a MIDI file as well as a .txt file containing data about
+how that piece was composed and the raw materials used during its generation.
+
 '''
 
-from src.generate import *
-from src.constants import *
-from src.decisions import *
-from src.midi import *
+from .main import *
 
-from modes.atonal import *
-from modes.encrypt import *
-from modes.minimal import * 
-from modes.rando import *
-from modes.serialist import *
-from modes.tonal import *
-
-from containers.chord import *
-from containers.melody import *
-from containers.composition import *
+__version__ = '1.0'

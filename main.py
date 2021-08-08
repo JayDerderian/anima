@@ -15,10 +15,10 @@
 '''
 
 # Imports
-import src.constants as c
+import constants as c
+from test import newData
 from random import randint
-from src.generate import generate
-from utils.test import newData
+from generate import generate
 from modes.rando import newRandomComposition
 
 

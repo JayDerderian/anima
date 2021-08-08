@@ -5,12 +5,12 @@ may vary substantially, as well as the instrumentation.
 '''
 
 #IMPORTS
+import midi as m
+import constants as c
 from test import newData
 from random import randint
 from datetime import datetime as date
 from generate import generate as create
-from src.midi import midi as m
-from src.constants import constants as c
 from containers.composition import composition
 
 '''

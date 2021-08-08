@@ -111,7 +111,7 @@ This module/class handles all generative methods.
 
 # IMPORTS
 import math
-import midi
+import midi as m
 import urllib.request
 import constants as c
 from utils import toabc
@@ -1376,15 +1376,8 @@ class generate():
         Exports MIDI file + generates title + .txt data file. 
         Returns 0 on succcess, -1 on failure.
         '''
-        if data is not None:
-            if type(data) == list and len(data) == 0:
-                print("\naNewMelody() - ERROR: no data inputted!")
-                return -1
-        if dataType is not None: 
-            if type(dataType) == int and dataType > 4 or dataType < 1:
-                print("\naNewMelody() - ERROR: dataType out of range!")
-                return -1
-        elif data is not None and dataType is not None:
+        # apply data and dataType as necessary
+        if data is not None and dataType is not None:
             tempo = c.TEMPOS[randint(0, len(c.TEMPOS) - 1)]
             newTune = self.newMelody(tempo, data, dataType)
         else:
@@ -1397,7 +1390,7 @@ class generate():
         # Create MIDI file name
         title1 = title + '.mid'
         # Save to MIDI file
-        if midi.saveMelody(self, title1, newTune) != -1:
+        if m.saveMelody(self, title1, newTune) != -1:
             print('')  
         else:
             print("\n\naNewMelody() - ERROR: Unable to export piece to MIDI file!")
@@ -1432,7 +1425,7 @@ class generate():
         # create MIDI file name
         title1 = title + '.mid'
         # save to MIDI file
-        if midi.saveChords(self, title, chords) != -1:
+        if m.saveChords(self, title, chords) != -1:
             print("\nMIDI file saved as:", title1)
         else:
             print("\nnewProgression() - ERROR: unable to save MIDI file!")
@@ -1479,7 +1472,7 @@ class generate():
         # Expot MIDI file
         title = self.newTitle()
         title1 = title + '.mid'
-        if midi.saveComposition(self, newTune, newChords, title1) != -1:
+        if m.saveComposition(self, newTune, newChords, title1) != -1:
             print("\nMIDI file saved as:", title1)
         else:
             print("\nnewComposition() - ERROR: Unable to export piece to MIDI file!")
