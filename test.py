@@ -75,9 +75,4 @@ def newData(dataType):
 #-------------------------------------TEST STUFF HERE-------------------------------------------#
 
 
-test_scale, method, data = generate().newSourceScale(total=randint(7, 40))
 
-print("\nfinal total:", len(test_scale))
-print("\ntest scale:", test_scale)
-print("\ngen method:", method)
-print("\nmeta-data:", data, "\n")
