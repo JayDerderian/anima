@@ -9,13 +9,15 @@
         -composition (1 random inst + pno) generation (random or using source data)
         -run testing software
 
+    Run via terminal in the program's directory using 'python run.py'
+
 ----------------------------------------------------------------------------------------------------
 '''
 
 # Imports
-import constants as c
+import src.constants as c
 from random import randint
-from generate import generate
+from src.generate import generate
 from utils.test import newData
 from modes.rando import newRandomComposition
 
@@ -255,7 +257,6 @@ def run():
 
                 # Use existing scale
                 if d == 1:
-                    # Randomly decide between major or minor because why not
                     tempo = create.newTempo()
                     scale, data = create.pickScale(octave=randint(2, 5))
                     chord = create.newChord(tempo, scale)
@@ -322,7 +323,14 @@ def run():
                 if d == 1:
                     tempo = create.newTempo()
                     scale, data = create.pickScale(octave=randint(2, 5))
-                    chords = create.newChords(randint(3, len(scale)), tempo, scale)
+                    if scale != -1:
+                        chords = create.newChords(randint(3, len(scale)), tempo, scale)
+                        # append meta data to all chords
+                        for i in range(len(chords)):
+                            chords[i].fn = data
+                    else:
+                        print("\nERROR: unable to pick scale! Exiting...")
+                        break
                     if chords != -1:
                         create.displayChords(chords)
                     else:
@@ -445,5 +453,4 @@ def run():
 
 #----------------------------Call Driver Code---------------------------#
 
-# Run via terminal in the program's directory using 'python run.py'
 run()

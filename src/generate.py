@@ -1453,63 +1453,39 @@ class generate():
         well as a .txt file with the compositions title, inputted data, 
         auto-generated title, a random instrumentation, with the date and time
         of generation. Also contains melody and harmony data.
-
-        NOTE: Will eventaully return a music() object containing lists of 
-              melody() and chord() objects.
         '''
-        # New composition() object
-        # music = composition()
 
-        #--------------------------Check incoming data------------------------------#
-
-        # Did we get an empty list?
-        if data is not None and type(data) == list:
-            if len(data) == 0:
-                print("\nnewComposition() - ERROR: no data inputted!")
-                return -1
-        if dataType is not None and type(dataType) == int:
-            if dataType < 1 or dataType > 4:
-                print("\nnewComposition() - ERROR: bad data type!")
-                return -1
-
-        #----------------------Generate melody and Harmony--------------------------#
-
-
+        # Generate a melody
         if data is not None and dataType is not None:
             newTune = self.newMelody(data, dataType)
             if newTune == -1:
                 print("newComposition() - ERROR: unable to generate melody!")
                 return -1
             newTune.instrument = self.newInstrument()
-            # music.melodies.append(newTune)
+
         else:
             newTune = self.newMelody()
             if newTune == -1:
                 print("newComposition() - ERROR: unable to generate melody!")
                 return -1
             newTune.instrument = self.newInstrument()
-            # music.melodies.append(newTune)
 
+        # Generate harmonies from this melody
         newChords = self.newChords(len(newTune.notes), newTune.tempo, newTune.notes)
         if newChords == -1:
             print("\nnewComposition() - ERROR: unable to generate harmonies!")
             return -1
-        # music.chords.append(newChords)
-
-        #-----------------Generate title and save to MIDI file----------------------#
         
+        # Expot MIDI file
         title = self.newTitle()
-        # Create MIDI file name
         title1 = title + '.mid'
-        # Save to MIDI file
         if midi.saveComposition(self, newTune, newChords, title1) != -1:
             print("\nMIDI file saved as:", title1)
         else:
             print("\nnewComposition() - ERROR: Unable to export piece to MIDI file!")
             return -1
 
-        #------------Save composition data to a .txt file (fileName)----------------#
-
+        #Save composition data to a .txt file (fileName)-
         fileName = "{}{}".format(title, '.txt')
         print("\nText file saved as:", fileName)
         title2 = "{}{}{}{}".format(title, ' for ', newTune.instrument, ' and piano')
