@@ -15,3 +15,7 @@ from modes.minimal import *
 from modes.rando import *
 from modes.serialist import *
 from modes.tonal import *
+
+from containers.chord import *
+from containers.melody import *
+from containers.composition import *
