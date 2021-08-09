@@ -93,7 +93,7 @@ from containers.chord import chord
 from datetime import datetime as date
 
 # Generative functions
-class generate():
+class Generate():
     '''
     This class handles all generative functions. It contains a set of resource data
     that is accessed by a variety of generative algorithms and mapping functions.
@@ -102,7 +102,10 @@ class generate():
     # Constructor
     def __init__(self):
         self.alive = True
-
+        '''
+        NOTE: Develop a way to store session info here? Need a way to justify all these
+              methods as a class. 
+        '''
 
     #-----------------------------------------------------------------------------------------#
     #-----------------------------------Utility Functions-------------------------------------#

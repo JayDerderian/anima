@@ -18,7 +18,7 @@
 import constants as c
 from test import newData
 from random import randint
-from generate import generate
+from generate import Generate
 from modes.rando import newRandomComposition
 
 
@@ -74,20 +74,6 @@ def dataMenu():
     print("----------------------------------------------")
     print("\n")
 
-# Test menu
-def testMenu():
-    '''
-    displays testing options
-    '''
-    print("\n")
-    print("------------Testing options--------------")
-    print("                                         ")
-    print("          1. Run quick test              ")
-    print("          2. Run all tests               ")
-    print("                                         ")
-    print("-----------------------------------------")
-    print("\n")
-
 # Welcoming message
 def hello():
     '''
@@ -116,7 +102,7 @@ def keepGoing():
         return False
 
 # Driver code for using the generative functions in the terminal
-def run():
+def main():
     '''
     Main terminal driver code. 
     
@@ -453,4 +439,5 @@ def run():
 
 #----------------------------Call Driver Code---------------------------#
 
-run()
+if __name__ == "__main__":
+    main()

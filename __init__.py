@@ -32,7 +32,4 @@ Example usage for generating a single melody using a person's name
     sm = create.newScore(new_melody)
 
 '''
-
-from .main import *
-
 __version__ = '1.0'

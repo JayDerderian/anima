@@ -38,7 +38,7 @@ from math import floor
 from random import randint
 
 #Decision functions
-class decide():
+class Decide():
     '''
     These are the RNG functions that make "decisions" about a variety of creative questions.  
     Basically you roll some dice and see what happens.
@@ -48,7 +48,11 @@ class decide():
 
     # Constructor
     def __init__(self):
-        self.alive = True
+
+        # Session info. Initialize empty dictionaries to contain current choices for each instance
+        self.min_choices = {}
+        self.modal_choices = {}
+        self.atonal_choices = {}
 
     #-----------------------------------------------------------------------------------------------------------#
     #-----------------------------------------MATERIAL GENERATION-----------------------------------------------#
@@ -98,7 +102,7 @@ class decide():
     '''    
 
     # What do we want to do? modify notes (1), modify rhythms (2), both (3)
-    def mainChoice(self):
+    def varMainChoice(self):
         '''
         What do we want to do?
         1 - Modify notes 
@@ -129,7 +133,7 @@ class decide():
 
     # Choices (notes): Transpose Up (1), down (2), transpose up AND down (3), 
     # add note (4), remove note (5), both add AND remove(6)
-    def whatToDo(self):
+    def whatToDoNotes(self):
         '''
         Choices: 
             1. Add/remove notes, transpose, or both?
@@ -170,7 +174,7 @@ class decide():
         return choice
 
     # Determines how many notes to modify of a given total.
-    def howMany(self, totalNotes):
+    def howManyModify(self, totalNotes):
         '''
         Determines how many notes to modify of a given total.
         '''

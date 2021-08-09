@@ -10,7 +10,7 @@ import constants as c
 from random import randint
 from utils.test import newData
 from datetime import datetime as date
-from generate import generate as create
+from generate import Generate as create
 from containers.composition import composition
 
 '''
@@ -122,7 +122,6 @@ def newRandomComposition():
 
     # generate .txt file
     comp.txtFileName = "{}{}".format(comp.title, '.txt')
-
     if size == 1:
         title_full = "{}{}{}".format(comp.title, 'for solo', comp.melodies[0].instrument)
     elif size > 1:
