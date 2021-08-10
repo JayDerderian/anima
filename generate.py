@@ -6,16 +6,6 @@ This module/class handles all generative methods.
 ----------------------------------------------------NOTES-------------------------------------------------------
 
 
-    TODO: Implement alternative ways of generating ascending scales that 
-          should probably be stand-alone functions that are called at random in 
-          newNotes().
-
-          Each will need to return an accurate array of strings (i.e. "C#4") representing
-          the process applied to them (and possibly some sort of data log about how the process
-          was actually applied? Gonna use a lot of memory). Single harmonic spellings 
-          (only sharps or flats) will probably be used to maintain simplicity.
-
-
     GENERAL NOTES:
 
         Long data sets will have the same note associated with different 
@@ -142,7 +132,7 @@ class Generate():
         return name
 
     # Auto generate a file/composition name (type - date:time)
-    def newFileName(self, title):
+    def newMidiFileName(self, title):
         '''
         Generates a title/file name by picking two random words
         then attaching the composition type (solo, duo, ensemble, etc..),
@@ -412,7 +402,7 @@ class Generate():
 
         Thanks to Eric Dale for getting this method in better shape.
         '''
-        # convert to list of str's
+        # convert inputted str to list of str's
         letters = list(letters)
         # make all uppercase characters lowercase
         for i in range(len(letters) - 1):
@@ -420,11 +410,7 @@ class Generate():
                 letters[i] = letters[i].lower()
         numbers = []
         for char in letters:
-            # check if each character is a letter
-            if char.isalpha():
-                # add its index to the numbers list
-                numbers.append(c.ALPHABET.index(char))
-            elif char.isnumeric():
+            if char.isnumeric():
                 # if it's already a number, add it's *index* since it might be out of range'
                 # numbers.append(int(char))
                 numbers.append(c.ALPHABET.index(char))
@@ -463,9 +449,6 @@ class Generate():
                 rhythms[i] *= diff
                 '''NOTE: Truncate float a bit here??? Might help
                          with sheet music generation'''
-        else:
-            print("\ntempoConvert() - ERROR: wrong type inputted!")
-            return -1
         return rhythms
         
 
@@ -548,20 +531,18 @@ class Generate():
         a list of forte_numbers (list[str]), and the original source scale (list[str])
         '''           
 
-        #-----------------Generate seed scale------------------#
-
-        # Save forte numbers and or pitch class sets
+        # Generate seed scale
+        # Save forte numbers and/or pitch class sets
         meta_data = []
         # Pick starting octave (2 or 3)
         octave = randint(2, 3)
         # Pick a root scale or generate a new root
-        if(randint(1, 2) == 1):
+        if randint(1, 2) == 1:
             root, fn = self.pickScale()
             meta_data.append(fn)
         else:
             root, pcs = self.newScale()
             meta_data.append(pcs)
-
         # Pick total: 3 - 50 if we're generating random notes
         if data == None:
             # Note that the main loop uses total + 1!
@@ -570,8 +551,7 @@ class Generate():
         else:
             total = max(data)
         
-        #-----------------Generate source scale-----------------#
-
+        #Generate source scale
         n = 0
         scale = []
         for i in range(total + 1):
@@ -745,20 +725,6 @@ class Generate():
                 row.append(note)
         return row
 
-    # Transpose a pitch class set by n semi-tones
-    def transpose(self, pcs, n):
-        '''
-        Transposes a list of integers representing pitch-classes
-        by n semi tones, where n is supplied by the user (must be 
-        between -11 -> 11).
-
-        Returns a list of modified ints or -1 if a failure occures.
-        '''
-        for i in range(len(pcs)):
-            pcs[i] += n
-            if pcs[i] > 11:
-                pcs[i] = self.octaveEquiv(pcs[i])
-        return pcs
 
     # Keeps a single pitch within span of an octave (0 - 11)
     def octaveEquiv(self, pitch):
@@ -768,8 +734,13 @@ class Generate():
         if type(pitch) != int:
             print("\noctaveEquiv() - ERROR: pitch not an int!")
             return -1
-        while pitch > 11:
-            pitch -= 11
+        # keep pitch between 0 and 11
+        if pitch > 11:
+            while pitch > 11:
+                pitch -= 11
+        elif pitch < 0:
+            while pitch > 11 and pitch < 0:
+                pitch += 11
         return pitch 
 
 
@@ -1239,4 +1210,4 @@ class Generate():
         print("\nTitle:", title2)
         self.saveInfo(title, newTune.sourceData, fileName, newTune, newChords)
 
-        return title1, toabc.abc(title, newTune.tempo, newTune, newChords)
+        return toabc.abc(title, newTune.tempo, newTune, newChords)

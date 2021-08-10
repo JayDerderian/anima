@@ -38,7 +38,7 @@ from containers.composition import composition
 ------------------------------------------------------------------------------------------------------------------------
 '''
 
-#Pure "random" mode
+# Pure "random" mode
 def newRandomComposition():
     '''
     Generates a composition with n number of harmony and melody instruments. 
@@ -59,9 +59,9 @@ def newRandomComposition():
     comp.composer = "Rando Calrissian"
 
     # Add date and time.
-    d = date.now()
+    dn = date.now()
     # convert to str d-m-y hh:mm:ss
-    comp.date = d.strftime("%d-%b-%y %H:%M:%S")
+    comp.date = dn.strftime("%d-%b-%y %H:%M:%S")
 
     # pick global tempo
     comp.tempo = create.newTempo()

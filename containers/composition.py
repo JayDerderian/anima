@@ -23,7 +23,7 @@ class composition():
         # MIDI file name
         # NOTE: May need to store individual user's file path here?
         self.midiFileName = ""
-        # File name for associated .txt file. 
+        # Text file name
         self.txtFileName = ""
 
         # Global tempo (float)
