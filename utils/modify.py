@@ -17,17 +17,49 @@ TODO:
 
     Implement a method to add notes and rhythms to the end of the file. 
 
+Other TODO's:
+
+    basic scale or pitch class set(s) (can also accept arrays, i.e. groups of notes, which can be used as chords)
+
+    order the notes will be played (allows free selection of any order of those notes, sequential or otherwise)
+
+    basic rate at which this order is assessed, again, a list of values which define a 
+    rhythm which itself can be further manipulated
+
+    a separate rhythmically defined period of rests
+
+    variable transposition, which can be defined rhythmically
+
+    periodic permutation of things like note order (above), rest order, order of other functions in the program
+
+    rhythmically defined retrograde/inversion functions of note order and other functions in the program
+
+    rhythmic scaling of certain rhythmic functions (i.e. changing the rhythmic values in another function 
+    by a certain factor, which can be constant or variably defined rhythmically)
+
+    variable states of expansion (i.e. moving notes further apart from one another, pitch-wise)
+
+    automatically generated chords based on defined pitch scale
+
+    rhythmically defined variable selection of tension for chords in a progression
+
+    ability to transpose a part to a new mode of a defined pitch scale
+
+    variably defined root cycles for chords
+
+    rhythmically controlled assignment of whatever note is being played to any number of instruments 
+    (meaning if you want note 1 to be played by instrument 1 and note 2 and 3 to be played by 
+    instrument 2 and so forth in that pattern)
+
 '''
 
-#IMPORTS
-import pretty_midi as pm
+# IMPORTS
 import midi as mid
+import pretty_midi as pm
 from random import randint
 from decisions import decide as choice
 from generate import Generate as create
 
-
-#------------------------------Transposition----------------------------#
 
 #Transpose a given list of integers (PC's) by a specified value (+ or -)
 def transpose(self, row, distance):
@@ -61,20 +93,19 @@ def transposeList(self, notesToModify):
     return transpositions
 
 
-#--------------------------------------Notes--------------------------------------#
-
-
-#Add note(s) at end of MIDI file
+# Add note(s) at end of MIDI file
 '''
-Note: 
-    Need a way to convert the duration list to start and end times for
-    the pretty_midi.Note(velocity, pitch, start, end) input function
+NOTE: Need a way to convert the duration list to start and end times for
+      the pretty_midi.Note(velocity, pitch, start, end) input function
 
-    Might need a way to convert standard durations to floats based on the given
-    tempo of the original track. Look into how to convert sets of durations into 
-    durations, then convert that duration to start/end times. 
+      Might need a way to convert standard durations to floats based on the given
+      tempo of the original track. Look into how to convert sets of durations into 
+      durations, then convert that duration to start/end times. 
 
-    Might also need to create a decision function for velocities (dynamics)
+      Might also need to create a decision function for velocities (dynamics)
+
+NOTE: input a composition() object with the additional note and rhythm data to be 
+      appended at the end a MIDI file 
     '''
 def addNotes(self, notesToAdd, thisTune):
     if(not notesToAdd or not thisTune):
@@ -108,7 +139,23 @@ Note:
     rhythms.
 '''
 
-#Augment AND Diminish rhythm(s)
+'''
+#Augments OR Diminishes SELECTED rhythms (measured in seconds) with a given tempo.
+def modifyTime(self, rhythm, tempo, thisTune):
+    second = 60 #60bpm
+    
+    Find duration from note data's start/end times. (end-start)
+    Modify duration by x amount to augment/diminish
+    x = tuneTune's tempo/second. 
+    
+    
+    #scale = tempo/second
+    #newDuration = rhythm * scale
+    return newDuration
+'''
+
+
+#Augment AND Diminish ALL rhythm(s)
 '''
 #Determine start/end times for notes.
 def alterDurations(self, thisTune, noteData, newDurations):
@@ -148,19 +195,6 @@ def alterDurations(self, thisTune, noteData, newDurations):
             #end = start + noteDuration
             #start = end
             #(repeat as necessary)
-
-
-#Augments/Diminishes rhythms (measured in seconds) with a given tempo.
-def modifyTime(self, rhythm, tempo, thisTune):
-    second = 60 #60bpm
-    
-    Find duration from note data's start/end times. (end-start)
-    Modify duration by x amount to augment/diminish
-    x = tuneTune's tempo/second. 
-    
-    
-    #scale = tempo/second
-    #newDuration = rhythm * scale
-    return newDuration
 '''
+
 
