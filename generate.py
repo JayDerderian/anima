@@ -724,8 +724,8 @@ class Generate():
         '''
         Generates a 12-tone row. 
 
-        Returns a list[str] of notes in octave 4, and the 
-        original pitch class set (list[int]).
+        Returns a tuple: a list[str] of notes in octave 4, 
+        and the original pitch class set (list[int]).
         '''
         row = [] 
         pcs = []
@@ -760,7 +760,8 @@ class Generate():
                 ret_inv = [row[i] for row in m]
                 ret_inv.reverse()
                 print(ret_inv)
-        -----
+
+        --------
 
         horizontal rows represent transpositions of the original row
         vertical columns represent inversions
