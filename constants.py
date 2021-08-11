@@ -22,7 +22,8 @@ TEMPOS = [40.0, 42.0, 44.0, 46.0, 50.0, 52.0, 54.0, 56.0, 58.0,  # 1-9 (0-8)
          8-26 for loud dynamics'''
 DYNAMICS = [20, 24, 28, 32, 36, 40, 44, 48, 52,
             56, 60, 64, 68, 72, 76, 80, 84, 88,
-            92, 96, 100, 104, 108, 112, 116, 120, 124]
+            92, 96, 100, 104, 108, 112, 116, 120, 
+            124]
 
 
 # Base rhythms in seconds at 60bpm (or q = 60). Converted to 
@@ -94,15 +95,13 @@ MINOR_SCALES = {1: ["A", "B", "C", "D", "E", "F", "G"],
 
 # Interval list/dictonary
 '''
-NOTE:
+NOTE: Develop interval sets that begin with 2 and end with 2,
+      making the next cycle of intervals begin on a tone a half
+      step higher than originally.
 
-    Develop interval sets that begin with 2 and end with 2,
-    making the next cycle of intervals begin on a tone a half
-    step higher than originally.
+      "Self-transposing interval sets"
 
-    "Self-transposing interval sets"
-
-    ex. 
+      ex. 
         c, d, e, f#, g, a, bb, c,
         db, eb, f, g, ab, bB, cb, db,
         d, e, f#, g#, a, b, c, d ...ect.  

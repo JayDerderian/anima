@@ -54,7 +54,6 @@ Other TODO's:
 '''
 
 # IMPORTS
-import midi as mid
 import pretty_midi as pm
 from random import randint
 from decisions import decide as choice
@@ -74,23 +73,13 @@ def transpose(self, row, distance):
     up or down a within a span of a major seventh in semitones), or a list of 
     values between -11 and 11 (including 0!)
     '''
-    if(not row):
-        return None
+    if(type(row) != list or len(row) == 0):
+        return -1
     for i in range(len(row)):
         row[i] += distance
         if(row[i] > 11):
             create.octaveEquiv(row[i])
     return row
-
-#Generates list of transposition distances
-def transposeList(self, notesToModify):
-    '''
-    Generates list of transposition distances (-11 -> 11 in semitones).
-    '''
-    transpositions = []
-    while(len(transpositions) < len(notesToModify)):
-        transpositions.append(randint(-11, 11))
-    return transpositions
 
 
 # Add note(s) at end of MIDI file
@@ -108,8 +97,6 @@ NOTE: input a composition() object with the additional note and rhythm data to b
       appended at the end a MIDI file 
     '''
 def addNotes(self, notesToAdd, thisTune):
-    if(not notesToAdd or not thisTune):
-        return None
 
     # Duplicate thisTune to alter data
     newVariant = thisTune

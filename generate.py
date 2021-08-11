@@ -74,6 +74,7 @@ This module/class handles all generative methods.
 # IMPORTS
 import math
 import midi as m
+import numpy as np
 import urllib.request
 import constants as c
 from utils import toabc
@@ -450,6 +451,21 @@ class Generate():
                 '''NOTE: Truncate float a bit here??? Might help
                          with sheet music generation'''
         return rhythms
+
+    # Transpose
+    def transpose(self, pcs, i):
+        '''
+        Transpose a pitch class set using a supplied interval i
+        
+        Returns a modified pcs (list[int])
+
+        NOTE: modify to also work with a list of intervals
+        '''
+        for note in range(len(pcs)):
+            pcs[note] += i
+            if pcs[i] > 11 or pcs[i] < -11:
+                pcs[i] = self.octaveEquiv[pcs[i]]
+        return pcs
         
 
     #--------------------------------------------------------------------------------#
@@ -662,68 +678,119 @@ class Generate():
                 scale.append(note)
         return scale, pcs   
 
-    # Converts a major scale to its relative minor
-    def convertToMinor(self, scale):
-        '''
-        Converts a major scale (list[str]) to its relative natural minor.
-        '''
-        if len(scale) == 0:
-            print("\nconvertToMinor() - ERROR: no scale inputted!")
-            return -1
-        k = 5
-        minorScale = []
-        for i in range(len(scale)):
-            minorScale.append(scale[k])
-            k += 1
-            if k > len(scale) - 1:
-                k = 0
-        return minorScale
 
     # Generate derivative scales based on each note in a given scale.
-    def deriveScales(self, scale):
+    def deriveScales(self, pcs):
         '''
         Generate derivative scales based on each note in a given scale.
+        Requires a pitch class set (pcs) list[int] who's values are 
+        between 0 - 11, and returns a dictionary of variants (list[int]).
+
+        variants = {
+            1: list[int],
+            2: list[int]
+            etc...
+        } 
         
         Algorithm:
             1. Start with first note in prime scale.
             2. Derive each subsequent note by adding a 
-            randomly chosen interval. Ex; 0 + 2 = 2,
-            2 + 1 = 3, 3 + 2 = 5, creating [2, 3, 5,...] etc.
+               randomly chosen interval. Ex; 0 + 2 = 2,
+               2 + 1 = 3, 3 + 2 = 5, creating [2, 3, 5,...] etc.
             3. Repeat step 2 with next note in prime scale
-            up to end of scale.
-
-        NOTE: Modify to return a dictionary of variants, rather
-              than an list of lists. It'll hopefully make access syntax
-              cleaner.            
+               up to end of scale.        
         '''
-        variants = []
-        for i in range(len(scale)):
-            #Retrieve note from prime scale
-            note = scale[i]
-            scaleVariant = []
-            while len(scaleVariant) < len(scale):
+        variants = {}
+        for i in range(len(pcs)):
+            # Retrieve note from prime scale
+            sv = []
+            note = pcs[i]
+            while len(sv) < len(pcs):
                 # add note with random interval value
                 note += randint(1, 3)
                 if note > 11:
                     note = self.octaveEquiv(note)
-                scaleVariant.append(note)
-                #scaleVariant = list(set(scaleVariant)) #Remove duplicates
-                #scaleVariant.sort() #Sort new derived scale 
-            variants.append(scaleVariant) #Add to list of derived scales.
+                sv.append(note)
+            #scaleVariant = list(set(scaleVariant)) # Remove duplicates
+            #scaleVariant.sort() #Sort new derived scale 
+            variants[i] = sv
+        
+        # convert to strings and append octaves here???
+
         return variants
 
     # Generate a 12-tone row.
     def newTwelveToneRow(self):
         '''
-        Generate a 12-tone row. 
-        Returns a list of strings/note names without a specified octave.
+        Generates a 12-tone row. 
+
+        Returns a list[str] of notes in octave 4, and the 
+        original pitch class set (list[int]).
         '''
-        row = []
+        row = [] 
+        pcs = []
         while len(row) < 11:
-            note = self.newNote(randint(0, 11), 4)
-            if note not in row:
-                row.append(note)
-        return row
+            n = randint(0, 11)
+            if n not in pcs:
+                pcs.append(n)
+            row.append(self.newNote(n, 4))
+        return row, pcs
+
+    # Generates a 12-tone matrix from a given row
+    def newMatrix(self, row, intrvls):
+        '''
+        Generates a 2D array/12-tone matrix from a given pitch class set/"pcs"/
+        list[int]. requires a list of intervals ([2, -1, 5...etc]) to iterate off of.
+
+        Print original row:        
+            print(m[0])
+    
+        Print each row retrograde:
+            for i in range(len(m[i])):
+                retro = m[i].reverse()
+                print(retro)
+
+        Print each row inversions (matrix column, top to bottom):
+            for i in range(len(m))
+                inv = [row[i] for row in m]
+                print(inv)
+
+        Print each row retrograde inversions (matrix column, bottom to top):
+            for i in range(len(m))
+                ret_inv = [row[i] for row in m]
+                ret_inv.reverse()
+                print(ret_inv)
+        -----
+
+        horizontal rows represent transpositions of the original row
+        vertical columns represent inversions
+
+        both rows and columns generate there respective retrogressions  
+
+        m[0] = original row
+        m[0][0] = first note in original row
+        m[n] = each transposition of the original row
+
+        NOTE: maybe there's a way to poplulate the matrix using synxtax like this:
+        arr = [[r]*cols]*rows, where r is a modified version (transposition) of the 
+        original row. 
+        
+        rows and cols are declared as a tuple (rows, cols = (n, n) 
+        where n is some int)
+
+        '''
+        m = []
+        # add original row to m[0]
+        m.append(row)
+        # this generates the 12 tone matrix by appending a transposition
+        # of the original row to each subsequent index. 
+        # all other information, such as retrotressions, inversions, and 
+        # retrogressions + inversions can found using some print tricks.
+        for i in range(len(row)):
+            m.append([])
+            m[i+1].append(self.transpose(row, intrvls[i]))
+        return m
+
 
 
     # Keeps a single pitch within span of an octave (0 - 11)
@@ -739,7 +806,7 @@ class Generate():
             while pitch > 11:
                 pitch -= 11
         elif pitch < 0:
-            while pitch > 11 and pitch < 0:
+            while pitch < 0:
                 pitch += 11
         return pitch 
 
