@@ -5,7 +5,7 @@ may vary substantially, as well as the instrumentation.
 '''
 
 #IMPORTS
-import midi as m
+import midi
 import constants as c
 from random import randint
 from utils.test import newData
@@ -114,7 +114,7 @@ def newRandomComposition():
 
     # export to MIDI file
     comp.midiFileName = "{}{}".format(comp.title, ".mid")
-    if m.save(comp) != -1:
+    if midi.save(comp) != -1:
         print("\n...", comp.title, "saved as", comp.midiFileName)
     else:
         print("\nUnable to generate random composition!")
