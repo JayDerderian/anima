@@ -465,7 +465,7 @@ class Generate():
         '''
         for note in range(len(pcs)):
             pcs[note] += i
-            if pcs[note] > 11 or pcs[note] < -11:
+            if pcs[note] > 11 or pcs[note] < 0:
                 pcs[note] = self.octaveEquiv(pcs[note])
         return pcs
         

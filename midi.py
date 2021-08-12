@@ -16,7 +16,7 @@ from random import randint
 from datetime import datetime
 
 # Autogenerates a new filename
-def newFileName(self, ensemble):
+def newFileName(ensemble):
     '''
     Generates a title/file name by picking two random words
     then attaching the composition type (solo, duo, ensemble, etc..),
@@ -51,7 +51,7 @@ def newFileName(self, ensemble):
     return fileName
 
 # Outputs a single melody/instrument to a MIDI file
-def saveMelody(self, fileName, newMelody):
+def saveMelody(fileName, newMelody):
     '''
     Outputs a single instrument MIDI file (ideally). Returns 0 on success, -1 on failure. 
     To be used with melody generation.
@@ -93,7 +93,7 @@ def saveMelody(self, fileName, newMelody):
     return 0
 
 # Outputs a single MIDI chord.
-def saveChord(self, newChord):
+def saveChord(newChord):
     '''
     Takes a single chord() object and outputs a MIDI file of that chord.
     '''
@@ -118,7 +118,7 @@ def saveChord(self, newChord):
     return 0
 
 # Generates a MIDI file of the chords created by newChord()
-def saveChords(self, fileName, newChords):
+def saveChords(fileName, newChords):
     '''
     Takes a list of chord() objects as an argument and generates a MIDI file.
     '''
@@ -172,7 +172,7 @@ def saveChords(self, fileName, newChords):
     return 0
 
 # Save a melody and chords
-def saveComposition(self, newMelody, newChords, fileName):
+def saveComposition(newMelody, newChords, fileName):
     '''
     Save a single-line melody with chords generated to a MIDI file. 
     Returns a PrettyMIDI() object, or -1 if failure
@@ -245,7 +245,7 @@ def saveComposition(self, newMelody, newChords, fileName):
     return mid
 
 # exports a MIDI file for any sized composition (1 solo melody to ensemble sized n)
-def save(self, comp):
+def save(comp):
     '''
     Exports a MIDI file for any sized composition (1 solo melody to ensemble sized n). 
     Requires a composition() object. Returns 0 on success, -1 on failure.

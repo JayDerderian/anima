@@ -5,12 +5,12 @@ may vary substantially, as well as the instrumentation.
 '''
 
 #IMPORTS
-import midi
+from midi import save
 import constants as c
+# from test import newData
 from random import randint
-from utils.test import newData
+from generate import Generate
 from datetime import datetime as date
-from generate import Generate as create
 from containers.composition import composition
 
 '''
@@ -50,6 +50,8 @@ def newRandomComposition():
     
     Returns a composition() object, or -1 on failure.
     '''
+    # new generate object
+    create = Generate()
     # new composition object
     comp = composition()
 
@@ -76,14 +78,8 @@ def newRandomComposition():
     total_melodies = randint(1, size)
     # pick melodies.
     for i in range(total_melodies):
-        # use random source data (1)?
-        if randint(1, 2) == 1:
-            # which data?
-            d = randint(1, 4)
-            randData = newData(d)
-            melody = create.newMelody(tempo=comp.tempo, data=randData, dataType=d)
-        else:
-            melody = create.newMelody(tempo=comp.tempo)
+        # NOTE: use randomly chosen source data at some point????
+        melody = create.newMelody(tempo=comp.tempo)
         if melody != -1:
             # assign an instrument to this melody
             melody.instrument = comp.instruments[i]
@@ -114,7 +110,7 @@ def newRandomComposition():
 
     # export to MIDI file
     comp.midiFileName = "{}{}".format(comp.title, ".mid")
-    if midi.save(comp) != -1:
+    if save(comp) != -1:
         print("\n...", comp.title, "saved as", comp.midiFileName)
     else:
         print("\nUnable to generate random composition!")
@@ -144,6 +140,3 @@ def newRandomComposition():
         print("\nNew composition:", comp.title, "for mixed", comp.ensemble)
 
     return comp
-
-
-newRandomComposition()

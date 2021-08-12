@@ -2,12 +2,12 @@
 Simplified file for testing generative functions.
 '''
 
-
 # Imports
 import constants as c
 from random import randint
 from random import uniform
 from generate import Generate
+from modes.rando import newRandomComposition
 
 
 #-----------------------------------------test data generation------------------------------------------#
@@ -72,13 +72,17 @@ def newData(dataType):
         data = newHex()
     return data
 
+
 #-------------------------------------TEST STUFF HERE-------------------------------------------#
 
-create = Generate()
-scale, pcs = create.newScale()
-print("\n\noriginal scale:", pcs)
-interval = randint(1, 3)
-print("\ntransposing by", interval, "semi-tones...")
-pcs = create.transpose(pcs, interval)
-print("\ntransposed scale:", pcs)
 
+# create = Generate()
+
+# scale, pcs = create.newScale()
+# print("\n\noriginal scale:", pcs)
+# interval = randint(-11, 11)
+# print("\ntransposing by", interval, "semi-tones...")
+# pcs = create.transpose(pcs, interval)
+# print("\ntransposed scale:", pcs, "\n\n")
+
+newRandomComposition()
