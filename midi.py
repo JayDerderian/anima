@@ -315,6 +315,6 @@ def save(comp):
             mid.instruments.append(chord)
 
     # Write to MIDI file
-    mid.write(f'./midi/{comp.fileName}')
+    mid.write(f'./midi/{comp.midiFileName}')
 
     return 0

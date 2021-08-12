@@ -116,19 +116,27 @@ def newRandomComposition():
         print("\nUnable to generate random composition!")
         return -1
 
-    # generate .txt file
+    # generate .txt file and titles with all instruments listed
     comp.txtFileName = "{}{}".format(comp.title, '.txt')
     if size == 1:
         title_full = "{}{}{}".format(comp.title, 'for solo', comp.melodies[0].instrument)
     elif size > 1:
-        title_full = "{}{}".format(comp.title, 'for', comp.melodies[0].instrument)
-        for i in range(size):
-            if i == size - 1:
-                title_full += "and " 
-                title_full += comp.melodies[i].instrument
-                break
-            title_full += ", " 
-            title_full += comp.melodies[i].instrument
+        title_full = "{}{}{}".format(comp.title, 'for mixed', comp.ensemble)
+        # for i in range(comp.melodies):
+        #     if i == size - 1:
+        #         title_full += "and " 
+        #         title_full += comp.melodies[i].instrument
+        #         break
+        #     title_full += ", " 
+        #     title_full += comp.melodies[i].instrument
+        # if len(comp.chords) > 0:
+        #     for i in range(len(comp.chord)):
+        #         if i == size - 1:
+        #             title_full += "and " 
+        #             title_full += comp.chords[i].instrument
+        #             break
+        #         title_full += ", " 
+        #         title_full += comp.chords[i].instrument
     if create.saveInfo(name=title_full, fileName=comp.txtFileName, newMusic=comp) != 0:
         print("\nText file saved as:", comp.txtFileName)
         return -1

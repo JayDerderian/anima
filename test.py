@@ -76,13 +76,4 @@ def newData(dataType):
 #-------------------------------------TEST STUFF HERE-------------------------------------------#
 
 
-# create = Generate()
-
-# scale, pcs = create.newScale()
-# print("\n\noriginal scale:", pcs)
-# interval = randint(-11, 11)
-# print("\ntransposing by", interval, "semi-tones...")
-# pcs = create.transpose(pcs, interval)
-# print("\ntransposed scale:", pcs, "\n\n")
-
 newRandomComposition()
