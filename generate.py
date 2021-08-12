@@ -459,12 +459,14 @@ class Generate():
         
         Returns a modified pcs (list[int])
 
-        NOTE: modify to also work with a list of intervals
+        NOTE: modify to also work with a list of intervals, i.e.
+              each note gets transposed by a unique value instead of just
+              one value.
         '''
         for note in range(len(pcs)):
             pcs[note] += i
-            if pcs[i] > 11 or pcs[i] < -11:
-                pcs[i] = self.octaveEquiv[pcs[i]]
+            if pcs[note] > 11 or pcs[note] < -11:
+                pcs[note] = self.octaveEquiv(pcs[note])
         return pcs
         
 
@@ -656,7 +658,7 @@ class Generate():
         to be used as a 'root'. Can take an int as a starting octave 
         (between 2 and 5), or not.  
         
-        Returns a list of note name strings.
+        Returns a list of note name strings and the original pitch class set.
         '''
         pcs = []
         total = randint(5, 9)
@@ -706,7 +708,7 @@ class Generate():
             sv = []
             note = pcs[i]
             while len(sv) < len(pcs):
-                # add note with random interval value
+                # add note with random interval value (1-3)
                 note += randint(1, 3)
                 if note > 11:
                     note = self.octaveEquiv(note)
@@ -739,8 +741,8 @@ class Generate():
     # Generates a 12-tone matrix from a given row
     def newMatrix(self, row, intrvls):
         '''
-        Generates a 2D array/12-tone matrix from a given pitch class set/"pcs"/
-        list[int]. requires a list of intervals ([2, -1, 5...etc]) to iterate off of.
+        Generates a 2-D array/12-tone matrix from a given pitch class set (pcs = list[int]). 
+        Requires a list of 11 intervals ([2, -1, 5...etc]) to iterate off of.
 
         Print original row:        
             print(m[0])
@@ -758,7 +760,7 @@ class Generate():
         Print each row retrograde inversions (matrix column, bottom to top):
             for i in range(len(m))
                 ret_inv = [row[i] for row in m]
-                ret_inv.reverse()
+                ret_inv[i].reverse()
                 print(ret_inv)
 
         --------
@@ -785,7 +787,7 @@ class Generate():
         m.append(row)
         # this generates the 12 tone matrix by appending a transposition
         # of the original row to each subsequent index. 
-        # all other information, such as retrotressions, inversions, and 
+        # all other information, such as retrogressions, inversions, and 
         # retrogressions + inversions can found using some print tricks.
         for i in range(len(row)):
             m.append([])
@@ -802,7 +804,6 @@ class Generate():
         if type(pitch) != int:
             print("\noctaveEquiv() - ERROR: pitch not an int!")
             return -1
-        # keep pitch between 0 and 11
         if pitch > 11:
             while pitch > 11:
                 pitch -= 11

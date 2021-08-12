@@ -26,11 +26,13 @@ DYNAMICS = [20, 24, 28, 32, 36, 40, 44, 48, 52,
             124]
 
 
-# Base rhythms in seconds at 60bpm (or q = 60). Converted to 
-# tempo using tempoConvert() when called.
+# Base rhythms in seconds at 60bpm (or q = 60). 
+# Convert to currect tempo using tempoConvert() when necessary.
 '''
-Durations in seconds (1 = quarter note (60bpm))
-Whole note to 32nd note
+Durations in seconds (1 sec = quarter note @ 60bpm)
+
+Current range is from a whole note to 32nd note,
+though other values will be added eventually.
 
     [0] 4 = whole note                                                          
     [1] 3 = dotted half
@@ -56,9 +58,10 @@ NOTES = ["C", "C#", "Db", "D", "D#", "Eb", "E",
 
 
 # Chromatic scale
-"""NOTE: Spellings were arbitrarily chosen. 
-Probably won't matter much from a MIDI file's POV"""
-# indicies 0 - 11
+'''
+NOTE: Spellings were arbitrarily chosen. 
+      Probably won't matter much from a MIDI file's POV... maybe
+'''
 CHROMATIC_SCALE = ["C", "C#", "D", "D#", "E", "F", 
                    "F#", "G", "G#", "A", "Bb", "B"]
 
@@ -354,7 +357,7 @@ SCALES = {
     NOTE: 7-35 is the prime form of major and minor scales
     c maj would ordinarily be [0, 2, 4, 5, 7, 9, 11],
     but when you put it with the lowest interval at 
-    the left at it's most "compact", it becomes 
+    the left at it's most "compact," it becomes 
     [11, 0, 2, 4, 5, 7, 9]. 7-35 is the prime form
     of this new arrangement. add 1 to each int in the 
     [11, 0,...] set and you get 7-35!
