@@ -80,10 +80,17 @@ create = Generate()
 # 12-tone matrix test
 row, pcs = create.newTwelveToneRow()
 print("\n\nrow:", pcs)
-# generate a list of random intervals
+# generate a list of 11, non-repeating random intervals
 intrvls = []
-for i in range(0, 5):
-    intrvls.append(randint(-11, 11))
+for i in range(0, 11):
+    i = randint(1, 11)
+    if i not in intrvls:
+        intrvls.append(i)
 print("\ninterval list:", intrvls)
 # generate the matrix
 m = create.newMatrix(pcs, intrvls)
+print("\noriginal row, now in m[0]:", m[0], "\n\n")
+# print entire matrix
+print("\nfinal matrix:")
+print('\n'.join([''.join(['{:4}'.format(item) for item in row]) 
+      for row in m]))

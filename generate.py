@@ -729,10 +729,16 @@ class Generate():
         return row, pcs
 
     # Generates a 12-tone matrix from a given row
-    def newMatrix(self, row, intrvls):
+    def newMatrix(self, row, intrvls=None):
         '''
         Generates a 2-D array/12-tone matrix from a given pitch class set (pcs = list[int]). 
-        Requires a list of 11 intervals ([2, -1, 5...etc]) to iterate off of.
+        Requires a list of 11 intervals/positive ints between 1-11 ([1, 4, 2, 6]) to iterate off of.
+
+        Can also generate its own list of intervals if none are supplied.
+
+        Returns a 2-D matrix 'm'
+
+        ---------
 
         Print original row:        
             print(m[0])
@@ -770,8 +776,14 @@ class Generate():
         
         rows and cols are declared as a tuple (rows, cols = (n, n) 
         where n is some int)
-
         '''
+        # generate a list of 11 non-repeating intervals if none are supplied
+        if intrvls==None:
+            intrvls = []
+            for i in range(0, 11):
+                intrvl = randint(1, 11)
+                if intrvl not in intrvls:
+                    intrvls.append(intrvl)
         m = []
         # add original row to m[0]
         m.append(row)
@@ -780,10 +792,23 @@ class Generate():
         # all other information, such as retrogressions, inversions, and 
         # retrogressions + inversions can found using some print tricks.
         for i in range(len(intrvls)):
-            m.append(self.transpose(row, intrvls[i]))
+            # m.append(self.transpose(row, intrvls[i]))
+            print("\ntransposing by", intrvls[i], "semi-tones...")
+            r = self.transpose(row, intrvls[i])
+            print("\nadding:", r)
+            m.append(r)  
         return m
 
-
+    # display 12-tone matrix
+    def printMatrix(self, m):
+        '''
+        Display a 12-tone matrix. 
+        
+        Printing technique from: 
+        https://stackoverflow.com/questions/17870612/printing-a-two-dimensional-array-in-python
+        '''
+        return print('\n'.join([''.join(['{:4}'.format(item) for item in row]) 
+                        for row in m]))
 
     # Keeps a single pitch within span of an octave (0 - 11)
     def octaveEquiv(self, pitch):
