@@ -169,18 +169,8 @@ class Generate():
     # Generates a new .txt file to save a new composition's meta-data to
     def saveInfo(self, name, data=None, fileName=None, newMelody=None, newChords=None, newMusic=None):
         '''
-        Generates a new .txt file to save a new composition's data and meta-data to.
-
-        NOTE: remove name and data variables, since source data is stored in newMelody and names/titles
-        are stored in newMelody and newMusic. fileName should not be None, and instead be a default argument
-
-        NOTE: Should take a music() object containing all data currently required by
-              this method:
-              -Source data
-              -File name
-              -Title
-              -Melody/melodies
-              -Chord/chords 
+        Generates a new .txt file to save a new composition's data and meta-data to. 
+        Can take a melody() object, a list of chord() objects, or a composition() object as arguments. 
         '''
         # Create a new file opening object thing
         try:
@@ -789,9 +779,8 @@ class Generate():
         # of the original row to each subsequent index. 
         # all other information, such as retrogressions, inversions, and 
         # retrogressions + inversions can found using some print tricks.
-        for i in range(len(row)):
-            m.append([])
-            m[i+1].append(self.transpose(row, intrvls[i]))
+        for i in range(len(intrvls)):
+            m.append(self.transpose(row, intrvls[i]))
         return m
 
 

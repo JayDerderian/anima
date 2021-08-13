@@ -289,8 +289,9 @@ def save(comp):
 
     if len(comp.chords) > 0:
         # Create instrument object.
-        instrument = pm.instrument_name_to_program('Acoustic Grand Piano')
-        chord = pm.Instrument(program=instrument)
+        # NOTE: change 'Acoustic Grand Piano' to comp.instruments[i]
+        # instrument = pm.instrument_name_to_program('Acoustic Grand Piano')
+        # chord = pm.Instrument(program=instrument)
 
         strt = 0
         end = comp.chords[0].rhythm

@@ -139,6 +139,7 @@ def newRandomComposition():
         #         title_full += comp.chords[i].instrument
     if create.saveInfo(name=title_full, fileName=comp.txtFileName, newMusic=comp) != 0:
         print("\nText file saved as:", comp.txtFileName)
+    else:
         return -1
 
     # display results

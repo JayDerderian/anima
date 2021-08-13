@@ -75,5 +75,15 @@ def newData(dataType):
 
 #-------------------------------------TEST STUFF HERE-------------------------------------------#
 
+create = Generate()
 
-newRandomComposition()
+# 12-tone matrix test
+row, pcs = create.newTwelveToneRow()
+print("\n\nrow:", pcs)
+# generate a list of random intervals
+intrvls = []
+for i in range(0, 5):
+    intrvls.append(randint(-11, 11))
+print("\ninterval list:", intrvls)
+# generate the matrix
+m = create.newMatrix(pcs, intrvls)
