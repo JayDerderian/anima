@@ -80,6 +80,7 @@ import urllib.request
 import constants as c
 from random import randint
 from random import sample
+from utils import mapping
 from utils.toabc import abc
 from utils.save import saveInfo
 from containers.chord import chord
