@@ -149,5 +149,3 @@ def newRandomComposition():
         print("\nNew composition:", comp.title, "for mixed", comp.ensemble)
 
     return comp
-
-newRandomComposition()
