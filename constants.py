@@ -115,28 +115,28 @@ NOTE: Develop interval sets that begin with 2 and end with 2,
         d, e, f#, g#, a, b, c, d ...ect.  
 '''
 INTERVALS = {
-                # Transposition distances in semi-tones
-                1: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
-                # Major
-                2: [2, 2, 1, 2, 2, 2, 1],
-                # Natural minor
-                3: [2, 1, 2, 2, 1, 2, 2],
-                # Melodic minor
-                4: [2, 1, 2, 2, 2, 2, 1],
-                # Harmonic minor
-                5: [2, 1, 2, 2, 1, 3],
-                # Whole tone
-                6: [2, 2, 2, 2, 2],
-                # Octatonic
-                7: [2, 1, 2, 1, 2, 1, 2],
-                # Major triad
-                8: [4, 3],
-                # Minor triad
-                9: [3, 4],
-                # Diminished triad
-                10: [3, 3],
-                # Augmented triad
-                11: [4, 4]
+        # Transposition distances in semi-tones
+        1: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+        # Major
+        2: [2, 2, 1, 2, 2, 2, 1],
+        # Natural minor
+        3: [2, 1, 2, 2, 1, 2, 2],
+        # Melodic minor
+        4: [2, 1, 2, 2, 2, 2, 1],
+        # Harmonic minor
+        5: [2, 1, 2, 2, 1, 3],
+        # Whole tone
+        6: [2, 2, 2, 2, 2],
+        # Octatonic
+        7: [2, 1, 2, 1, 2, 1, 2],
+        # Major triad
+        8: [4, 3],
+        # Minor triad
+        9: [3, 4],
+        # Diminished triad
+        10: [3, 3],
+        # Augmented triad
+        11: [4, 4]
 }
 
 
