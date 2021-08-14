@@ -7,9 +7,8 @@
         -single chord generation (random or using source data) 
         -chord progression generation (random or using source data)
         -composition (1 random inst + pno) generation (random or using source data)
-        -run testing software
 
-    Run via terminal in the program's directory using 'python run.py'
+    Run via terminal in the program's directory using 'python terminal.py'
 
 ----------------------------------------------------------------------------------------------------
 '''
@@ -35,7 +34,7 @@ def mainMenu():
     print("   2. Single new chord                       ")
     print("   3. New chord progression                  ")
     print("   4. New composition (1 melody + chords)    ")
-    print("   5. More comp modes                        ")
+    print("   5. More comp modes (NOT READY)            ")
     print("                                             ")
     print("---------------------------------------------")
     print("\n")
@@ -102,7 +101,7 @@ def keepGoing():
         return False
 
 # Driver code for using the generative functions in the terminal
-def main():
+def run():
     '''
     Main terminal driver code. 
     
@@ -393,7 +392,7 @@ def main():
                     d = 3
 
                 # Generate composition
-                if create.newComposition(data, d) != - 1:
+                if create.newComposition(data=data, dataType=d) != - 1:
                     print("\nEnjoy your new music! :)\n")
                 else:
                     print("\n:(\n")
@@ -437,7 +436,5 @@ def main():
     # Exit message
     goodBye()
 
-#----------------------------Call Driver Code---------------------------#
-
-if __name__ == "__main__":
-    main()
+# Call it
+run()

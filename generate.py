@@ -1004,6 +1004,7 @@ class Generate():
             if newTune == -1:
                 print("newComposition() - ERROR: unable to generate melody!")
                 return -1
+            # pick instrument for melody
             newTune.instrument = self.newInstrument()
 
         else:
@@ -1011,6 +1012,7 @@ class Generate():
             if newTune == -1:
                 print("newComposition() - ERROR: unable to generate melody!")
                 return -1
+            # pick instrument for melody
             newTune.instrument = self.newInstrument()
 
         # Generate harmonies from this melody
@@ -1022,7 +1024,7 @@ class Generate():
         # Expot MIDI file
         title = self.newTitle()
         title1 = title + '.mid'
-        if m.saveComposition(self, newTune, newChords, title1) != -1:
+        if m.saveComposition(newTune, newChords, title1) != -1:
             print("\nMIDI file saved as:", title1)
         else:
             print("\nnewComposition() - ERROR: Unable to export piece to MIDI file!")
