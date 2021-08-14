@@ -535,24 +535,23 @@ class Generate():
         return m
 
     # display 12-tone matrix
-    def printMatrix(self, m):
+    def printMatrix(self, matrix):
         '''
         Display a twelve-tone matrix (2D list)
         '''
-        for x in m:
+        for x in matrix:
             for y in x:
-                print(y,end = " ")
+                print(y, end = " ")
             print()
 
     # generate a list of 11 intervals to transpose a 12-tone row by to generate
     # a matrix
     def newIntervals(self):
-        intervals = []
-        while len(intervals) < 11:
-            n = randint(1, 11)
-            if n not in intervals:
-                intervals.append(intervals)
-        return intervals
+        '''
+        Returns a list of 11 non-repeating intervals to generate 12-tone row
+        transpositions.
+        '''
+        return sample(c.INTERVALS[1], len(c.INTERVALS[1]))
 
     # Keeps a single pitch within span of an octave (0 - 11)
     def octaveEquiv(self, pitch):

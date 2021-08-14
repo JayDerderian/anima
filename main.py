@@ -118,7 +118,7 @@ def main():
     hello()
     
     # Create generator instance
-    create = generate()
+    create = Generate()
 
     # Main loop
     going = True
