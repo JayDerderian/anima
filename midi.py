@@ -289,14 +289,14 @@ def save(comp):
 
     if len(comp.chords) > 0:
         # Create instrument object.
-        # NOTE: change 'Acoustic Grand Piano' to comp.instruments[i]
-        # instrument = pm.instrument_name_to_program('Acoustic Grand Piano')
-        # chord = pm.Instrument(program=instrument)
+        
+        # NOTE: use instrumetn attached to each chord object in lieu of comp's 
+        # instrument list???
 
         strt = 0
         end = comp.chords[0].rhythm
         for k in range(len(comp.chords)):
-            instrument = pm.instrument_name_to_program('Acoustic Grand Piano')
+            instrument = pm.instrument_name_to_program(comp.instruments[i])
             chord = pm.Instrument(program=instrument)
             # Add *this* chord's notes
             for l in range(len(comp.chords[k].notes)):
@@ -309,11 +309,12 @@ def save(comp):
                 # Increment strt/end times
                 strt += comp.chords[k].rhythm
                 end += comp.chords[k+1].rhythm
+                i += 1
             except IndexError:
                 break
 
-            # Add chord to instrument list
-            mid.instruments.append(chord)
+        # Add chord to instrument list
+        mid.instruments.append(chord)
 
     # Write to MIDI file
     mid.write(f'./midi/{comp.midiFileName}')

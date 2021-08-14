@@ -88,8 +88,7 @@ from datetime import datetime as date
 # Generative functions
 class Generate():
     '''
-    This class handles all generative functions. It contains a set of resource data
-    that is accessed by a variety of generative algorithms and mapping functions.
+    This class handles all generative functions.
     '''
 
     # Constructor
@@ -196,7 +195,8 @@ class Generate():
     def transpose(self, pcs, i):
         '''
         Transpose a pitch class set using a supplied interval i, or list of 
-        intervals i.
+        intervals i. Use a list of intervals to generate variations on a 
+        given pitch-class set.
         
         Returns a modified pcs (list[int])
         '''
@@ -841,15 +841,15 @@ class Generate():
     def newMelody(self, tempo=None, data=None, dataType=None):
         '''
         Picks tempo, notes, rhythms, and dynamics, with or without a 
-        supplied list from the user. It can process a list of ints (dataType == 1),
-        floats(2), single char strings/letters(3), or a hex number, 
-        represented as a single string(4)
+        supplied list from the user. It can process a list of ints 
+        (dataType == 1), floats(2), single char strings/letters(3), 
+        or a hex number, represented as a single string(4)
 
         If no data is supplied, then it will generate a melody anyways. 
 
         Returns a melody() object if successfull, -1 on failure.
 
-        NOTE: Instrument is not picked! 
+        NOTE: Instrument is *NOT* picked! Needs to be supplied externally. 
         '''
 
         #----------------Process any incoming data---------------#

@@ -10,6 +10,7 @@ import constants as c
 # from test import newData
 from random import randint
 from generate import Generate
+from utils.save import saveInfo
 from datetime import datetime as date
 from containers.composition import composition
 
@@ -137,7 +138,7 @@ def newRandomComposition():
         #             break
         #         title_full += ", " 
         #         title_full += comp.chords[i].instrument
-    if create.saveInfo(name=title_full, fileName=comp.txtFileName, newMusic=comp) != 0:
+    if saveInfo(name=title_full, fileName=comp.txtFileName, newMusic=comp) != 0:
         print("\nText file saved as:", comp.txtFileName)
     else:
         return -1
