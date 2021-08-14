@@ -49,21 +49,25 @@ RHYTHMS = [4.0, 3.0, 2.0, 1.5, 1.0,
            0.75, 0.5, 0.375, 0.25, 0.125]
 
 
+# Pitch class integers
+PITCH_CLASSES = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+
+
+'''
+NOTE: Spellings were arbitrarily chosen. 
+      Probably won't matter much from a MIDI file's POV... maybe
+'''
+# Chromatic scale
+CHROMATIC_SCALE = ["C", "C#", "D", "Eb", "E", "F", 
+                   "F#", "G", "G#", "A", "Bb", "B"]
+
+
 # Notes in all (reasonable) harmonic spellings
 # indicies 0 - 17. To be used specifically by randint()
 # when trying to "randomly" pick a note.
 NOTES = ["C", "C#", "Db", "D", "D#", "Eb", "E", 
          "F", "F#", "Gb", "G", "G#", "Ab", "A", 
          "A#", "Bb", "B"]
-
-
-# Chromatic scale
-'''
-NOTE: Spellings were arbitrarily chosen. 
-      Probably won't matter much from a MIDI file's POV... maybe
-'''
-CHROMATIC_SCALE = ["C", "C#", "D", "D#", "E", "F", 
-                   "F#", "G", "G#", "A", "Bb", "B"]
 
 
 # All 12 major scales

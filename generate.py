@@ -73,14 +73,16 @@ This module/class handles all generative methods.
 
 # IMPORTS
 import math
+import array
 import midi as m
 import numpy as np
 import urllib.request
 import constants as c
 from utils import toabc
 from random import randint
-from containers.melody import melody
+from random import sample
 from containers.chord import chord
+from containers.melody import melody
 from datetime import datetime as date
 
 # Generative functions
@@ -445,18 +447,25 @@ class Generate():
     # Transpose
     def transpose(self, pcs, i):
         '''
-        Transpose a pitch class set using a supplied interval i
+        Transpose a pitch class set using a supplied interval i, or list of 
+        intervals i.
         
         Returns a modified pcs (list[int])
-
-        NOTE: modify to also work with a list of intervals, i.e.
-              each note gets transposed by a unique value instead of just
-              one value.
         '''
-        for note in range(len(pcs)):
-            pcs[note] += i
-            if pcs[note] > 11 or pcs[note] < 0:
-                pcs[note] = self.octaveEquiv(pcs[note])
+        # modify with a single interval across all pitch-classes
+        if type(i) == int:
+            for note in range(len(pcs)):
+                pcs[note] += i
+                if pcs[note] > 11 or pcs[note] < 0:
+                    pcs[note] = self.octaveEquiv(pcs[note])
+        # modify with a list of intervals across all pitch-classes. 
+        # this allows for each pitch-class to be transposed by a unique
+        # distance, allowing for rapid variation generation.
+        elif type(i) == list:
+            for note in range(len(pcs)):
+                pcs[note] += i[note]
+                if pcs[note] > 11 or pcs[note] < 0:
+                    pcs[note] = self.octaveEquiv(pcs[note])
         return pcs
         
 
@@ -719,24 +728,24 @@ class Generate():
         Returns a tuple: a list[str] of notes in octave 4, 
         and the original pitch class set (list[int]).
         '''
-        row = [] 
-        pcs = []
-        while len(row) < 11:
-            n = randint(0, 11)
-            if n not in pcs:
-                pcs.append(n)
-            row.append(self.newNote(n, 4))
+        pcs = sample(c.PITCH_CLASSES, len(c.PITCH_CLASSES))
+        row = self.toStr(pcs)
         return row, pcs
 
     # Generates a 12-tone matrix from a given row
-    def newMatrix(self, row, intrvls=None):
+    def newMatrix(self, row, intrvls):
         '''
+        NOTE: NOT READY
+
         Generates a 2-D array/12-tone matrix from a given pitch class set (pcs = list[int]). 
-        Requires a list of 11 intervals/positive ints between 1-11 ([1, 4, 2, 6]) to iterate off of.
+        Requires a list of 11 positive intervals between 1-11 ([1, 4, 2, 6]) to iterate off of.
 
-        Can also generate its own list of intervals if none are supplied.
+        The matrix is generating by appending a transposition
+        of the original row to each subsequent index. 
+        All other information, such as retrogressions, inversions, and 
+        retrogressions + inversions can found using some print tricks.
 
-        Returns a 2-D matrix 'm'
+        Returns a 2-D matrix - 'm'
 
         ---------
 
@@ -745,7 +754,8 @@ class Generate():
     
         Print each row retrograde:
             for i in range(len(m[i])):
-                retro = m[i].reverse()
+                retro = m[i]
+                retro.reverse()
                 print(retro)
 
         Print each row inversions (matrix column, top to bottom):
@@ -760,16 +770,6 @@ class Generate():
                 print(ret_inv)
 
         --------
-
-        horizontal rows represent transpositions of the original row
-        vertical columns represent inversions
-
-        both rows and columns generate there respective retrogressions  
-
-        m[0] = original row
-        m[0][0] = first note in original row
-        m[n] = each transposition of the original row
-
         NOTE: maybe there's a way to poplulate the matrix using synxtax like this:
         arr = [[r]*cols]*rows, where r is a modified version (transposition) of the 
         original row. 
@@ -777,38 +777,35 @@ class Generate():
         rows and cols are declared as a tuple (rows, cols = (n, n) 
         where n is some int)
         '''
-        # generate a list of 11 non-repeating intervals if none are supplied
-        if intrvls==None:
-            intrvls = []
-            for i in range(0, 11):
-                intrvl = randint(1, 11)
-                if intrvl not in intrvls:
-                    intrvls.append(intrvl)
-        m = []
-        # add original row to m[0]
+        m = [[]]
+        # add original row to first matrix row
         m.append(row)
-        # this generates the 12 tone matrix by appending a transposition
-        # of the original row to each subsequent index. 
-        # all other information, such as retrogressions, inversions, and 
-        # retrogressions + inversions can found using some print tricks.
         for i in range(len(intrvls)):
-            # m.append(self.transpose(row, intrvls[i]))
-            print("\ntransposing by", intrvls[i], "semi-tones...")
             r = self.transpose(row, intrvls[i])
-            print("\nadding:", r)
-            m.append(r)  
+            print("\nadding P", intrvls[i], ":", r)
+            m.insert(i, r)
         return m
 
     # display 12-tone matrix
     def printMatrix(self, m):
         '''
-        Display a 12-tone matrix. 
-        
-        Printing technique from: 
-        https://stackoverflow.com/questions/17870612/printing-a-two-dimensional-array-in-python
+        Display a twelve-tone matrix (2D list)
         '''
-        return print('\n'.join([''.join(['{:4}'.format(item) for item in row]) 
-                        for row in m]))
+        for x in m:
+            for y in x:
+                print(y,end = " ")
+            print()
+        print()
+
+    # generate a list of 11 intervals to transpose a 12-tone row by to generate
+    # a matrix
+    def newIntervals(self):
+        intervals = []
+        while len(intervals) < 11:
+            n = randint(1, 11)
+            if n not in intervals:
+                intervals.append(intervals)
+        return intervals
 
     # Keeps a single pitch within span of an octave (0 - 11)
     def octaveEquiv(self, pitch):
