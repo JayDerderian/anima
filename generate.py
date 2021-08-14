@@ -166,31 +166,6 @@ class Generate():
                 scale.append(c.CHROMATIC_SCALE[pcs[i]])
         return scale
 
-
-    # Convert base rhythms to values in a specified tempo
-    def tempoConvert(self, tempo, rhythms):
-        '''
-        A rhythm converter function to translate durations in self.rhythms (list)
-        or self.rhythm (float) to actual value in seconds for a specified tempo. 
-        
-        ex: [base] q = 60, quarterNote = 1 sec, [new tempo] q = 72, quarterNote = 0.8333(...) sec
-
-        60/72 = .83 - The result becomes the converter value to multiply all supplied
-        durations against to get the new tempo-accurate durations.
-
-        '''
-        diff = 60/tempo
-        # is this a single float?
-        if type(rhythms) == float:
-            rhythms *= diff
-        # or a list of floats?
-        elif type(rhythms) == list:
-            for i in range(len(rhythms) - 1):
-                rhythms[i] *= diff
-                '''NOTE: Truncate float a bit here??? Might help
-                         with sheet music generation'''
-        return rhythms
-
     # Transpose
     def transpose(self, pcs, i):
         '''
@@ -215,7 +190,31 @@ class Generate():
                 if pcs[note] > 11 or pcs[note] < 0:
                     pcs[note] = self.octaveEquiv(pcs[note])
         return pcs
+
+    # Convert base rhythms to values in a specified tempo
+    def tempoConvert(self, tempo, rhythms):
+        '''
+        A rhythm converter function to translate durations in self.rhythms (list)
+        or self.rhythm (float) to actual value in seconds for a specified tempo. 
         
+        ex: [base] q = 60, quarterNote = 1 sec, [new tempo] q = 72, quarterNote = 0.8333(...) sec
+
+        60/72 = .83 - The result becomes the converter value to multiply all supplied
+        durations against to get the new tempo-accurate durations.
+
+        '''
+        diff = 60/tempo
+        # is this a single float?
+        if type(rhythms) == float:
+            rhythms *= diff
+        # or a list of floats?
+        elif type(rhythms) == list:
+            for i in range(len(rhythms) - 1):
+                rhythms[i] *= diff
+                '''NOTE: Truncate float a bit here??? Might help
+                         with sheet music generation'''
+        return rhythms    
+
 
     #--------------------------------------------------------------------------------#
     #-------------------------------------Tempo--------------------------------------#
@@ -374,11 +373,11 @@ class Generate():
             # pick major
             if randint(1, 2) == 1:
                 scale = c.MAJOR_SCALES[randint(1, len(c.MAJOR_SCALES) - 1)]
-                fn = "{}{}{}".format('None - ', scale[0], ' major')
+                fn = "7-35"
             # pick minor
             else:
                 scale = c.MINOR_SCALES[randint(1, len(c.MINOR_SCALES) - 1)]
-                fn = "{}{}{}".format('None - ', scale[0], ' minor')
+                fn = "7-35"
         else:
             # pick prime form pitch-class set
             fn = c.FORTE_NUMBERS[randint(1, len(c.FORTE_NUMBERS) - 1)]
