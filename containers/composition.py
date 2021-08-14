@@ -2,7 +2,7 @@
 #-------------------------------This class handles composition data---------------------------------#
 #***************************************************************************************************#
 
-class composition():
+class Composition():
     '''
     This is a container for all things related to a stand-alone music composition. Data includes
     a global tempo, the piece's title, an array of melody() objects representing each instruments part, 

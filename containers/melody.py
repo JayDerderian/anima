@@ -3,7 +3,7 @@
 #*************************************************************************************#
 
 
-class melody():
+class Melody():
     '''
     A class/container for managing all data relevant to melodies. This contains a 
     list for notes, rhythms, and dynamics, and their respective setters and getters.

@@ -83,7 +83,8 @@ from utils import mapping
 from utils.toabc import abc
 from utils.save import saveInfo
 from random import randint, sample
-from containers import chord, melody
+from containers.chord import Chord
+from containers.melody import Melody
 from datetime import datetime as date
 
 # Generative functions
@@ -273,7 +274,7 @@ class Generate():
         if i is None:
             note = c.CHROMATIC_SCALE[randint(0, len(c.CHROMATIC_SCALE) - 1)]
         elif type(i) == int and i > -1 and i < len(c.CHROMATIC_SCALE):
-            note = c.CHROMATIC_SCALE[i]
+                note = c.CHROMATIC_SCALE[i]
         else:
             return -1
         if octave is None:
@@ -703,7 +704,7 @@ class Generate():
         Returns a chord() object.
         '''
         # New chord() object
-        newchord = chord()
+        newchord = Chord()
 
         # Pick or generate a new scale if we don't get one supplied
         if scale is None:
@@ -853,7 +854,7 @@ class Generate():
         #----------------Process any incoming data---------------#
 
         # Melody container object
-        newMelody = melody()
+        newMelody = Melody()
 
         if dataType is not None and data is not None:
             print("\nProcessing incoming data...")
@@ -1001,7 +1002,7 @@ class Generate():
 
         # Generate a melody
         if data is not None and dataType is not None:
-            newTune = self.newMelody(data, dataType)
+            newTune = self.newMelody(data=data, dataType=dataType)
             if newTune == -1:
                 print("newComposition() - ERROR: unable to generate melody!")
                 return -1

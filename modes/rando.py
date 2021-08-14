@@ -11,7 +11,7 @@ from random import randint
 from generate import Generate
 from utils.save import saveInfo
 from datetime import datetime as date
-from containers.composition import composition
+from containers.composition import Composition
 
 '''
 ------------------------------------------------------NOTES--------------------------------------------------------------
@@ -53,7 +53,7 @@ def newRandomComposition():
     # new generate object
     create = Generate()
     # new composition object
-    comp = composition()
+    comp = Composition()
 
     # pick title
     comp.title = create.newTitle()

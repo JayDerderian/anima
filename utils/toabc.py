@@ -1,11 +1,14 @@
 
 '''
-Convert composition data to ABC notation
-Code by Eric Dale originally for BrainStorm
+Convert composition data to ABC notation.
+
+Code by Eric Dale.
 '''
 
 def abc(title, tempo, tune, chords):
-
+    '''
+    
+    '''
     melody = ''
     for note, rhythm in zip(tune.notes, tune.rhythms):
         melody += note_to_abc(note, rhythm)
@@ -72,19 +75,3 @@ def note_to_abc(note, rhythm):
         abc_note += '/8'
 
     return abc_note
-
-    '''
-        Durations in seconds (1 = quarter note (60bpm))
-        Whole note to 32nd note
-
-            [0] 4 = whole note                                                          
-            [1] 3 = dotted half
-            [2] 2 = half note           
-            [3] 1.5 = dotted quarter    
-            [4] 1 = quarter             
-            [5] 0.75 = dotted eighth
-            [6] 0.5 = eighth
-            [7] 0.375 = dotted sixteenth
-            [8] 0.25 = sixteenth 
-            [9] 0.125 = thirty-second
-        '''

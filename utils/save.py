@@ -73,8 +73,11 @@ def saveInfo(name, data=None, fileName=None, newMelody=None, newChords=None, new
 
     # Add Forte number, if applicable
     if newMelody is not None and newMelody.fn != "":
+        '''NOTE: this is a bandaid. Make sure only strings get here!!!'''
+        if type(newMelody.fn) == list:
+            newMelody.fn = str(newMelody.fn)
         fn = ''.join(newMelody.fn)
-        fnInfo = '\n\nForte Number: ' + fn
+        fnInfo = '\n\nForte Number or pitch class set: ' + fn
         # f.write(fnInfo)
         f.write(f'./midi/{fnInfo}')
 

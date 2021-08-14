@@ -73,20 +73,6 @@ def dataMenu():
     print("----------------------------------------------")
     print("\n")
 
-# Welcoming message
-def hello():
-    '''
-    what's up
-    '''
-    print("\n*~*~*~*~*~Let's make some music!~*~*~*~*~*~*~\n")
-
-# Exit message
-def goodBye():
-    '''
-    smell ya later, chump
-    '''
-    print("\n~~~~Have a nice day!~~~~\n\n")
-
 # Keep going?
 def keepGoing():
     '''
@@ -113,8 +99,6 @@ def run():
     -use composition mode (1 of 5 options) generation for more elaborate, automatically 
      generated pieces.
     '''
-    # Hello
-    hello()
     
     # Create generator instance
     create = Generate()
@@ -137,7 +121,6 @@ def run():
 
         # Exit
         if choice == 0:
-            goodBye()
             exit()
 
         # Generate melody
@@ -341,7 +324,7 @@ def run():
         # Generate simple composition
         elif choice == 4:
             print("\nCreate a new composition (1) from scratch, or use source data (2)?")
-            c = int(input("Selection (1 or 2):"))
+            c = int(input("Selection (1 or 2): "))
             # Error check...
             attempts = 0
             while c > 2 or c < 1:
@@ -432,9 +415,6 @@ def run():
 
         # Again?
         going = keepGoing()
-
-    # Exit message
-    goodBye()
 
 # Call it
 run()
