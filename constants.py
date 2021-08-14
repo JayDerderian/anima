@@ -70,6 +70,7 @@ NOTES = ["C", "C#", "Db", "D", "D#", "Eb", "E",
          "A#", "Bb", "B"]
 
 
+
 # All 12 major scales
 MAJOR_SCALES = {1: ["C", "D", "E", "F", "G", "A", "B"],
                 2: ["Db", "Eb", "F", "Gb", "Ab", "Bb", "C"],
@@ -113,26 +114,30 @@ NOTE: Develop interval sets that begin with 2 and end with 2,
         db, eb, f, g, ab, bB, cb, db,
         d, e, f#, g#, a, b, c, d ...ect.  
 '''
-INTERVALS = {# Major
-             1: [2, 2, 1, 2, 2, 2, 1],
-             # Natural minor
-             2: [2, 1, 2, 2, 1, 2, 2],
-             # Melodic minor
-             3: [2, 1, 2, 2, 2, 2, 1],
-             # Harmonic minor
-             4: [2, 1, 2, 2, 1, 3],
-             # Whole tone
-             5: [2, 2, 2, 2, 2],
-             # Octatonic
-             6: [2, 1, 2, 1, 2, 1, 2],
-             # Major triad
-             7: [4, 3],
-             # Minor triad
-             8: [3, 4],
-             # Diminished triad
-             9: [3, 3],
-             # Augmented triad
-             10: [4, 4]}
+INTERVALS = {
+                # Transposition distances in semi-tones
+                1: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+                # Major
+                2: [2, 2, 1, 2, 2, 2, 1],
+                # Natural minor
+                3: [2, 1, 2, 2, 1, 2, 2],
+                # Melodic minor
+                4: [2, 1, 2, 2, 2, 2, 1],
+                # Harmonic minor
+                5: [2, 1, 2, 2, 1, 3],
+                # Whole tone
+                6: [2, 2, 2, 2, 2],
+                # Octatonic
+                7: [2, 1, 2, 1, 2, 1, 2],
+                # Major triad
+                8: [4, 3],
+                # Minor triad
+                9: [3, 4],
+                # Diminished triad
+                10: [3, 3],
+                # Augmented triad
+                11: [4, 4]
+}
 
 
 '''

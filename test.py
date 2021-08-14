@@ -6,6 +6,7 @@ Simplified file for testing generative functions.
 import constants as c
 from random import randint
 from random import uniform
+from random import sample
 from generate import Generate
 from modes.rando import newRandomComposition
 
@@ -81,15 +82,10 @@ create = Generate()
 row, pcs = create.newTwelveToneRow()
 print("\n\noriginal row:", pcs)
 # generate a list of 11, non-repeating random intervals
-intervals = []
-while len(intervals) < len(pcs):
-    i = randint(1, 11)
-    if i not in intervals:
-        intervals.append(i)
+intervals = sample(c.INTERVALS[1], len(c.INTERVALS[1]))
 print("\ninterval list:", intervals)
 # generate the matrix
 m = create.newMatrix(pcs, intervals)
-print("\noriginal row, now in m[0]:", m[0], "\n\n")
 # print entire matrix
 print("\nfinal matrix:\n")
 create.printMatrix(m)
