@@ -5,6 +5,9 @@ This module/class handles all generative methods.
 '''
 ----------------------------------------------------NOTES-------------------------------------------------------
 
+    TODO: Import modes and use Generate() to call them? Seems it'll be easier than trying to 
+          import Generate() to any of the modes and utilizing the modules on their own.
+
 
     GENERAL NOTES:
 
@@ -73,16 +76,14 @@ This module/class handles all generative methods.
 
 # IMPORTS
 import math
-import midi as m
+import midi
 import urllib.request
 import constants as c
-from random import randint
-from random import sample
 from utils import mapping
 from utils.toabc import abc
 from utils.save import saveInfo
-from containers.chord import chord
-from containers.melody import melody
+from random import randint, sample
+from containers import chord, melody
 from datetime import datetime as date
 
 # Generative functions
@@ -940,7 +941,7 @@ class Generate():
         # Create MIDI file name
         title1 = title + '.mid'
         # Save to MIDI file
-        if m.saveMelody(self, title1, newTune) != -1:
+        if midi.saveMelody(self, title1, newTune) != -1:
             print('')  
         else:
             print("\n\naNewMelody() - ERROR: Unable to export piece to MIDI file!")
@@ -975,7 +976,7 @@ class Generate():
         # create MIDI file name
         title1 = title + '.mid'
         # save to MIDI file
-        if m.saveChords(self, title, chords) != -1:
+        if midi.saveChords(self, title, chords) != -1:
             print("\nMIDI file saved as:", title1)
         else:
             print("\nnewProgression() - ERROR: unable to save MIDI file!")
@@ -1020,11 +1021,15 @@ class Generate():
         if newChords == -1:
             print("\nnewComposition() - ERROR: unable to generate harmonies!")
             return -1
+        # pick KEYBOARD instruments for newChords
+        else:
+            for i in range(len(newChords)):
+                newChords[i].instrument = c.INSTRUMENTS[randint(0, 8)]
         
         # Expot MIDI file
         title = self.newTitle()
         title1 = title + '.mid'
-        if m.saveComposition(newTune, newChords, title1) != -1:
+        if midi.saveComposition(newTune, newChords, title1) != -1:
             print("\nMIDI file saved as:", title1)
         else:
             print("\nnewComposition() - ERROR: Unable to export piece to MIDI file!")

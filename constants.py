@@ -741,9 +741,16 @@ ENSEMBLE_SIZES = {1: 'solo',
                   11: 'large ensemble'}
 
 
-# INSTRUMENTS [program_number] maps the program_number to an instrument name
+# MIDI instruments list (standard)
+'''
+NOTE:
+    Indicies 0 - 110 are MELODIC/HARMONIC instruments!
+
+    0-8: keyboard instruments
+
+'''
 INSTRUMENTS = [
-    # Indicies 0 - 110 are MELODIC/HARMONIC instruments!
+    # 0-8: keyboards
     'Acoustic Grand Piano', 
     'Bright Acoustic Piano',              
     'Electric Grand Piano', 
@@ -752,7 +759,8 @@ INSTRUMENTS = [
     'Electric Piano 2', 
     'Harpsichord',
     'Clavinet', 
-    'Celesta', 
+    'Celesta',
+    # 9-15: metal percussion  
     'Glockenspiel', 
     'Music Box',
     'Vibraphone', 
@@ -760,14 +768,17 @@ INSTRUMENTS = [
     'Xylophone', 
     'Tubular Bells',
     'Dulcimer', 
+    # 16-20: organs
     'Drawbar Organ', 
     'Percussive Organ',
     'Rock Organ', 
     'Church Organ', 
     'Reed Organ', 
+    # 21-23: accordians/harmonica
     'Accordion',
     'Harmonica', 
     'Tango Accordion', 
+    # 24-31: guitars
     'Acoustic Guitar (nylon)',
     'Acoustic Guitar (steel)', 
     'Electric Guitar (jazz)',
@@ -775,7 +786,8 @@ INSTRUMENTS = [
     'Electric Guitar (muted)',
     'Overdriven Guitar', 
     'Distortion Guitar',
-    'Guitar Harmonics', 
+    'Guitar Harmonics',
+    # 32-39: basses 
     'Acoustic Bass',
     'Electric Bass (finger)', 
     'Electric Bass (pick)',
@@ -783,23 +795,30 @@ INSTRUMENTS = [
     'Slap Bass 1', 
     'Slap Bass 2',
     'Synth Bass 1', 
-    'Synth Bass 2', 
+    'Synth Bass 2',
+    # 40-45: strings 
     'Violin', 
     'Viola', 
     'Cello',
     'Contrabass', 
     'Tremolo Strings', 
     'Pizzicato Strings',
-    'Orchestral Harp', 
-    'Timpani', 
+    # 46: harp
+    'Orchestral Harp',
+    # 47: timpani 
+    'Timpani',
+    # 48-51 : string ensembles 
     'String Ensemble 1',
     'String Ensemble 2', 
     'Synth Strings 1', 
     'Synth Strings 2',
+    # 52-54: choirs
     'Choir Aahs', 
     'Voice Oohs', 
-    'Synth Choir', 
+    'Synth Choir',
+    # 55: orchestra hit 
     'Orchestra Hit',
+    # 56-63: brass
     'Trumpet', 
     'Trombone', 
     'Tuba', 
@@ -807,11 +826,13 @@ INSTRUMENTS = [
     'French Horn', 
     'Brass Section', 
     'Synth Brass 1',
-    'Synth Brass 2', 
+    'Synth Brass 2',
+    # 64-67: saxes 
     'Soprano Sax', 
     'Alto Sax', 
     'Tenor Sax',
-    'Baritone Sax', 
+    'Baritone Sax',
+    # 68-79: woodwinds 
     'Oboe', 
     'English Horn', 
     'Bassoon',
@@ -824,6 +845,7 @@ INSTRUMENTS = [
     'Shakuhachi', 
     'Whistle', 
     'Ocarina',
+    # 80-95: synth leads & pads
     'Lead 1 (square)', 
     'Lead 2 (sawtooth)',
     'Lead 3 (calliope)', 
@@ -840,6 +862,7 @@ INSTRUMENTS = [
     'Pad 6 (metallic)', 
     'Pad 7 (halo)', 
     'Pad 8 (sweep)',
+    # 96-103: misc FX
     'FX 1 (rain)', 
     'FX 2 (soundtrack)', 
     'FX 3 (crystal)',
@@ -847,7 +870,8 @@ INSTRUMENTS = [
     'FX 5 (brightness)', 
     'FX 6 (goblins)',
     'FX 7 (echoes)', 
-    'FX 8 (sci-fi)', 
+    'FX 8 (sci-fi)',
+    # 104-111: other plucked string instruments 
     'Sitar', 
     'Banjo',
     'Shamisen', 
@@ -856,7 +880,8 @@ INSTRUMENTS = [
     'Bagpipe', 
     'Fiddle',
     'Shanai',
-    # Indices 111 onward are PERCUSSION instruments! 
+    # Indices 112 onward are non-pitched percussion instruments and
+    # other misc. sound effects 
     'Tinkle Bell', 
     'Agogo', 
     'Steel Drums',
