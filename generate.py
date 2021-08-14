@@ -543,7 +543,6 @@ class Generate():
             for y in x:
                 print(y,end = " ")
             print()
-        print()
 
     # generate a list of 11 intervals to transpose a 12-tone row by to generate
     # a matrix
