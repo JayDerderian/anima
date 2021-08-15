@@ -57,10 +57,10 @@ def newRandomComposition():
                        composer=create.newComposer(), 
                        tempo=create.newTempo())
 
-    # Add date and time.
-    dn = date.now()
-    # convert to str d-m-y hh:mm:ss
-    comp.date = dn.strftime("%d-%b-%y %H:%M:%S")
+    # Add date and tim (m-d-y hh:mm:ss).
+    # dn = date.now().strftime("%b-%d-%y %H:%M:%S")
+    # comp.date = dn.strftime("%b-%d-%y %H:%M:%S")
+    comp.date = date.now().strftime("%b-%d-%y %H:%M:%S")
 
     # pick ensemble size (1 - 11 instruments for now)
     # and instrumentation

@@ -158,3 +158,4 @@ def saveInfo(name, data=None, fileName=None, newMelody=None, newChords=None, new
 
     # Close instance
     f.close()
+    return 0

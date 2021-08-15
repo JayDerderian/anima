@@ -2,7 +2,7 @@
 #---------------------------This class handles individual note data----------------------------#
 #**********************************************************************************************#
 
-class note():
+class Note():
     '''
     A class/container for managing all data relevant to individual notes:
     name (string, i.e. "C#2"), duration (float: seconds), and dynamics (int: MIDI velocity)

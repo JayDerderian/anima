@@ -103,6 +103,21 @@ MINOR_SCALES = {1: ["A", "B", "C", "D", "E", "F", "G"],
 
 # Interval list/dictonary
 '''
+Use values to build scales and chords off of. 
+
+ex: build a major scale off note using array values at
+    each key value
+
+    note = 0
+    scale = []
+    intervals = c.INTERVALS[2]
+    for i in range(whatever):
+        note += intervals[i]
+        if note > 11:
+            note = self.octEquiv(note)
+        scale.append(note)
+    return scale
+
 NOTE: Develop interval sets that begin with 2 and end with 2,
       making the next cycle of intervals begin on a tone a half
       step higher than originally.
@@ -755,7 +770,7 @@ INSTRUMENTS = [
     'Harpsichord',
     'Clavinet', 
     'Celesta',
-    # 9-15: metal percussion  
+    # 9-15: metal/wood pitched percussion  
     'Glockenspiel', 
     'Music Box',
     'Vibraphone', 

@@ -987,21 +987,23 @@ class Generate():
         else:
             for i in range(len(newChords)):
                 newChords[i].instrument = c.INSTRUMENTS[randint(0, 8)]
-        
-        # Expot MIDI file
+
+        # Generate titles and file names
         title = self.newTitle()
-        title1 = title + '.mid'
-        if midi.saveComposition(newTune, newChords, title1) != -1:
-            print("\nMIDI file saved as:", title1)
+        title_full = "{}{}{}{}".format(title, ' for ', newTune.instrument, ' and various keyboards')
+        mfn = title + '.mid'
+        tfn = title + '.txt'
+
+        # Export
+        if midi.saveComposition(newTune, newChords, mfn) != -1 and saveInfo(title, newTune.sourceData, tfn, newTune, newChords) == 0:
+            
+            print("\nTitle:", title_full)
+            print("\nMIDI file saved as:", mfn)
+            print("\nText file saved as:", tfn)
+
         else:
             print("\nnewComposition() - ERROR: Unable to export piece to MIDI file!")
             return -1
 
-        #Save composition data to a .txt file (fileName)-
-        fileName = "{}{}".format(title, '.txt')
-        print("\nText file saved as:", fileName)
-        title2 = "{}{}{}{}".format(title, ' for ', newTune.instrument, ' and piano')
-        print("\nTitle:", title2)
-        saveInfo(title, newTune.sourceData, fileName, newTune, newChords)
-
+        # Returns composition data in abc notation!
         return abc(title, newTune.tempo, newTune, newChords)
