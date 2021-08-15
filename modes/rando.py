@@ -5,7 +5,7 @@ may vary substantially, as well as the instrumentation.
 '''
 
 #IMPORTS
-import core.midi as mid
+import utils.midi as mid
 import core.constants as c
 from core.generate import Generate
 from containers.composition import Composition
