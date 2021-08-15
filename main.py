@@ -6,8 +6,8 @@ NOTES:
 '''
 
 # Imports
+from containers import composition
 from modes import rando, tonal, atonal, serialist
-from containers import melody, chord, composition
 
 
 def main():
