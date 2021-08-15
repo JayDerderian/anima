@@ -78,7 +78,7 @@ This module/class handles all generative methods.
 import math
 import midi
 import urllib.request
-import constants as c
+import core.constants as c
 from utils import mapping
 from utils.toabc import abc
 from utils.save import saveInfo
@@ -133,6 +133,32 @@ class Generate():
         except urllib.error.URLError:
             print("\nnewTitle() - ERROR: Unable to retrieve word list!")
             name = 'untitled - '
+        return name
+
+    # Auto generate a random composer name
+    def newComposer(self):
+        '''
+        Generate a random composer name (1-3 names)
+        '''
+        try:
+            # get word list
+            url = "'https://svnweb.freebsd.org/csrg/share/dict/propernames?revision=61766&view=co'"
+            # response = requests.get(url)
+            response = urllib.request.urlopen(url)
+            # decode data to text string
+            text = response.read().decode()
+            # separate names into list
+            names = text.splitlines()
+            # pick 1 to 3 random names
+            t = 0
+            total = randint(1, 3)
+            name = names[randint(0, len(names) - 1)]
+            while(t < total):
+                name = name + ' ' + names[randint(0, len(names) - 1)]
+                t += 1
+        except urllib.error.URLError:
+            print("\nnewTitle() - ERROR: Unable to retrieve name list!")
+            name = 'Rando Calrissian'
         return name
 
     # Auto generate a file/composition name (type - date:time)

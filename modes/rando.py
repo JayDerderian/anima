@@ -52,46 +52,16 @@ def newRandomComposition():
     # new generate object
     create = Generate()
     # new composition object
-    comp = Composition()
-    '''
-    NOTE: alternative composition() object initialization approach?
-    comp = Composition(
+    comp = Composition(title=create.newTitle(), 
+                       composer="Rando Calrissian", 
+                       tempo=create.newTempo())
 
-        # generate title
-        title = create.newTitle(),
-        # add composer
-        composer = "Rando Calrissian",
-        
-        # Add date and time.
-        dn = date.now()
-        # convert to str d-m-y hh:mm:ss
-        date = dn.strftime("%d-%b-%y %H:%M:%S")
-
-        # pick global tempo
-        tempo = create.newTempo()
-
-        # pick ensemble size (1 - 11 instruments for now)
-        # and instrumentation
-        size = randint(1, len(c.ENSEMBLE_SIZES) - 1)
-        ensemble = c.ENSEMBLE_SIZES[size]
-        # NOTE: the first entries will always be melodic instruments!
-        # might want to vary things a bit... 
-        instruments = create.newInstruments(size)
-    )
-    '''
-    # pick title
-    comp.title = create.newTitle()
-    # add composer info
-    '''NOTE: add random name method? Why not.'''
-    comp.composer = "Rando Calrissian"
+    # '''NOTE: add random name method? Why not.'''
 
     # Add date and time.
     dn = date.now()
     # convert to str d-m-y hh:mm:ss
     comp.date = dn.strftime("%d-%b-%y %H:%M:%S")
-
-    # pick global tempo
-    comp.tempo = create.newTempo()
 
     # pick ensemble size (1 - 11 instruments for now)
     # and instrumentation
@@ -136,29 +106,14 @@ def newRandomComposition():
                 print("\nnewRandomComposition() - ERROR: unable to generate harmony!")
                 return -1
 
-    # export to MIDI file
+    # generate MIDI and .txt file names
     comp.midiFileName = "{}{}".format(comp.title, ".mid")
-    if mid.save(comp) != -1:
-        print("\n...", comp.title, "saved as", comp.midiFileName)
-    else:
-        print("\nnewRandomComposition() - ERROR: unable to generate random composition!")
-        return -1
-
-    # generate .txt file and titles with all instruments listed
     comp.txtFileName = "{}{}".format(comp.title, '.txt')
     if size == 1:
         title_full = "{}{}{}".format(comp.title, 'for solo', comp.melodies[0].instrument)
     elif size > 1:
         title_full = "{}{}{}".format(comp.title, 'for mixed', comp.ensemble)
-    if saveInfo(name=title_full, fileName=comp.txtFileName, newMusic=comp) != 0:
-        print("\nText file saved as:", comp.txtFileName)
-    else:
-        return -1
-
-    
-    '''
-    NOTE: consolidate title/str generation above then place this if-statement below:
-
+    # export to MIDI file and .txt file
     if mid.save(comp) !=-1 and saveInfo(name=title_full, fileName=comp.txtFileName, newMusic=comp) != 0:
         if comp.ensemble == "solo":
             print("\nNew composition:", comp.title, "for solo", comp.instruments[0])
@@ -166,16 +121,7 @@ def newRandomComposition():
             print("\nNew composition:", comp.title, "for mixed", comp.ensemble)
         print("\n...", comp.title, "saved as", comp.midiFileName)
         print("\nText file saved as:", comp.txtFileName)
-        return 0
+        return comp
     else:
         print("\n...Unable to generate random composition!")
         return -1
-    '''
-
-    # display results
-    if comp.ensemble == "solo":
-        print("\nNew composition:", comp.title, "for solo", comp.instruments[0])
-    else:
-        print("\nNew composition:", comp.title, "for mixed", comp.ensemble)
-
-    return comp
