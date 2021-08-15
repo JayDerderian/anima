@@ -25,6 +25,7 @@ class Composition():
         else:
             self.title = ""
             self.composer = ""
+            
         # Date of composition
         self.date = ""
 
@@ -40,7 +41,7 @@ class Composition():
         else:
             # Default tempo if none is provided
             self.tempo = 60.0
-            
+
         # Ensemble size string ("duo", "trio", etc...)
         self.ensemble = ""
         # List of instruments (strings)

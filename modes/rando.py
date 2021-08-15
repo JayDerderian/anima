@@ -5,13 +5,13 @@ may vary substantially, as well as the instrumentation.
 '''
 
 #IMPORTS
-import utils.midi as mid
 import core.constants as c
 from core.generate import Generate
 from containers.composition import Composition
+import utils.midi as mid
+from utils.save import saveInfo
 
 from random import randint
-from utils.save import saveInfo
 from datetime import datetime as date
 
 '''
