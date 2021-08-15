@@ -15,14 +15,19 @@ class Composition():
           search method. This will allow for more randomization in assigning instruments to various parts.
     '''
     # Constructor
-    def __init__(self, title, composer, tempo):
+    def __init__(self, title=None, composer=None, tempo=None):
 
-        # Title
-        self.title = title
-        # Composer name
-        self.composer = composer
+        if title is not None and composer is not None:
+            # Title
+            self.title = title
+            # Composer name
+            self.composer = composer
+        else:
+            self.title = ""
+            self.composer = ""
         # Date of composition
         self.date = ""
+
         # MIDI file name
         # NOTE: May need to store individual user's file path here?
         self.midiFileName = ""
@@ -30,7 +35,12 @@ class Composition():
         self.txtFileName = ""
 
         # Global tempo (float)
-        self.tempo = tempo
+        if tempo is not None:
+            self.tempo = tempo
+        else:
+            # Default tempo if none is provided
+            self.tempo = 60.0
+            
         # Ensemble size string ("duo", "trio", etc...)
         self.ensemble = ""
         # List of instruments (strings)
