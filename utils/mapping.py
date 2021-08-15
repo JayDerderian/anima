@@ -4,7 +4,7 @@ which will be used to map against newNotes()'s generated source scale in newMelo
 '''
 
 # Imports
-import constants as c
+import core.constants as c
 
 # Converts an array of floats to an array of ints
 def floatToInt(self, data):
@@ -34,7 +34,7 @@ def scaleTheScale(data):
     return data
 
 # Maps letters to index numbers
-def mapLettersToNumbers(letters):
+def lettersToNumbers(letters):
     '''
     Takes a string of any length as an argument, 
     then maps the letters to index numbers, which will then be 

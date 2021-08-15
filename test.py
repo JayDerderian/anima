@@ -3,15 +3,12 @@ Simplified file for testing generative functions.
 '''
 
 # Imports
-import constants as c
-from random import randint
-from random import uniform
-from random import sample
-from generate import Generate
+import core.constants as c
+from core.generate import Generate
 from modes.rando import newRandomComposition
 
-
-#-----------------------------------------test data generation------------------------------------------#
+from random import randint
+from random import uniform
 
 
 # Generate a list of 10 - 50 random numbers between 0-200
@@ -74,7 +71,9 @@ def newData(dataType):
     return data
 
 
+#***********************************************************************************************#
 #-------------------------------------TEST STUFF HERE-------------------------------------------#
+#***********************************************************************************************#
 
 # create = Generate()
 

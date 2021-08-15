@@ -56,12 +56,12 @@ Other TODO's:
 # IMPORTS
 import pretty_midi as pm
 from random import randint
-from decisions import decide as choice
-from generate import Generate as create
+# from core.decisions import decide as choice
+from core.generate import Generate as create
 
 
 #Transpose a given list of integers (PC's) by a specified value (+ or -)
-def transpose(self, row, distance):
+def transpose(row, distance):
     '''
     Transposes a list of integers representing pitch-classes
     by n semi tones, where n is supplied by the user (must be 

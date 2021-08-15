@@ -202,7 +202,8 @@ def saveComposition(newMelody, newChords, fileName):
         # Converts note name strings to MIDI note numbers
         note = pm.note_name_to_number(newMelody.notes[i])
         # Attaches MIDI note number, dynamic, and strt/end time to pm.Note container
-        note = pm.Note(velocity=newMelody.dynamics[i], pitch=note, start=strt, end=end)
+        note = pm.Note(
+            velocity=newMelody.dynamics[i], pitch=note, start=strt, end=end)
         # Then places container in melody notes list.
         melody.notes.append(note)
         # Increment rhythms (note event strt/end times)
@@ -228,7 +229,8 @@ def saveComposition(newMelody, newChords, fileName):
         for j in range(len(newChords[i].notes)):
             # Translate note to MIDI note
             note = pm.note_name_to_number(newChords[i].notes[j])
-            achord = pm.Note(velocity=newChords[i].dynamics[j], pitch=note, start=strt, end=end)
+            achord = pm.Note(
+                velocity=newChords[i].dynamics[j], pitch=note, start=strt, end=end)
             # Add to instrument object
             chord.notes.append(achord)
         try:
@@ -272,7 +274,8 @@ def save(comp):
         for j in range(len(comp.melodies[i].notes)):
             # Translate note to MIDI note
             note = pm.note_name_to_number(comp.melodies[i].notes[j])
-            anote = pm.Note(velocity=comp.melodies[i].dynamics[j], pitch=note, start=strt, end=end)
+            anote = pm.Note(
+                velocity=comp.melodies[i].dynamics[j], pitch=note, start=strt, end=end)
             # Add to instrument object
             melody.notes.append(anote)
             try:
@@ -290,7 +293,7 @@ def save(comp):
     if len(comp.chords) > 0:
         # Create instrument object.
         
-        # NOTE: use instrumetn attached to each chord object in lieu of comp's 
+        # NOTE: use instrument attached to each chord object in lieu of comp's 
         # instrument list???
 
         strt = 0
@@ -302,7 +305,8 @@ def save(comp):
             for l in range(len(comp.chords[k].notes)):
                 # Translate note to MIDI note
                 note = pm.note_name_to_number(comp.chords[k].notes[l])
-                anote = pm.Note(velocity=comp.chords[k].dynamics[l], pitch=note, start=strt, end=end)
+                anote = pm.Note(
+                    velocity=comp.chords[k].dynamics[l], pitch=note, start=strt, end=end)
                 # Add to instrument object
                 chord.notes.append(anote)
             try:

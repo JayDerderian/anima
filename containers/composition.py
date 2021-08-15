@@ -10,16 +10,19 @@ class Composition():
 
     Title, composer, date of composition, file name, source data (if any), global tempo,
     instrument list, melodies, and harmonies.
+
+    NOTE: Find a way to track if an instrument has been picked. Maybe picked list, and a corresponding
+          search method. This will allow for more randomization in assigning instruments to various parts.
     '''
     # Constructor
-    def __init__(self):
+    def __init__(self, title, composer, date, tempo, instruments, ensemble):
 
         # Title
-        self.title = ""
+        self.title = title
         # Composer name
-        self.composer = ""
+        self.composer = composer
         # Date of composition
-        self.date = ""
+        self.date = date
         # MIDI file name
         # NOTE: May need to store individual user's file path here?
         self.midiFileName = ""
@@ -27,15 +30,19 @@ class Composition():
         self.txtFileName = ""
 
         # Global tempo (float)
-        self.tempo = 0.0
+        self.tempo = tempo
         # Ensemble size string ("duo", "trio", etc...)
-        self.ensemble = ""
+        self.ensemble = ensemble
         # List of instruments (strings)
-        self.instruments = []
+        self.instruments = instruments
+        # List of picked instruments
+        self.picked = []
         # List of melody() objects. 
         self.melodies = []
         # List of chord() objects. 
         self.chords = []
+        # List of percussion() objects.
+        self.percussion = []
     
     # Check if there's data in this instance
     def isComplete(self):
@@ -79,3 +86,4 @@ class Composition():
             elif(len(self.chords) == 0):
                 print("\ncomposition() - ERROR: no harmonies inputted!")
             return False
+        

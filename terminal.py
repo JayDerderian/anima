@@ -144,7 +144,7 @@ def run():
                     create.displayMelody(tune)
                     print("\nEnjoy your new melody! :)\n")
                 else:
-                    print("RIP :(\n")
+                    print("\n:(\n")
 
             # Using supplied data
             elif c == 2:
@@ -179,7 +179,7 @@ def run():
                     d = 3
 
                 # Generate melody
-                tune = create.newMelody(data, d)
+                tune = create.newMelody(data=data, dataType=d)
                 if tune != -1:
                     create.displayMelody(tune)
                     print("\nEnjoy your new melody! :)\n")
@@ -232,7 +232,7 @@ def run():
                     if chord != -1:
                         create.displayChord(chord)
                     else:
-                        print("\nRIP :(\n")
+                        print("\n:(\n")
 
                 # Generate a new one
                 elif d == 2:

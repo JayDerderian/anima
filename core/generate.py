@@ -156,7 +156,9 @@ class Generate():
     def toStr(self, pcs, octave=None):
         '''
         Converts a list of pitch class integers to note name strings, with or without 
-        a supplied octave. Returns a list of strings representing pitches, i.e. C#, Gb or D5, Ab6, etc.
+        a supplied octave. 
+        
+        Returns a list of strings representing pitches, i.e. C#, Gb or D5, Ab6, etc.
         '''
         scale = []
         if octave is not None:
@@ -280,8 +282,8 @@ class Generate():
         if octave is None:
             octave = randint(2, 5)
         note = "{}{}".format(note, octave)
-        return note
-            
+        return note    
+
 
     # Generate a series of notes based off an inputted array of integers
     def newNotes(self, data=None):
@@ -358,6 +360,7 @@ class Generate():
 
         return notes, meta_data, scale
 
+
     # Picks either a prime form pitch-class set, or a major or minor scale.
     def pickScale(self, octave=None):
         '''
@@ -370,8 +373,6 @@ class Generate():
         scale = []
         # use a major or minor scale(1), or pick a prime form(2)?
         if randint(1, 2) == 1:
-            '''NOTE: find forte number for minor scale since thats the 
-                     number for both maj/min scales'''
             # pick major
             if randint(1, 2) == 1:
                 scale = c.MAJOR_SCALES[randint(1, len(c.MAJOR_SCALES) - 1)]
@@ -875,7 +876,7 @@ class Generate():
             elif dataType == 3:
                 # Save original source data
                 newMelody.sourceData = data
-                data = mapping.mapLettersToNumbers(data)
+                data = mapping.lettersToNumbers(data)
 
             # If hex convert to array of ints and scale
             elif dataType == 4:

@@ -62,7 +62,7 @@ CHROMATIC_SCALE = ["C", "C#", "D", "Eb", "E", "F",
                    "F#", "G", "G#", "A", "Bb", "B"]
 
 
-# Notes in all (reasonable) harmonic spellings
+# Notes in all (reasonable) harmonic spellings for 12tet notation
 # indicies 0 - 17. To be used specifically by randint()
 # when trying to "randomly" pick a note.
 NOTES = ["C", "C#", "Db", "D", "D#", "Eb", "E", 
@@ -742,13 +742,8 @@ ENSEMBLE_SIZES = {1: 'solo',
 
 
 # MIDI instruments list (standard)
-'''
-NOTE:
-    Indicies 0 - 110 are MELODIC/HARMONIC instruments!
+'''NOTE:Indicies 0 - 110 are MELODIC/HARMONIC instruments!'''
 
-    0-8: keyboard instruments
-
-'''
 INSTRUMENTS = [
     # 0-8: keyboards
     'Acoustic Grand Piano', 
