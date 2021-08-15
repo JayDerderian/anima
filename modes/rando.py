@@ -40,9 +40,10 @@ from datetime import datetime as date
 def newRandomComposition():
     '''
     Generates a composition with 1-11 melody and/or harmony instruments under a unified tempo. 
-    Each part's source material will be independently generated, or won't use any input at all.
+    Each part's material will be independently generated, with or without auto-generated source 
+    data.
     
-    Exports a MIDI file, a .txt file with composition info. 
+    Exports a MIDI file and a .txt file with composition info. 
     
     Returns a composition() object, or -1 on failure.
 
@@ -53,10 +54,8 @@ def newRandomComposition():
     create = Generate()
     # new composition object
     comp = Composition(title=create.newTitle(), 
-                       composer="Rando Calrissian", 
+                       composer=create.newComposer(), 
                        tempo=create.newTempo())
-
-    # '''NOTE: add random name method? Why not.'''
 
     # Add date and time.
     dn = date.now()
