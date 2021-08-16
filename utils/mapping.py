@@ -6,6 +6,7 @@ which will be used to map against newNotes()'s generated source scale in newMelo
 # Imports
 import core.constants as c
 
+
 # Converts an array of floats to an array of ints
 def floatToInt(self, data):
     '''
@@ -15,6 +16,7 @@ def floatToInt(self, data):
     for i in range(len(data)):
         result.append(int(data[i]))
     return result
+
 
 # Scale individual data set integers such that i = i < len(dataSet) - 1
 def scaleTheScale(data):
@@ -32,6 +34,7 @@ def scaleTheScale(data):
             data[i] -= 1
             # data[i] = math.floor(data[i] / len(data) - 1)
     return data
+
 
 # Maps letters to index numbers
 def lettersToNumbers(letters):
@@ -55,6 +58,7 @@ def lettersToNumbers(letters):
             numbers.append(c.ALPHABET.index(letters[i]))
     return numbers
 
+
 # Convert a hex number representing a color to an array of integers
 def hexToIntList(hex):
     '''
@@ -65,3 +69,45 @@ def hexToIntList(hex):
     # convert to array of ints (ie. 132 -> [1, 3, 2])
     hexList = [int(x) for x in str(hexStr)]
     return hexList
+
+
+# Call appropriate mapping method and return modified data
+def mapData(newMelody, data, dataType):
+    '''
+    Wrapper method to map data used by newMelody()
+    
+    Returns modified data and modified melody() object, or -1 
+    on failure.
+    '''
+    print("\nProcessing incoming data...")
+    # If ints, scale as necessary
+    if dataType == 1:
+        # Save original source data
+        newMelody.sourceData = data
+        data = scaleTheScale(data)
+
+    # If floats then convert to ints and scale
+    elif dataType == 2:
+        # Save original source data
+        newMelody.sourceData = data
+        data = floatToInt(data)
+        data = scaleTheScale(data)
+
+    # If letters/chars then match letters to their corresponding index numbers.
+    elif dataType == 3:
+        # Save original source data
+        newMelody.sourceData = data
+        data = lettersToNumbers(data)
+
+    # If hex convert to array of ints and scale
+    elif dataType == 4:
+        # Converts hex number to string, then saves
+        # that as the first item of a list. It's silly, I know.
+        data = str(data)
+        # Save original source data
+        newMelody.sourceData.append(data)
+        data = hexToIntList(data)
+    else:
+        print("\nmapData() - ERROR: dataType value out of range!")
+        return -1
+    return data, newMelody

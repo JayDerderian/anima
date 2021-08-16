@@ -72,18 +72,20 @@ This module/class handles all generative methods.
 '''
 
 # IMPORTS
-from containers.composition import Composition
+
 import math
-import utils.midi as m
 import urllib.request
 import core.constants as c
-from utils import mapping
+import utils.midi as m
+from utils.mapping import mapData
 from utils.toabc import abc
 from utils.save import saveInfo
 from random import randint, sample
 from containers.chord import Chord
 from containers.melody import Melody
+from containers.composition import Composition
 from datetime import datetime as date
+
 
 # Generative functions
 class Generate():
@@ -345,7 +347,7 @@ class Generate():
         else:
             total = max(data)
         
-        #Generate source scale
+        # Generate source scale
         n = 0
         scale = []
         for i in range(total + 1):
@@ -821,54 +823,27 @@ class Generate():
         NOTE: Instrument is *NOT* picked! Needs to be supplied externally. 
         '''
 
-        #----------------Process any incoming data---------------#
-
         # Melody container object
         newMelody = Melody()
 
+        # Process any incoming data
         if dataType is not None and data is not None:
-            print("\nProcessing incoming data...")
-            # If ints, scale as necessary
-            if dataType == 1:
-                # Save original source data
-                newMelody.sourceData = data
-                data = mapping.scaleTheScale(data)
-
-            # If floats then convert to ints and scale
-            elif dataType == 2:
-                # Save original source data
-                newMelody.sourceData = data
-                data = mapping.floatToInt(data)
-                data = mapping.scaleTheScale(data)
-
-            # If letters/chars then match letters to their corresponding index numbers.
-            elif dataType == 3:
-                # Save original source data
-                newMelody.sourceData = data
-                data = mapping.lettersToNumbers(data)
-
-            # If hex convert to array of ints and scale
-            elif dataType == 4:
-                # Converts hex number to string, then saves
-                # that as the first item of a list. It's silly, I know.
-                data = str(data)
-                # Save original source data
-                newMelody.sourceData.append(data)
-                data = mapping.hexToIntList(data)
+            data, newMelody = mapData(newMelody, data, dataType)
+            if data != -1 or newMelody != -1:
+                print()
             else:
-                print("\nnewMelody() - ERROR: dataType value out of range!")
+                print("\nnewMelody() - ERROR: unable to map data to integers!")
                 return -1
         else:
             # Otherwise just add single string to list
             newMelody.sourceData.append('None Inputted')
-
-        #-----------------------Generate!------------------------#
 
         # Pick tempo
         if tempo == None:
             newMelody.tempo = self.newTempo()
         else:
             newMelody.tempo = tempo
+            
         # Pick notes    
         if data is None:
             newMelody.notes, newMelody.fn, newMelody.sourceScale = self.newNotes()
