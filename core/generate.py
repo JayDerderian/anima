@@ -843,7 +843,7 @@ class Generate():
             newMelody.tempo = self.newTempo()
         else:
             newMelody.tempo = tempo
-            
+
         # Pick notes    
         if data is None:
             newMelody.notes, newMelody.fn, newMelody.sourceScale = self.newNotes()
@@ -876,7 +876,7 @@ class Generate():
         # apply data and dataType as necessary
         if data is not None and dataType is not None:
             tempo = c.TEMPOS[randint(0, len(c.TEMPOS) - 1)]
-            newTune = self.newMelody(tempo, data, dataType)
+            newTune = self.newMelody(tempo=tempo, data=data, dataType=dataType)
         else:
             tempo = c.TEMPOS[randint(0, len(c.TEMPOS) - 1)]
             newTune = self.newMelody(tempo=tempo)
@@ -885,18 +885,18 @@ class Generate():
         # Generate title
         title = self.newTitle()
         # Create MIDI file name
-        title1 = title + '.mid'
+        midiFileName = title + '.mid'
         # Save to MIDI file
-        if m.saveMelody(self, title1, newTune) != -1:
+        if m.saveMelody(midiFileName, newTune) != -1:
             print('')  
         else:
             print("\n\naNewMelody() - ERROR: Unable to export piece to MIDI file!")
             return -1
         # Save composition data to a .txt file (fileName)
-        fileName = "{}{}".format(title, '.txt')
-        title2 = "{}{}{}{}".format(title, ' for ', newTune.instrument, ' and piano')
-        print("\nNew melody title:", title2)
-        saveInfo(title2, data, fileName, newTune)
+        txtFileName = "{}{}".format(title, '.txt')
+        title_full = "{}{}{}{}".format(title, ' for ', newTune.instrument, ' and piano')
+        print("\nNew melody title:", title_full)
+        saveInfo(title_full, data, txtFileName, newTune)
         return 0
 
     # Wrapper for newChords(). Outputs chords as a MIDI file and
@@ -922,7 +922,7 @@ class Generate():
         # create MIDI file name
         title1 = title + '.mid'
         # save to MIDI file
-        if m.saveChords(self, title, chords) != -1:
+        if m.saveChords(title, chords) != -1:
             print("\nMIDI file saved as:", title1)
         else:
             print("\nnewProgression() - ERROR: unable to save MIDI file!")
@@ -998,6 +998,7 @@ class Generate():
         comp.date = date.now().strftime("%b-%d-%y %H:%M:%S")
 
         # Export
+        '''NOTE: eventually replace m.saveComposition() with just m.save(comp)'''
         if m.saveComposition(newTune, newChords, mfn) != -1 and saveInfo(
             name=comp.title, data=newTune.sourceData, fileName=tfn, 
             newMelody=newTune, newChords=newChords) == 0:
