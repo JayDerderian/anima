@@ -110,7 +110,7 @@ def saveInfo(name, data=None, fileName=None, newMelody=None, newChords=None, new
         dynamics = '\nDynamics: ' + dynamicStr
         f.write(dynamics)
 
-    elif newChords is not None:
+    if newChords is not None:
         # Save harmony data
         f.write("\n\n\n----------------HARMONY INFO-------------------")
 

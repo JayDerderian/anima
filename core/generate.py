@@ -1016,8 +1016,9 @@ class Generate():
         comp.date = date.now().strftime("%b-%d-%y %H:%M:%S")
 
         # Export
-        if m.saveComposition(newTune, newChords, mfn) != -1 and saveInfo(comp.title, 
-            newTune.sourceData, tfn, newTune, newChords) == 0:
+        if m.saveComposition(newTune, newChords, mfn) != -1 and saveInfo(
+            name=comp.title, data=newTune.sourceData, fileName=tfn, 
+            newMelody=newTune, newChords=newChords) == 0:
             # Display results
             print("\nTitle:", title_full)
             print("\nMIDI file saved as:", mfn)
