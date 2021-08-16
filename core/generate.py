@@ -74,7 +74,7 @@ This module/class handles all generative methods.
 # IMPORTS
 from containers.composition import Composition
 import math
-import midi
+import utils.midi as m
 import urllib.request
 import core.constants as c
 from utils import mapping
@@ -905,7 +905,7 @@ class Generate():
         # Create MIDI file name
         title1 = title + '.mid'
         # Save to MIDI file
-        if midi.saveMelody(self, title1, newTune) != -1:
+        if m.saveMelody(self, title1, newTune) != -1:
             print('')  
         else:
             print("\n\naNewMelody() - ERROR: Unable to export piece to MIDI file!")
@@ -940,7 +940,7 @@ class Generate():
         # create MIDI file name
         title1 = title + '.mid'
         # save to MIDI file
-        if midi.saveChords(self, title, chords) != -1:
+        if m.saveChords(self, title, chords) != -1:
             print("\nMIDI file saved as:", title1)
         else:
             print("\nnewProgression() - ERROR: unable to save MIDI file!")
@@ -1016,7 +1016,7 @@ class Generate():
         comp.date = date.now().strftime("%b-%d-%y %H:%M:%S")
 
         # Export
-        if midi.saveComposition(newTune, newChords, mfn) != -1 and saveInfo(comp.title, 
+        if m.saveComposition(newTune, newChords, mfn) != -1 and saveInfo(comp.title, 
             newTune.sourceData, tfn, newTune, newChords) == 0:
             # Display results
             print("\nTitle:", title_full)

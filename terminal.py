@@ -14,10 +14,11 @@
 '''
 
 # Imports
-import constants as c
+
 from test import newData
 from random import randint
-from generate import Generate
+
+from core.generate import Generate
 from modes.rando import newRandomComposition
 
 

@@ -45,7 +45,7 @@ class Composition():
         # Ensemble size string ("duo", "trio", etc...)
         self.ensemble = ""
         # List of instruments (strings)
-        self.instruments = ""
+        self.instruments = []
         # List of picked instruments
         self.instr_used = []
         # List of melody() objects. 

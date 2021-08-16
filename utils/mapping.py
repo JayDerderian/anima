@@ -40,21 +40,19 @@ def lettersToNumbers(letters):
     then maps the letters to index numbers, which will then be 
     translated into notes (strings). Accounts for number chars 
     as well
-
-    Thanks to Eric Dale for getting this method in better shape.
     '''
     # convert inputted str to list of str's
     letters = list(letters)
-    # make all uppercase characters lowercase
-    for i in range(len(letters) - 1):
+    numbers = []
+    for i in range(len(letters)):
+        # make all uppercase characters lowercase
         if letters[i].isupper() == True:
             letters[i] = letters[i].lower()
-    numbers = []
-    for char in letters:
-        if char.isnumeric():
-            # if it's already a number, add it's *index* since it might be out of range'
-            # numbers.append(int(char))
-            numbers.append(c.ALPHABET.index(char))
+        if letters[i] in c.ALPHABET:
+            numbers.append(c.ALPHABET.index(letters[i]))
+        elif letters[i].isnumeric():
+            # if it's already a number, add it's *index*
+            numbers.append(c.ALPHABET.index(letters[i]))
     return numbers
 
 # Convert a hex number representing a color to an array of integers
