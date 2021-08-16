@@ -335,6 +335,7 @@ class Generate():
             meta_data.append(fn)
         else:
             root, pcs = self.newScale()
+            '''NOTE: this appends a list of integers, not a Forte number!'''
             meta_data.append(pcs)
         # Pick total: 3 - 50 if we're generating random notes
         if data == None:
@@ -360,9 +361,15 @@ class Generate():
                 if octave > 5:
                     # Reset starting octave
                     octave = randint(2, 3)
-                    # Generate another new root scale & starting octave + save forte number, if applicable
-                    root, fn = self.pickScale()
-                    meta_data.append(fn)
+                    # Generate another new root (new or pre-existing) scale & 
+                    # starting octave + save forte number, if applicable
+                    if randint(1, 2) == 1:
+                        root, fn = self.pickScale()
+                        meta_data.append(fn)
+                    else:
+                        root, pcs = self.newScale()
+                        '''NOTE: this appends a list of integers, not a Forte number!'''
+                        meta_data.append(pcs)
                 # Reset n to stay within len(root)
                 n = 0
 
@@ -401,11 +408,11 @@ class Generate():
             # pick major
             if randint(1, 2) == 1:
                 scale = c.MAJOR_SCALES[randint(1, len(c.MAJOR_SCALES) - 1)]
-                fn = "7-35"
+                fn = "7-35 (major scale"
             # pick minor
             else:
                 scale = c.MINOR_SCALES[randint(1, len(c.MINOR_SCALES) - 1)]
-                fn = "7-35"
+                fn = "7-35 (minor scale)"
         else:
             # pick prime form pitch-class set
             fn = c.FORTE_NUMBERS[randint(1, len(c.FORTE_NUMBERS) - 1)]

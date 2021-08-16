@@ -35,7 +35,6 @@ def mainMenu():
     print("   2. Single new chord                       ")
     print("   3. New chord progression                  ")
     print("   4. New composition (1 melody + chords)    ")
-    print("   5. More comp modes (NOT READY)            ")
     print("                                             ")
     print("---------------------------------------------")
     print("\n")
@@ -109,10 +108,10 @@ def run():
     while(going):
         # Main menu 
         mainMenu()
-        choice = int(input("Selection (0 - 5): "))
+        choice = int(input("Selection (0 - 4): "))
         # Error check...
         attempts = 0
-        while choice > 5 or choice < 0 :
+        while choice > 4 or choice < 0 :
             print("try again bub")
             choice = int(input("Selection (0 - 4): "))
             attempts += 1
@@ -416,6 +415,9 @@ def run():
 
         # Again?
         going = keepGoing()
+
+    # See ya    
+    print("\nSee ya")
 
 # Call it
 run()
