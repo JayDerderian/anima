@@ -1,6 +1,6 @@
-#***************************************************************************************************#
-#-------------------------------This class handles composition data---------------------------------#
-#***************************************************************************************************#
+'''
+Module for handling all composition data. Contains a Composition() class/container. 
+'''
 
 class Composition():
     '''
@@ -47,7 +47,7 @@ class Composition():
         # List of instruments (strings)
         self.instruments = ""
         # List of picked instruments
-        self.picked = []
+        self.instr_used = []
         # List of melody() objects. 
         self.melodies = []
         # List of chord() objects. 
@@ -61,7 +61,9 @@ class Composition():
         Check if this composition has all required data:
 
         -Title (string)
+        -Composer (string)
         -File name (string)
+        -Tempo (float)
         -Original source data (int or char list)
         -Global tempo (float)
         -List of melodies (melody() objects)
@@ -70,9 +72,9 @@ class Composition():
         if(self.title != "" 
             and self.composer != "" 
             and self.date != ""
-            and self.fileName != ""
+            and self.txtFileName != ""
+            and self.midiFileName != ""
             and self.tempo != 0.0
-            and len(self.sourceData) != 0
             and len(self.instruments) != 0
             and len(self.melodies) != 0 
             and len(self.chords) != 0):
@@ -84,12 +86,12 @@ class Composition():
                 print("\ncomposition() - ERROR: no composer info inputted!")
             elif(self.date == ""):
                 print("\ncomposition() - ERROR: no date info inputted!")
-            elif(self.fileName == ""):
-                print("\ncomposition() - ERROR: no file name inputted!")
+            elif(self.midiFileName == ""):
+                print("\ncomposition() - ERROR: no MIDI file name inputted!")
+            elif(self.txtFileName == ""):
+                print("\ncomposition() - ERROR: no .txt file name inputted!")
             elif(self.tempo == 0.0):
                 print("\ncomposition() - ERROR: no tempo inputted!")
-            elif(len(self.sourceData) == 0):
-                print("\ncomposition() - ERROR: no source data inputted!")
             elif(len(self.instruments) == 0):
                 print("\ncomposition() - ERROR: no instruments inputted!")
             elif(len(self.melodies) == 0):
@@ -98,3 +100,14 @@ class Composition():
                 print("\ncomposition() - ERROR: no harmonies inputted!")
             return False
         
+    # Have all the instruments been picked?
+    def allInstPicked(self):
+        if self.instruments == self.instr_used:
+            return True
+        return False
+
+    # Has this instrument been picked?
+    def instIsPicked(self, instr):
+        if instr in self.instr_used:
+            return True
+        return False

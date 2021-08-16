@@ -72,6 +72,7 @@ This module/class handles all generative methods.
 '''
 
 # IMPORTS
+from containers.composition import Composition
 import math
 import midi
 import urllib.request
@@ -168,11 +169,12 @@ class Generate():
         Format: "<words> - <ensemble> - <date: d-m-y hh:mm:ss>"
         '''
         # get date and time.
-        d = date.now()
+        # d = date.now()
         # convert to str d-m-y hh:mm:ss
-        dateStr = d.strftime("%d-%b-%y %H:%M:%S")
+        # dateStr = date.now().strftime("%d-%b-%y %H:%M:%S")
         # combine name, ensemble, and date, plus add file extension
-        fileName = '{}{}.mid'.format(title, dateStr)
+        fileName = '{}{}.mid'.format(title, 
+            date.now().strftime("%d-%b-%y %H:%M:%S"))
         return fileName
 
     # Converts a list of pitch class integers to note strings (with or without an octave)
@@ -508,7 +510,7 @@ class Generate():
 
     # generate a list of 11 intervals to transpose a 12-tone row by to generate
     # a matrix
-    def newIntervals(self):
+    def new12ToneIntervals(self):
         '''
         Returns a list of 11 non-repeating intervals to generate 12-tone row
         transpositions.
@@ -950,22 +952,28 @@ class Generate():
     # Outputs a single melody with chords in a MIDI file
     def newComposition(self, data=None, dataType=None):
         '''
+        Generates 1 melody and set of harmonies with our without
+        inputted data.
+        
         Takes an 0x-xxxxxx hex humber representing a color, or 
         an array of ints, floats or chars of any length as arguments, 
         plus the data type represented by a int 
-        (int (1), float (2), char (3), or hex number (4)). Or nothing at all!
+        (int (1), float (2), char (3), or hex number (4)).
 
-        Outputs a single melody with chords in a MIDI file, as
-        well as a .txt file with the compositions title, inputted data, 
-        auto-generated title, a random instrumentation, with the date and time
-        of generation. Also contains melody and harmony data.
+        Outputs a a MIDI file, a .txt file with the compositions data (title, instrumentation,
+        notes, etc...). 
+
+        Returns an incomplete Composition() object (no composer data, or ),
+        and a str of the compositions's data in abc notation.
         '''
+        # Store it in here
+        comp = Composition()
 
         # Generate a melody
         if data is not None and dataType is not None:
             newTune = self.newMelody(data=data, dataType=dataType)
             if newTune == -1:
-                print("newComposition() - ERROR: unable to generate melody!")
+                print("\nnewComposition() - ERROR: unable to generate melody!")
                 return -1
             # pick instrument for melody
             newTune.instrument = self.newInstrument()
@@ -973,37 +981,53 @@ class Generate():
         else:
             newTune = self.newMelody()
             if newTune == -1:
-                print("newComposition() - ERROR: unable to generate melody!")
+                print("\nnewComposition() - ERROR: unable to generate melody!")
                 return -1
             # pick instrument for melody
             newTune.instrument = self.newInstrument()
+        # Save melody info
+        comp.instruments.append(newTune.instrument)
+        comp.melodies.append(newTune)
 
         # Generate harmonies from this melody
         newChords = self.newChords(len(newTune.notes), newTune.tempo, newTune.notes)
         if newChords == -1:
             print("\nnewComposition() - ERROR: unable to generate harmonies!")
             return -1
-        # pick KEYBOARD instruments for newChords
+        # picks KEYBOARD instruments for newChords
         else:
             for i in range(len(newChords)):
                 newChords[i].instrument = c.INSTRUMENTS[randint(0, 8)]
+        # Save harmony info (instruments + chord list)
+        for i in range(len(newChords)):
+            comp.instruments.append(newChords[i].instrument)
+        comp.chords = newChords
 
         # Generate titles and file names
-        title = self.newTitle()
-        title_full = "{}{}{}{}".format(title, ' for ', newTune.instrument, ' and various keyboards')
-        mfn = title + '.mid'
-        tfn = title + '.txt'
+        comp.title = self.newTitle()
+        title_full = "{}{}{}{}".format(comp.title, ' for ', 
+            newTune.instrument, ' and various keyboards')
+        mfn = comp.title + '.mid'
+        tfn = comp.title + '.txt'
+        comp.midiFileName = mfn
+        comp.txtFileName = tfn
+
+        # Save date and time of composition
+        comp.date = date.now().strftime("%b-%d-%y %H:%M:%S")
 
         # Export
-        if midi.saveComposition(newTune, newChords, mfn) != -1 and saveInfo(title, newTune.sourceData, tfn, newTune, newChords) == 0:
-            
+        if midi.saveComposition(newTune, newChords, mfn) != -1 and saveInfo(comp.title, 
+            newTune.sourceData, tfn, newTune, newChords) == 0:
+            # Display results
             print("\nTitle:", title_full)
             print("\nMIDI file saved as:", mfn)
             print("\nText file saved as:", tfn)
+            
+            # Returns composition() object and comp data in abc notation (str)!
+            return comp, abc(comp.title, newTune.tempo, newTune, newChords)
 
         else:
-            print("\nnewComposition() - ERROR: Unable to export piece to MIDI file!")
+            print("\nnewComposition() - ERROR: Unable to export files!")
             return -1
 
-        # Returns composition data in abc notation!
-        return abc(title, newTune.tempo, newTune, newChords)
+        

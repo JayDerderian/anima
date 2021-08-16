@@ -8,8 +8,8 @@ may vary substantially, as well as the instrumentation.
 import core.constants as c
 from core.generate import Generate
 from containers.composition import Composition
-import utils.midi as mid
 from utils.save import saveInfo
+import utils.midi as mid
 
 from random import randint
 from datetime import datetime as date
@@ -57,11 +57,6 @@ def newRandomComposition():
                        composer=create.newComposer(), 
                        tempo=create.newTempo())
 
-    # Add date and tim (m-d-y hh:mm:ss).
-    # dn = date.now().strftime("%b-%d-%y %H:%M:%S")
-    # comp.date = dn.strftime("%b-%d-%y %H:%M:%S")
-    comp.date = date.now().strftime("%b-%d-%y %H:%M:%S")
-
     # pick ensemble size (1 - 11 instruments for now)
     # and instrumentation
     size = randint(1, len(c.ENSEMBLE_SIZES) - 1)
@@ -75,10 +70,18 @@ def newRandomComposition():
     # pick melodies.
     if total_melodies > 0:
         for i in range(total_melodies):
-            # NOTE: use randomly chosen source data at some point????
+            '''NOTE: use randomly chosen source data at some point????'''
             melody = create.newMelody(tempo=comp.tempo)
             if melody != -1:
                 # assign an instrument to this melody
+                '''
+                Pick instrument (inst)
+                Check if it's on the picked list.
+                If not, add.
+                If it is, attempt to select while picked(inst) == True
+                    Loop can break if all instruments have been selected (comp.picked == comp.instruments)
+                '''
+                # add instrument
                 melody.instrument = comp.instruments[i]
                 # save the melody
                 comp.melodies.append(melody)
@@ -95,6 +98,13 @@ def newRandomComposition():
             # harmonies are NOT generated from melodies here!
             chord = create.newChord(tempo=comp.tempo)
             if chord != -1:
+                '''
+                Pick instrument (inst)
+                Check if it's on the picked list.
+                If not, add.
+                If it is, attempt to select while picked(inst) == True
+                    Loop can break if all instruments have been selected (comp.picked == comp.instruments)
+                '''
                 # add instrument
                 chord.instrument = comp.instruments[i]
                 comp.chords.append(chord)
@@ -113,12 +123,15 @@ def newRandomComposition():
     elif size > 1:
         title_full = "{}{}{}".format(comp.title, 'for mixed', comp.ensemble)
     # export to MIDI file and .txt file
-    if mid.save(comp) !=-1 and saveInfo(name=title_full, fileName=comp.txtFileName, newMusic=comp) != 0:
-        if comp.ensemble == "solo":
-            print("\nNew composition:", comp.title, "for solo", comp.instruments[0])
-        else:
-            print("\nNew composition:", comp.title, "for mixed", comp.ensemble)
-        print("\n...", comp.title, "saved as", comp.midiFileName)
+    if mid.save(comp) !=-1 and saveInfo(name=title_full, 
+        fileName=comp.txtFileName, newMusic=comp) != 0:
+        # Add date and time (m-d-y hh:mm:ss).
+        # dn = date.now().strftime("%b-%d-%y %H:%M:%S")
+        # comp.date = dn.strftime("%b-%d-%y %H:%M:%S")
+        comp.date = date.now().strftime("%b-%d-%y %H:%M:%S")
+        # Display results
+        print("\nNew composition:", title_full)
+        print("\nMIDI file saved as:", comp.midiFileName)
         print("\nText file saved as:", comp.txtFileName)
         return comp
     else:

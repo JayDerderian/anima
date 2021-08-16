@@ -110,7 +110,7 @@ def saveInfo(name, data=None, fileName=None, newMelody=None, newChords=None, new
         dynamics = '\nDynamics: ' + dynamicStr
         f.write(dynamics)
 
-    if newChords is not None:
+    elif newChords is not None:
         # Save harmony data
         f.write("\n\n\n----------------HARMONY INFO-------------------")
 
@@ -131,9 +131,24 @@ def saveInfo(name, data=None, fileName=None, newMelody=None, newChords=None, new
             f.write(dynamics)
 
     # Input all
-    if newMusic is not None:
+    elif newMusic is not None:
         # Save composition data
         f.write("\n\n\n----------------COMPOSITION INFO-------------------")
+        
+        # Save title
+        if len(newMusic.instruments) < 2:
+            f.write('\n\nTitle: ' + newMusic.title + 'for solo' + newMusic.instrument[0])
+        else:
+            f.write('\n\nTitle: ' + newMusic.title + 'for mixed' + newMusic.ensemble)
+        
+        # Save composer info
+        f.write('\n\nComposer: ' + str(newMusic.composer) + 'bpm')
+
+        # Save date
+        f.write('\n\nDate of composition: ' + newMusic.date + 'for solo' + newMusic.instrument[0])
+
+        # Divider
+        f.write("\n\n\n~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~")
 
         # Save global tempo
         f.write('\n\nTempo: ' + str(newMusic.tempo) + 'bpm')

@@ -742,6 +742,34 @@ FORTE_NUMBERS = [
 ]
 
 
+# Ensembles
+'''NOTE: obviously not complete or comprehensive. 
+just some standards that could use usefull when quick 
+templates are needed.'''
+
+ENSEMBLES = {
+    "string trio": ['Violin', 'Viola', 'Cello'],
+    "string quartet": ['Violin', 'Viola', 'Cello'],
+    "piano trio": ['Violin', 'Cello', 'Acoustic Grand Piano'],
+    "duet: pno/vn": ['Violin', 'Acoustic Grand Piano'],
+    "duet: pno/va": ['Viola', 'Acoustic Grand Piano'],
+    "duet: pno/vc": ['Cello', 'Acoustic Grand Piano'],
+    "duet: pno/cl": ['Clarinet', 'Acoustic Grand Piano'],
+}
+
+
+# Keys to be used with ENSEMBLES and randint()
+ENSEMBLES_KEYS = [
+    "string trio",
+    "string quartet",
+    "piano trio",
+    "duet: pno/vn",
+    "duet: pno/va",
+    "duet: pno/vc",
+    "duet: pno/cl",
+]
+
+
 # Ensemble sizes
 ENSEMBLE_SIZES = {1: 'solo',
                   2: 'duo',

@@ -1,15 +1,13 @@
-#*************************************************************************************#
-#---------------------------This class handles melody data----------------------------#
-#*************************************************************************************#
-
+'''
+Module for the Melody() class/container. Used for individual melody data in compositions.
+'''
 
 class Melody():
     '''
-    A class/container for managing all data relevant to melodies. This contains a 
-    list for notes, rhythms, and dynamics, and their respective setters and getters.
+    A class/container for managing all data relevant to melodies. 
 
-    Stores: tempo, instrument, generation method, original Forte number(if applicable), 
-    inputted source data, notes, rhythms, and dynamics.
+    Stores: original Forte number, inputted source data, original source scale, 
+    tempo, instrument, notes, rhythms, and dynamics.
     '''
 
     # Constructor
@@ -33,21 +31,27 @@ class Melody():
         Is there complete melody data? 
         If True, all data fields have been used.
         '''
-        if(self.tempo != 0.0
-            and self.instrument != ""
+        if( len(self.fn) > 0
             and len(self.sourceData) > 0 
+            and len(self.sourceScale) > 0
+            and self.tempo != 0.0
+            and self.instrument != ""
             and len(self.notes) > 0
             and len(self.rhythms) > 0
             and len(self.dynamics) > 0
             and len(self.sourceData) > 0):
             return True
         else:
-            if(self.tempo == 0.0):
+            if(len(self.fn) == 0):
+                print("\nmelody() - ERROR: no Forte number inputted!")
+            elif(len(self.sourceData) == 0):
+                print("\nmelody() - ERROR: no source data inputted!")
+            elif(len(self.sourceScale) == 0):
+                print("\nmelody() - ERROR: no source scale inputted!")
+            elif(self.tempo == 0.0):
                 print("\nmelody() - ERROR: no tempo inputted!")
             elif(self.instrument == ""):
                 print("\nmelody() - ERROR: no instrument selected!")
-            elif(len(self.sourceData) == 0):
-                print("\nmelody() - ERROR: no source data inputted!")
             elif(len(self.notes) == 0):
                 print("\nmelody() - ERROR: no notes inputted!")
             elif(len(self.rhythms) == 0):

@@ -60,26 +60,28 @@ from random import randint
 from core.generate import Generate as create
 
 
-#Transpose a given list of integers (PC's) by a specified value (+ or -)
-def transpose(row, distance):
+# Transpose
+def transpose(self, pcs, i):
     '''
-    Transposes a list of integers representing pitch-classes
-    by n semi tones, where n is supplied by the user (must be 
-    between -11 -> 11).
-
-    Returns a list of modified ints or -1 if a failure occures.
-
-    NOTE: "distance" should either be a single value between -11 to 11 (transpose
-    up or down a within a span of a major seventh in semitones), or a list of 
-    values between -11 and 11 (including 0!)
+    Transpose a pitch class set using a supplied interval i, or list of 
+    intervals i. Use a list of intervals to generate variations on a 
+    given pitch-class set.
+    
+    Returns a modified pcs (list[int])
     '''
-    if(type(row) != list or len(row) == 0):
-        return -1
-    for i in range(len(row)):
-        row[i] += distance
-        if(row[i] > 11):
-            create.octaveEquiv(row[i])
-    return row
+    # modify with a single interval across all pitch-classes
+    if type(i) == int:
+        for note in range(len(pcs)):
+            pcs[note] += i
+            if pcs[note] > 11 or pcs[note] < 0:
+                pcs[note] = self.octaveEquiv(pcs[note])
+    # modify with list of intervals - one for each pitch class
+    elif type(i) == list:
+        for note in range(len(pcs)):
+            pcs[note] += i[note]
+            if pcs[note] > 11 or pcs[note] < 0:
+                pcs[note] = self.octaveEquiv(pcs[note])
+    return pcs
 
 
 # Add note(s) at end of MIDI file
