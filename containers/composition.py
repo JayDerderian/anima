@@ -101,13 +101,15 @@ class Composition():
             return False
         
     # Have all the instruments been picked?
-    def allInstPicked(self):
-        if self.instruments == self.instr_used:
+    def allPicked(self):
+        # NOTE: This returns sorted versions of original lists. Might affect how instruments are 
+        # selected? 
+        if sorted(self.instruments) == sorted(self.instr_used):
             return True
         return False
 
     # Has this instrument been picked?
-    def instIsPicked(self, instr):
+    def IsPicked(self, instr):
         if instr in self.instr_used:
             return True
         return False

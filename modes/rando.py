@@ -56,9 +56,9 @@ def newRandomComposition():
     comp = Composition()
 
     # Generate title, composer name, and pick tempo
-    comp.title = create.newTitl()
+    comp.title = create.newTitle()
     comp.composer = create.newComposer()
-    tempo = create.newTempo()
+    comp.tempo = create.newTempo()
 
     # pick ensemble size (1 - 11 instruments for now)
     # and instrumentation
@@ -76,16 +76,26 @@ def newRandomComposition():
             '''NOTE: use randomly chosen source data at some point????'''
             melody = create.newMelody(tempo=comp.tempo)
             if melody != -1:
-                # assign an instrument to this melody
-                '''
-                Pick instrument (inst)
-                Check if it's on the picked list.
-                If not, add.
-                If it is, attempt to select while picked(inst) == True
-                    Loop can break if all instruments have been selected (comp.picked == comp.instruments)
-                '''
-                # add instrument
-                melody.instrument = comp.instruments[i]
+                # assign a randomly-chosen instrument to this melody
+                instr = comp.instruments[randint(0, len(comp.instruments) - 1)]
+                # make sure it hasn't been used already
+                if comp.isPicked(instr) == False:
+                    # assign instrument
+                    melody.instrument = instr
+                    # save to picked list
+                    comp.instr_used.append(instr)
+                # if so, try others...
+                else:
+                    # check if all instruments are picked before brute-force
+                    # picking one...
+                    if comp.allPicked() == True:
+                        break
+                    while comp.isPicked(instr) == True:
+                        instr = comp.instruments[randint(0, len(comp.instruments) - 1)]
+                        if comp.isPicked(instr) == False:
+                            melody.instrument = instr
+                            break
+                    
                 # save the melody
                 comp.melodies.append(melody)
             else:
@@ -101,19 +111,25 @@ def newRandomComposition():
             # harmonies are NOT generated from melodies here!
             chord = create.newChord(tempo=comp.tempo)
             if chord != -1:
-                '''
-                Pick instrument (inst)
-                Check if it's on the picked list.
-                If not, add.
-                If it is, attempt to select while picked(inst) == True
-                    Loop can break if all instruments have been selected (comp.picked == comp.instruments)
-                '''
-                # add instrument
-                chord.instrument = comp.instruments[i]
-                comp.chords.append(chord)
-                i+=1
-                if i == len(comp.instruments):
-                    break
+                # assign a randomly-chosen instrument to this melody
+                instr = comp.instruments[randint(0, len(comp.instruments) - 1)]
+                # make sure it hasn't been used already
+                if comp.isPicked(instr) == False:
+                    # assign instrument
+                    melody.instrument = instr
+                    # save to picked list
+                    comp.instr_used.append(instr)
+                # if so, try others...
+                else:
+                    # check if all instruments are picked before brute-force
+                    # picking one...
+                    if comp.allPicked() == True:
+                        break
+                    while comp.isPicked(instr) == True:
+                        instr = comp.instruments[randint(0, len(comp.instruments) - 1)]
+                        if comp.isPicked(instr) == False:
+                            melody.instrument = instr
+                            break
             else:
                 print("\nnewRandomComposition() - ERROR: unable to generate harmony!")
                 return -1
