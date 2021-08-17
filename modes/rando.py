@@ -53,9 +53,12 @@ def newRandomComposition():
     # new generate object
     create = Generate()
     # new composition object
-    comp = Composition(title=create.newTitle(), 
-                       composer=create.newComposer(), 
-                       tempo=create.newTempo())
+    comp = Composition()
+
+    # Generate title, composer name, and pick tempo
+    comp.title = create.newTitl()
+    comp.composer = create.newComposer()
+    tempo = create.newTempo()
 
     # pick ensemble size (1 - 11 instruments for now)
     # and instrumentation
@@ -119,9 +122,9 @@ def newRandomComposition():
     comp.midiFileName = "{}{}".format(comp.title, ".mid")
     comp.txtFileName = "{}{}".format(comp.title, '.txt')
     if size == 1:
-        title_full = "{}{}{}".format(comp.title, 'for solo', comp.melodies[0].instrument)
+        title_full = "{}{}{}".format(comp.title, ' for solo ', comp.melodies[0].instrument)
     elif size > 1:
-        title_full = "{}{}{}".format(comp.title, 'for mixed', comp.ensemble)
+        title_full = "{}{}{}".format(comp.title, ' for mixed ', comp.ensemble)
     # export to MIDI file and .txt file
     if mid.save(comp) !=-1 and saveInfo(name=title_full, 
         fileName=comp.txtFileName, newMusic=comp) != 0:
@@ -137,3 +140,5 @@ def newRandomComposition():
     else:
         print("\n...Unable to generate random composition!")
         return -1
+
+newRandomComposition()

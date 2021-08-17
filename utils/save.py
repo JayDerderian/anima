@@ -137,38 +137,64 @@ def saveInfo(name, data=None, fileName=None, newMelody=None, newChords=None, new
         
         # Save title
         if len(newMusic.instruments) < 2:
-            f.write('\n\nTitle: ' + newMusic.title + 'for solo' + newMusic.instrument[0])
+            f.write('\n\nTitle: ' + newMusic.title + ' for solo ' + newMusic.instrument[0])
         else:
-            f.write('\n\nTitle: ' + newMusic.title + 'for mixed' + newMusic.ensemble)
+            f.write('\n\nTitle: ' + newMusic.title + ' for mixed ' + newMusic.ensemble)
         
         # Save composer info
-        f.write('\n\nComposer: ' + str(newMusic.composer) + 'bpm')
-
+        f.write('\n\nComposer: ' + str(newMusic.composer))
         # Save date
-        f.write('\n\nDate of composition: ' + newMusic.date + 'for solo' + newMusic.instrument[0])
-
-        # Divider
-        f.write("\n\n\n~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~")
-
+        f.write('\n\nDate of composition: ' + newMusic.date + 'for solo' + newMusic.instruments[0])
         # Save global tempo
         f.write('\n\nTempo: ' + str(newMusic.tempo) + 'bpm')
 
-        # Add melodies and harmonies
-        for j in range(len(newMusic.melodies)):
-            instStr = ', '.join(newMusic.instruments[j])
-            inst = '\n\nInstruments: ' + instStr
-            f.write(inst)
+        '''
+        NOTE: might need individual loops for meldies, harmonies, rhythms, and instruments? See 
+              recent outputs 
+        '''
+        
+        # Add melody info
+        f.write("\n\n\n----------------MELODY INFO-------------------")
 
-            noteStr = ', '.join(newMusic.melodies[j].notes)
+        totalNotes = '\n\nTotal Notes: ' + str(len(newMusic.melodies.notes))
+        f.write(totalNotes)
+
+        for j in range(len(newMusic.melodies)):
+            noteStr = ', '.join(newMusic.melodies.notes)
             notes = '\n\nNotes: ' + noteStr
             f.write(notes)
 
+            f.write('\n\nTotal rhythms:' + str(len(newMusic.melodies.rhythms)))
+
             rhythmStr = ', '.join([str(i) for i in newMusic.melodies[j].rhythms])
-            rhythms = '\n\nRhythms: ' + rhythmStr
+            rhythms = '\nRhythms: ' + rhythmStr
             f.write(rhythms)
 
-            dynamicStr = ', '.join([str(i) for i in newMusic.melodies[j].dynamics])
-            dynamics = '\n\nDynamics:' + dynamicStr
+            totalDynamics = '\n\nTotal dynamics: ' + \
+                str(len(newMusic.melodies[j].rhythms))
+            f.write(totalDynamics)
+
+            dynamicStr = ', '.join([str(i) for i in newMusic.melodies[j].rhythms])
+            dynamics = '\nDynamics: ' + dynamicStr
+            f.write(dynamics)
+
+
+        # Add harmony info
+        f.write("\n\n\n----------------HARMONY INFO-------------------")
+        
+        totalChords = '\n\nTotal chords: ' + str(len(newMusic.chords))
+        f.write(totalChords)
+
+        for j in range(len(newChords)):
+            noteStr = ', '.join([str(i) for i in newMusic.chords[j].notes])
+            notes = '\n\nNotes: ' + noteStr
+            f.write(notes)
+
+            rhythm = '\nRhythm: ' + str(newMusic.chords[j].rhythm)
+            f.write(rhythm)
+
+            dynamicsStr = ', '.join([str(i) for i in newMusic.chords[j].dynamics])
+            dynamics = '\nDynamics: ' + dynamicsStr
             f.write(dynamics)
 
     # Close instance
