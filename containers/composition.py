@@ -109,7 +109,7 @@ class Composition():
         return False
 
     # Has this instrument been picked?
-    def IsPicked(self, instr):
+    def isPicked(self, instr):
         if instr in self.instr_used:
             return True
         return False

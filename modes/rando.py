@@ -50,6 +50,8 @@ def newRandomComposition():
     NOTE: Need a way to decide whether to compose a single melodic, harmonic, or percussive instrument, if
           1 is chosen as the ensemble size.
     '''
+    print("\ngenerating new composition...")
+
     # new generate object
     create = Generate()
     # new composition object
@@ -60,17 +62,29 @@ def newRandomComposition():
     comp.composer = create.newComposer()
     comp.tempo = create.newTempo()
 
+    print("\ntitle:", comp.title)
+    print("composer:", comp.composer)
+    print("tempo:", comp.tempo)
+
+    # Add date and time (m-d-y hh:mm:ss).
+    # dn = date.now().strftime("%b-%d-%y %H:%M:%S")
+    # comp.date = dn.strftime("%b-%d-%y %H:%M:%S")
+    comp.date = date.now().strftime("%b-%d-%y %H:%M:%S")
+    print("\ndate:", comp.date)
+
     # pick ensemble size (1 - 11 instruments for now)
     # and instrumentation
     size = randint(1, len(c.ENSEMBLE_SIZES) - 1)
+    print("\ntotal instruments:", size)
     comp.ensemble = c.ENSEMBLE_SIZES[size]
     # NOTE: the first entries will always be melodic instruments!
     # might want to vary things a bit... 
     comp.instruments = create.newInstruments(size)
-    
+    print("instruments:", comp.instruments)
     # how many melody instruments?
     total_melodies = randint(0, size)
     # pick melodies.
+    print("\npicking", total_melodies, "melodies...")
     if total_melodies > 0:
         for i in range(total_melodies):
             '''NOTE: use randomly chosen source data at some point????'''
@@ -84,16 +98,19 @@ def newRandomComposition():
                     melody.instrument = instr
                     # save to picked list
                     comp.instr_used.append(instr)
+                    print("\nmelody inst - ", melody.instrument)
                 # if so, try others...
                 else:
                     # check if all instruments are picked before brute-force
                     # picking one...
                     if comp.allPicked() == True:
+                        print("\n...all instruments have been used!")
                         break
                     while comp.isPicked(instr) == True:
                         instr = comp.instruments[randint(0, len(comp.instruments) - 1)]
                         if comp.isPicked(instr) == False:
                             melody.instrument = instr
+                            print("\n  melody inst - ", melody.instrument)
                             break
                     
                 # save the melody
@@ -105,6 +122,7 @@ def newRandomComposition():
     # how many harmony instruments? use remaining number
     # will be 0 if 1 is chosen as the ensemble size.
     total_harmonies = size - total_melodies
+    print("\npicking", total_harmonies, "harmonies...")
     # pick harmonies, if applicable
     if total_harmonies > 0:
         for j in range(total_harmonies):
@@ -116,7 +134,8 @@ def newRandomComposition():
                 # make sure it hasn't been used already
                 if comp.isPicked(instr) == False:
                     # assign instrument
-                    melody.instrument = instr
+                    chord.instrument = instr
+                    print("\n  chord inst - ", chord.instrument)
                     # save to picked list
                     comp.instr_used.append(instr)
                 # if so, try others...
@@ -124,11 +143,13 @@ def newRandomComposition():
                     # check if all instruments are picked before brute-force
                     # picking one...
                     if comp.allPicked() == True:
+                        print("\n...all instruments have been used!")
                         break
                     while comp.isPicked(instr) == True:
                         instr = comp.instruments[randint(0, len(comp.instruments) - 1)]
                         if comp.isPicked(instr) == False:
-                            melody.instrument = instr
+                            chord.instrument = instr
+                            print("\n  chord inst - ", chord.instrument)
                             break
             else:
                 print("\nnewRandomComposition() - ERROR: unable to generate harmony!")
@@ -144,10 +165,6 @@ def newRandomComposition():
     # export to MIDI file and .txt file
     if mid.save(comp) !=-1 and saveInfo(name=title_full, 
         fileName=comp.txtFileName, newMusic=comp) != 0:
-        # Add date and time (m-d-y hh:mm:ss).
-        # dn = date.now().strftime("%b-%d-%y %H:%M:%S")
-        # comp.date = dn.strftime("%b-%d-%y %H:%M:%S")
-        comp.date = date.now().strftime("%b-%d-%y %H:%M:%S")
         # Display results
         print("\nNew composition:", title_full)
         print("\nMIDI file saved as:", comp.midiFileName)
@@ -156,5 +173,3 @@ def newRandomComposition():
     else:
         print("\n...Unable to generate random composition!")
         return -1
-
-newRandomComposition()
