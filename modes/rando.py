@@ -166,6 +166,7 @@ def newRandomComposition():
     elif size > 1:
         title_full = "{}{}{}".format(comp.title, ' for mixed ', comp.ensemble)
     # export to MIDI file and .txt file
+    '''NOTE: for some reason we cant get past this if statement...?'''
     if mid.save(comp) == 0 and saveInfo(name=title_full, 
         fileName=comp.txtFileName, newMusic=comp) == 0:
         # Display results
