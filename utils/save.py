@@ -35,7 +35,7 @@ def saveInfo(name, data=None, fileName=None, newMelody=None, newChords=None, new
 
     # Add title, instrument(s), and save inputted data
     if name is not None and newMelody is not None:
-        # Generate full title
+        # Add full title
         f.write('\n\n\nTITLE: ' + name)
 
         # Add instrument
@@ -51,7 +51,7 @@ def saveInfo(name, data=None, fileName=None, newMelody=None, newChords=None, new
         f.write(dateStr)
 
     elif name is not None:
-        # Generate title
+        # Add full title
         f.write('\n\n\nTITLE: ' + name)
 
         # Add date and time.
@@ -110,8 +110,8 @@ def saveInfo(name, data=None, fileName=None, newMelody=None, newChords=None, new
         dynamics = '\nDynamics: ' + dynamicStr
         f.write(dynamics)
 
+    # Save harmony data
     if newChords is not None:
-        # Save harmony data
         f.write("\n\n\n----------------HARMONY INFO-------------------")
 
         # Get totals
@@ -130,13 +130,13 @@ def saveInfo(name, data=None, fileName=None, newMelody=None, newChords=None, new
             dynamics = '\nDynamics: ' + dynamicsStr
             f.write(dynamics)
 
-    # Input all
+    # Input composition() object data
     elif newMusic is not None:
         # Save composition data
         f.write("\n\n\n----------------COMPOSITION INFO-------------------")
         
         # Save title
-        if len(newMusic.instruments) < 2:
+        if len(newMusic.instruments) == 1:
             f.write('\n\nTitle: ' + newMusic.title + ' for solo ' + newMusic.instrument[0])
         else:
             f.write('\n\nTitle: ' + newMusic.title + ' for mixed ' + newMusic.ensemble)
@@ -144,14 +144,9 @@ def saveInfo(name, data=None, fileName=None, newMelody=None, newChords=None, new
         # Save composer info
         f.write('\n\nComposer: ' + str(newMusic.composer))
         # Save date
-        f.write('\n\nDate of composition: ' + newMusic.date + 'for solo' + newMusic.instruments[0])
+        f.write('\n\nDate of composition: ' + newMusic.date)
         # Save global tempo
         f.write('\n\nTempo: ' + str(newMusic.tempo) + 'bpm')
-
-        '''
-        NOTE: might need individual loops for meldies, harmonies, rhythms, and instruments? See 
-              recent outputs 
-        '''
         
         # Add melody info
         f.write("\n\n\n----------------MELODY INFO-------------------")
@@ -181,7 +176,7 @@ def saveInfo(name, data=None, fileName=None, newMelody=None, newChords=None, new
 
         # Add harmony info
         f.write("\n\n\n----------------HARMONY INFO-------------------")
-        
+
         totalChords = '\n\nTotal chords: ' + str(len(newMusic.chords))
         f.write(totalChords)
 
