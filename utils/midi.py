@@ -265,6 +265,7 @@ def save(comp):
 
     #----------------------------Add Melodies----------------------------------#
 
+    print("\nsaving melodie(s)...")
     for i in range(len(comp.melodies)):
         # Create melody instrument
         instrument = pm.instrument_name_to_program(comp.instruments[i])
@@ -296,6 +297,7 @@ def save(comp):
         # NOTE: use instrument attached to each chord object in lieu of comp's 
         # instrument list???
 
+        print("\nsaving chords...")
         strt = 0
         end = comp.chords[0].rhythm
         for k in range(len(comp.chords)):
@@ -321,6 +323,7 @@ def save(comp):
         mid.instruments.append(chord)
 
     # Write to MIDI file
+    print("\nwriting MIDI file...")
     mid.write(f'./midi/{comp.midiFileName}')
 
     return 0

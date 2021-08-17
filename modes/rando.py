@@ -156,15 +156,18 @@ def newRandomComposition():
                 return -1
 
     # generate MIDI and .txt file names
+    print("\ngenerating file names...")
     comp.midiFileName = "{}{}".format(comp.title, ".mid")
+    print("...MIDI file:", comp.midiFileName)
     comp.txtFileName = "{}{}".format(comp.title, '.txt')
+    print("...text file:", comp.txtFileName)
     if size == 1:
         title_full = "{}{}{}".format(comp.title, ' for solo ', comp.melodies[0].instrument)
     elif size > 1:
         title_full = "{}{}{}".format(comp.title, ' for mixed ', comp.ensemble)
     # export to MIDI file and .txt file
-    if mid.save(comp) !=-1 and saveInfo(name=title_full, 
-        fileName=comp.txtFileName, newMusic=comp) != 0:
+    if mid.save(comp) == 0 and saveInfo(name=title_full, 
+        fileName=comp.txtFileName, newMusic=comp) == 0:
         # Display results
         print("\nNew composition:", title_full)
         print("\nMIDI file saved as:", comp.midiFileName)
