@@ -98,7 +98,7 @@ def newRandomComposition():
                     melody.instrument = instr
                     # save to picked list
                     comp.instr_used.append(instr)
-                    print("\nmelody inst - ", melody.instrument)
+                    print("\n  melody inst -", melody.instrument)
                 # if so, try others...
                 else:
                     # check if all instruments are picked before brute-force
@@ -110,7 +110,7 @@ def newRandomComposition():
                         instr = comp.instruments[randint(0, len(comp.instruments) - 1)]
                         if comp.isPicked(instr) == False:
                             melody.instrument = instr
-                            print("\n  melody inst - ", melody.instrument)
+                            print("\n  melody inst -", melody.instrument)
                             break
                     
                 # save the melody
@@ -135,7 +135,7 @@ def newRandomComposition():
                 if comp.isPicked(instr) == False:
                     # assign instrument
                     chord.instrument = instr
-                    print("\n  chord inst - ", chord.instrument)
+                    print("\n  chord inst -", chord.instrument)
                     # save to picked list
                     comp.instr_used.append(instr)
                 # if so, try others...
@@ -149,7 +149,7 @@ def newRandomComposition():
                         instr = comp.instruments[randint(0, len(comp.instruments) - 1)]
                         if comp.isPicked(instr) == False:
                             chord.instrument = instr
-                            print("\n  chord inst - ", chord.instrument)
+                            print("\n  chord inst -", chord.instrument)
                             break
             else:
                 print("\nnewRandomComposition() - ERROR: unable to generate harmony!")

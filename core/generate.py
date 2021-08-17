@@ -74,6 +74,7 @@ This module/class handles all generative methods.
 # IMPORTS
 
 import math
+import requests
 import urllib.request
 import core.constants as c
 import utils.midi as m
@@ -142,7 +143,7 @@ class Generate():
         '''
         try:
             # get word list
-            url = "'https://svnweb.freebsd.org/csrg/share/dict/propernames?revision=61766&view=co'"
+            url = "https://svnweb.freebsd.org/csrg/share/dict/propernames?revision=61766&view=co"
             # response = requests.get(url)
             response = urllib.request.urlopen(url)
             # decode data to text string
