@@ -411,11 +411,11 @@ class Generate():
             # pick major
             if randint(1, 2) == 1:
                 scale = c.MAJOR_SCALES[randint(1, len(c.MAJOR_SCALES) - 1)]
-                fn = "7-35 (major scale"
+                fn = "7-35 (" + scale[0] + "major)"
             # pick minor
             else:
                 scale = c.MINOR_SCALES[randint(1, len(c.MINOR_SCALES) - 1)]
-                fn = "7-35 (minor scale)"
+                fn = "7-35 (" + scale[0] + "minor)"
         else:
             # pick prime form pitch-class set
             fn = c.FORTE_NUMBERS[randint(1, len(c.FORTE_NUMBERS) - 1)]

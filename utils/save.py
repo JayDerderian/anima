@@ -44,9 +44,7 @@ def saveInfo(name, data=None, fileName=None, newMelody=None, newChords=None, new
         f.write(instrument)
 
         # Add date and time.
-        d = date.now()
-        # convert to str d-m-y hh:mm:ss
-        dateStr = d.strftime("%d-%b-%y %H:%M:%S")
+        dateStr = date.now().strftime("%d-%b-%y %H:%M:%S")
         dateStr = '\n\nDate: ' + dateStr
         f.write(dateStr)
 
@@ -138,29 +136,29 @@ def saveInfo(name, data=None, fileName=None, newMelody=None, newChords=None, new
         # Save title
         if len(newMusic.instruments) == 1:
             f.write('\n\nTitle: ' + newMusic.title + ' for solo ' + newMusic.instrument[0])
-        else:
+        elif len(newMusic.instruments) < 11 or len(newMusic.instruments) > 1:
             f.write('\n\nTitle: ' + newMusic.title + ' for mixed ' + newMusic.ensemble)
-        
-        # Save composer info
+        else:        
+            f.write('\n\nTitle: ' + newMusic.title + ' for large ensemble')
+
         f.write('\n\nComposer: ' + str(newMusic.composer))
-        # Save date
         f.write('\n\nDate of composition: ' + newMusic.date)
-        # Save global tempo
         f.write('\n\nTempo: ' + str(newMusic.tempo) + 'bpm')
         
         # Add melody info
         f.write("\n\n\n----------------MELODY INFO-------------------")
 
-        totalNotes = '\n\nTotal Notes: ' + str(len(newMusic.melodies.notes))
-        f.write(totalNotes)
+        totalMelodies = '\n\nTotal melodies: ' + str(len(newMusic.melodies))
+        f.write(totalMelodies)
 
         for j in range(len(newMusic.melodies)):
+            totalNotes = '\n\nTotal Notes: ' + str(len(newMusic.melodies[j].notes))
+            f.write(totalNotes)
             noteStr = ', '.join(newMusic.melodies.notes)
             notes = '\n\nNotes: ' + noteStr
             f.write(notes)
 
             f.write('\n\nTotal rhythms:' + str(len(newMusic.melodies.rhythms)))
-
             rhythmStr = ', '.join([str(i) for i in newMusic.melodies[j].rhythms])
             rhythms = '\nRhythms: ' + rhythmStr
             f.write(rhythms)
@@ -168,7 +166,6 @@ def saveInfo(name, data=None, fileName=None, newMelody=None, newChords=None, new
             totalDynamics = '\n\nTotal dynamics: ' + \
                 str(len(newMusic.melodies[j].rhythms))
             f.write(totalDynamics)
-
             dynamicStr = ', '.join([str(i) for i in newMusic.melodies[j].rhythms])
             dynamics = '\nDynamics: ' + dynamicStr
             f.write(dynamics)

@@ -252,11 +252,6 @@ def save(comp):
     Exports a MIDI file for any sized composition (1 solo melody to ensemble sized n). 
     Requires a composition() object. Returns 0 on success, -1 on failure.
     '''
-    # make sure there's at least 1 melody or harmony!
-    if len(comp.melodies) == 0:
-        return -1
-    elif len(comp.chords) == 0:
-        return -1
 
     strt = 0
     end = 0
@@ -265,10 +260,10 @@ def save(comp):
 
     #----------------------------Add Melodies----------------------------------#
 
-    print("\nsaving melodie(s)...")
+    print("\nsaving melodies...")
     for i in range(len(comp.melodies)):
         # Create melody instrument
-        instrument = pm.instrument_name_to_program(comp.instruments[i])
+        instrument = pm.instrument_name_to_program(comp.melodies[i].instrument)
         melody = pm.Instrument(program=instrument)
         # Add *this* melody's notes
         end = comp.melodies[i].rhythms[i]
@@ -301,7 +296,7 @@ def save(comp):
         strt = 0
         end = comp.chords[0].rhythm
         for k in range(len(comp.chords)):
-            instrument = pm.instrument_name_to_program(comp.instruments[i])
+            instrument = pm.instrument_name_to_program(comp.chords[i].instrument)
             chord = pm.Instrument(program=instrument)
             # Add *this* chord's notes
             for l in range(len(comp.chords[k].notes)):

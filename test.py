@@ -10,6 +10,7 @@ from modes.rando import newRandomComposition
 #-------------------------------------TEST STUFF HERE-------------------------------------------#
 #***********************************************************************************************#
 
-
-n = newRandomComposition()
-print("\nreturn code:", n, "\n\n")
+if newRandomComposition() == -1:
+    print("\nfurther testing is needed...\n")
+else:
+    print("\nhooray!")

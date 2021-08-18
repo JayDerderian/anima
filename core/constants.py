@@ -748,25 +748,33 @@ just some standards that could use usefull when quick
 templates are needed.'''
 
 ENSEMBLES = {
+    # strings
     "string trio": ['Violin', 'Viola', 'Cello'],
-    "string quartet": ['Violin', 'Viola', 'Cello'],
+    "string quartet": ['Violin', 'Violin', 'Viola', 'Cello'],
+    # piano
     "piano trio": ['Violin', 'Cello', 'Acoustic Grand Piano'],
     "duet: pno/vn": ['Violin', 'Acoustic Grand Piano'],
     "duet: pno/va": ['Viola', 'Acoustic Grand Piano'],
     "duet: pno/vc": ['Cello', 'Acoustic Grand Piano'],
     "duet: pno/cl": ['Clarinet', 'Acoustic Grand Piano'],
+    "duet: pno/hn": ['French Horn', 'Acoustic Grand Piano']
 }
 
 
 # Keys to be used with ENSEMBLES and randint()
 ENSEMBLES_KEYS = [
+    # strings
     "string trio",
     "string quartet",
+    # piano
     "piano trio",
     "duet: pno/vn",
     "duet: pno/va",
     "duet: pno/vc",
     "duet: pno/cl",
+    "duet: pno/hn"
+    # brass
+    # woodwinds
 ]
 
 

@@ -49,6 +49,9 @@ def newRandomComposition():
 
     NOTE: Need a way to decide whether to compose a single melodic, harmonic, or percussive instrument, if
           1 is chosen as the ensemble size.
+
+    NOTE: Allow for instrument re-use from generated list (as long as it adheres to size total), or use one of
+          each, chosen at random? Or allow for the program to decide which approach to take?
     '''
     print("\ngenerating new composition...")
 
@@ -61,14 +64,11 @@ def newRandomComposition():
     comp.title = create.newTitle()
     comp.composer = create.newComposer()
     comp.tempo = create.newTempo()
-
     print("\ntitle:", comp.title)
     print("composer:", comp.composer)
     print("tempo:", comp.tempo)
 
     # Add date and time (m-d-y hh:mm:ss).
-    # dn = date.now().strftime("%b-%d-%y %H:%M:%S")
-    # comp.date = dn.strftime("%b-%d-%y %H:%M:%S")
     comp.date = date.now().strftime("%b-%d-%y %H:%M:%S")
     print("\ndate:", comp.date)
 
@@ -125,7 +125,7 @@ def newRandomComposition():
     print("\npicking", total_harmonies, "harmonies...")
     # pick harmonies, if applicable
     if total_harmonies > 0:
-        for j in range(total_harmonies):
+        for i in range(total_harmonies):
             # harmonies are NOT generated from melodies here!
             chord = create.newChord(tempo=comp.tempo)
             if chord != -1:
@@ -165,15 +165,16 @@ def newRandomComposition():
         title_full = "{}{}{}".format(comp.title, ' for solo ', comp.melodies[0].instrument)
     elif size > 1:
         title_full = "{}{}{}".format(comp.title, ' for mixed ', comp.ensemble)
+
     # export to MIDI file and .txt file
     '''NOTE: for some reason we cant get past this if statement...?'''
-    if mid.save(comp) == 0 and saveInfo(name=title_full, 
-        fileName=comp.txtFileName, newMusic=comp) == 0:
-        # Display results
-        print("\nNew composition:", title_full)
-        print("\nMIDI file saved as:", comp.midiFileName)
-        print("\nText file saved as:", comp.txtFileName)
-        return comp
-    else:
-        print("\n...Unable to generate random composition!")
-        return -1
+    if mid.save(comp) != 0:
+        print("\nnewRandomComposition() - ERROR: unable to save MIDI file!")
+        return -1       
+    saveInfo(name=title_full, fileName=comp.txtFileName, newMusic=comp) 
+    
+    # Display results
+    print("\nNew composition:", title_full)
+    print("\nMIDI file saved as:", comp.midiFileName)
+    print("\nText file saved as:", comp.txtFileName)
+    return comp
