@@ -287,16 +287,14 @@ def save(comp):
     #----------------------------Add Harmonies-------------------------------#
 
     if len(comp.chords) > 0:
-        # Create instrument object.
-        
-        # NOTE: use instrument attached to each chord object in lieu of comp's 
-        # instrument list???
-
         print("\nsaving chords...")
-        strt = 0
-        end = comp.chords[0].rhythm
+        # strt = 0
+        # end = comp.chords[0].rhythm
         for k in range(len(comp.chords)):
-            instrument = pm.instrument_name_to_program(comp.chords[i].instrument)
+            strt = 0
+            end = comp.chords[k].rhythm
+            # Create instrument object.
+            instrument = pm.instrument_name_to_program(comp.chords[k].instrument) # k was i previously...
             chord = pm.Instrument(program=instrument)
             # Add *this* chord's notes
             for l in range(len(comp.chords[k].notes)):
@@ -310,7 +308,7 @@ def save(comp):
                 # Increment strt/end times
                 strt += comp.chords[k].rhythm
                 end += comp.chords[k+1].rhythm
-                i += 1
+                # i += 1
             except IndexError:
                 break
 

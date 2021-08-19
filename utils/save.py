@@ -154,11 +154,11 @@ def saveInfo(name, data=None, fileName=None, newMelody=None, newChords=None, new
         for j in range(len(newMusic.melodies)):
             totalNotes = '\n\nTotal Notes: ' + str(len(newMusic.melodies[j].notes))
             f.write(totalNotes)
-            noteStr = ', '.join(newMusic.melodies.notes)
+            noteStr = ', '.join(newMusic.melodies[j].notes)
             notes = '\n\nNotes: ' + noteStr
             f.write(notes)
 
-            f.write('\n\nTotal rhythms:' + str(len(newMusic.melodies.rhythms)))
+            f.write('\n\nTotal rhythms:' + str(len(newMusic.melodies[j].rhythms)))
             rhythmStr = ', '.join([str(i) for i in newMusic.melodies[j].rhythms])
             rhythms = '\nRhythms: ' + rhythmStr
             f.write(rhythms)
@@ -177,7 +177,7 @@ def saveInfo(name, data=None, fileName=None, newMelody=None, newChords=None, new
         totalChords = '\n\nTotal chords: ' + str(len(newMusic.chords))
         f.write(totalChords)
 
-        for j in range(len(newChords)):
+        for j in range(len(newMusic.chords)):
             noteStr = ', '.join([str(i) for i in newMusic.chords[j].notes])
             notes = '\n\nNotes: ' + noteStr
             f.write(notes)
