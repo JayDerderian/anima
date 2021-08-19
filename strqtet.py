@@ -15,6 +15,7 @@ from containers.composition import Composition
 
 def newStrQtet():
     # objects
+    print("\ninitializing...")
     create = Generate()
     comp = Composition()
     v1_melody = Melody()
@@ -72,6 +73,7 @@ def newStrQtet():
     '''NOTE: need to iterate through dictionary and pick notes from each scale, one-by-one
              for each part''' 
     # violin parts
+    print("\nwriting violin 1 part...")
     for i in range(len(scales)):
         scale = scales[i]
         total = randint(50, 100)
@@ -79,7 +81,7 @@ def newStrQtet():
             v1_melody.notes.append(scale[randint(7, len(scale)-1)])
     v1_melody.rhythms = create.newRhythms(total=len(v1_melody.notes), tempo=comp.tempo)
     v1_melody.dynamics = create.newDynamics(total=len(v1_melody.notes))
-
+    print("\nwriting violin 2 part...")
     for i in range(len(scales)):
         scale = scales[i]
         total = randint(50, 100)
@@ -89,6 +91,7 @@ def newStrQtet():
     v2_melody.dynamics = create.newDynamics(total=len(v2_melody.notes))
 
     # viola part
+    print("\nwriting viola part...")
     for i in range(len(scales)):
         scale = scales[i]
         total = randint(50, 100)
@@ -98,6 +101,7 @@ def newStrQtet():
     va_melody.dynamics = create.newDynamics(total=len(va_melody.notes))
 
     # cello part
+    print("\nwriting cello part...")
     for i in range(len(scales)):
         scale = scales[i]
         total = randint(50, 100)
@@ -112,9 +116,20 @@ def newStrQtet():
     comp.melodies.append(va_melody)
     comp.melodies.append(vc_melody)
 
-    # write to MIDI file
+    # generate MIDI and .txt file names
+    print("\ngenerating file names...")
+    comp.midiFileName = "{}{}".format(comp.title, ".mid")
+    print("...MIDI file:", comp.midiFileName)
+    comp.txtFileName = "{}{}".format(comp.title, '.txt')
+    print("...text file:", comp.txtFileName)
+    title_full = "{}{}".format(comp.title, ' for string quartet')
+
+    # write to MIDI file and .txt file
     if save(comp) == 0:
-        print("\n\nNew quartet:", title_full)
+        saveInfo(name=comp.title, fileName=comp.txtFileName, newMusic=comp)
+        print("\n\nnew quartet:", title_full)
+        print("\ncomposer:", comp.composer)
+        print("\ndate:", comp.date)
         return comp
     else:
         print("\n\n...Unable to generate quartet!")
