@@ -247,12 +247,13 @@ def saveComposition(newMelody, newChords, fileName):
     return mid
 
 # exports a MIDI file for any sized composition (1 solo melody to ensemble sized n)
-def saveMinimal(comp):
+def save(comp):
     '''
     Exports a MIDI file for any sized composition (1 solo melody to ensemble sized n). 
     Requires a composition() object.
 
-    NOTE: This is outputting very cool minimalist style pieces
+    NOTE: This is outputting very cool minimalist style pieces, however it should probably
+    be following the lists within the comp() object. 
     '''
     # Create PM object. PM object is used to just write out the file.
     mid = pm.PrettyMIDI(initial_tempo=comp.tempo)
@@ -277,7 +278,6 @@ def saveMinimal(comp):
                 melody.notes.append(anote)
                 try:
                     # Increment strt/end times
-                    '''NOTE: should rhythms be using i or j?'''
                     strt += comp.melodies[i].rhythms[j]
                     end += comp.melodies[i].rhythms[j+1]
                 except IndexError:
@@ -318,13 +318,13 @@ def saveMinimal(comp):
     mid.write(f'./midi/{comp.midiFileName}')
     return 0
 
-    # exports a MIDI file for any sized composition (1 solo melody to ensemble sized n)
-def save(comp):
+# exports a MIDI file in a quasi-minimalist style(!)
+def saveMinimal(comp):
     '''
     Exports a MIDI file for any sized composition (1 solo melody to ensemble sized n). 
     Requires a composition() object.
 
-    NOTE: This is outputting very cool minimalist style pieces, but should actually 
+    NOTE: This is outputting very cool minimalist style pieces!!
     '''
     # Create PM object. PM object is used to just write out the file.
     mid = pm.PrettyMIDI(initial_tempo=comp.tempo)

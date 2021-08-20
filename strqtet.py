@@ -5,10 +5,10 @@ and won't be posted on github.
 
 # Imports
 from random import randint
-from utils.midi import save
+from utils.midi import save, saveMinimal
 from utils.save import saveInfo
-from core.generate import Generate
 import core.constants as c
+from core.generate import Generate
 from containers.melody import Melody
 from containers.composition import Composition
 from datetime import datetime as date
@@ -47,7 +47,7 @@ def newStrQtet():
     comp.instruments.append(vc_melody.instrument)
 
     # working with pan-diatonic music for now...
-    root = c.MAJOR_SCALES[randint(0, len(c.MAJOR_SCALES) - 1)]
+    root = c.MAJOR_SCALES[randint(1, len(c.MAJOR_SCALES) - 1)]
 
     # generate source scale for all string parts. repeats a scale
     # 4x to the top octave, then starts over (i.e. Bb maj in octaves 2, 3, 4, and 5). 
@@ -76,7 +76,7 @@ def newStrQtet():
     print("\nwriting violin 1 part...")
     for i in range(len(scales)):
         scale = scales[i]
-        total = randint(25, 75)
+        total = randint(25, 50)
         for j in range(total):
             # limited to octaves 4 and 5
             v1_melody.notes.append(scale[randint(7, len(scale) - 1)])
@@ -85,7 +85,7 @@ def newStrQtet():
     print("\nwriting violin 2 part...")
     for i in range(len(scales)):
         scale = scales[i]
-        total = randint(25, 75)
+        total = randint(25, 50)
         for j in range(total):
             # limited to octaves 4 and 5
             v2_melody.notes.append(scale[randint(7, len(scale) - 1)])
@@ -96,7 +96,7 @@ def newStrQtet():
     print("\nwriting viola part...")
     for i in range(len(scales)):
         scale = scales[i]
-        total = randint(25, 75)
+        total = randint(25, 50)
         for j in range(total):
             # limited to octaves 3 and 4
             va_melody.notes.append(scale[randint(7, len(scale) - 8)])
@@ -107,7 +107,7 @@ def newStrQtet():
     print("\nwriting cello part...")
     for i in range(len(scales)):
         scale = scales[i]
-        total = randint(25, 75)
+        total = randint(25, 50)
         for j in range(total):
             # limited to octaves 2 - 3
             vc_melody.notes.append(scale[randint(0, len(scale) - 16)])
