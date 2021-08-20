@@ -11,11 +11,11 @@ from core.generate import Generate
 import core.constants as c
 from containers.melody import Melody
 from containers.composition import Composition
+from datetime import datetime as date
 
 
 def newStrQtet():
     # objects
-    print("\ninitializing...")
     create = Generate()
     comp = Composition()
     v1_melody = Melody()
@@ -28,6 +28,7 @@ def newStrQtet():
     title_full = comp.title + "for string quartet"
     comp.composer = create.newComposer()
     comp.tempo = create.newTempo()
+    comp.date = date.now().strftime("%d-%b-%y %H:%M:%S")
 
     # disperse tempo
     v1_melody.tempo = comp.tempo
@@ -49,7 +50,7 @@ def newStrQtet():
     root = c.MAJOR_SCALES[randint(0, len(c.MAJOR_SCALES) - 1)]
 
     # generate source scale for all string parts. repeats a scale
-    # 4x to the top octave, then starts over (ie Bb maj in octaves 2, 3, 4, and 5). 
+    # 4x to the top octave, then starts over (i.e. Bb maj in octaves 2, 3, 4, and 5). 
     # this allows me to specify range using randint. might require some manual fixing
     # in finale depending on the scale(s) selected.
     scales = {}
@@ -68,25 +69,26 @@ def newStrQtet():
                 n = 0
         scales[i] = scale
 
-    # generate parts. each have a different amount of notes, hence the multiple loops. 
+    # generate parts. each will have a different amount of notes, hence the multiple loops. 
     # unfortunately this method doesn't allow for repetition of notes (unless by chance). 
-    '''NOTE: need to iterate through dictionary and pick notes from each scale, one-by-one
-             for each part''' 
-    # violin parts
+
+    # violin 1 & 2 parts
     print("\nwriting violin 1 part...")
     for i in range(len(scales)):
         scale = scales[i]
-        total = randint(50, 100)
+        total = randint(25, 75)
         for j in range(total):
-            v1_melody.notes.append(scale[randint(7, len(scale)-1)])
+            # limited to octaves 4 and 5
+            v1_melody.notes.append(scale[randint(7, len(scale) - 1)])
     v1_melody.rhythms = create.newRhythms(total=len(v1_melody.notes), tempo=comp.tempo)
     v1_melody.dynamics = create.newDynamics(total=len(v1_melody.notes))
     print("\nwriting violin 2 part...")
     for i in range(len(scales)):
         scale = scales[i]
-        total = randint(50, 100)
+        total = randint(25, 75)
         for j in range(total):
-            v2_melody.notes.append(scale[randint(7, len(scale)-1)])
+            # limited to octaves 4 and 5
+            v2_melody.notes.append(scale[randint(7, len(scale) - 1)])
     v2_melody.rhythms = create.newRhythms(total=len(v2_melody.notes), tempo=comp.tempo)
     v2_melody.dynamics = create.newDynamics(total=len(v2_melody.notes))
 
@@ -94,9 +96,10 @@ def newStrQtet():
     print("\nwriting viola part...")
     for i in range(len(scales)):
         scale = scales[i]
-        total = randint(50, 100)
+        total = randint(25, 75)
         for j in range(total):
-            va_melody.notes.append(scale[randint(0, len(scale) - 8)])
+            # limited to octaves 3 and 4
+            va_melody.notes.append(scale[randint(7, len(scale) - 8)])
     va_melody.rhythms = create.newRhythms(total=len(va_melody.notes), tempo=comp.tempo)
     va_melody.dynamics = create.newDynamics(total=len(va_melody.notes))
 
@@ -104,9 +107,10 @@ def newStrQtet():
     print("\nwriting cello part...")
     for i in range(len(scales)):
         scale = scales[i]
-        total = randint(50, 100)
+        total = randint(25, 75)
         for j in range(total):
-            vc_melody.notes.append(scale[randint(0, len(scale) - 8)])
+            # limited to octaves 2 - 3
+            vc_melody.notes.append(scale[randint(0, len(scale) - 16)])
     vc_melody.rhythms = create.newRhythms(total=len(vc_melody.notes), tempo=comp.tempo)
     vc_melody.dynamics = create.newDynamics(total=len(vc_melody.notes))
 
@@ -134,10 +138,3 @@ def newStrQtet():
     else:
         print("\n\n...Unable to generate quartet!")
         return -1
-
-#---------------------------------------------------------------------#
-
-if newStrQtet() == -1:
-    print("\n\nfurther testing is needed...")
-else:
-    print("\n\nhooray!")

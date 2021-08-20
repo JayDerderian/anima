@@ -48,10 +48,7 @@ def newRandomComposition():
     Returns a composition() object, or -1 on failure.
 
     NOTE: Need a way to decide whether to compose a single melodic, harmonic, or percussive instrument, if
-          1 is chosen as the ensemble size.
-
-    NOTE: Allow for instrument re-use from generated list (as long as it adheres to size total), or use one of
-          each, chosen at random? Or allow for the program to decide which approach to take?
+          ensemble size == 1.
     '''
     print("\ngenerating new composition...")
 
@@ -77,15 +74,13 @@ def newRandomComposition():
     size = randint(1, len(c.ENSEMBLE_SIZES) - 1)
     print("\ntotal instruments:", size)
     comp.ensemble = c.ENSEMBLE_SIZES[size]
-    # NOTE: the first entries will always be melodic instruments!
-    # might want to vary things a bit... 
     comp.instruments = create.newInstruments(size)
     print("instruments:", comp.instruments)
+
     # how many melody instruments?
     total_melodies = randint(0, size)
-    # pick melodies.
-    print("\npicking", total_melodies, "melodies...")
     if total_melodies > 0:
+        print("\npicking", total_melodies, "melodies...")
         for i in range(total_melodies):
             '''NOTE: use randomly chosen source data at some point????'''
             melody = create.newMelody(tempo=comp.tempo)
@@ -119,12 +114,10 @@ def newRandomComposition():
                 print("\nnewRandomComposition() - ERROR: unable to generate melody!")
                 return -1
 
-    # how many harmony instruments? use remaining number
-    # will be 0 if 1 is chosen as the ensemble size.
+    # how many harmony instruments? 
     total_harmonies = size - total_melodies
-    print("\npicking", total_harmonies, "harmonies...")
-    # pick harmonies, if applicable
     if total_harmonies > 0:
+        print("\npicking", total_harmonies, "harmonies...")
         for i in range(total_harmonies):
             # harmonies are NOT generated from melodies here!
             chord = create.newChord(tempo=comp.tempo)

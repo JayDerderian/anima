@@ -260,7 +260,8 @@ def save(comp):
         print("\nsaving melodies...")
         for i in range(len(comp.melodies)):
             strt = 0
-            end = comp.melodies[i].rhythms[i]
+            # end = comp.melodies[i].rhythms[i]
+            end = comp.melodies[i].rhythms[0]
             # Create melody instrument
             instrument = pm.instrument_name_to_program(comp.melodies[i].instrument)
             melody = pm.Instrument(program=instrument)
@@ -274,6 +275,7 @@ def save(comp):
                 melody.notes.append(anote)
                 try:
                     # Increment strt/end times
+                    '''NOTE: should rhythms be using i or j?'''
                     strt += comp.melodies[i].rhythms[j]
                     end += comp.melodies[i].rhythms[j+1]
                 except IndexError:

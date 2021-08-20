@@ -14,7 +14,10 @@ from strqtet import newStrQtet
 # if newRandomComposition() == -1:
 #     print("\nfurther testing is needed...\n")
 # else:
-#     print("\nhooray!")
+#     print("\nhooray!\n")
 
-newStrQtet()
+if newStrQtet() == -1:
+    print("\nfurther testing is needed...\n")
+else:
+    print("\nhooray!\n")
 
