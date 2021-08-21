@@ -432,9 +432,12 @@ class Generate():
     # Generate a new scale to function as a "root"
     def newScale(self, octave=None):
         '''
-        Returns a randomly generated 4 to 9 note scale with or without an octave 
+        Returns a randomly generated 5 to 9 note scale with or without an octave 
         to be used as a 'root'. Can take an int as a starting octave 
-        (between 2 and 5), or not.  
+        (between 2 and 5), or not. 
+        
+        To be used externally from newNotes() to supply a new "root," as an option
+        for the user.
         
         Returns a list of note name strings and the original pitch class set.
         '''
