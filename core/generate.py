@@ -316,12 +316,15 @@ class Generate():
     # Generate a series of notes based off an inputted array of integers
     def newNotes(self, data=None, root=None):
         '''
-        Generates a set of notes to be used as a melody based on inputted data (an array of integers). 
+        Generates a set of notes to be used as a melody.
+
         Can also return a list of notes without any data input. If this is the case,
         then newNotes() will decide how many to generate (between 3 and 50).
 
-        A supplied data list (list[int]) is used as index numbers to select notes from this series 
-        in order to generate a melody. User also has the option to supply a "root" scal
+        A supplied data list (list[int]) of n length is used as index numbers to select notes from this series 
+        in order to generate a melody. User also has the option to supply a "root" scale, though
+        only if the program is accessing this method directly! newMelody() and other methods that call
+        this function don't supply a root if none is chosen by the user.
 
         Returns a tuple: notes list to be used as a melody (list[str]), 
         a list of forte_numbers (list[str]), and the original source scale (list[str])
@@ -801,7 +804,7 @@ class Generate():
         print("Dynamics:", newMelody.dynamics)
 
     # Generate a melody from an array of integers (or not).
-    def newMelody(self, tempo=None, root=None, data=None, dataType=None):
+    def newMelody(self, tempo=None, data=None, dataType=None):
         '''
         Picks tempo, notes, rhythms, and dynamics, with or without a 
         supplied list from the user. It can process a list of ints 
@@ -813,14 +816,13 @@ class Generate():
         Returns a melody() object if successfull, -1 on failure.
 
         NOTE: Instrument is *NOT* picked! Needs to be supplied externally.
-        NOTE: Modify to account for any inputted root scale. 
         '''
 
         # Melody container object
         newMelody = Melody()
 
         # Process any incoming data
-        if dataType is not None and data is not None:
+        if dataType != None and data != None:
             data, newMelody = mapData(newMelody, data, dataType)
             if data != -1 or newMelody != -1:
                 print()
@@ -836,36 +838,20 @@ class Generate():
             newMelody.tempo = self.newTempo()
         else:
             newMelody.tempo = tempo
-        
-        # Choose root scale if none supplied
-        if root == None:
-            root = self.pickScale()
 
         # Pick notes from scratch  
-        if data == None and root == None:
+        if data == None:
             newMelody.notes, newMelody.fn, newMelody.sourceScale = self.newNotes()
             if newMelody.notes == -1:
                 print("\nnewMelody() - ERROR: unable to generate notes!")
                 return -1
-        # If we only get supplied data
-        elif data != None and root == None:
+        # Or use supplied data
+        elif data != None:
             newMelody.notes, newMelody.fn, newMelody.sourceScale = self.newNotes(data=data)
             if newMelody.notes == -1:
                 print("\nnewMelody() - ERROR: unable to generate notes!")
                 return -1
-        # If we only get a root
-        elif data == None and root != None:
-            newMelody.notes, newMelody.fn, newMelody.sourceScale = self.newNotes(root=root)
-            if newMelody.notes == -1:
-                print("\nnewMelody() - ERROR: unable to generate notes!")
-                return -1
-        # If we get both the supplied data and a root
-        elif root != None and data != None:
-            newMelody.notes, newMelody.fn, newMelody.sourceScale = self.newNotes(data=data, root=root)
-            if newMelody.notes == -1:
-                print("\nnewMelody() - ERROR: unable to generate notes!")
-                return -1
-                
+
         # Pick rhythms
         newMelody.rhythms = self.newRhythms(len(newMelody.notes), newMelody.tempo)
         # Pick dynamics
@@ -902,7 +888,7 @@ class Generate():
         midiFileName = title + '.mid'
         # Save to MIDI file
         if m.saveMelody(midiFileName, newTune) != -1:
-            print('')  
+            print()  
         else:
             print("\n\naNewMelody() - ERROR: Unable to export piece to MIDI file!")
             return -1
