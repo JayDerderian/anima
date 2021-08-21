@@ -129,6 +129,7 @@ def newStrQtet():
     title_full = "{}{}".format(comp.title, ' for string quartet')
 
     # write to MIDI file and .txt file
+    '''NOTE: saves in "minimal" style!'''
     if saveMinimal(comp) == 0:
         saveInfo(name=comp.title, fileName=comp.txtFileName, newMusic=comp)
         print("\n\nnew quartet:", title_full)
