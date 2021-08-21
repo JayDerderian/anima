@@ -49,6 +49,8 @@ def newRandomComposition():
 
     NOTE: Need a way to decide whether to compose a single melodic, harmonic, or percussive instrument, if
           ensemble size == 1.
+
+    NOTE: midi save isn't generating harmony parts???
     '''
     print("\ngenerating new composition...")
 
