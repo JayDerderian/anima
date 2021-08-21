@@ -146,6 +146,9 @@ def newRandomComposition():
                             chord.instrument = instr
                             print("\n  chord inst -", chord.instrument)
                             break
+
+                # save the harmony
+                comp.chords.append(chord)
             else:
                 print("\nnewRandomComposition() - ERROR: unable to generate harmony!")
                 return -1
