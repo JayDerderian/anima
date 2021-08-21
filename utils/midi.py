@@ -263,7 +263,6 @@ def save(comp):
         print("\nsaving melodies...")
         for i in range(len(comp.melodies)):
             strt = 0
-            # end = comp.melodies[i].rhythms[i]
             end = comp.melodies[i].rhythms[0]
             # Create melody instrument
             instrument = pm.instrument_name_to_program(comp.melodies[i].instrument)
@@ -334,28 +333,20 @@ def saveMinimal(comp):
         print("\nsaving melodies...")
         for i in range(len(comp.melodies)):
             strt = 0
-            # end = comp.melodies[i].rhythms[i]
             end = comp.melodies[i].rhythms[0]
-            # Create melody instrument
             instrument = pm.instrument_name_to_program(comp.melodies[i].instrument)
             melody = pm.Instrument(program=instrument)
-            # Add *this* melody's notes
             for j in range(len(comp.melodies[i].notes)):
-                # Translate note to MIDI note
                 note = pm.note_name_to_number(comp.melodies[i].notes[j])
                 anote = pm.Note(
                     velocity=comp.melodies[i].dynamics[j], pitch=note, start=strt, end=end)
-                # Add to instrument object
                 melody.notes.append(anote)
                 try:
                     # Increment strt/end times
-                    '''NOTE: should rhythms be using i or j?'''
                     strt += comp.melodies[i].rhythms[j]
                     end += comp.melodies[i].rhythms[j+1]
                 except IndexError:
                     break
-                
-            # Add melody to instrument list
             mid.instruments.append(melody)
 
     # add chords
@@ -364,16 +355,12 @@ def saveMinimal(comp):
         for k in range(len(comp.chords)):
             strt = 0
             end = comp.chords[k].rhythm
-            # Create instrument object.
             instrument = pm.instrument_name_to_program(comp.chords[k].instrument)
             chord = pm.Instrument(program=instrument)
-            # Add *this* chord's notes
             for l in range(len(comp.chords[k].notes)):
-                # Translate note to MIDI note
                 note = pm.note_name_to_number(comp.chords[k].notes[l])
                 anote = pm.Note(
                     velocity=comp.chords[k].dynamics[l], pitch=note, start=strt, end=end)
-                # Add to instrument object
                 chord.notes.append(anote)
             try:
                 # Increment strt/end times
@@ -381,8 +368,6 @@ def saveMinimal(comp):
                 end += comp.chords[k+1].rhythm
             except IndexError:
                 break
-
-            # Add chord to instrument list
             mid.instruments.append(chord)
 
     # Write to MIDI file

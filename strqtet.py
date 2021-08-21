@@ -54,7 +54,7 @@ def newStrQtet():
     # this allows me to specify range using randint. might require some manual fixing
     # in finale depending on the scale(s) selected.
     scales = {}
-    # total number of scales to create
+    # total number of scales to use
     total = randint(2, 4)
     for i in range(total):
         n = 0
@@ -70,7 +70,7 @@ def newStrQtet():
         scales[i] = scale
 
     # generate parts. each will have a different amount of notes, hence the multiple loops. 
-    # unfortunately this method doesn't allow for repetition of notes (unless by chance). 
+    # unfortunately this method doesn't allow for immediate repetition of notes (unless by chance). 
 
     # violin 1 & 2 parts
     print("\nwriting violin 1 part...")

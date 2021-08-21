@@ -165,6 +165,6 @@ def newRandomComposition():
     
     # Display results
     print("\nNew composition:", title_full)
-    print("\nMIDI file saved as:", comp.midiFileName)
-    print("\nText file saved as:", comp.txtFileName)
+    print("MIDI file saved as:", comp.midiFileName)
+    print("Text file saved as:", comp.txtFileName)
     return comp

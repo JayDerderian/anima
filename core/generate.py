@@ -282,7 +282,7 @@ class Generate():
         '''
         instruments = []
         while len(instruments) < total:
-            instruments.append(self.newInstrument())
+            instruments.append(c.INSTRUMENTS[randint(0, 110)])
         return instruments
 
 
@@ -314,32 +314,27 @@ class Generate():
 
 
     # Generate a series of notes based off an inputted array of integers
-    def newNotes(self, data=None):
+    def newNotes(self, data=None, root=None):
         '''
         Generates a set of notes to be used as a melody based on inputted data (an array of integers). 
         Can also return a list of notes without any data input. If this is the case,
         then newNotes() will decide how many to generate (between 3 and 50).
 
         A supplied data list (list[int]) is used as index numbers to select notes from this series 
-        in order to generate a melody.
+        in order to generate a melody. User also has the option to supply a "root" scal
 
         Returns a tuple: notes list to be used as a melody (list[str]), 
         a list of forte_numbers (list[str]), and the original source scale (list[str])
         '''           
-
         # Generate seed scale
         # Save forte numbers and/or pitch class sets
         meta_data = []
         # Pick starting octave (2 or 3)
         octave = randint(2, 3)
-        # Pick a root scale or generate a new root
-        if randint(1, 2) == 1:
+        # Pick a root scale if none provided
+        if root==None:
             root, fn = self.pickScale()
             meta_data.append(fn)
-        else:
-            root, pcs = self.newScale()
-            '''NOTE: this appends a list of integers, not a Forte number!'''
-            meta_data.append(pcs)
         # Pick total: 3 - 50 if we're generating random notes
         if data == None:
             # Note that the main loop uses total + 1!
@@ -347,8 +342,9 @@ class Generate():
         # Or the largest value of the supplied data set
         else:
             total = max(data)
-        
-        # Generate source scale
+    
+        # Generate source scale 
+        '''NOTE: this only uses the supplied root scale once!'''
         n = 0
         scale = []
         for i in range(total + 1):
@@ -364,15 +360,10 @@ class Generate():
                 if octave > 5:
                     # Reset starting octave
                     octave = randint(2, 3)
-                    # Generate another new root (new or pre-existing) scale & 
+                    # Generate another new root scale & 
                     # starting octave + save forte number, if applicable
-                    if randint(1, 2) == 1:
-                        root, fn = self.pickScale()
-                        meta_data.append(fn)
-                    else:
-                        root, pcs = self.newScale()
-                        '''NOTE: this appends a list of integers, not a Forte number!'''
-                        meta_data.append(pcs)
+                    root, fn = self.pickScale()
+                    meta_data.append(fn)
                 # Reset n to stay within len(root)
                 n = 0
 
@@ -810,7 +801,7 @@ class Generate():
         print("Dynamics:", newMelody.dynamics)
 
     # Generate a melody from an array of integers (or not).
-    def newMelody(self, tempo=None, data=None, dataType=None):
+    def newMelody(self, tempo=None, root=None, data=None, dataType=None):
         '''
         Picks tempo, notes, rhythms, and dynamics, with or without a 
         supplied list from the user. It can process a list of ints 
@@ -821,7 +812,8 @@ class Generate():
 
         Returns a melody() object if successfull, -1 on failure.
 
-        NOTE: Instrument is *NOT* picked! Needs to be supplied externally. 
+        NOTE: Instrument is *NOT* picked! Needs to be supplied externally.
+        NOTE: Modify to account for any inputted root scale. 
         '''
 
         # Melody container object
@@ -845,8 +837,8 @@ class Generate():
         else:
             newMelody.tempo = tempo
 
-        # Pick notes    
-        if data is None:
+        # Pick notes from scratch  
+        if data == None:
             newMelody.notes, newMelody.fn, newMelody.sourceScale = self.newNotes()
             if newMelody.notes == -1:
                 print("\nnewMelody() - ERROR: unable to generate notes!")
@@ -876,10 +868,10 @@ class Generate():
         '''
         # apply data and dataType as necessary
         if data is not None and dataType is not None:
-            tempo = c.TEMPOS[randint(0, len(c.TEMPOS) - 1)]
+            tempo = self.newTempo()
             newTune = self.newMelody(tempo=tempo, data=data, dataType=dataType)
         else:
-            tempo = c.TEMPOS[randint(0, len(c.TEMPOS) - 1)]
+            tempo = self.newTempo()
             newTune = self.newMelody(tempo=tempo)
         # Pick instrument
         newTune.instrument = self.newInstrument()
