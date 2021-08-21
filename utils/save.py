@@ -135,7 +135,7 @@ def saveInfo(name, data=None, fileName=None, newMelody=None, newChords=None, new
         
         # Save title
         if len(newMusic.instruments) == 1:
-            f.write('\n\nTitle: ' + newMusic.title + ' for solo ' + newMusic.instrument[0])
+            f.write('\n\nTitle: ' + newMusic.title + ' for solo ' + newMusic.instruments[0])
         elif len(newMusic.instruments) < 11 or len(newMusic.instruments) > 1:
             f.write('\n\nTitle: ' + newMusic.title + ' for mixed ' + newMusic.ensemble)
         else:        
