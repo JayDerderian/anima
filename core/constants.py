@@ -104,13 +104,13 @@ MINOR_SCALES = {1: ["A", "B", "C", "D", "E", "F", "G"],
 # Church modes. These are modes starting on 'C', so they will need to 
 # be transposed before being matched with corresponding strings. 
 MODES = {
-    "Ionian": [0, 2, 4, 5, 7, 9, 11],
-    "Dorian": [0, 2, 3, 5, 7, 9, 10],
-    "Phrygian": [0, 1, 3, 5, 7, 8, 10],
-    "Lydian": [0, 2, 4, 6, 7, 9, 11],
+    "Ionian":     [0, 2, 4, 5, 7, 9, 11],
+    "Dorian":     [0, 2, 3, 5, 7, 9, 10],
+    "Phrygian":   [0, 1, 3, 5, 7, 8, 10],
+    "Lydian":     [0, 2, 4, 6, 7, 9, 11],
     "Mixolydian": [0, 2, 4, 5, 7, 9, 10],
-    "Aeolian": [0, 2, 3, 5, 7, 8, 10],
-    "Locrean": [0, 1, 3, 5, 6, 8, 10]
+    "Aeolian":    [0, 2, 3, 5, 7, 8, 10],
+    "Locrean":    [0, 1, 3, 5, 6, 8, 10]
 }
 
 

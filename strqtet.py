@@ -4,6 +4,7 @@ and won't be posted on github.
 '''
 
 # Imports
+import random
 from random import randint
 from utils.midi import save
 from utils.save import saveInfo
