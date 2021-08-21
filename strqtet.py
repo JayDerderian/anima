@@ -5,7 +5,7 @@ and won't be posted on github.
 
 # Imports
 from random import randint
-from utils.midi import save, saveMinimal
+from utils.midi import save
 from utils.save import saveInfo
 import core.constants as c
 from core.generate import Generate

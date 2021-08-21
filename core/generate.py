@@ -831,20 +831,41 @@ class Generate():
             # Otherwise just add single string to list
             newMelody.sourceData.append('None Inputted')
 
-        # Pick tempo
+        # Pick tempo if none is supplied
         if tempo == None:
             newMelody.tempo = self.newTempo()
         else:
             newMelody.tempo = tempo
+        
+        # Choose root scale if none supplied
+        if root == None:
+            root = self.pickScale()
 
         # Pick notes from scratch  
-        if data == None:
+        if data == None and root == None:
             newMelody.notes, newMelody.fn, newMelody.sourceScale = self.newNotes()
             if newMelody.notes == -1:
                 print("\nnewMelody() - ERROR: unable to generate notes!")
                 return -1
-        else:
-            newMelody.notes, newMelody.fn, newMelody.sourceScale = self.newNotes(data)
+        # If we only get supplied data
+        elif data != None and root == None:
+            newMelody.notes, newMelody.fn, newMelody.sourceScale = self.newNotes(data=data)
+            if newMelody.notes == -1:
+                print("\nnewMelody() - ERROR: unable to generate notes!")
+                return -1
+        # If we only get a root
+        elif data == None and root != None:
+            newMelody.notes, newMelody.fn, newMelody.sourceScale = self.newNotes(root=root)
+            if newMelody.notes == -1:
+                print("\nnewMelody() - ERROR: unable to generate notes!")
+                return -1
+        # If we get both the supplied data and a root
+        elif root != None and data != None:
+            newMelody.notes, newMelody.fn, newMelody.sourceScale = self.newNotes(data=data, root=root)
+            if newMelody.notes == -1:
+                print("\nnewMelody() - ERROR: unable to generate notes!")
+                return -1
+                
         # Pick rhythms
         newMelody.rhythms = self.newRhythms(len(newMelody.notes), newMelody.tempo)
         # Pick dynamics
