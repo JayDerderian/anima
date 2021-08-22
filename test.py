@@ -4,7 +4,7 @@ Simplified file for testing generative functions.
 
 # Imports
 from modes.rando import newRandomComposition
-from strqtet import newStrQtet
+from ensembles.strqtet import newStrQtet
 
 print("\nTest newRandomComposition (1) or newStrQtet(2) ? ")
 choice = int(input("Selection (1 or 2): "))
