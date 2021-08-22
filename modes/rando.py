@@ -122,7 +122,8 @@ def newRandomComposition():
         print("\npicking", total_harmonies, "harmonies...")
         for i in range(total_harmonies):
             '''NOTE: seems to only generate *one* chord per instrument. 
-                     need a way to generate *multiple* chords per instrument.'''
+                     need a way to generate *multiple* chords per instrument.
+                     maybe use newChords() instead of newChord()?'''
             # harmonies are NOT generated from melodies here!
             chord = create.newChord(tempo=comp.tempo)
             if chord != -1:
