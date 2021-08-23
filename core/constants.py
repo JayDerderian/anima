@@ -114,6 +114,18 @@ MODES = {
 }
 
 
+# To be used with MODES in order to select keys using integers (indicies)
+MODE_KEYS = [    
+    "Ionian",
+    "Dorian",
+    "Phrygian",
+    "Lydian",
+    "Mixolydian",
+    "Aeolian",
+    "Locrean"
+]
+
+
 # Interval list/dictonary
 '''
 Use values to build scales and chords off of. 
@@ -165,6 +177,21 @@ INTERVALS = {
         10: [3, 3],
         # Augmented triad
         11: [4, 4]
+}
+
+
+# dictionary of ints/index numbers used against a given pcs or note str list
+# to generate ascending apreggios. intervals may or may not cause weird 
+# harmonic spellings depending on mapped str scale. may also need to transpose 
+# each list depending on note ints..? we'll see...
+ARPEGGIOS = {
+    "chromatic":  [0, 1, 2, 1],
+    "secundal":   [0, 2, 4, 2],
+    "diminished": [0, 3, 6, 3],
+    "min triad":  [0, 3, 7, 3],
+    "maj triad":  [0, 4, 7, 4],
+    "augmented":  [0, 4, 8, 4],
+    "quartal":    [0, 5, 10, 5]
 }
 
 
@@ -756,21 +783,62 @@ FORTE_NUMBERS = [
 
 
 # Ensembles
-'''NOTE: obviously not complete or comprehensive. 
-just some standards that could use usefull when quick 
-templates are needed.'''
+'''
+NOTE: obviously not complete or comprehensive. 
+      just some standards that could use usefull when quick 
+      templates are needed.'''
 
 ENSEMBLES = {
     # strings
     "string trio": ['Violin', 'Viola', 'Cello'],
     "string quartet": ['Violin', 'Violin', 'Viola', 'Cello'],
+    
+    # plucked strings
+    "duet: gtr/fl": ['Acoustic Guitar (nylon)', 'Flute'],
+    "duet: gtr/hp": ['Acoustic Guitar (nylon)', 'Orchestral Harp'],
+    "trio: fl/gtr/hp": ['Flute', 'Acoustic Guitar (nylon)', 'Orchestral Harp'],
+    "guitar quartet": ['Acoustic Guitar (nylon)','Acoustic Guitar (nylon)',
+                       'Acoustic Guitar (nylon)','Acoustic Guitar (nylon)',],
     # piano
-    "piano trio": ['Violin', 'Cello', 'Acoustic Grand Piano'],
     "duet: pno/vn": ['Violin', 'Acoustic Grand Piano'],
     "duet: pno/va": ['Viola', 'Acoustic Grand Piano'],
     "duet: pno/vc": ['Cello', 'Acoustic Grand Piano'],
     "duet: pno/cl": ['Clarinet', 'Acoustic Grand Piano'],
-    "duet: pno/hn": ['French Horn', 'Acoustic Grand Piano']
+    "duet: pno/hn": ['French Horn', 'Acoustic Grand Piano'],
+    "trio: vn/vc/pno": ['Violin', 'Cello', 'Acoustic Grand Piano'],
+    "trio: cl/vc/pno": ['Clarinet', 'Cello', 'Acoustic Grand Piano'],
+    "trio: vn/bsn/pno": ['Violin', 'Bassoon', 'Acoustic Grand Piano'],
+    "trio: cl/bsn/pno": ['Clarinet', 'Bassoon', 'Acoustic Grand Piano'],
+    "quartet: 2vn/va/vc/pno": ['Violin', 'Violin', 
+                               'Viola', 'Cello', 
+                               'Acoustic Grand Piano'],
+
+    # brass
+
+    # woodwinds
+    "sax trio 1": ['Soprano Sax', 'Alto Sax', 'Tenor Sax'],
+    "sax trio 2": ['Alto Sax', 'Tenor Sax', 'Baritone Sax'],
+    "sax quartet": ['Soprano Sax', 'Alto Sax', 
+                    'Tenor Sax', 'Baritone Sax'],
+
+    # orchestral (2222/2221/pno/strings) no percussion yet!
+    "orchestra": [# woodwinds (0-7)
+                  'Flute', 'Flute', 'Oboe', 'Oboe', 'Clarinet', 'Clarinet', 'Bassoon', 'Bassoon',
+                  # brass (8-14)
+                  'French Horn', 'French Horn', 'Trumpet', 'Trumpet', 'Trombone', 'Trombone', 'Tuba',
+                  # pno (15)
+                  'Acoustic Grand Piano',
+                  # violin 1 (16)
+                  'String Ensemble 1',
+                  # violin 2 (17)
+                  'String Ensemble 2',
+                  # violas (18)
+                  'String Ensemble 1',
+                  # cellos (19)
+                  'String Ensemble 2',
+                  # basses (20)
+                  'String Ensemble 1'
+                  ]
 }
 
 
@@ -779,15 +847,34 @@ ENSEMBLES_KEYS = [
     # strings
     "string trio",
     "string quartet",
+    
+    # plucked strings
+    "duet: gtr/fl",
+    "duet: gtr/hp",
+    "trio: fl/gtr/hp",
+    "guitar quartet",
+    
     # piano
-    "piano trio",
     "duet: pno/vn",
     "duet: pno/va",
     "duet: pno/vc",
     "duet: pno/cl",
-    "duet: pno/hn"
+    "duet: pno/hn",
+    "trio: vn/vc/pno",
+    "trio: cl/vc/pno",
+    "trio: vn/bsn/pno",
+    "trio: cl/bsn/pno",
+    "quartet: 2vn/va/vc/pno",    
+
     # brass
+    
     # woodwinds
+    "sax trio 1",
+    "sax trio 2",
+    "sax quartet",
+    
+    # orchesra
+    "orchestra"
 ]
 
 

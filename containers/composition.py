@@ -50,8 +50,9 @@ class Composition():
         self.instr_used = []
         # List of melody() objects. 
         self.melodies = []
-        # List of chord() objects. 
-        self.chords = []
+        # List dictionary of chord() object lists (progressions). 
+        # Key (int) functions as index. 
+        self.chords = {}
         # List of percussion() objects.
         self.percussion = []
     

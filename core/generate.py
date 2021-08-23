@@ -199,7 +199,7 @@ class Generate():
         return scale
 
     # Transpose
-    def transpose(self, pcs, i):
+    def transpose(self, pcs, t):
         '''
         Transpose a pitch class set using a supplied interval i, or list of 
         intervals i. Use a list of intervals to generate variations on a 
@@ -208,19 +208,17 @@ class Generate():
         Returns a modified pcs (list[int])
         '''
         # modify with a single interval across all pitch-classes
-        if type(i) == int:
+        if type(t) == int:
             for note in range(len(pcs)):
-                pcs[note] += i
-                if pcs[note] > 11 or pcs[note] < 0:
-                    pcs[note] = self.octaveEquiv(pcs[note])
+                pcs[note] += t
         # modify with a list of intervals across all pitch-classes. 
         # this allows for each pitch-class to be transposed by a unique
         # distance, allowing for rapid variation generation.
-        elif type(i) == list:
+        elif type(t) == list:
             for note in range(len(pcs)):
-                pcs[note] += i[note]
-                if pcs[note] > 11 or pcs[note] < 0:
-                    pcs[note] = self.octaveEquiv(pcs[note])
+                pcs[note] += t[note]
+        # keep resulting pcs values between 0 and 11
+        pcs = self.octaveEquiv(pcs)
         return pcs
 
     # Convert base rhythms to values in a specified tempo
@@ -321,10 +319,11 @@ class Generate():
         Can also return a list of notes without any data input. If this is the case,
         then newNotes() will decide how many to generate (between 3 and 50).
 
-        A supplied data list (list[int]) of n length is used as index numbers to select notes from this series 
-        in order to generate a melody. User also has the option to supply a "root" scale, though
-        only if the program is accessing this method directly! newMelody() and other methods that call
-        this function don't supply a root if none is chosen by the user.
+        A supplied data list (list[int]) of n length functions as *index numbers* against a generated
+        "source scale" to select notes in order to generate a melody. User also has the option to 
+        supply a "root" scale, though only if the program is accessing this method directly!
+        newMelody() and other methods that call this function don't supply a root if none is 
+        chosen by the user.
 
         Returns a tuple: notes list to be used as a melody (list[str]), 
         a list of forte_numbers (list[str]), and the original source scale (list[str])
@@ -389,6 +388,29 @@ class Generate():
 
         return notes, meta_data, scale
 
+    # Picks a church mode and randomly transposes it
+    def pickMode(self, transpose=False, octave=None):
+        '''
+        Picks a church mode, randomly transposes it (if indicated),
+        and appends a specified octave (if needed). 
+        
+        Returns a tuple: the mode (str), mode pcs (list[int]), 
+        and notes (list[str]). 
+        '''
+        # pick mode
+        mode = c.MODE_KEYS[randint(1, len(c.MODE_KEYS) - 1)]
+        mode_pcs = c.MODES[mode]
+        # transpose?
+        if transpose == True:
+            # how far?
+            t = randint(1, 11)
+            mode_pcs = self.transpose(mode_pcs, t)
+        # append octave, if necessary, to the final list[str]
+        if octave != None:
+            mode_str = self.toStr(mode_pcs, octave=octave)
+        else:
+            mode_str = self.toStr(mode_pcs)
+        return mode, mode_pcs, mode_str
 
     # Picks either a prime form pitch-class set, or a major or minor scale.
     def pickScale(self, octave=None):
@@ -398,6 +420,8 @@ class Generate():
 
         Returns tuple with a list of note name strings with or without an 
         assigned octave, plus the forte number of the chosen scale.
+
+        NOTE: Add ability to pick mode in random key? Probably.
         '''
         scale = []
         # use a major or minor scale(1), or pick a prime form(2)?
@@ -448,6 +472,8 @@ class Generate():
             n = randint(0, 11)
             if n not in pcs:
                 pcs.append(n)
+        # attempt to use list comprehension in lieu of the loop above
+        '''pcs = [randint(0, 11) for x in range(total)]'''
         # sort in ascending order
         pcs.sort()
         # convert to strings (with or without supplied octave)
@@ -461,6 +487,29 @@ class Generate():
                 scale.append(note)
         return scale, pcs   
 
+    # Generates a long source scale off a given root scale 
+    def newSourceScale(self, root):
+        '''
+        Generates a list[str] "source scale" based off a 
+        supplied root (list[str]). Does not pick additional
+        roots! Mostly used by external calls.
+
+        Requires a note list (list[str]).
+        Returns a list[str] with appended octaves (2-5)
+        '''
+        n = 0
+        o = 2
+        scale = []
+        for i in range(28):
+            note = "{}{}".format(root[n], o)
+            scale.append(note)
+            n += 1
+            if n == 7:
+                o += 1
+                if o == 6:
+                    o = 2
+                n = 0
+        return scale
 
     # Generate derivative scales based on each note in a given scale.
     def deriveScales(self, pcs):
@@ -529,15 +578,15 @@ class Generate():
         '''
         Keeps a single pitch within span of an octave (0 - 11). 
         '''
-        if type(pitch) != int:
-            print("\noctaveEquiv() - ERROR: pitch not an int!")
-            return -1
-        if pitch > 11:
-            while pitch > 11:
-                pitch -= 11
-        elif pitch < 0:
-            while pitch < 0:
-                pitch += 11
+        # check a single pitch
+        if type(pitch) == int:
+            pitch %= 12
+        # check a whole list of pcs integers
+        elif type(pitch) == list:
+            for i in range(len(pitch)):
+                # only modify any ints > 11 or < 0
+                if pitch[i] > 11 or pitch[i] < 0:
+                    pitch[i] %= 12
         return pitch 
 
 
@@ -671,7 +720,7 @@ class Generate():
     def newChord(self, tempo=None, scale=None):
         '''
         Generates a chord with randomly chosen notes, rhythm, and dynamic.  
-        Returns a chord() object.
+        Returns a chord() object. Does not assign an instrument!
         '''
         # New chord() object
         newchord = Chord()
