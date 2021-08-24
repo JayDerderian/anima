@@ -102,7 +102,7 @@ MINOR_SCALES = {1: ["A", "B", "C", "D", "E", "F", "G"],
 
 
 # Church modes. These are modes starting on 'C', so they will need to 
-# be transposed before being matched with corresponding strings. 
+# be transposed before being matched with corresponding note strings. 
 MODES = {
     "Ionian":     [0, 2, 4, 5, 7, 9, 11],
     "Dorian":     [0, 2, 3, 5, 7, 9, 10],
@@ -784,6 +784,8 @@ FORTE_NUMBERS = [
 
 # Ensembles
 '''
+A dictionary of some template ensembles.
+
 NOTE: obviously not complete or comprehensive. 
       just some standards that could use usefull when quick 
       templates are needed.'''

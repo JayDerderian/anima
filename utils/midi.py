@@ -287,7 +287,7 @@ def save(comp):
         print("\nsaving chords...")
         # iterate through a dictionary of chord() object lists.
         key = 1
-        for i in range(len(comp.chords)):
+        for i in range(len(comp.chords)-1):
             # retrieve current chord object list
             chords = comp.chords[key]
             strt = 0

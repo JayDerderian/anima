@@ -105,12 +105,13 @@ class Composition():
     def allPicked(self):
         # NOTE: This returns sorted versions of original lists. Might affect how instruments are 
         # selected? 
-        if sorted(self.instruments) == sorted(self.instr_used):
-            return True
-        return False
+        # if sorted(self.instruments) == sorted(self.instr_used):
+        #     return True
+        return sorted(self.instruments) == sorted(self.instr_used) if True else False
 
     # Has this instrument been picked?
     def isPicked(self, instr):
-        if instr in self.instr_used:
-            return True
+        for i in range(len(self.instr_used)):
+            if instr == self.instr_used[i]:
+                return True
         return False

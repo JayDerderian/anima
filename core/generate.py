@@ -473,7 +473,7 @@ class Generate():
             if n not in pcs:
                 pcs.append(n)
         # attempt to use list comprehension in lieu of the loop above
-        '''pcs = [randint(0, 11) for x in range(total)]'''
+        # pcs = [randint(0, 11) for x in range(total) if x not in pcs]
         # sort in ascending order
         pcs.sort()
         # convert to strings (with or without supplied octave)
@@ -719,7 +719,9 @@ class Generate():
     # Generates a chord with randomly chosen notes
     def newChord(self, tempo=None, scale=None):
         '''
-        Generates a chord with randomly chosen notes, rhythm, and dynamic.  
+        Generates a 2-9 note chord with randomly chosen notes, rhythm, and dynamic
+        from either a supplied scale or self-selected or generated one.  
+        
         Returns a chord() object. Does not assign an instrument!
         '''
         # New chord() object
@@ -727,15 +729,8 @@ class Generate():
 
         # Pick or generate a new scale if we don't get one supplied
         if scale is None:
-            # pick a scale (1) or create a new one (2)?
-            if randint(1, 2) == 1:
-                # Pick scale and save forte number/scale info
-                scale, newchord.fn = self.pickScale(octave=randint(2, 5))
-                newchord.sourceNotes = scale
-            else:
-                # Create a scale and save original pitch class set
-                scale, newchord.pcs = self.newScale(octave=randint(2, 5))
-                newchord.sourceNotes = scale
+            scale, newchord.fn = self.pickScale(octave=randint(2, 5))
+            newchord.sourceNotes = scale
 
         # Add tempo if one isn't supplied
         if tempo is None:
@@ -746,7 +741,7 @@ class Generate():
         # How many notes in this chord? 2 to 9 (for now)
         total = randint(2, 9)
         # Pick notes and add to list
-        '''NOTE: this allows for dublings!'''
+        '''NOTE: this allows for doublings!'''
         while len(newchord.notes) < total:
             newchord.notes.append(scale[randint(0, len(scale) - 1)])
 
