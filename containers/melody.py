@@ -51,3 +51,13 @@ class Melody():
             elif(len(self.dynamics) == 0):
                 print("\nmelody() - ERROR: no dynamics inputted!")
             return False
+    
+    # get duration of melody
+    def duration(self):
+        '''
+        Returns duration (float) of melody by adding together rhythmic values (in seconds)
+        '''
+        dur = 0.0
+        for i in range(len(self.rhythms)):
+            dur += self.rhythms[i]
+        return dur

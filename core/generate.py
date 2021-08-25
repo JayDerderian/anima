@@ -723,6 +723,18 @@ class Generate():
             print('      Rhythm:', chords[i].rhythm)
             print('      Dynamics:', chords[i].dynamics)
 
+
+    # get total duration of a list of chords
+    def chordDurations(self, chords):
+        '''
+        Returns the total length  in seconds (float) of a series 
+        of chord objects (chord progression)
+        '''
+        duration = 0.0
+        for i in range(len(chords)):
+            duration += chords[i].rhythm
+        return duration
+
     # Generates a chord with randomly chosen notes
     def newChord(self, tempo=None, scale=None):
         '''

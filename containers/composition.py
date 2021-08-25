@@ -115,3 +115,25 @@ class Composition():
             if instr == self.instr_used[i]:
                 return True
         return False
+    
+    # Get duration of composition
+    def duration(self):
+        '''
+        Returns length of composition by returning largest value of either melody
+        list or chord prog dictionary
+        '''
+        melody_length = 0.0
+        chord_length = 0.0
+        # get melody totals
+        for i in range(len(self.melodies)):
+            rhythms = self.melodies[i].rhythms
+            for j in range(len(rhythms)):
+                melody_length += rhythms[j]
+        # get chord totals
+        key = 1
+        for i in range(len(self.chords)):
+            chords = self.chords[key]
+            for j in range(len(chords)):
+                chord_length += chords[j].rhythm
+            key +=1
+        return melody_length if melody_length >= chord_length else chord_length
