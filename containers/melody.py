@@ -52,12 +52,30 @@ class Melody():
                 print("\nmelody() - ERROR: no dynamics inputted!")
             return False
     
+    # Adjust for given tempo when calculating composition duration
+    def tempoAdjust(self, rhythms):
+        '''
+        Alters given list[float] or single float against self.tempo 
+        '''
+        diff = 60/self.tempo
+        if type(rhythms) == float:
+            rhythms *= diff
+        elif type(rhythms) == list:
+            for i in range(len(rhythms)-1):
+                rhythms[i] *= diff
+        return rhythms 
+
     # get duration of melody
     def duration(self):
         '''
-        Returns duration (float) of melody by adding together rhythmic values (in seconds)
+        Returns duration (float) of melody by adding together 
+        rhythmic values (in seconds)
         '''
         dur = 0.0
         for i in range(len(self.rhythms)):
-            dur += self.rhythms[i]
+            # make copy to avoid altering original values
+            rhy = self.rhythms[i]
+            if self.tempo != 60.0:
+                rhy = self.tempoAdjust(rhy)
+            dur += rhy
         return dur

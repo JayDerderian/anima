@@ -130,7 +130,9 @@ class Composition():
     def duration(self):
         '''
         Returns length of composition by returning largest value of either melody
-        list or chord prog dictionary. Checks against self.tempo. 
+        list or chord prog dictionary. 
+        
+        Checks against self.tempo to ensure accurate values
         '''
         melody_length = 0.0
         chord_length = 0.0
