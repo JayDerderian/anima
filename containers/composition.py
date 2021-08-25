@@ -115,18 +115,32 @@ class Composition():
             if instr == self.instr_used[i]:
                 return True
         return False
-    
+
+    # Adjust for given tempo when calculating composition duration
+    def tempoAdjust(self, rhythms):
+        diff = 60/self.tempo
+        if type(rhythms) == float:
+            rhythms *= diff
+        elif type(rhythms) == list:
+            for i in range(len(rhythms)-1):
+                rhythms[i] *= diff
+        return rhythms    
+
     # Get duration of composition
     def duration(self):
         '''
         Returns length of composition by returning largest value of either melody
-        list or chord prog dictionary
+        list or chord prog dictionary. Checks against self.tempo. 
         '''
         melody_length = 0.0
         chord_length = 0.0
         # get melody totals
         for i in range(len(self.melodies)):
+            # make a copy to avoid altering original values
             rhythms = self.melodies[i].rhythms
+            # adjust values if tempo isn't 60bpm
+            if self.tempo != 60.0:
+                rhythms = self.tempoAdjust(rhythms)
             for j in range(len(rhythms)):
                 melody_length += rhythms[j]
         # get chord totals
@@ -134,6 +148,9 @@ class Composition():
         for i in range(len(self.chords)):
             chords = self.chords[key]
             for j in range(len(chords)):
-                chord_length += chords[j].rhythm
+                if self.tempo != 60.0:
+                    # make a copy as to not modify original entries
+                    rhythm = self.tempoAdjust(chords[j].rhythm)
+                chord_length += rhythm
             key +=1
         return melody_length if melody_length >= chord_length else chord_length

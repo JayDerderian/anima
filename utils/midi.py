@@ -288,6 +288,7 @@ def save(comp):
         # iterate through a dictionary of chord() object lists.
         key = 1
         for i in range(len(comp.chords)-1):
+            print("...retrieving chord list...")
             # retrieve current chord object list
             chords = comp.chords[key]
             strt = 0
@@ -298,6 +299,7 @@ def save(comp):
             # iterate through current chord list
             for j in range(len(chords)):
                 # this list of chord objects notes
+                print("...iterating through chord no.", j, "'s note list...")
                 for k in range(len(chords[j].notes)):
                     # translate note to MIDI note
                     note = pm.note_name_to_number(chords[j].notes[k])
@@ -305,6 +307,7 @@ def save(comp):
                         velocity=chords[j].dynamics[k], pitch=note, start=strt, end=end)
                     # add to instrument object
                     chord.notes.append(anote)
+                    print("...added MIDI note:", anote)
                 try:
                     # increment strt/end times
                     strt += chords[j].rhythm

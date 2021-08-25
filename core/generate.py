@@ -789,11 +789,11 @@ class Generate():
         # Has a scale, tempo, and total been provided?
         if scale is None:
             scale, data, source = self.newNotes()
-        elif total is None:
+        if total is None:
             total = randint(math.floor(len(scale) * 0.3), len(scale))
             if total == 0:
                 total += 2
-        elif tempo is None:   
+        if tempo is None:   
             tempo = self.newTempo()
         elif total is not None and scale is not None:
             # Picks total equivalent to between 30-100% of total elements in the scale

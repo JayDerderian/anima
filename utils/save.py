@@ -177,17 +177,19 @@ def saveInfo(name, data=None, fileName=None, newMelody=None, newChords=None, new
         totalChords = '\n\nTotal chords: ' + str(len(newMusic.chords))
         f.write(totalChords)
 
+        key = 1
         for j in range(len(newMusic.chords)):
-            noteStr = ', '.join([str(i) for i in newMusic.chords[j].notes])
+            noteStr = ', '.join([str(i) for i in newMusic.chords[key].notes])
             notes = '\n\nNotes: ' + noteStr
             f.write(notes)
 
-            rhythm = '\nRhythm: ' + str(newMusic.chords[j].rhythm)
+            rhythm = '\nRhythm: ' + str(newMusic.chords[key].rhythm)
             f.write(rhythm)
 
-            dynamicsStr = ', '.join([str(i) for i in newMusic.chords[j].dynamics])
+            dynamicsStr = ', '.join([str(i) for i in newMusic.chords[key].dynamics])
             dynamics = '\nDynamics: ' + dynamicsStr
             f.write(dynamics)
+            key+=1
 
     # Close instance
     f.close()

@@ -9,6 +9,6 @@ from ensembles.pnomrbduet import pnombduet
 from ensembles.practice import newArpeggio
 
 # newRandomComposition()
-# pnombduet()
+pnombduet()
 # newStrQtet()
-newArpeggio()
+# newArpeggio()
