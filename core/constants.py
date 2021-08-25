@@ -180,19 +180,31 @@ INTERVALS = {
 }
 
 
-# dictionary of ints/index numbers used against a given pcs or note str list
-# to generate ascending apreggios. intervals may or may not cause weird 
-# harmonic spellings depending on mapped str scale. may also need to transpose 
-# each list depending on note ints..? we'll see...
+# dictionary of pitch class integers (starting on C) to generate ascending apreggios.
+# must be mapped against CHROMATIC_SCALE to generate strings using toStr()
+
+# NOTE: figure out to account of octaves if pcs below are transposed!
 ARPEGGIOS = {
+    # root position & symmetrical
     "chromatic":  [0, 1, 2, 1],
     "secundal":   [0, 2, 4, 2],
     "diminished": [0, 3, 6, 3],
     "min triad":  [0, 3, 7, 3],
     "maj triad":  [0, 4, 7, 4],
     "augmented":  [0, 4, 8, 4],
-    "quartal":    [0, 5, 10, 5]
+    "quartal":    [0, 5, 10, 5],
 }
+
+# corresponding keys...
+ARP_KEYS = [
+    "chromatic",
+    "secundal",
+    "diminished",
+    "min triad",
+    "maj triad",
+    "augmented",
+    "quartal",
+]
 
 
 '''
@@ -798,6 +810,7 @@ ENSEMBLES = {
     # plucked strings
     "duet: gtr/fl": ['Acoustic Guitar (nylon)', 'Flute'],
     "duet: gtr/hp": ['Acoustic Guitar (nylon)', 'Orchestral Harp'],
+    "duet: e.gtr/e.bass":['Electric Guitar (clean)', 'Electric Bass (pick)'],
     "trio: fl/gtr/hp": ['Flute', 'Acoustic Guitar (nylon)', 'Orchestral Harp'],
     "guitar quartet": ['Acoustic Guitar (nylon)','Acoustic Guitar (nylon)',
                        'Acoustic Guitar (nylon)','Acoustic Guitar (nylon)',],
@@ -845,7 +858,7 @@ ENSEMBLES = {
 
 
 # Keys to be used with ENSEMBLES and randint()
-ENSEMBLES_KEYS = [
+ENSEMBLE_KEYS = [
     # strings
     "string trio",
     "string quartet",
@@ -853,6 +866,7 @@ ENSEMBLES_KEYS = [
     # plucked strings
     "duet: gtr/fl",
     "duet: gtr/hp",
+    "duet: e.gtr/e.bass",
     "trio: fl/gtr/hp",
     "guitar quartet",
     

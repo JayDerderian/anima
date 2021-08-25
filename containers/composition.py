@@ -6,9 +6,9 @@ class Composition():
     '''
     This is a container for all things related to a stand-alone music composition. Data includes
     a global tempo, the piece's title, an array of melody() objects representing each instruments part, 
-    an array of chord() objects for harmony instruments, and other pretinant data about the piece.
+    an dictionary of of chord() object lists for harmony instruments, and other pretinant data about the piece.
 
-    Title, composer, date of composition, file name, source data (if any), global tempo,
+    Title, composer, date of composition, text file name, MIDI file name, source data (if any), global tempo,
     instrument list, melodies, and harmonies.
 
     NOTE: Find a way to track if an instrument has been picked. Maybe picked list, and a corresponding

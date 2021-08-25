@@ -551,6 +551,14 @@ class Generate():
 
         return variants
 
+    # Pick an arpeggio scheme (within 1 octave)
+    def pickArp(self, key):
+        '''
+        Returns a list[int] of pitch classes outlining a one-octave
+        arpeggio.
+        '''
+        return c.ARPEGGIOS[key]
+
     # Generate a 12-tone row.
     def newTwelveToneRow(self):
         '''
@@ -584,7 +592,6 @@ class Generate():
         # check a whole list of pcs integers
         elif type(pitch) == list:
             for i in range(len(pitch)):
-                # only modify any ints > 11 or < 0
                 if pitch[i] > 11 or pitch[i] < 0:
                     pitch[i] %= 12
         return pitch 
@@ -726,37 +733,30 @@ class Generate():
         '''
         # New chord() object
         newchord = Chord()
-
         # Pick or generate a new scale if we don't get one supplied
         if scale is None:
             scale, newchord.fn = self.pickScale(octave=randint(2, 5))
             newchord.sourceNotes = scale
-
         # Add tempo if one isn't supplied
         if tempo is None:
             newchord.tempo = 60.0
         else:
             newchord.tempo = tempo
-
         # How many notes in this chord? 2 to 9 (for now)
         total = randint(2, 9)
         # Pick notes and add to list
         '''NOTE: this allows for doublings!'''
         while len(newchord.notes) < total:
             newchord.notes.append(scale[randint(0, len(scale) - 1)])
-
-        # Remove duplicate notes/doublings
         '''NOTE: This is avoids getting the while loop stuck
                  if there's a lot of repeated notes in the melody '''
         newchord.notes = list(dict.fromkeys(newchord.notes))
-
         # Pick a rhythm & scale to tempo if needed
         rhythm = self.newRhythm()
         if newchord.tempo != 60.0:
             newchord.rhythm = self.tempoConvert(newchord.tempo, rhythm)
         else:
             newchord.rhythm = rhythm
-
         # Pick a dynamic (randomize for each note? probably)
         dynamic = self.newDynamic()
         while len(newchord.dynamics) < len(newchord.notes):
@@ -774,7 +774,6 @@ class Generate():
               variance and color. 
         '''
         chords = []
-
         # Has a scale, tempo, and total been provided?
         if scale is None:
             scale, data, source = self.newNotes()
@@ -785,16 +784,10 @@ class Generate():
         elif tempo is None:   
             tempo = self.newTempo()
         elif total is not None and scale is not None:
-            # Error check
-            if type(scale) == list:
-                if(len(scale) == 0):
-                    print("\nnewChordsfromScale() - ERROR: no scale inputted!")
-                    return -1
             # Picks total equivalent to between 30-100% of total elements in the scale
             total = randint(math.floor(len(scale) * 0.3), len(scale))
             if total == 0:
                 total = randint(1, len(scale))
-
         # Pick chords
         while len(chords) < total:
             newchord = self.newChord(tempo, scale)
@@ -816,7 +809,7 @@ class Generate():
             return -1
         if n < 0:
             return -1
-        if r > 11:
+        if r > 11 or r < 0:
             r = self.octaveEquiv(r)
         chord = []
         while len(chord) < n:

@@ -30,11 +30,9 @@ class Melody():
         '''
         Is there complete melody data? 
         If True, all data fields have been used.
+        NOTE: doesn't include meta-data! 
         '''
-        if( len(self.fn) > 0
-            and len(self.sourceData) > 0 
-            and len(self.sourceScale) > 0
-            and self.tempo != 0.0
+        if(self.tempo != 0.0
             and self.instrument != ""
             and len(self.notes) > 0
             and len(self.rhythms) > 0
@@ -42,13 +40,7 @@ class Melody():
             and len(self.sourceData) > 0):
             return True
         else:
-            if(len(self.fn) == 0):
-                print("\nmelody() - ERROR: no Forte number inputted!")
-            elif(len(self.sourceData) == 0):
-                print("\nmelody() - ERROR: no source data inputted!")
-            elif(len(self.sourceScale) == 0):
-                print("\nmelody() - ERROR: no source scale inputted!")
-            elif(self.tempo == 0.0):
+            if(self.tempo == 0.0):
                 print("\nmelody() - ERROR: no tempo inputted!")
             elif(self.instrument == ""):
                 print("\nmelody() - ERROR: no instrument selected!")
