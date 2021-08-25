@@ -72,10 +72,11 @@ class Melody():
         rhythmic values (in seconds)
         '''
         dur = 0.0
-        for i in range(len(self.rhythms)):
-            # make copy to avoid altering original values
-            rhy = self.rhythms[i]
-            if self.tempo != 60.0:
-                rhy = self.tempoAdjust(rhy)
-            dur += rhy
+        # make a copy to avoid modifying original values
+        rhythms = self.rhythms
+        # adjust against tempo accordingly
+        if self.tempo != 60.0:
+            rhythms = self.tempoAdjust(rhythms)
+        for i in range(len(rhythms)):
+            dur += rhythms[i]
         return dur

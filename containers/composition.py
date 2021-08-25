@@ -148,11 +148,18 @@ class Composition():
         # get chord totals
         key = 1
         for i in range(len(self.chords)):
+            # make a copy as to not modify original entries
+            print("\ngetting chord list...")
             chords = self.chords[key]
             for j in range(len(chords)):
+                print("\nentered main loop...")
                 if self.tempo != 60.0:
+                    print("altering value...")
                     # make a copy as to not modify original entries
                     rhythm = self.tempoAdjust(chords[j].rhythm)
-                chord_length += rhythm
+                    chord_length += rhythm
+                else:
+                    print("summing values without altering...")
+                    chord_length += chords[j].rhythm
             key +=1
         return melody_length if melody_length >= chord_length else chord_length
