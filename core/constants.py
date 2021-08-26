@@ -794,6 +794,20 @@ FORTE_NUMBERS = [
 ]
 
 
+# Ensemble sizes
+ENSEMBLE_SIZES = {1: 'solo',
+                  2: 'duo',
+                  3: 'trio',
+                  4: 'quartet',
+                  5: 'quintet',
+                  6: 'sextet',
+                  7: 'septet',
+                  8: 'octet',
+                  9: 'nonet',
+                  10: 'decet',
+                  11: 'large ensemble'}
+
+
 # Ensembles
 '''
 A dictionary of some template ensembles.
@@ -831,6 +845,13 @@ ENSEMBLES = {
     # brass
 
     # woodwinds
+    "duet: fl/bsn": ['Flute', 'Bassoon'],
+    "duet: ob/bsn": ['Oboe', 'Bassoon'],
+    "duet: en/bsn" :['English Horn', 'Bassoon'],
+    "duet: ob/cl": ['Oboe', 'Clarinet'],
+    "trio: fl/ob/bsn": ['Flute', 'Oboe', 'Bassoon'],
+    "trio: ob/en/bsn": ['Oboe', 'English Horn', 'Bassoon'],
+
     "sax trio 1": ['Soprano Sax', 'Alto Sax', 'Tenor Sax'],
     "sax trio 2": ['Alto Sax', 'Tenor Sax', 'Baritone Sax'],
     "sax quartet": ['Soprano Sax', 'Alto Sax', 
@@ -852,7 +873,7 @@ ENSEMBLES = {
                   # cellos (19)
                   'String Ensemble 2',
                   # basses (20)
-                  'String Ensemble 1'
+                  'Contrabass'
                   ]
 }
 
@@ -885,6 +906,12 @@ ENSEMBLE_KEYS = [
     # brass
     
     # woodwinds
+    "duet: fl/bsn",
+    "duet: ob/bsn",
+    "duet: en/bsn",
+    "duet: ob/cl",
+    "trio: fl/ob/bsn",
+    "trio: ob/en/bsn",
     "sax trio 1",
     "sax trio 2",
     "sax quartet",
@@ -894,23 +921,8 @@ ENSEMBLE_KEYS = [
 ]
 
 
-# Ensemble sizes
-ENSEMBLE_SIZES = {1: 'solo',
-                  2: 'duo',
-                  3: 'trio',
-                  4: 'quartet',
-                  5: 'quintet',
-                  6: 'sextet',
-                  7: 'septet',
-                  8: 'octet',
-                  9: 'nonet',
-                  10: 'decet',
-                  11: 'large ensemble'}
-
-
-# MIDI instruments list (standard)
-'''NOTE:Indicies 0 - 110 are MELODIC/HARMONIC instruments!'''
-
+# MIDI instruments list (standard) 
+# NOTE:Indicies 0 - 110 are MELODIC/HARMONIC instruments!
 INSTRUMENTS = [
     # 0-8: keyboards
     'Acoustic Grand Piano', 

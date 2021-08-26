@@ -6,9 +6,10 @@ Simplified file for testing generative functions.
 from modes.rando import newRandomComposition
 from ensembles.strqtet import newStrQtet
 from ensembles.pnomrbduet import pnombduet
-from ensembles.practice import newArpeggio
+from ensembles.practice import newArpeggio, newProg
 
 # newRandomComposition()
-pnombduet()
 # newStrQtet()
+# pnombduet()
 # newArpeggio()
+newProg()

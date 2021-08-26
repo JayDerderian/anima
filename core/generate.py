@@ -165,17 +165,8 @@ class Generate():
     # Auto generate a file/composition name (type - date:time)
     def newMidiFileName(self, title):
         '''
-        Generates a title/file name by picking two random words
-        then attaching the composition type (solo, duo, ensemble, etc..),
-        followed by the date.
-
-        Format: "<words> - <ensemble> - <date: d-m-y hh:mm:ss>"
+        Generates a MIDI file name with date of composition.
         '''
-        # get date and time.
-        # d = date.now()
-        # convert to str d-m-y hh:mm:ss
-        # dateStr = date.now().strftime("%d-%b-%y %H:%M:%S")
-        # combine name, ensemble, and date, plus add file extension
         fileName = '{}{}.mid'.format(title, 
             date.now().strftime("%d-%b-%y %H:%M:%S"))
         return fileName
@@ -584,7 +575,7 @@ class Generate():
     # Keeps a single pitch within span of an octave (0 - 11)
     def octaveEquiv(self, pitch):
         '''
-        Keeps a single pitch within span of an octave (0 - 11). 
+        Keeps a single pitch class within span of an octave (0 - 11). 
         '''
         # check a single pitch
         if type(pitch) == int:

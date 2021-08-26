@@ -14,11 +14,3 @@ class Note():
         self.name = ""
         self.rhythm = 0.0
         self.dynamic = 0
-
-    #Check if there's data
-    def isEmpty(self):
-        if(self.name == "" 
-            or self.rhythm == 0.0
-            or self.dynamic == 0):
-            return True
-        return False

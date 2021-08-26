@@ -134,8 +134,8 @@ class Composition():
         
         Checks against self.tempo to ensure accurate values
         '''
-        melody_length = 0.0
-        chord_length = 0.0
+        ml = 0.0
+        cl = 0.0
         # get melody totals
         for i in range(len(self.melodies)):
             # make a copy to avoid altering original values
@@ -144,22 +144,18 @@ class Composition():
             if self.tempo != 60.0:
                 rhythms = self.tempoAdjust(rhythms)
             for j in range(len(rhythms)):
-                melody_length += rhythms[j]
+                ml += rhythms[j]
         # get chord totals
         key = 1
         for i in range(len(self.chords)):
             # make a copy as to not modify original entries
-            print("\ngetting chord list...")
             chords = self.chords[key]
             for j in range(len(chords)):
-                print("\nentered main loop...")
                 if self.tempo != 60.0:
-                    print("altering value...")
                     # make a copy as to not modify original entries
-                    rhythm = self.tempoAdjust(chords[j].rhythm)
-                    chord_length += rhythm
+                    r = self.tempoAdjust(chords[j].rhythm)
+                    cl += r
                 else:
-                    print("summing values without altering...")
-                    chord_length += chords[j].rhythm
+                    cl += chords[j].rhythm
             key +=1
-        return melody_length if melody_length >= chord_length else chord_length
+        return ml if ml > cl else cl
