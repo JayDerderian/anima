@@ -25,14 +25,21 @@ def scaleTheScale(data):
     adhere to this limit. This will keep the newly inputted data array's 
     values within the bounds of the scale array. These values function as a 
     collection of index numbers to sequentially map to a new source
-    scale to generate melodic ideas. 
+    scale to generate melodic ideas.
+ 
     '''
     # scale it
     for i in range(len(data)):
-        # Repeat this subtraction until we're under our threshold.
+        # Repeat this subtraction until we're under our threshold. Not ideal.
         while data[i] > len(data) - 1:
             data[i] -= 1
-            # data[i] = math.floor(data[i] / len(data) - 1)
+            # data[i] = math.floor(data[i] / len(data)-1)
+            # data[i] -= len(data)-1
+            # data[i] %= len(data)-1
+        '''
+        if data[i] > len(data)-1:
+            data[i] %= len(data)-1
+        '''
     return data
 
 

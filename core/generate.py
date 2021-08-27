@@ -74,7 +74,6 @@ This module/class handles all generative methods.
 # IMPORTS
 
 import math
-import requests
 import urllib.request
 import core.constants as c
 import utils.midi as m
@@ -187,10 +186,53 @@ class Generate():
         else:
             for i in range(len(pcs)):
                 scale.append(c.CHROMATIC_SCALE[pcs[i]])
+        '''
+        NOTE: there's probably a better way to do this...
+        NOTE: need to add an oe flag to determine where we call
+              the mess below...
+
+        for i in range(len(pcs)):
+            if pcs[i] % 12 == 0:
+                note = "{}{}".format('C', octave+1)
+                scale.append(note)
+            elif pcs[i] % 12 == 1:
+                note = "{}{}".format('C#', octave+1)
+                scale.append(note)
+            elif pcs[i] % 12 == 2:
+                note = "{}{}".format('D', octave+1)
+                scale.append(note)
+            elif pcs[i] % 12 == 3:
+                note = "{}{}".format('Eb', octave+1)
+                scale.append(note)
+            elif pcs[i] % 12 == 4:
+                note = "{}{}".format('E', octave+1)
+                scale.append(note)
+            elif pcs[i] % 12 == 5:
+                note = "{}{}".format('F', octave+1)
+                scale.append(note)
+            elif pcs[i] % 12 == 6:
+                note = "{}{}".format('F#', octave+1)
+                scale.append(note)
+            elif pcs[i] % 12 == 7:
+                note = "{}{}".format('G', octave+1)
+                scale.append(note)
+            elif pcs[i] % 12 == 8:
+                note = "{}{}".format('G#', octave+1)
+                scale.append(note)
+            elif pcs[i] % 12 == 9:
+                note = "{}{}".format('A', octave+1)
+                scale.append(note)
+            elif pcs[i] % 12 == 10:
+                note = "{}{}".format('Bb', octave+1)
+                scale.append(note)
+            elif pcs[i] % 12 == 11:
+                note = "{}{}".format('B', octave+1)
+                scale.append(note)
+        '''
         return scale
 
     # Transpose
-    def transpose(self, pcs, t):
+    def transpose(self, pcs, t, oe=True):
         '''
         Transpose a pitch class set using a supplied interval i, or list of 
         intervals i. Use a list of intervals to generate variations on a 
@@ -208,8 +250,9 @@ class Generate():
         elif type(t) == list:
             for note in range(len(pcs)):
                 pcs[note] += t[note]
-        # keep resulting pcs values between 0 and 11
-        pcs = self.octaveEquiv(pcs)
+        # keep resulting pcs values between 0 and 11, if desired.
+        if oe==True:
+            pcs = self.octaveEquiv(pcs)
         return pcs
 
     # Convert base rhythms to values in a specified tempo
@@ -221,8 +264,7 @@ class Generate():
         ex: [base] q = 60, quarterNote = 1 sec, [new tempo] q = 72, quarterNote = 0.8333(...) sec
 
         60/72 = .83 - The result becomes the converter value to multiply all supplied
-        durations against to get the new tempo-accurate durations.
-
+        durations against to get the new tempo-accurate durations in seconds.
         '''
         diff = 60/tempo
         # is this a single float?
@@ -395,13 +437,13 @@ class Generate():
         if transpose == True:
             # how far?
             t = randint(1, 11)
-            mode_pcs = self.transpose(mode_pcs, t)
+            mode_pcs = self.transpose(mode_pcs, t, oe=True)
         # append octave, if necessary, to the final list[str]
         if octave != None:
-            mode_str = self.toStr(mode_pcs, octave=octave)
+            mode_notes = self.toStr(mode_pcs, octave=octave)
         else:
-            mode_str = self.toStr(mode_pcs)
-        return mode, mode_pcs, mode_str
+            mode_notes = self.toStr(mode_pcs)
+        return mode, mode_pcs, mode_notes
 
     # Picks either a prime form pitch-class set, or a major or minor scale.
     def pickScale(self, octave=None):
@@ -721,14 +763,14 @@ class Generate():
         Returns the total length  in seconds (float) of a series 
         of chord() objects (chord progression).
         '''
-        duration = 0.0
+        d = 0.0
         for j in range(len(chords)):
             if chords[j].tempo != 60.0:
                 rhythm = self.tempoConvert(chords[j].tempo, chords[j].rhythm)
-                duration += rhythm
+                d += rhythm
             else:
-                duration += chords[j].rhythm
-        return duration
+                d += chords[j].rhythm
+        return d
 
     # Generates a chord with randomly chosen notes
     def newChord(self, tempo=None, scale=None):
@@ -866,45 +908,45 @@ class Generate():
         '''
 
         # Melody container object
-        newMelody = Melody()
+        m = Melody()
 
         # Process any incoming data
         if dataType != None and data != None:
-            data, newMelody = mapData(newMelody, data, dataType)
-            if data != -1 or newMelody != -1:
+            data, m = mapData(m, data, dataType)
+            if data != -1 or m != -1:
                 print()
             else:
                 print("\nnewMelody() - ERROR: unable to map data to integers!")
                 return -1
         else:
             # Otherwise just add single string to list
-            newMelody.sourceData.append('None Inputted')
+            m.sourceData.append('None Inputted')
 
         # Pick tempo if none is supplied
         if tempo == None:
-            newMelody.tempo = self.newTempo()
+            m.tempo = self.newTempo()
         else:
-            newMelody.tempo = tempo
+            m.tempo = tempo
 
         # Pick notes from scratch  
         if data == None:
-            newMelody.notes, newMelody.fn, newMelody.sourceScale = self.newNotes()
-            if newMelody.notes == -1:
+            m.notes, m.fn, m.sourceScale = self.newNotes()
+            if m.notes == -1:
                 print("\nnewMelody() - ERROR: unable to generate notes!")
                 return -1
         # Or use supplied data
         elif data != None:
-            newMelody.notes, newMelody.fn, newMelody.sourceScale = self.newNotes(data=data)
-            if newMelody.notes == -1:
+            m.notes, m.fn, m.sourceScale = self.newNotes(data=data)
+            if m.notes == -1:
                 print("\nnewMelody() - ERROR: unable to generate notes!")
                 return -1
 
         # Pick rhythms
-        newMelody.rhythms = self.newRhythms(len(newMelody.notes), newMelody.tempo)
+        m.rhythms = self.newRhythms(len(m.notes), m.tempo)
         # Pick dynamics
-        newMelody.dynamics = self.newDynamics(len(newMelody.notes))
+        m.dynamics = self.newDynamics(len(m.notes))
 
-        return newMelody
+        return m
 
 
     #-------------------------------------------------------------------------------------#
@@ -1000,42 +1042,42 @@ class Generate():
 
         # Generate a melody
         if data is not None and dataType is not None:
-            newTune = self.newMelody(data=data, dataType=dataType)
-            if newTune == -1:
+            m = self.newMelody(data=data, dataType=dataType)
+            if m == -1:
                 print("\nnewComposition() - ERROR: unable to generate melody!")
                 return -1
             # pick instrument for melody
-            newTune.instrument = self.newInstrument()
+            m.instrument = self.newInstrument()
 
         else:
-            newTune = self.newMelody()
-            if newTune == -1:
+            m = self.newMelody()
+            if m == -1:
                 print("\nnewComposition() - ERROR: unable to generate melody!")
                 return -1
             # pick instrument for melody
-            newTune.instrument = self.newInstrument()
+            m.instrument = self.newInstrument()
         # Save melody info
-        comp.instruments.append(newTune.instrument)
-        comp.melodies.append(newTune)
+        comp.instruments.append(m.instrument)
+        comp.melodies.append(m)
 
         # Generate harmonies from this melody
-        newChords = self.newChords(len(newTune.notes), newTune.tempo, newTune.notes)
-        if newChords == -1:
+        c = self.newChords(len(m.notes), m.tempo, m.notes)
+        if c == -1:
             print("\nnewComposition() - ERROR: unable to generate harmonies!")
             return -1
         # picks KEYBOARD instruments for newChords
         else:
-            for i in range(len(newChords)):
-                newChords[i].instrument = c.INSTRUMENTS[randint(0, 8)]
+            for i in range(len(c)):
+                c[i].instrument = c.INSTRUMENTS[randint(0, 8)]
         # Save harmony info (instruments + chord list)
-        for i in range(len(newChords)):
-            comp.instruments.append(newChords[i].instrument)
-        comp.chords = newChords
+        for i in range(len(c)):
+            comp.instruments.append(c[i].instrument)
+        comp.chords[1] = c
 
         # Generate titles and file names
         comp.title = self.newTitle()
         title_full = "{}{}{}{}".format(comp.title, ' for ', 
-            newTune.instrument, ' and various keyboards')
+            m.instrument, ' and various keyboards')
         mfn = comp.title + '.mid'
         tfn = comp.title + '.txt'
         comp.midiFileName = mfn
@@ -1046,16 +1088,16 @@ class Generate():
 
         # Export
         '''NOTE: eventually replace m.saveComposition() with just m.save(comp)'''
-        if m.saveComposition(newTune, newChords, mfn) != -1 and saveInfo(
-            name=comp.title, data=newTune.sourceData, fileName=tfn, 
-            newMelody=newTune, newChords=newChords) == 0:
+        if m.saveComposition(m, c, mfn) != -1 and saveInfo(
+            name=comp.title, data=m.sourceData, fileName=tfn, 
+            newMelody=m, newChords=m) == 0:
             # Display results
             print("\nTitle:", title_full)
             print("\nMIDI file saved as:", mfn)
             print("\nText file saved as:", tfn)
             
             # Returns composition() object and comp data in abc notation (str)!
-            return comp, abc(comp.title, newTune.tempo, newTune, newChords)
+            return comp, abc(comp.title, m.tempo, m, c)
 
         else:
             print("\nnewComposition() - ERROR: Unable to export files!")

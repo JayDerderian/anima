@@ -10,8 +10,7 @@ class Melody():
     tempo, instrument, notes, rhythms, and dynamics.
     '''
 
-    # Constructor
-    def __init__(self):
+    def __init__(self, tempo=None, instrument=None):
             
         # Meta-data
         self.fn = []
@@ -19,8 +18,12 @@ class Melody():
         self.sourceScale = []
 
         # Data
-        self.tempo = 0.0
-        self.instrument = ""
+        if tempo is None and instrument is None:
+            self.tempo = 0.0
+            self.instrument = ""
+        else:
+            self.tempo = tempo
+            self.instrument = instrument
         self.notes = []
         self.rhythms = []
         self.dynamics = []
