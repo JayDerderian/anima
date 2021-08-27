@@ -289,7 +289,12 @@ def save(comp):
         key = 1
         for i in range(len(comp.chords)):
             # retrieve current chord object list
-            chords = comp.chords[key]
+            '''NOTE: this try block is a bandaid! 
+                     make key value a conditional for this loop'''
+            try:
+                chords = comp.chords[key]
+            except KeyError:
+                break
             strt = 0
             end = chords[i].rhythm
             # create instrument object.

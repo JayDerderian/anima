@@ -217,6 +217,14 @@ purposes.
 Each integer/pitch class functions as an index number against CHROMATIC_SCALE to 
 generate a scale represented by a list of strings (i.e. ["C#4", "D5"... etc]).
 
+    NOTE: 7-35 is the prime form of major and minor scales
+    c maj would ordinarily be [0, 2, 4, 5, 7, 9, 11],
+    but when you put it with the lowest interval at 
+    the left at it's most "compact," it becomes 
+    [11, 0, 2, 4, 5, 7, 9]. 7-35 is the prime form
+    of this new arrangement. add 1 to each int in the 
+    [11, 0,...] set and you get 7-35!
+
 Info taken from here: 
 https://en.wikipedia.org/wiki/List_of_pitch-class_sets'''
 
@@ -429,15 +437,6 @@ SCALES = {
     "7-32A":	[0,1,3,4,6,8,9],
     "7-33":	    [0,1,2,4,6,8,10],
     "7-34":	    [0,1,3,4,6,8,10],
-    '''
-    NOTE: 7-35 is the prime form of major and minor scales
-    c maj would ordinarily be [0, 2, 4, 5, 7, 9, 11],
-    but when you put it with the lowest interval at 
-    the left at it's most "compact," it becomes 
-    [11, 0, 2, 4, 5, 7, 9]. 7-35 is the prime form
-    of this new arrangement. add 1 to each int in the 
-    [11, 0,...] set and you get 7-35!
-    '''
     "7-35":	    [0,1,3,5,6,8,10], # maj/min prime form
     "7-z36B":	[0,2,3,5,6,7,8],
     "7-z36A":	[0,1,2,3,5,6,8],
