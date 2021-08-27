@@ -249,7 +249,12 @@ def saveComposition(newMelody, newChords, fileName):
 # exports a MIDI file for any sized composition (1 solo melody to ensemble sized n)
 def save(comp):
     '''
+    General save function for compositions. All instruments start at the same time! 
+    
+    NOTE: Might modify to allow for modified start times
+    
     Exports a MIDI file for any sized composition (1 solo melody to ensemble sized n). 
+    
     Requires a composition() object.
     '''
     # create PM object. PM object is used to just write out the file.
@@ -320,6 +325,72 @@ def save(comp):
             mid.instruments.append(chord)
             key+=1
 
+    # write to MIDI file
+    print("\nwriting MIDI file...")
+    mid.write(f'./midi/{comp.midiFileName}')
+    return 0
+
+# save canon
+def savecanon(comp, s):
+    '''
+    exports a MIDI file for a canonic piece with a specified beat displacement (s = float)
+    
+    requires a composition() object with a list of melodies.
+    '''
+    # create PM object. PM object is used to just write out the file.
+    mid = pm.PrettyMIDI(initial_tempo=comp.tempo)
+
+    # add STARTING SUBJECT
+    print("\nsaving initial subject...")
+    strt = 0
+    end = comp.melodies[0].rhythms[0]
+    # create melody instrument
+    instrument = pm.instrument_name_to_program(comp.melodies[i].instrument)
+    melody = pm.Instrument(program=instrument)
+    # add *this* melody's notes
+    for j in range(len(comp.melodies[i].notes)):
+        # translate note to MIDI note
+        note = pm.note_name_to_number(comp.melodies[i].notes[j])
+        anote = pm.Note(
+            velocity=comp.melodies[i].dynamics[j], pitch=note, start=strt, end=end)
+        # add to instrument object
+        melody.notes.append(anote)
+        try:
+            # increment strt/end times
+            strt += comp.melodies[i].rhythms[j]
+            end += comp.melodies[i].rhythms[j+1]
+        except IndexError:
+            break
+            
+    # add canonic lines. if there's more than one immitation, increment s by specified amount
+    mid.instruments.append(melody)
+    for i in range(len(comp.melodies)):
+        strt = s
+        # start AFTER first melody!
+        end = comp.melodies[i+1].rhythms[0]
+        # create melody instrument
+        instrument = pm.instrument_name_to_program(comp.melodies[i+1].instrument)
+        melody = pm.Instrument(program=instrument)
+        # add *this* melody's notes
+        for j in range(len(comp.melodies[i].notes)):
+            # translate note to MIDI note
+            note = pm.note_name_to_number(comp.melodies[i].notes[j])
+            anote = pm.Note(
+                velocity=comp.melodies[i].dynamics[j], pitch=note, start=strt, end=end)
+            # add to instrument object
+            melody.notes.append(anote)
+            try:
+                # increment strt/end times
+                strt += comp.melodies[i].rhythms[j]
+                end += comp.melodies[i].rhythms[j+1]
+            except IndexError:
+                break
+            
+        # add melody to instrument list
+        mid.instruments.append(melody)
+        # increment by specified amount if there's more than 2 parts
+        if len(comp.melodies > 2):
+            s += s
     # write to MIDI file
     print("\nwriting MIDI file...")
     mid.write(f'./midi/{comp.midiFileName}')
