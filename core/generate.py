@@ -234,11 +234,13 @@ class Generate():
     # Transpose
     def transpose(self, pcs, t, oe=True):
         '''
-        Transpose a pitch class set using a supplied interval i, or list of 
-        intervals i. Use a list of intervals to generate variations on a 
-        given pitch-class set.
+        Transpose a pitch class or list of pitch classes using a supplied 
+        interval i, or list of intervals i. 
         
-        Returns a modified pcs (list[int])
+        Use a list of intervals to generate variations on a given pitch-class set.
+        
+        Returns a modified pcs (list[int]) or modified pitch class int,
+        depending on input.
         '''
         # modify with a single interval across all pitch-classes
         if type(t) == int:
@@ -371,7 +373,7 @@ class Generate():
             root, fn = self.pickScale()
             meta_data.append(fn)
         # Pick total: 3 - 50 if we're generating random notes
-        if data == None:
+        if data==None:
             # Note that the main loop uses total + 1!
             total = randint(2, 49)
         # Or the largest value of the supplied data set
@@ -405,7 +407,7 @@ class Generate():
         # Randomly pick notes from the generated source scale to 
         # create an arhythmic melody.
         notes = []
-        if data == None:
+        if data==None:
             # Total notes in melody will be between 3 and 
             # however many notes are in the source scale
             total = randint(3, len(scale))
@@ -434,7 +436,7 @@ class Generate():
         mode = c.MODE_KEYS[randint(1, len(c.MODE_KEYS) - 1)]
         mode_pcs = c.MODES[mode]
         # transpose?
-        if transpose == True:
+        if transpose==True:
             # how far?
             t = randint(1, 11)
             mode_pcs = self.transpose(mode_pcs, t, oe=True)
@@ -498,15 +500,7 @@ class Generate():
         
         Returns a list of note name strings and the original pitch class set.
         '''
-        pcs = []
-        total = randint(5, 9)
-        while len(pcs) < total:
-            # pick pitch class integer
-            n = randint(0, 11)
-            if n not in pcs:
-                pcs.append(n)
-        # attempt to use list comprehension in lieu of the loop above
-        # pcs = [randint(0, 11) for x in range(total) if x not in pcs]
+        pcs = sample(range(11), randint(5, 9))
         # sort in ascending order
         pcs.sort()
         # convert to strings (with or without supplied octave)

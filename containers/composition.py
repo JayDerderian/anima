@@ -4,15 +4,11 @@ Module for handling all composition data. Contains a Composition() class/contain
 
 class Composition():
     '''
-    This is a container for all things related to a stand-alone music composition. Data includes
-    a global tempo, the piece's title, an array of melody() objects representing each instruments part, 
-    an dictionary of of chord() object lists for harmony instruments, and other pretinant data about the piece.
+    This is a container for all things related to a stand-alone music composition. 
 
-    Title, composer, date of composition, text file name, MIDI file name, source data (if any), global tempo,
-    instrument list, melodies, and harmonies.
-
-    NOTE: Find a way to track if an instrument has been picked. Maybe picked list, and a corresponding
-          search method. This will allow for more randomization in assigning instruments to various parts.
+    Title, composer, date of composition, MIDI file name, text file name, global tempo, 
+    ensemble type, instrument list, list of picked instruments, lists melodies, and 
+    a dictionary of chord progressions.
     '''
     # Constructor
     def __init__(self, title=None, composer=None, tempo=None):
@@ -56,6 +52,7 @@ class Composition():
         # List of percussion() objects.
         self.percussion = []
     
+
     # Check if there's data in this instance
     def isComplete(self):
         '''
@@ -100,18 +97,22 @@ class Composition():
             elif(len(self.chords) == 0):
                 print("\ncomposition() - ERROR: no harmonies inputted!")
             return False
-        
-    # Have all the instruments been picked?
-    def allPicked(self):
-        return True if self.instruments == self.instr_used else False
 
     # Has this instrument been picked?
     def isPicked(self, instr):
-        # for i in range(len(self.instr_used)):
-        #     if instr == self.instr_used[i]:
-        #         return True
-        # return False
-        return True if instr in self.instr_used else False
+        '''
+        Has this instrument been picked already?
+        '''
+        return True if instr in self.instr_used else False 
+
+
+    # Have all the instruments been picked?
+    def allPicked(self):
+        '''
+        Havel *all* the instruments been used?
+        '''
+        return True if self.instruments == self.instr_used else False
+
 
     # Adjust for given tempo when calculating composition duration
     def tempoAdjust(self, rhythms):
@@ -122,6 +123,7 @@ class Composition():
             for i in range(len(rhythms)-1):
                 rhythms[i] *= diff
         return rhythms    
+
 
     # Get duration of composition
     def duration(self):
