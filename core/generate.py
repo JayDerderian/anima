@@ -976,11 +976,7 @@ class Generate():
         # Create MIDI file name
         midiFileName = title + '.mid'
         # Save to MIDI file
-        if m.saveMelody(midiFileName, newTune) != -1:
-            print()  
-        else:
-            print("\n\naNewMelody() - ERROR: Unable to export piece to MIDI file!")
-            return -1
+        m.saveMelody(midiFileName, newTune)
         # Save composition data to a .txt file (fileName)
         txtFileName = "{}{}".format(title, '.txt')
         title_full = "{}{}{}{}".format(title, ' for ', newTune.instrument, ' and piano')
@@ -1042,20 +1038,20 @@ class Generate():
 
         # Generate a melody
         if data is not None and dataType is not None:
-            m = self.newMelody(data=data, dataType=dataType)
-            if m == -1:
+            mel = self.newMelody(data=data, dataType=dataType)
+            if mel == -1:
                 print("\nnewComposition() - ERROR: unable to generate melody!")
                 return -1
             # pick instrument for melody
-            m.instrument = self.newInstrument()
+            mel.instrument = self.newInstrument()
 
         else:
-            m = self.newMelody()
+            mel = self.newMelody()
             if m == -1:
                 print("\nnewComposition() - ERROR: unable to generate melody!")
                 return -1
             # pick instrument for melody
-            m.instrument = self.newInstrument()
+            mel.instrument = self.newInstrument()
         # Save melody info
         comp.instruments.append(m.instrument)
         comp.melodies.append(m)
@@ -1077,7 +1073,7 @@ class Generate():
         # Generate titles and file names
         comp.title = self.newTitle()
         title_full = "{}{}{}{}".format(comp.title, ' for ', 
-            m.instrument, ' and various keyboards')
+            mel.instrument, ' and various keyboards')
         mfn = comp.title + '.mid'
         tfn = comp.title + '.txt'
         comp.midiFileName = mfn
@@ -1088,16 +1084,16 @@ class Generate():
 
         # Export
         '''NOTE: eventually replace m.saveComposition() with just m.save(comp)'''
-        if m.saveComposition(m, c, mfn) != -1 and saveInfo(
-            name=comp.title, data=m.sourceData, fileName=tfn, 
-            newMelody=m, newChords=m) == 0:
+        if m.saveComposition(mel, c, mfn) != -1 and saveInfo(
+            name=comp.title, data=mel.sourceData, fileName=tfn, 
+            newMelody=mel, newChords=c) == 0:
             # Display results
             print("\nTitle:", title_full)
             print("\nMIDI file saved as:", mfn)
             print("\nText file saved as:", tfn)
             
             # Returns composition() object and comp data in abc notation (str)!
-            return comp, abc(comp.title, m.tempo, m, c)
+            return comp, abc(comp.title, mel.tempo, mel, c)
 
         else:
             print("\nnewComposition() - ERROR: Unable to export files!")

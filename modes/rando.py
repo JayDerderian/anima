@@ -126,7 +126,7 @@ def newRandomComposition():
                 # harmonies are NOT generated from melodies here!
                 chord = create.newChord(tempo=comp.tempo)
                 # assign a randomly-chosen instrument to this melody
-                instr = comp.instruments[randint(0, len(comp.instruments) - 1)]
+                instr = comp.instruments[randint(0, len(comp.instruments)-1)]
                 # make sure it hasn't been used already
                 if comp.isPicked(instr) == False:
                     # assign instrument
@@ -142,7 +142,7 @@ def newRandomComposition():
                         print("\n...all instruments have been used!")
                         break
                     while comp.isPicked(instr) == True:
-                        instr = comp.instruments[randint(0, len(comp.instruments) - 1)]
+                        instr = comp.instruments[randint(0, len(comp.instruments)-1)]
                         if comp.isPicked(instr) == False:
                             chord.instrument = instr
                             print("\n  chord inst -", chord.instrument)

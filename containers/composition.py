@@ -103,18 +103,15 @@ class Composition():
         
     # Have all the instruments been picked?
     def allPicked(self):
-        # NOTE: This returns sorted versions of original lists. Might affect how instruments are 
-        # selected? 
-        # if sorted(self.instruments) == sorted(self.instr_used):
-        #     return True
-        return sorted(self.instruments) == sorted(self.instr_used) if True else False
+        return True if self.instruments == self.instr_used else False
 
     # Has this instrument been picked?
     def isPicked(self, instr):
-        for i in range(len(self.instr_used)):
-            if instr == self.instr_used[i]:
-                return True
-        return False
+        # for i in range(len(self.instr_used)):
+        #     if instr == self.instr_used[i]:
+        #         return True
+        # return False
+        return True if instr in self.instr_used else False
 
     # Adjust for given tempo when calculating composition duration
     def tempoAdjust(self, rhythms):
@@ -132,7 +129,7 @@ class Composition():
         Returns length of composition by returning largest value of either melody
         list or chord prog dictionary. 
         
-        Checks against self.tempo to ensure accurate values
+        Checks against self.tempo to ensure accurate rhytmic values.
         '''
         ml = 0.0
         cl = 0.0
