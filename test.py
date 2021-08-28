@@ -10,6 +10,8 @@ from ensembles.strqtet import newStrQtet
 from ensembles.pnoduet import pnoduet
 from practice.practice import newArp, newProg, newcanon
 
+from core.generate import Generate
+
 # newRandomComposition()
 # newStrQtet()
 # pnoduet(instrument=None)
@@ -18,12 +20,9 @@ from practice.practice import newArp, newProg, newcanon
 # newcanon()
 
 
-'''
-Trying to do a list comprehension version of the loop in newScale()...
-'''
-total = randint(5, 9)
-pcs = []
-pcs = sample(range(11), total)
-pcs.sort()
-
-print(pcs)
+create = Generate()
+for i in range(10):
+    new_scale, pcs = create.newScale()
+    print("\ntotal:", len(new_scale))
+    print(new_scale)
+    print(pcs)

@@ -412,7 +412,7 @@ class Generate():
             # however many notes are in the source scale
             total = randint(3, len(scale))
             for i in range(total):
-                notes.append(scale[randint(0, len(scale) - 1)])
+                notes.append(scale[randint(0, len(scale)-1)])
 
         # ...Or pick notes according to integers in data array
         else:
@@ -487,7 +487,6 @@ class Generate():
         else:
             return scale, fn     
 
-
     # Generate a new scale to function as a "root"
     def newScale(self, octave=None):
         '''
@@ -500,18 +499,21 @@ class Generate():
         
         Returns a list of note name strings and the original pitch class set.
         '''
-        pcs = sample(range(11), randint(5, 9))
+        pcs = []
+        total = randint(5, 9)
+        '''Current method. Outputs are quite interesting!'''
+        for i in range(total):
+            n = randint(0, 11)
+            if n not in pcs:
+                pcs.append(n)
+        '''Trying to create a list comprehension of the above for-loop...'''
+        # pcs = [randint(0,11) for x in range(total) if x not in pcs]
+        '''This method outputs more chromatic results'''
+        # pcs = sample(range(11), randint(5, 9))
         # sort in ascending order
         pcs.sort()
         # convert to strings (with or without supplied octave)
-        scale = []
-        if octave==None:
-            for i in range(len(pcs)):
-                scale.append(c.CHROMATIC_SCALE[pcs[i]])
-        else:
-            for i in range(len(pcs)):
-                note = "{}{}".format(c.CHROMATIC_SCALE[pcs[i]], octave)
-                scale.append(note)
+        scale = self.toStr(pcs, octave)
         return scale, pcs   
 
     # Generates a long source scale off a given root scale 
