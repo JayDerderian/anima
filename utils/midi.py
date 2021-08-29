@@ -196,8 +196,6 @@ def saveComposition(newMelody, newChords, fileName):
     instrument = pm.instrument_name_to_program(newMelody.instrument)
     melody = pm.Instrument(program=instrument)
 
-    #----------------------------Add Melody----------------------------------#
-
     # Attach notes, rhythms, and dynamics to melody instrument/MIDI object
     end += newMelody.rhythms[0]
     for i in range(len(newMelody.notes)):
@@ -218,9 +216,7 @@ def saveComposition(newMelody, newChords, fileName):
     # Add melody to instrument list
     mid.instruments.append(melody)
 
-    #----------------------------Add Harmonies-------------------------------#
-
-    # Create instrument object.
+    # Create chord instrument
     instrument = pm.instrument_name_to_program('Acoustic Grand Piano')
     chord = pm.Instrument(program=instrument)
 
@@ -233,7 +229,7 @@ def saveComposition(newMelody, newChords, fileName):
             note = pm.note_name_to_number(newChords[i].notes[j])
             achord = pm.Note(
                 velocity=newChords[i].dynamics[j], pitch=note, start=strt, end=end)
-            # Add to instrument object
+            # Add to chord instrument list
             chord.notes.append(achord)
         try:
             # Increment strt/end times
@@ -260,7 +256,6 @@ def savecanon(comp, s):
     mid = pm.PrettyMIDI(initial_tempo=comp.tempo)
 
     # add STARTING SUBJECT
-    print("\nsaving initial subject...")
     strt = 0
     end = comp.melodies[0].rhythms[0]
     # create melody instrument
@@ -270,6 +265,9 @@ def savecanon(comp, s):
     for j in range(len(comp.melodies[0].notes)):
         # translate note to MIDI note
         note = pm.note_name_to_number(comp.melodies[0].notes[j])
+        # NOTE: create a method to indicate whether the inputted melodic value is a 
+        # note or a rest. it could determine how to create corresponding MIDI note on/off
+        # events?
         anote = pm.Note(
             velocity=comp.melodies[0].dynamics[j], pitch=note, start=strt, end=end)
         # add to instrument object
@@ -280,9 +278,9 @@ def savecanon(comp, s):
             end += comp.melodies[0].rhythms[j+1]
         except IndexError:
             break
-    # add canonic lines. if there's more than one immitation, increment s by specified amount
     mid.instruments.append(melody)
-    
+
+    # add canonic lines according to displacement s
     for i in range(len(comp.melodies)):
         strt = s
         # start AFTER first melody!
@@ -324,7 +322,7 @@ def save(comp):
     '''
     General save function for compositions. All instruments start at the same time! 
     
-    NOTE: Might modify to allow for modified start times
+    NOTE: Might modify to allow for modified start times and ***RESTS***!!!
     
     Exports a MIDI file for any sized composition (1 solo melody to ensemble sized n). 
     

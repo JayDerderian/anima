@@ -501,7 +501,8 @@ class Generate():
         '''
         pcs = []
         total = randint(5, 9)
-        '''Current method. Outputs are quite interesting!'''
+        '''Current method. Outputs are quite interesting, though I think this
+           is the least efficient way to go about this...'''
         for i in range(total):
             n = randint(0, 11)
             if n not in pcs:
