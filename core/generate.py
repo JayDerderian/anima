@@ -503,14 +503,12 @@ class Generate():
         total = randint(5, 9)
         '''Current method. Outputs are quite interesting, though I think this
            is the least efficient way to go about this...'''
-        for i in range(total):
+        while len(pcs) < total:
             n = randint(0, 11)
             if n not in pcs:
                 pcs.append(n)
-        '''Trying to create a list comprehension of the above for-loop...'''
+        '''Trying to create a list comprehension of the above loop...'''
         # pcs = [randint(0,11) for x in range(total) if x not in pcs]
-        '''This method outputs more chromatic results'''
-        # pcs = sample(range(11), randint(5, 9))
         # sort in ascending order
         pcs.sort()
         # convert to strings (with or without supplied octave)
@@ -633,11 +631,12 @@ class Generate():
 
 
     # Pick a rhythm
-    def newRhythm(self):
+    def newRhythm(self, tempo=None):
         '''
-        Generates a single new rhythm
+        Generates a single new rhythm, with or without a 
+        supplied tempo (float).
         '''
-        return c.RHYTHMS[randint(0, len(c.RHYTHMS) - 1)]
+        return c.RHYTHMS[randint(0, len(c.RHYTHMS)-1)]  
 
     # Generate a list containing a rhythmic pattern
     def newRhythms(self, total=None, tempo=None):
@@ -784,7 +783,7 @@ class Generate():
             scale, newchord.fn = self.pickScale(octave=randint(2, 5))
             newchord.sourceNotes = scale
         # Add tempo if one isn't supplied
-        if tempo is None:
+        if tempo==None:
             newchord.tempo = 60.0
         else:
             newchord.tempo = tempo
@@ -797,12 +796,11 @@ class Generate():
         '''NOTE: This is avoids getting the while loop stuck
                  if there's a lot of repeated notes in the melody '''
         newchord.notes = list(dict.fromkeys(newchord.notes))
-        # Pick a rhythm & scale to tempo if needed
+        # Pick a rhythm (newRhythm() will scale if needed)
         rhythm = self.newRhythm()
-        if newchord.tempo != 60.0:
-            newchord.rhythm = self.tempoConvert(newchord.tempo, rhythm)
-        else:
-            newchord.rhythm = rhythm
+        if newchord.tempo != 60:
+            rhythm = self.tempoConvert(newchord.tempo, rhythm)
+        newchord.rhythm = rhythm
         # Pick a dynamic (randomize for each note? probably)
         dynamic = self.newDynamic()
         while len(newchord.dynamics) < len(newchord.notes):
@@ -813,7 +811,9 @@ class Generate():
     def newChords(self, total=None, tempo=None, scale=None):
         '''
         Generates a progression from the notes of a given scale.
-        Returns a list of chord() objects.
+        Returns a list of chord() objects. Each chord will have 
+        2 to 9 notes in various registers, as well as their own 
+        unique dynamic and rhythm.
 
         NOTE: Chords will be derived from the given scale ONLY! Could possibly
               add more randomly inserted chromatic tones to give progressions more

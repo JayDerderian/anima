@@ -13,14 +13,14 @@ class Melody():
     def __init__(self, tempo=None, instrument=None):
             
         # Meta-data
-        self.fn = []
-        self.sourceData = []
-        self.sourceScale = []
+        self.fn = 'None'
+        self.sourceData = 'None'
+        self.sourceScale = 'None'
 
         # Data
         if tempo is None and instrument is None:
             self.tempo = 0.0
-            self.instrument = ""
+            self.instrument = 'None'
         else:
             self.tempo = tempo
             self.instrument = instrument
@@ -36,7 +36,7 @@ class Melody():
         NOTE: doesn't include meta-data! 
         '''
         if(self.tempo != 0.0
-            and self.instrument != ""
+            and self.instrument != 'None'
             and len(self.notes) > 0
             and len(self.rhythms) > 0
             and len(self.dynamics) > 0
@@ -45,7 +45,7 @@ class Melody():
         else:
             if(self.tempo == 0.0):
                 print("\nmelody() - ERROR: no tempo inputted!")
-            elif(self.instrument == ""):
+            elif(self.instrument == 'None'):
                 print("\nmelody() - ERROR: no instrument selected!")
             elif(len(self.notes) == 0):
                 print("\nmelody() - ERROR: no notes inputted!")

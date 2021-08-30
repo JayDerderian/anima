@@ -320,13 +320,12 @@ def savecanon(comp, s):
 # exports a MIDI file for any sized composition (1 solo melody to ensemble sized n)
 def save(comp):
     '''
-    General save function for compositions. All instruments start at the same time! 
-    
-    NOTE: Might modify to allow for modified start times and ***RESTS***!!!
-    
+    General save function for compositions. *All instruments start at the same time!*
     Exports a MIDI file for any sized composition (1 solo melody to ensemble sized n). 
     
     Requires a composition() object.
+
+    NOTE: Might modify to allow for modified start times and ***RESTS***!!!
     '''
     # create PM object. PM object is used to just write out the file.
     mid = pm.PrettyMIDI(initial_tempo=comp.tempo)
@@ -397,6 +396,6 @@ def save(comp):
             key+=1
 
     # write to MIDI file
-    print("\nwriting MIDI file...")
+    print("\nsaving", comp.midiFileName, "...")
     mid.write(f'./midi/{comp.midiFileName}')
     return 0

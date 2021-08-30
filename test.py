@@ -3,7 +3,6 @@ Simplified file for testing generative functions.
 '''
 
 # Imports
-from random import sample
 from random import randint
 from modes.rando import newRandomComposition
 from ensembles.strqtet import newStrQtet
@@ -14,8 +13,8 @@ from core.generate import Generate
 
 # newRandomComposition()
 # newStrQtet()
-pnoduet(instrument=None)
-# newArpeggio()
+pnoduet()
+# newArp()
 # newProg()
 # newcanon()
 
