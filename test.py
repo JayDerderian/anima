@@ -12,8 +12,8 @@ from practice.practice import newArp, newProg, newcanon
 from core.generate import Generate
 
 # newRandomComposition()
-# newStrQtet()
-pnoduet()
+newStrQtet()
+# pnoduet()
 # newArp()
 # newProg()
 # newcanon()

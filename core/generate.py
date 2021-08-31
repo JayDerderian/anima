@@ -453,8 +453,8 @@ class Generate():
         Picks either 1 of 12 major or minor scales for a tonal flavor, 
         or a 5 to 9 note Forte pitch class prime form for an atonal flavor.
 
-        Returns tuple with a list of note name strings with or without an 
-        assigned octave, plus the forte number of the chosen scale.
+        Returns tuple with a list[str] of note name strings with or without an 
+        assigned octave, plus the forte number (str) of the chosen scale.
 
         NOTE: Add ability to pick mode in random key? Probably.
         '''

@@ -872,7 +872,7 @@ ENSEMBLES = {
                   # cellos (19)
                   'String Ensemble 2',
                   # basses (20)
-                  'Contrabass'
+                  'String Ensemble 2'
                   ]
 }
 
