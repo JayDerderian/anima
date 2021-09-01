@@ -15,10 +15,10 @@ class Chord():
         Initialize with several empty lists. Use any inputted instrument or tempo data!
         '''
         # Metadata
-        self.sourceNotes = []
         self.fn = ""
         self.pcs = []
-
+        self.sourceNotes = []
+        
         # Data
         if instrument==None and tempo==None:
             self.instrument = ""

@@ -68,7 +68,7 @@ def newRandomComposition():
 
     # pick ensemble size (1 - 11 instruments for now)
     # and instrumentation
-    size = randint(1, len(c.ENSEMBLE_SIZES) - 1)
+    size = randint(1, len(c.ENSEMBLE_SIZES)-1)
     print("\ntotal instruments:", size)
     comp.ensemble = c.ENSEMBLE_SIZES[size]
     comp.instruments = create.newInstruments(size)
@@ -81,31 +81,28 @@ def newRandomComposition():
         for i in range(total_melodies):
             '''NOTE: use randomly chosen source data at some point????'''
             melody = create.newMelody(tempo=comp.tempo)
-            print("\n...picking instrument for melody", i, "...")
             # assign a randomly-chosen instrument to this melody
-            instr = comp.instruments[randint(0, len(comp.instruments) - 1)]
+            instr = comp.instruments[randint(0, len(comp.instruments)-1)]
             # make sure it hasn't been used already
             if comp.isPicked(instr) == False:
                 # assign instrument
                 melody.instrument = instr
                 # save to picked list
                 comp.instr_used.append(instr)
-                print("  melody inst -", melody.instrument)
+                comp.instruments.append(instr)
             # if so, try others...
             else:
-                print("\n...", instr, "was used...")
                 # check if all instruments are picked before brute-force
                 # picking one...
                 if comp.allPicked() == True:
-                    print("...all instruments have been used!")
                     break
                 while comp.isPicked(instr) == True:
-                    instr = comp.instruments[randint(0, len(comp.instruments) - 1)]
+                    instr = comp.instruments[randint(0, len(comp.instruments)-1)]
                     if comp.isPicked(instr) == False:
                         melody.instrument = instr
-                        print("  melody inst -", melody.instrument)
+                        comp.instruments.append(instr)
+                        comp.instr_used.append(instr)
                         break
-                    
             # save the melody
             comp.melodies.append(melody)
 
@@ -113,32 +110,46 @@ def newRandomComposition():
     total_harmonies = size - total_melodies
     if total_harmonies > 0:
         print("\npicking", total_harmonies, "chords...")
-        # pick chords
-        chords = create.newChords(total=total_harmonies, tempo=comp.tempo, scale=None)
-        print("...", len(chords), "chords created!")
-        print("\npicking instruments...")
-        # add instrument to each chord object
-        for i in range(len(chords)):
-            instr = comp.instruments[randint(0, len(comp.instruments)-1)]
-            print("...trying", instr)
-            # make sure this instrument hasn't already been used..
-            if instr not in comp.instr_used:
-                print("...adding", instr)
-                chords[i].instrument = instr
-                # remember which one we just picked, dork.
-                comp.instr_used.append(instr)
-        
-            elif instr in comp.instr_used:
-                print("\nthat didn't work! trying again...")
-                # keep trying until we find an unused instrument...
-                while instr in comp.instr_used:
-                    instr = comp.instruments[randint(0, len(comp.instruments)-1)]
-                    print("...trying", instr)
-                chords[i].instrument = instr
-                print("...added", instr, "!")
-                # remember which one we just picked, dork.
-                comp.instr_used.append(instr)
-        comp.chords[1] = chords
+        '''
+        NOTE: this is picking n chords for ONE harmony instrument! need to pick n number of chords
+        for total_harmony's worth of instruments! i think this happened before...
+        '''
+        # how many chords for this part?
+        key = 0
+        total = randint(3, 15)
+        for i in range(total):
+            print("\nchord progression", i, "has", total, "chords...")
+            chords = []
+            for i in range(total_harmonies):
+                chord = create.newChord(tempo=comp.tempo)
+                instr = comp.instruments[randint(0, len(comp.instruments)-1)]
+                # pick instrument
+                print("\npicking instrument...")
+                if comp.isPicked(instr) == False:
+                    chord.instrument = instr
+                    print("...", instr, "picked")
+                    comp.instruments.append(instr)
+                    comp.instr_used.append(instr)
+                # are we done yet?
+                elif comp.allPicked() == True:
+                    print("...all instruments were picked!")
+                    break
+                else:
+                    # make sure they're all used before brut-force checking...
+                    print("...that one was picked, trying another...")
+                    while comp.isPicked(instr) == True:
+                        instr = comp.instruments[randint(0, len(comp.instruments)-1)]
+                        print("...trying", instr, "...")
+                    chord.instrument = instr
+                    comp.instruments.append(instr)
+                    comp.instr_used.append(instr)
+                    print("...", instr, "was picked!")
+                # save chord
+                chords.append(chord)
+            # print("...", len(chords), "chords created!")
+            # save chord to comp chord dictionary
+            comp.chords[key] = chords
+            key+=1
 
     # generate MIDI and .txt file names
     print("\ngenerating file names...")

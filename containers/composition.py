@@ -101,7 +101,7 @@ class Composition():
     # Has this instrument been picked?
     def isPicked(self, instr):
         '''
-        Has this instrument been picked already?
+        Has this instrument been picked already? 
         '''
         return True if instr in self.instr_used else False 
 

@@ -371,7 +371,7 @@ def save(comp):
             except KeyError:
                 break
             strt = 0
-            end = chords[i].rhythm
+            end = chords[key].rhythm
             # create instrument object.
             instrument = pm.instrument_name_to_program(chords[i].instrument)
             chord = pm.Instrument(program=instrument)

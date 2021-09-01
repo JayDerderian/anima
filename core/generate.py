@@ -72,7 +72,6 @@ This module/class handles all generative methods.
 '''
 
 # IMPORTS
-
 import math
 import urllib.request
 import core.constants as c
@@ -631,10 +630,9 @@ class Generate():
 
 
     # Pick a rhythm
-    def newRhythm(self, tempo=None):
+    def newRhythm(self):
         '''
-        Generates a single new rhythm, with or without a 
-        supplied tempo (float).
+        Generates a single new rhythm. Not scaled to current tempo!
         '''
         return c.RHYTHMS[randint(0, len(c.RHYTHMS)-1)]  
 
@@ -792,7 +790,7 @@ class Generate():
         # Pick notes and add to list
         '''NOTE: this allows for doublings!'''
         while len(newchord.notes) < total:
-            newchord.notes.append(scale[randint(0, len(scale) - 1)])
+            newchord.notes.append(scale[randint(0, len(scale)-1)])
         '''NOTE: This is avoids getting the while loop stuck
                  if there's a lot of repeated notes in the melody '''
         newchord.notes = list(dict.fromkeys(newchord.notes))
@@ -917,7 +915,7 @@ class Generate():
                 return -1
         else:
             # Otherwise just add single string to list
-            m.sourceData.append('None Inputted')
+            m.sourceData ='None Inputted'
 
         # Pick tempo if none is supplied
         if tempo == None:
