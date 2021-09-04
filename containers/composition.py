@@ -103,7 +103,7 @@ class Composition():
         '''
         Has this instrument been picked already? 
         '''
-        return True if instr in self.instr_used else False 
+        return True if instr in self.instr_used else False
 
 
     # Have all the instruments been picked?

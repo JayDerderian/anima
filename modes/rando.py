@@ -89,7 +89,6 @@ def newRandomComposition():
                 melody.instrument = instr
                 # save to picked list
                 comp.instr_used.append(instr)
-                comp.instruments.append(instr)
             # if so, try others...
             else:
                 # check if all instruments are picked before brute-force
@@ -100,7 +99,6 @@ def newRandomComposition():
                     instr = comp.instruments[randint(0, len(comp.instruments)-1)]
                     if comp.isPicked(instr) == False:
                         melody.instrument = instr
-                        comp.instruments.append(instr)
                         comp.instr_used.append(instr)
                         break
             # save the melody
@@ -120,30 +118,30 @@ def newRandomComposition():
         for i in range(total):
             print("\nchord progression", i, "has", total, "chords...")
             chords = []
-            for i in range(total_harmonies):
+            for j in range(total_harmonies):
                 chord = create.newChord(tempo=comp.tempo)
-                instr = comp.instruments[randint(0, len(comp.instruments)-1)]
                 # pick instrument
                 print("\npicking instrument...")
+                instr = comp.instruments[randint(0, len(comp.instruments)-1)]
                 if comp.isPicked(instr) == False:
                     chord.instrument = instr
                     print("...", instr, "picked")
-                    comp.instruments.append(instr)
                     comp.instr_used.append(instr)
-                # are we done yet?
-                elif comp.allPicked() == True:
-                    print("...all instruments were picked!")
-                    break
                 else:
-                    # make sure they're all used before brut-force checking...
-                    print("...that one was picked, trying another...")
+                    # check if all instruments are picked before brute-force
+                    # picking one...
+                    if comp.allPicked() == True:
+                        print("...all instruments were picked!")
+                        break
+                    print("...that one was picked. trying another...")
                     while comp.isPicked(instr) == True:
                         instr = comp.instruments[randint(0, len(comp.instruments)-1)]
-                        print("...trying", instr, "...")
-                    chord.instrument = instr
-                    comp.instruments.append(instr)
-                    comp.instr_used.append(instr)
-                    print("...", instr, "was picked!")
+                        print("..trying", instr, "...")
+                        if comp.isPicked(instr) == False:
+                            print("...adding", instr, "!")
+                            chord.instrument = instr
+                            comp.instr_used.append(instr)
+                            break
                 # save chord
                 chords.append(chord)
             # print("...", len(chords), "chords created!")
@@ -158,7 +156,10 @@ def newRandomComposition():
     # comp.txtFileName = "{}{}".format(comp.title, '.txt')
     # print("...text file:", comp.txtFileName)
     if size == 1:
-        title_full = "{}{}{}".format(comp.title, ' for solo ', comp.melodies[0].instrument)
+        if len(comp.melodies) > 1:
+            title_full = "{}{}{}".format(comp.title, ' for solo ', comp.melodies[0].instrument)
+        elif len(comp.chords) > 1:
+            title_full = "{}{}{}".format(comp.title, ' for solo ', comp.chords[0].instrument)
     elif size > 1:
         title_full = "{}{}{}".format(comp.title, ' for mixed ', comp.ensemble)
 
@@ -167,8 +168,6 @@ def newRandomComposition():
     # saveInfo(name=title_full, fileName=comp.txtFileName, newMusic=comp) 
     
     # Display results
-    # print("\nNew composition:", title_full)
-
     print("\ntitle:", comp.title)
     print("composer:", comp.composer)
     print("tempo:", comp.tempo)

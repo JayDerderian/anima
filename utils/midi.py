@@ -361,7 +361,7 @@ def save(comp):
     if len(comp.chords) > 0:
         print("\nsaving chords...")
         # iterate through a dictionary of chord() object lists.
-        key = 1
+        key = 0
         for i in range(len(comp.chords)):
             # retrieve current chord object list
             '''NOTE: this try block is a bandaid! 
