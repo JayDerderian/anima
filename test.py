@@ -14,8 +14,8 @@ from core.generate import Generate
 
 # newRandomComposition()
 # newStrQtet()
-# pnoduet()
+pnoduet()
 # newArp()
 # newProg()
 # newcanon()
-mixedqtet()
+# mixedqtet()

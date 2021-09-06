@@ -369,8 +369,14 @@ class Generate():
         octave = randint(2, 3)
         # Pick a root scale if none provided
         if root==None:
-            root, fn = self.pickScale()
-            meta_data.append(fn)
+            # pick major/minor/prime form, or mode?
+            if randint(0, 1)==1:
+                root, fn = self.pickScale()
+                meta_data.append(fn)
+            else:
+                mode, mode_pcs, root = self.pickMode(transpose=True)
+                data = root[0] + mode
+                meta_data.append(data)
         # Pick total: 3 - 50 if we're generating random notes
         if data==None:
             # Note that the main loop uses total + 1!
@@ -506,7 +512,7 @@ class Generate():
             n = randint(0, 11)
             if n not in pcs:
                 pcs.append(n)
-        '''Trying to create a list comprehension of the above loop...'''
+        '''Trying to create a list comprehension version of the above loop...'''
         # pcs = [randint(0,11) for x in range(total) if x not in pcs]
         # sort in ascending order
         pcs.sort()
@@ -652,7 +658,7 @@ class Generate():
               be hard-coded.
         '''
         rhythms = []
-        if total is None:
+        if total==None:
             total = randint(3, 30)
         while len(rhythms) < total:
             # Pick rhythm and add to list
@@ -706,7 +712,7 @@ class Generate():
               be hard-coded.
         '''
         dynamics = []
-        if total is None:
+        if total==None:
             total = randint(3, 30)
         while len(dynamics) < total:
             # Pick dynamic (medium range for now)
@@ -774,32 +780,32 @@ class Generate():
         
         Returns a chord() object. Does not assign an instrument!
         '''
-        # New chord() object
+        # new chord() object
         newchord = Chord()
-        # Add tempo if one isn't supplied
+        # add tempo if one isn't supplied
         if tempo==None:
             newchord.tempo = 60.0
         else:
             newchord.tempo = tempo
-        # Pick or generate a new scale if we don't get one supplied
+        # pick or generate a new scale if we don't get one supplied
         if scale==None:
             scale, newchord.fn = self.pickScale(octave=randint(2, 5))
-            newchord.sourceNotes = scale
-        # How many notes in this chord? 2 to 9 (for now)
+        # save original scale
+        newchord.sourceNotes = scale
+        # how many notes in this chord?
         total = randint(2, 9)
-        # Pick notes and add to list
-        '''NOTE: this allows for doublings!'''
+        # pick notes and add to list (allows for doublings)
         while len(newchord.notes) < total:
             newchord.notes.append(scale[randint(0, len(scale)-1)])
-        '''NOTE: This is avoids getting the while loop stuck
-                 if there's a lot of repeated notes in the melody '''
+        # this is avoids getting the while loop stuck
+        # if there's a lot of repeated notes in the melody
         newchord.notes = list(dict.fromkeys(newchord.notes))
-        # Pick a rhythm and scale if needed
+        # pick a rhythm and scale if needed
         rhythm = self.newRhythm()
         if newchord.tempo != 60:
             rhythm = self.tempoConvert(newchord.tempo, rhythm)
         newchord.rhythm = rhythm
-        # Pick a dynamic
+        # pick a dynamic
         newchord.dynamic = self.newDynamic()
         return newchord
 

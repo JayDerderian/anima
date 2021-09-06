@@ -382,7 +382,7 @@ def save(comp):
                     # translate note to MIDI note
                     note = pm.note_name_to_number(chords[j].notes[k])
                     anote = pm.Note(
-                        velocity=chords[j].dynamics[k], pitch=note, start=strt, end=end)
+                        velocity=chords[j].dynamic, pitch=note, start=strt, end=end)
                     # add to instrument object
                     chord.notes.append(anote)
                 try:
