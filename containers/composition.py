@@ -13,7 +13,7 @@ class Composition():
     # Constructor
     def __init__(self, title=None, composer=None, tempo=None):
 
-        if title is not None and composer is not None:
+        if title==None and composer==None:
             # Title
             self.title = title
             # Composer name
@@ -32,7 +32,7 @@ class Composition():
         self.txtFileName = ""
 
         # Global tempo (float)
-        if tempo is not None:
+        if tempo != None:
             self.tempo = tempo
         else:
             # Default tempo if none is provided
@@ -111,19 +111,7 @@ class Composition():
         '''
         Havel *all* the instruments been used?
         '''
-        return True if self.instruments == self.instr_used else False
-
-
-    # Adjust for given tempo when calculating composition duration
-    def tempoAdjust(self, rhythms):
-        diff = 60/self.tempo
-        if type(rhythms) == float:
-            rhythms *= diff
-        elif type(rhythms) == list:
-            for i in range(len(rhythms)-1):
-                rhythms[i] *= diff
-        return rhythms    
-
+        return True if self.instruments==self.instr_used else False
 
     # Get duration of composition
     def duration(self):
@@ -137,24 +125,11 @@ class Composition():
         cl = 0.0
         # get melody totals
         for i in range(len(self.melodies)):
-            # make a copy to avoid altering original values
-            rhythms = self.melodies[i].rhythms
-            # adjust values if tempo isn't 60bpm
-            if self.tempo != 60.0:
-                rhythms = self.tempoAdjust(rhythms)
-            for j in range(len(rhythms)):
-                ml += rhythms[j]
+            for j in range(len(self.melodies[i].rhythms)):
+                ml += self.melodies[i].rhythms[j]
         # get chord totals
-        key = 1
         for i in range(len(self.chords)):
-            # make a copy as to not modify original entries
-            chords = self.chords[key]
+            chords = self.chords[i]
             for j in range(len(chords)):
-                if self.tempo != 60.0:
-                    # make a copy as to not modify original entries
-                    r = self.tempoAdjust(chords[j].rhythm)
-                    cl += r
-                else:
-                    cl += chords[j].rhythm
-            key +=1
+                cl += chords[j].rhythm
         return ml if ml > cl else cl

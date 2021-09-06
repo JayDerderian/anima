@@ -29,4 +29,4 @@ class Chord():
         
         self.notes = []
         self.rhythm = 0.0
-        self.dynamics = []
+        self.dynamic = 0.0
