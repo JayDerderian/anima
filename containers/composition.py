@@ -124,12 +124,14 @@ class Composition():
         ml = 0.0
         cl = 0.0
         # get melody totals
-        for i in range(len(self.melodies)):
-            for j in range(len(self.melodies[i].rhythms)):
-                ml += self.melodies[i].rhythms[j]
+        if len(self.melodies) > 0:
+            for i in range(len(self.melodies)):
+                for j in range(len(self.melodies[i].rhythms)):
+                    ml += self.melodies[i].rhythms[j]
         # get chord totals
-        for i in range(len(self.chords)):
-            chords = self.chords[i]
-            for j in range(len(chords)):
-                cl += chords[j].rhythm
+        if len(self.chords) > 0:
+            for i in range(len(self.chords)):
+                chords = self.chords[i]
+                for j in range(len(chords)):
+                    cl += chords[j].rhythm
         return ml if ml > cl else cl

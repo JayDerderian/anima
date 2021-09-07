@@ -73,17 +73,20 @@ This module/class handles all generative methods.
 
 # IMPORTS
 import math
-import random
 import urllib.request
 import core.constants as c
 import utils.midi as m
+
 from utils.mapping import mapData
 from utils.toabc import abc
 from utils.save import saveInfo
-from random import randint, sample
+
+from random import randint, sample, choice
+
 from containers.chord import Chord
 from containers.melody import Melody
 from containers.composition import Composition
+
 from datetime import datetime as date
 
 # Generative functions
@@ -125,9 +128,11 @@ class Generate():
             # pick 1 to 4 random words
             t = 0
             total = randint(1, 3)
-            name = words[randint(0, len(words) - 1)]
+            # name = words[randint(0, len(words) - 1)]
+            name = choice(words)
             while(t < total):
-                name = name + ' ' + words[randint(0, len(words) - 1)]
+                # name = name + ' ' + words[randint(0, len(words) - 1)]
+                name = name + ' ' + choice(words)
                 t += 1
         except urllib.error.URLError:
             print("\nnewTitle() - ERROR: Unable to retrieve word list!")
@@ -151,9 +156,11 @@ class Generate():
             # pick 1 to 3 random names
             t = 0
             total = randint(1, 3)
-            name = names[randint(0, len(names) - 1)]
+            # name = names[randint(0, len(names) - 1)]
+            name = choice(names)
             while(t < total):
-                name = name + ' ' + names[randint(0, len(names) - 1)]
+                # name = name + ' ' + names[randint(0, len(names) - 1)]
+                name = name + ' ' + choice(names)
                 t += 1
         except urllib.error.URLError:
             print("\nnewTitle() - ERROR: Unable to retrieve name list!")
@@ -273,7 +280,7 @@ class Generate():
             rhythms *= diff
         # or a list of floats?
         elif type(rhythms) == list:
-            for i in range(len(rhythms) - 1):
+            for i in range(len(rhythms)):
                 rhythms[i] *= diff
                 '''NOTE: Truncate float a bit here??? Might help
                          with sheet music generation'''
@@ -291,7 +298,7 @@ class Generate():
         Picks tempo (float) between 40-208bpm.
         '''
         # return c.TEMPOS[randint(0, len(c.TEMPOS) - 1)]
-        return random.choice(c.TEMPOS)
+        return choice(c.TEMPOS)
 
 
     #--------------------------------------------------------------------------------#
@@ -336,7 +343,7 @@ class Generate():
         '''
         if i is None:
             # note = c.CHROMATIC_SCALE[randint(0, len(c.CHROMATIC_SCALE) - 1)]
-            note = random.choice(c.CHROMATIC_SCALE)
+            note = choice(c.CHROMATIC_SCALE)
         elif type(i) == int and i > -1 and i < len(c.CHROMATIC_SCALE):
                 note = c.CHROMATIC_SCALE[i]
         else:
@@ -371,14 +378,20 @@ class Generate():
         octave = randint(2, 3)
         # Pick a root scale if none provided
         if root==None:
-            # pick major/minor/prime form, or mode?
-            if randint(0, 1)==1:
+            # pick either a maj/min scale, forte prime form
+            # church mode in any key, or create a new scale
+            ch = randint(1, 3)
+            if ch == 1:
                 root, fn = self.pickScale()
                 meta_data.append(fn)
-            else:
+            elif ch == 2:
                 mode, mode_pcs, root = self.pickMode(transpose=True)
                 data = root[0] + mode
                 meta_data.append(data)
+            else:
+                root, pcs = self.newScale()
+                data = "new scale:" + str(pcs)
+                meta_data.append(pcs)
         # Pick total: 3 - 50 if we're generating random notes
         if data==None:
             # Note that the main loop uses total + 1!
@@ -404,16 +417,20 @@ class Generate():
                 if octave > 5:
                     # Reset starting octave
                     octave = randint(2, 3)
-                    # Generate another new root scale & 
-                    # starting octave + save forte number, if applicable
-                    # pick major/minor/prime form, or mode?
-                    if randint(0, 1)==1:
+                    # pick either a maj/min scale, forte prime form
+                    # church mode in any key, or create a new scale
+                    ch = randint(1, 3)
+                    if ch == 1:
                         root, fn = self.pickScale()
                         meta_data.append(fn)
-                    else:
+                    elif ch == 2:
                         mode, mode_pcs, root = self.pickMode(transpose=True)
                         data = root[0] + mode
                         meta_data.append(data)
+                    else:
+                        root, pcs = self.newScale()
+                        data = "new scale:" + str(pcs)
+                        meta_data.append(pcs)
                 # Reset n to stay within len(root)
                 n = 0
 
@@ -426,7 +443,7 @@ class Generate():
             total = randint(3, len(scale))
             for i in range(total):
                 # notes.append(scale[randint(0, len(scale)-1)])
-                notes.append(random.choice(scale))
+                notes.append(choice(scale))
 
         # ...Or pick notes according to integers in data array
         else:
@@ -448,7 +465,7 @@ class Generate():
         '''
         # pick mode
         # mode = c.MODE_KEYS[randint(1, len(c.MODE_KEYS)-1)]
-        mode = random.choice(c.MODE_KEYS)
+        mode = choice(c.MODE_KEYS)
         mode_pcs = c.MODES[mode]
         # transpose?
         if transpose==True:
@@ -479,17 +496,17 @@ class Generate():
             # pick major
             if randint(1, 2) == 1:
                 # scale = c.MAJOR_SCALES[randint(1, len(c.MAJOR_SCALES)-1)]
-                scale = random.choice(c.MAJOR_SCALES)
+                scale = choice(c.MAJOR_SCALES)
                 fn = "7-35 (" + scale[0] + "major)"
             # pick minor
             else:
                 # scale = c.MINOR_SCALES[randint(1, len(c.MINOR_SCALES)-1)]
-                scale = random.choice(c.MINOR_SCALES)
+                scale = choice(c.MINOR_SCALES)
                 fn = "7-35 (" + scale[0] + "minor)"
         else:
             # pick prime form pitch-class set
             # fn = c.FORTE_NUMBERS[randint(1, len(c.FORTE_NUMBERS)-1)]
-            fn = random.choice(c.FORTE_NUMBERS)
+            fn = choice(c.FORTE_NUMBERS)
             pcs = c.SCALES[fn]
             # convert pcs to a list of note names / strings
             for i in range(len(pcs)):
@@ -654,7 +671,7 @@ class Generate():
         Generates a single new rhythm. Not scaled to current tempo!
         '''
         # return c.RHYTHMS[randint(0, len(c.RHYTHMS)-1)]  
-        return random.choice(c.RHYTHMS)
+        return choice(c.RHYTHMS)
 
     # Generate a list containing a rhythmic pattern
     def newRhythms(self, total=None, tempo=None):
@@ -677,7 +694,7 @@ class Generate():
         while len(rhythms) < total:
             # Pick rhythm and add to list
             # rhythm = self.newRhythm()
-            rhythm = random.choice(c.RHYTHMS)
+            rhythm = choice(c.RHYTHMS)
             # Repeat this rhythm or not? 1 = yes, 2 = no
             if randint(1, 2) == 1:
                 # Limit reps to no more than roughly 1/3 of the supplied total
@@ -712,7 +729,7 @@ class Generate():
         Generates a single dynamic/velocity between 20 - 124
         '''
         # return c.DYNAMICS[randint(0, len(c.DYNAMICS) - 1)]
-        return random.choice(c.DYNAMICS)
+        return choice(c.DYNAMICS)
 
     # Generate a list of dynamics.
     def newDynamics(self, total=None):
@@ -733,7 +750,7 @@ class Generate():
         while len(dynamics) < total:
             # Pick dynamic (medium range for now)
             # dynamic = self.newDynamic()
-            dynamic = random.choice(c.DYNAMICS)
+            dynamic = choice(c.DYNAMICS)
             # Repeat this dynamic or not? 1 = yes, 2 = no
             if randint(1, 2) == 1:
                 # Limit reps to no more than roughly 1/3 of the supplied total
@@ -802,10 +819,10 @@ class Generate():
             newchord.tempo = tempo
         # pick or generate a new scale if we don't get one supplied
         if scale==None:
-            choice = randint(1, 3)
-            if choice == 1:
+            ch = randint(1, 3)
+            if ch == 1:
                 scale, newchord.fn = self.pickScale(octave=randint(2,5))
-            elif choice == 2:
+            elif ch == 2:
                 mode, mode_pcs, scale = self.pickMode(transpose=True, octave=randint(2,5))
             else:
                 scale = self.newScale(octave=randint(2,5))
@@ -816,7 +833,7 @@ class Generate():
         # pick notes and add to list (allows for doublings)
         while len(newchord.notes) < total:
             # newchord.notes.append(scale[randint(0, len(scale)-1)])
-            newchord.notes.append(random.choice(scale))
+            newchord.notes.append(choice(scale))
         # this is avoids getting the while loop stuck
         # if there's a lot of repeated notes in the melody
         newchord.notes = list(dict.fromkeys(newchord.notes))

@@ -11,7 +11,7 @@ from containers.composition import Composition
 from utils.save import saveInfo
 import utils.midi as mid
 
-from random import randint
+from random import randint, choice
 from datetime import datetime as date
 
 '''
@@ -68,7 +68,8 @@ def newRandomComposition():
 
     # pick ensemble size (1 - 11 instruments for now)
     # and instrumentation
-    size = randint(1, len(c.ENSEMBLE_SIZES)-1)
+    # size = randint(1, len(c.ENSEMBLE_SIZES)-1)
+    size = choice(c.ENSEMBLE_KEYS)
     print("\ntotal instruments:", size)
     comp.ensemble = c.ENSEMBLE_SIZES[size]
     comp.instruments = create.newInstruments(size)
@@ -82,7 +83,8 @@ def newRandomComposition():
             '''NOTE: use randomly chosen source data at some point????'''
             melody = create.newMelody(tempo=comp.tempo)
             # assign a randomly-chosen instrument to this melody
-            instr = comp.instruments[randint(0, len(comp.instruments)-1)]
+            # instr = comp.instruments[randint(0, len(comp.instruments)-1)]
+            instr = choice(comp.instruments)
             # make sure it hasn't been used already
             if comp.isPicked(instr) == False:
                 # assign instrument
@@ -122,7 +124,8 @@ def newRandomComposition():
                 chord = create.newChord(tempo=comp.tempo)
                 # pick instrument
                 print("\npicking instrument...")
-                instr = comp.instruments[randint(0, len(comp.instruments)-1)]
+                # instr = comp.instruments[randint(0, len(comp.instruments)-1)]
+                instr = choice(comp.instruments)
                 if comp.isPicked(instr) == False:
                     chord.instrument = instr
                     print("...", instr, "picked")
@@ -168,7 +171,7 @@ def newRandomComposition():
     # saveInfo(name=title_full, fileName=comp.txtFileName, newMusic=comp) 
     
     # Display results
-    print("\ntitle:", comp.title)
+    print("\ntitle:", title_full)
     print("composer:", comp.composer)
     print("tempo:", comp.tempo)
     print("midi file saved as:", comp.midiFileName)
