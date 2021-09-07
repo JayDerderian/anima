@@ -68,18 +68,12 @@ class Melody():
                 rhythms[i] *= diff
         return rhythms 
 
-    # get duration of melody
+    # Get duration of melody
     def duration(self):
         '''
-        Returns duration (float) of melody by adding together 
-        rhythmic values (in seconds)
+        Returns the duration (float) of melody in seconds.
         '''
         dur = 0.0
-        # make a copy to avoid modifying original values
-        rhythms = self.rhythms
-        # adjust against tempo accordingly
-        if self.tempo != 60.0:
-            rhythms = self.tempoAdjust(rhythms)
-        for i in range(len(rhythms)):
-            dur += rhythms[i]
+        for i in range(len(self.rhythms)):
+            dur += self.rhythms[i]
         return dur

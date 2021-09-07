@@ -424,12 +424,12 @@ class Generate():
                         meta_data.append(fn)
                     elif ch == 2:
                         mode, mode_pcs, root = self.pickMode(transpose=True)
-                        data = root[0] + mode
-                        meta_data.append(data)
+                        info = root[0] + mode
+                        meta_data.append(info)
                     else:
                         root, pcs = self.newScale()
-                        data = "new scale:" + str(pcs)
-                        meta_data.append(pcs)
+                        info = "new scale:" + str(pcs)
+                        meta_data.append(info)
                 # Reset n to stay within len(root)
                 n = 0
 
@@ -1055,8 +1055,7 @@ class Generate():
         Outputs a a MIDI file, a .txt file with the compositions data (title, instrumentation,
         notes, etc...). 
 
-        Returns an incomplete Composition() object (no composer data, or ),
-        and a str of the compositions's data in abc notation.
+        Returns a composition() object on success, or -1 on failure.
         '''
         # Store it here
         comp = Composition()
@@ -1094,15 +1093,16 @@ class Generate():
             comp.instruments.append(ch[i].instrument)
 
         # Save chords to chord dictionary
-        comp.chords[1] = ch
+        comp.chords[0] = ch
 
         # Full title
         title_full = "{}{}{}{}".format(comp.title, ' for ', 
             mel.instrument, ' and various keyboards')
 
         # Export MIDI & text file, then display results
-        if save(comp)!=-1 and saveInfo(name=comp.title, 
-            fileName=comp.txtFileName, newMusic=comp)==0:
+        # if save(comp)!=-1 and saveInfo(name=comp.title, 
+        #     fileName=comp.txtFileName, newMusic=comp)==0:
+        if save(comp)!=-1:
             print("\ntitle:", title_full)
             print("composer:", comp.composer)
             print("date:", comp.date)
