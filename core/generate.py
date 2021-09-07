@@ -80,6 +80,7 @@ import utils.midi as m
 from utils.mapping import mapData
 from utils.toabc import abc
 from utils.save import saveInfo
+from utils.midi import save
 
 from random import randint, sample, choice
 
@@ -163,7 +164,7 @@ class Generate():
                 name = name + ' ' + choice(names)
                 t += 1
         except urllib.error.URLError:
-            print("\nnewTitle() - ERROR: Unable to retrieve name list!")
+            print("\nnewComposer() - ERROR: Unable to retrieve name list!")
             name = 'Rando Calrissian'
         return name
 
@@ -240,12 +241,10 @@ class Generate():
     # Transpose
     def transpose(self, pcs, t, oe=True):
         '''
-        Transpose a pitch class or list of pitch classes using a supplied 
-        interval i, or list of intervals i. 
+        Transpose a pitch class or list of pitch classes (list[int]) 
+        using a supplied interval i, or list of intervals i. 
         
-        Use a list of intervals to generate variations on a given pitch-class set.
-        
-        Returns a modified pcs (list[int]) or modified pitch class int,
+        Returns a modified pcs (list[int]) or modified pitch class (int),
         depending on input.
         '''
         # modify with a single interval across all pitch-classes
@@ -386,12 +385,12 @@ class Generate():
                 meta_data.append(fn)
             elif ch == 2:
                 mode, mode_pcs, root = self.pickMode(transpose=True)
-                data = root[0] + mode
-                meta_data.append(data)
+                info = root[0] + mode
+                meta_data.append(info)
             else:
                 root, pcs = self.newScale()
-                data = "new scale:" + str(pcs)
-                meta_data.append(pcs)
+                info = "new scale: " + str(pcs)
+                meta_data.append(info)
         # Pick total: 3 - 50 if we're generating random notes
         if data==None:
             # Note that the main loop uses total + 1!
@@ -623,15 +622,19 @@ class Generate():
         return c.ARPEGGIOS[key]
 
     # Generate a 12-tone row.
-    def newTwelveToneRow(self):
+    def new12ToneRow(self, octave=None):
         '''
         Generates a 12-tone row. 
 
-        Returns a tuple: a list[str] of notes in octave 4, 
-        and the original pitch class set (list[int]).
+        Returns a tuple: a list[str] of notes in octave 4 by default,
+        or in a specified octave (2-5), and the original pitch class set 
+        (list[int]).
         '''
         pcs = sample(c.PITCH_CLASSES, len(c.PITCH_CLASSES))
-        row = self.toStr(pcs, octave=4)
+        if octave==None:
+            row = self.toStr(pcs, octave=4)
+        else:
+            row = self.toStr(pcs, octave)
         return row, pcs
 
 
@@ -780,7 +783,7 @@ class Generate():
         print("\n------------Chord:-------------")
         print("\nnotes:", chord.notes)
         print("rhythm:", chord.rhythm)
-        print("dynamics:", chord.dynamics)
+        print("dynamic:", chord.dynamic)
 
     # Display a list of chords
     def displayChords(self, chords):
@@ -994,25 +997,20 @@ class Generate():
         Returns 0 on succcess, -1 on failure.
         '''
         # apply data and dataType as necessary
-        if data is not None and dataType is not None:
+        if data != None and dataType != None:
             tempo = self.newTempo()
             newTune = self.newMelody(tempo=tempo, data=data, dataType=dataType)
         else:
             tempo = self.newTempo()
             newTune = self.newMelody(tempo=tempo)
-        # Pick instrument
         newTune.instrument = self.newInstrument()
-        # Generate title
         title = self.newTitle()
-        # Create MIDI file name
-        midiFileName = title + '.mid'
-        # Save to MIDI file
-        m.saveMelody(midiFileName, newTune)
-        # Save composition data to a .txt file (fileName)
-        txtFileName = "{}{}".format(title, '.txt')
-        title_full = "{}{}{}{}".format(title, ' for ', newTune.instrument, ' and piano')
-        print("\nNew melody title:", title_full)
-        saveInfo(title_full, data, txtFileName, newTune)
+        # midiFileName = title + '.mid'
+        # m.saveMelody(midiFileName, newTune)
+        # txtFileName = "{}{}".format(title, '.txt')
+        title_full = "{}{}{}".format(title, ' for solo ', newTune.instrument)
+        print("\nnew melody title:", title_full)
+        # saveInfo(title_full, data, txtFileName, newTune)
         return 0
 
     # Wrapper for newChords(). Outputs chords as a MIDI file and
@@ -1026,25 +1024,21 @@ class Generate():
         
         Returns a list of chord() objects
         '''
-        if total is None:
+        if total==None:
             total = randint(3, 15)
-        elif tempo is None:
+        elif tempo==None:
             tempo = self.newTempo()
-        elif sourceScale is None:
+        elif sourceScale==None:
             sourceScale = self.newNotes()
         chords = self.newChords(total, tempo, sourceScale)
-        # generate title
         title = self.newTitle()
-        # create MIDI file name
-        title1 = title + '.mid'
-        # save to MIDI file
-        if m.saveChords(title, chords) != -1:
-            print("\nMIDI file saved as:", title1)
-        else:
-            print("\nnewProgression() - ERROR: unable to save MIDI file!")
-            return -1
-        # export to .txt file
-        saveInfo(name=title, data=sourceScale, fileName=title1, newChords=chords)
+        print("\ntitle:", title)
+        fn = title + '.mid'
+        m.saveChords(title, chords)
+        print("\nmidi file:", fn)
+        tn = title + '.txt'
+        saveInfo(name=title, data=sourceScale, fileName=tn, newChords=chords)
+        print("text file:", tn)
         return chords
 
     # Outputs a single melody with chords in a MIDI file
@@ -1064,65 +1058,56 @@ class Generate():
         Returns an incomplete Composition() object (no composer data, or ),
         and a str of the compositions's data in abc notation.
         '''
-        # Store it in here
+        # Store it here
         comp = Composition()
-
+        # Initialize
+        comp.title = self.newTitle()
+        comp.composer = self.newComposer()
+        comp.date = date.now().strftime("%d-%b-%y %H:%M:%S")
+        comp.ensemble = 'duet'
+        comp.midiFileName = comp.title + '.mid'
+        comp.txtFileName = comp.title + '.txt'
+        
         # Generate a melody
-        if data is not None and dataType is not None:
+        if data != None and dataType != None:
             mel = self.newMelody(data=data, dataType=dataType)
-            if mel == -1:
-                print("\nnewComposition() - ERROR: unable to generate melody!")
-                return -1
+            mel.tempo = comp.tempo
             # pick instrument for melody
             mel.instrument = self.newInstrument()
+            comp.instruments.append(mel.instrument)
 
         else:
             mel = self.newMelody()
-            if m == -1:
-                print("\nnewComposition() - ERROR: unable to generate melody!")
-                return -1
+            mel.tempo = comp.tempo
             # pick instrument for melody
             mel.instrument = self.newInstrument()
+            comp.instruments.append(mel.instrument)
+
         # Save melody info
-        comp.instruments.append(m.instrument)
-        comp.melodies.append(m)
+        comp.melodies.append(mel)
 
         # Generate harmonies from this melody
-        ch = self.newChords(len(m.notes), m.tempo, m.notes)
-        for i in range(len(c)):
-            ch[i].instrument = c.INSTRUMENTS[randint(0, 8)]
-        # Save harmony info (instruments + chord list)
+        ch = self.newChords(len(mel.notes), mel.tempo, mel.notes)
         for i in range(len(ch)):
+            # picking only various keyboard instruments for now...
+            ch[i].instrument = c.INSTRUMENTS[randint(0, 8)]
             comp.instruments.append(ch[i].instrument)
+
+        # Save chords to chord dictionary
         comp.chords[1] = ch
 
-        # Generate titles and file names
-        comp.title = self.newTitle()
+        # Full title
         title_full = "{}{}{}{}".format(comp.title, ' for ', 
             mel.instrument, ' and various keyboards')
-        mfn = comp.title + '.mid'
-        tfn = comp.title + '.txt'
-        comp.midiFileName = mfn
-        comp.txtFileName = tfn
 
-        # Save date and time of composition
-        comp.date = date.now().strftime("%b-%d-%y %H:%M:%S")
-
-        # Export
-        '''NOTE: eventually replace m.saveComposition() with just m.save(comp)'''
-        if m.saveComposition(mel, c, mfn) != -1 and saveInfo(
-            name=comp.title, data=mel.sourceData, fileName=tfn, 
-            newMelody=mel, newChords=c) == 0:
-            # Display results
-            print("\nTitle:", title_full)
-            print("\nMIDI file saved as:", mfn)
-            print("\nText file saved as:", tfn)
-            
-            # Returns composition() object and comp data in abc notation (str)!
-            return comp, abc(comp.title, mel.tempo, mel, ch)
-
+        # Export MIDI & text file, then display results
+        if save(comp)!=-1 and saveInfo(name=comp.title, 
+            fileName=comp.txtFileName, newMusic=comp)==0:
+            print("\ntitle:", title_full)
+            print("composer:", comp.composer)
+            print("date:", comp.date)
+            print("midi file:", comp.midiFileName)
+            return comp
         else:
-            print("\nnewComposition() - ERROR: Unable to export files!")
+            print("\nnoooooooooooooooooooooo")
             return -1
-
-        

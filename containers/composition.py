@@ -49,8 +49,6 @@ class Composition():
         # List dictionary of chord() object lists (progressions). 
         # Key (int) functions as index. 
         self.chords = {}
-        # List of percussion() objects.
-        self.percussion = []
     
 
     # Check if there's data in this instance
@@ -58,19 +56,18 @@ class Composition():
         '''
         Check if this composition has all required data:
 
-        -Title (string)
-        -Composer (string)
-        -File name (string)
+        -Title (str)
+        -Composer (str)
+        -Date (str)
+        -MIDI File name (str)
         -Tempo (float)
-        -Original source data (int or char list)
-        -Global tempo (float)
-        -List of melodies (melody() objects)
-        -List of harmonies (chord() objects)
+        -Instruments (list[str])
+        -Melodies (list[melody()])
+        -Dictionary of harmonies (lists of chord() objects)
         '''
         if(self.title != "" 
             and self.composer != "" 
             and self.date != ""
-            and self.txtFileName != ""
             and self.midiFileName != ""
             and self.tempo != 0.0
             and len(self.instruments) != 0
@@ -86,8 +83,6 @@ class Composition():
                 print("\ncomposition() - ERROR: no date info inputted!")
             elif(self.midiFileName == ""):
                 print("\ncomposition() - ERROR: no MIDI file name inputted!")
-            elif(self.txtFileName == ""):
-                print("\ncomposition() - ERROR: no .txt file name inputted!")
             elif(self.tempo == 0.0):
                 print("\ncomposition() - ERROR: no tempo inputted!")
             elif(len(self.instruments) == 0):
@@ -116,22 +111,19 @@ class Composition():
     # Get duration of composition
     def duration(self):
         '''
-        Returns length of composition by returning largest value of either melody
-        list or chord prog dictionary. 
-        
-        Checks against self.tempo to ensure accurate rhytmic values.
+        Returns the duration of a composition in seconds. 
         '''
         ml = 0.0
         cl = 0.0
         # get melody totals
         if len(self.melodies) > 0:
-            for i in range(len(self.melodies)):
-                for j in range(len(self.melodies[i].rhythms)):
-                    ml += self.melodies[i].rhythms[j]
+            for m in range(len(self.melodies)):
+                for rhythm in range(len(self.melodies[m].rhythms)):
+                    ml += self.melodies[m].rhythms[rhythm]
         # get chord totals
         if len(self.chords) > 0:
-            for i in range(len(self.chords)):
-                chords = self.chords[i]
-                for j in range(len(chords)):
-                    cl += chords[j].rhythm
+            for c in range(len(self.chords)):
+                chords = self.chords[c]
+                for chord in range(len(chords)):
+                    cl += chords[chord].rhythm
         return ml if ml > cl else cl
