@@ -18,12 +18,12 @@ from core.generate import Generate
 start_time = time.time()
 
 # newRandomComposition()
-newStrQtet()
+# newStrQtet()
 # pnoduet()
 # newArp()
 # newProg()
 # newcanon()
-# mixedqtet()
+mixedqtet()
 
 end_time = time.time()-start_time
 print("\nruntime:", end_time, "seconds\n")

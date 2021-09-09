@@ -111,19 +111,28 @@ class Composition():
     # Get duration of composition
     def duration(self):
         '''
-        Returns the duration of a composition in seconds. 
+        Returns the duration of a composition in seconds.
+
+        Find the longest melody duration, and longest chord progression
+        duration, compare and return the largest of the two 
         '''
         ml = 0.0
         cl = 0.0
         # get melody totals
         if len(self.melodies) > 0:
+            mlg = 0.0
             for m in range(len(self.melodies)):
-                for rhythm in range(len(self.melodies[m].rhythms)):
-                    ml += self.melodies[m].rhythms[rhythm]
+                # use duration method to get... the duration
+                ml = self.melodies[m].duration()
+                if ml > mlg:
+                    mlg = ml
         # get chord totals
         if len(self.chords) > 0:
+            clg = 0.0
             for c in range(len(self.chords)):
                 chords = self.chords[c]
                 for chord in range(len(chords)):
                     cl += chords[chord].rhythm
-        return ml if ml > cl else cl
+                if cl > clg:
+                    clg = cl
+        return mlg if mlg > clg else clg
