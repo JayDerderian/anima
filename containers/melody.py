@@ -71,7 +71,7 @@ class Melody():
     # Get duration of melody
     def duration(self):
         '''
-        Returns the duration (float) of melody in seconds.
+        Returns the duration (float) of a melody in seconds.
         '''
         dur = 0.0
         for i in range(len(self.rhythms)):

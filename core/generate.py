@@ -168,6 +168,16 @@ class Generate():
             name = 'Rando Calrissian'
         return name
 
+    # Initializes a composition() object with a title, composer, and date
+    def newComp(title, composer, date):
+        '''
+        Initialize a new composition() object by supplying
+        the title, composer, and date
+        '''
+        return Composition(title=title, 
+                           composer=composer, 
+                           date=date)
+
     # Auto generate a file/composition name (type - date:time)
     def newMidiFileName(self, title):
         '''
