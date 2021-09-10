@@ -678,7 +678,6 @@ class Generate():
         '''
         Generates a single new rhythm. Not scaled to current tempo!
         '''
-        # return c.RHYTHMS[randint(0, len(c.RHYTHMS)-1)]  
         return choice(c.RHYTHMS)
 
     # Generate a list containing a rhythmic pattern
@@ -736,7 +735,6 @@ class Generate():
         '''
         Generates a single dynamic/velocity between 20 - 124
         '''
-        # return c.DYNAMICS[randint(0, len(c.DYNAMICS) - 1)]
         return choice(c.DYNAMICS)
 
     # Generate a list of dynamics.
@@ -832,6 +830,8 @@ class Generate():
                 scale, newchord.fn = self.pickScale(octave=randint(2,5))
             elif ch == 2:
                 mode, mode_pcs, scale = self.pickMode(transpose=True, octave=randint(2,5))
+                info = scale[0] + mode
+                newchord.fn = info
             else:
                 scale = self.newScale(octave=randint(2,5))
         # save original scale
@@ -840,7 +840,6 @@ class Generate():
         total = randint(2, 9)
         # pick notes and add to list (allows for doublings)
         while len(newchord.notes) < total:
-            # newchord.notes.append(scale[randint(0, len(scale)-1)])
             newchord.notes.append(choice(scale))
         # this is avoids getting the while loop stuck
         # if there's a lot of repeated notes in the melody

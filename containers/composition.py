@@ -118,6 +118,10 @@ class Composition():
         of the two. 
         '''
         # get melody totals
+        ml = 0.0
+        cl = 0.0
+        mlg = 0.0
+        clg = 0.0
         if len(self.melodies) > 0:
             ml = 0.0
             mlg = 0.0
