@@ -104,7 +104,7 @@ class Composition():
     # Have all the instruments been picked?
     def allPicked(self):
         '''
-        Havel *all* the instruments been used?
+        Have *all* the instruments been used?
         '''
         return True if self.instruments==self.instr_used else False
 
@@ -113,21 +113,21 @@ class Composition():
         '''
         Returns the duration of a composition in seconds.
 
-        Find the longest melody duration, and longest chord progression
-        duration, compare and return the largest of the two 
+        Finds the longest melody duration, the longest chord 
+        progression duration, compares then returns the largest 
+        of the two. 
         '''
-        ml = 0.0
-        cl = 0.0
         # get melody totals
         if len(self.melodies) > 0:
+            ml = 0.0
             mlg = 0.0
             for m in range(len(self.melodies)):
-                # use duration method to get... the duration
                 ml = self.melodies[m].duration()
                 if ml > mlg:
                     mlg = ml
         # get chord totals
         if len(self.chords) > 0:
+            cl = 0.0
             clg = 0.0
             for c in range(len(self.chords)):
                 chords = self.chords[c]

@@ -198,11 +198,11 @@ class Generate():
         scale = []
         if octave is not None:
             for i in range(len(pcs)):
-                note = "{}{}".format(c.CHROMATIC_SCALE[pcs[i]], octave)
+                note = "{}{}".format(c.NOTES[pcs[i]], octave)
                 scale.append(note)
         else:
             for i in range(len(pcs)):
-                scale.append(c.CHROMATIC_SCALE[pcs[i]])
+                scale.append(c.NOTES[pcs[i]])
         '''
         NOTE: there's probably a better way to do this...
         NOTE: need to add an oe flag to determine where we call
@@ -269,11 +269,11 @@ class Generate():
                 pcs[note] += t[note]
         # keep resulting pcs values between 0 and 11, if desired.
         if oe==True:
-            pcs = self.octaveEquiv(pcs)
+            pcs = self.oe(pcs)
         return pcs
 
     # Convert base rhythms to values in a specified tempo
-    def tempoConvert(self, tempo, rhythms):
+    def scaletotempo(self, tempo, rhythms):
         '''
         A rhythm converter function to translate durations in self.rhythms (list)
         or self.rhythm (float) to actual value in seconds for a specified tempo. 
@@ -350,14 +350,13 @@ class Generate():
         NOTE: use randint(0, 11) and randint(2, 5) for num/octave args to get a 
               randomly chosen note, or leave arg fields empty
         '''
-        if i is None:
-            # note = c.CHROMATIC_SCALE[randint(0, len(c.CHROMATIC_SCALE) - 1)]
-            note = choice(c.CHROMATIC_SCALE)
-        elif type(i) == int and i > -1 and i < len(c.CHROMATIC_SCALE):
-                note = c.CHROMATIC_SCALE[i]
+        if i==None:
+            note = choice(c.NOTES)
+        elif type(i) == int and i > -1 and i < len(c.NOTES):
+                note = c.NOTES[i]
         else:
             return -1
-        if octave is None:
+        if octave==None:
             octave = randint(2, 5)
         note = "{}{}".format(note, octave)
         return note    
@@ -451,7 +450,6 @@ class Generate():
             # however many notes are in the source scale
             total = randint(3, len(scale))
             for i in range(total):
-                # notes.append(scale[randint(0, len(scale)-1)])
                 notes.append(choice(scale))
 
         # ...Or pick notes according to integers in data array
@@ -473,7 +471,6 @@ class Generate():
         and notes (list[str]). 
         '''
         # pick mode
-        # mode = c.MODE_KEYS[randint(1, len(c.MODE_KEYS)-1)]
         mode = choice(c.MODE_KEYS)
         mode_pcs = c.MODES[mode]
         # transpose?
@@ -504,24 +501,21 @@ class Generate():
         if randint(1, 2) == 1:
             # pick major
             if randint(1, 2) == 1:
-                # scale = c.MAJOR_SCALES[randint(1, len(c.MAJOR_SCALES)-1)]
                 scale = choice(c.MAJOR_SCALES)
                 fn = "7-35 (" + scale[0] + "major)"
             # pick minor
             else:
-                # scale = c.MINOR_SCALES[randint(1, len(c.MINOR_SCALES)-1)]
                 scale = choice(c.MINOR_SCALES)
                 fn = "7-35 (" + scale[0] + "minor)"
         else:
             # pick prime form pitch-class set
-            # fn = c.FORTE_NUMBERS[randint(1, len(c.FORTE_NUMBERS)-1)]
             fn = choice(c.FORTE_NUMBERS)
             pcs = c.SCALES[fn]
             # convert pcs to a list of note names / strings
             for i in range(len(pcs)):
-                scale.append(c.CHROMATIC_SCALE[pcs[i]])
+                scale.append(c.NOTES[pcs[i]])
         # append octave, if necessary
-        if octave is not None:
+        if octave != None:
             _scale = []
             for i in range(len(scale)):
                 note = "{}{}".format(scale[i], octave) 
@@ -564,7 +558,7 @@ class Generate():
         '''
         Generates a list[str] "source scale" based off a 
         supplied root (list[str]). Does not pick additional
-        roots! Mostly used by external calls.
+        roots! Mostly used by other methods.
 
         Requires a note list (list[str]).
         Returns a list[str] with appended octaves (2-5)
@@ -613,7 +607,7 @@ class Generate():
                 # add note with random interval value (1-3)
                 note += randint(1, 3)
                 if note > 11:
-                    note = self.octaveEquiv(note)
+                    note = self.oe(note)
                 sv.append(note)
             #scaleVariant = list(set(scaleVariant)) # Remove duplicates
             #scaleVariant.sort() #Sort new derived scale 
@@ -658,9 +652,10 @@ class Generate():
         return sample(c.INTERVALS[1], len(c.INTERVALS[1]))
 
     # Keeps a single pitch within span of an octave (0 - 11)
-    def octaveEquiv(self, pitch):
+    def oe(self, pitch):
         '''
-        Keeps a single pitch class within span of an octave (0 - 11). 
+        Octave equivalance. 
+        Keeps a single pitch class integer within span of an octave (0 - 11). 
         '''
         # check a single pitch
         if type(pitch) == int:
@@ -726,7 +721,7 @@ class Generate():
                     rhythms.append(rhythm)
         # convert to given tempo, if provided.
         if tempo is not None and tempo != 60.0:
-            rhythms = self.tempoConvert(tempo, rhythms)
+            rhythms = self.scaletotempo(tempo, rhythms)
         return rhythms
 
 
@@ -853,7 +848,7 @@ class Generate():
         # pick a rhythm and scale if needed
         rhythm = self.newRhythm()
         if newchord.tempo != 60:
-            rhythm = self.tempoConvert(newchord.tempo, rhythm)
+            rhythm = self.scaletotempo(newchord.tempo, rhythm)
         newchord.rhythm = rhythm
         # pick a dynamic
         newchord.dynamic = self.newDynamic()
@@ -903,13 +898,13 @@ class Generate():
         if n < 0:
             return -1
         if r > 11 or r < 0:
-            r = self.octaveEquiv(r)
+            r = self.oe(r)
         chord = []
         while len(chord) < n:
             chord.append(r)
             r += i
             if r > 11:
-                r = self.octaveEquiv(r)
+                r = self.oe(r)
         return chord
 
 

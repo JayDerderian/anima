@@ -58,14 +58,14 @@ NOTE: Spellings were arbitrarily chosen.
       Probably won't matter much from a MIDI file's POV... maybe
 '''
 # Chromatic scale
-CHROMATIC_SCALE = ["C", "C#", "D", "Eb", "E", "F", 
+NOTES = ["C", "C#", "D", "Eb", "E", "F", 
                    "F#", "G", "G#", "A", "Bb", "B"]
 
 
 # Notes in all (reasonable) harmonic spellings for 12tet notation
 # indicies 0 - 17. To be used specifically by randint()
 # when trying to "randomly" pick a note.
-NOTES = ["C", "C#", "Db", "D", "D#", "Eb", "E", 
+NOTES_EN = ["C", "C#", "Db", "D", "D#", "Eb", "E", 
          "F", "F#", "Gb", "G", "G#", "Ab", "A", 
          "A#", "Bb", "B"]
 
@@ -804,7 +804,8 @@ ENSEMBLE_SIZES = {1: 'solo',
                   8: 'octet',
                   9: 'nonet',
                   10: 'decet',
-                  11: 'large ensemble'}
+                  11: 'large ensemble'
+}
 
 
 # Ensembles
@@ -872,8 +873,7 @@ ENSEMBLES = {
                   # cellos (19)
                   'String Ensemble 2',
                   # basses (20)
-                  'String Ensemble 2'
-                  ]
+                  'String Ensemble 2']
 }
 
 
