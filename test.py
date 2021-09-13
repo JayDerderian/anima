@@ -25,6 +25,5 @@ strqtet()
 # newcanon()
 # mixedqtet()
 
-
 end_time = time.time()-start_time
 print("\nruntime:", end_time, "seconds\n")

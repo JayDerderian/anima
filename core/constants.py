@@ -53,8 +53,8 @@ TUPLETS = { "triplet quarter": 0.66666666666666666666666666666667,
             "quintuplet quarter": 0.4, 
             "triplet eighth": 0.3333333333333333333333333333,
             "quintuplet eighth": 0.2,
-            "septuplet eighth": 0.14285714285714285714285714285714,
             "triplet sixteenth": 0.16666666666666666666666666666667,
+            "septuplet eighth": 0.14285714285714285714285714285714,
             "quintuplet sixteenth": 0.1,
             "septuplet sixteenth": 0.07142857142857142857142857142857,
 }
@@ -64,8 +64,8 @@ TUPLET_KEYS = [
             "quintuplet quarter", 
             "triplet eighth",
             "quintuplet eighth",
-            "septuplet eighth",
             "triplet sixteenth",
+            "septuplet eighth",
             "quintuplet sixteenth",
             "septuplet sixteenth",
 ]
@@ -75,10 +75,6 @@ TUPLET_KEYS = [
 PITCH_CLASSES = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
 
 
-'''
-NOTE: Spellings were arbitrarily chosen. 
-      Probably won't matter much from a MIDI file's POV... maybe
-'''
 # Chromatic scale
 NOTES = ["C", "C#", "D", "Eb", "E", "F", 
                    "F#", "G", "G#", "A", "Bb", "B"]
@@ -90,7 +86,6 @@ NOTES = ["C", "C#", "D", "Eb", "E", "F",
 NOTES_EN = ["C", "C#", "Db", "D", "D#", "Eb", "E", 
          "F", "F#", "Gb", "G", "G#", "Ab", "A", 
          "A#", "Bb", "B"]
-
 
 
 # All 12 major scales
@@ -150,21 +145,6 @@ MODE_KEYS = [
 
 # Interval list/dictonary
 '''
-Use values to build scales and chords off of. 
-
-ex: build a major scale off note using array values at
-    each key value
-
-    note = 0
-    scale = []
-    intervals = c.INTERVALS[2]
-    for i in range(whatever):
-        note += intervals[i]
-        if note > 11:
-            note = self.octEquiv(note)
-        scale.append(note)
-    return scale
-
 NOTE: Develop interval sets that begin with 2 and end with 2,
       making the next cycle of intervals begin on a tone a half
       step higher than originally.
