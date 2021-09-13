@@ -665,7 +665,23 @@ class Generate():
             for i in range(len(pitch)):
                 if pitch[i] > 11 or pitch[i] < 0:
                     pitch[i] %= 12
-        return pitch 
+        return pitch
+
+    # reverses a melody and appends to end to create a palindrome
+    # of the current part
+    def newPalindromeMelody(m):
+        '''
+        Takes a current melody and turns it into a palindrome.
+        Requires a non-empty melody() object, returns a modified
+        melody() object.'''
+
+        end = len(m.notes)-1
+        while end > -1:
+            m.notes.append(m.notes[end])
+            m.rhythms.append(m.rhythms[end])
+            m.dynamics.append(m.dynamics[end])
+            end-=1
+        return m 
 
 
     #-----------------------------------------------------------------------------------#

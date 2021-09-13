@@ -178,3 +178,61 @@ def newcanon():
     # display results
     print("\nnew piece:", title_full)
     print("midi file:", comp.midiFileName)
+
+# generate a single melody palindrome
+def newpalindrome():
+    '''
+    generate a single melody palindrome'''
+
+    print("\ngenerating melodic palendrome...")
+
+    create = Generate()
+    comp = Composition()
+
+    # initialize comp
+    comp.title = create.newTitle()
+    comp.composer = create.newComposer()
+    comp.date = date.now().strftime("%d-%b-%y %H:%M:%S")
+    comp.tempo = c.TEMPOS[randint(9, 17)]
+
+    # initialize melody
+    m = Melody(
+        tempo=comp.tempo,
+        instrument= 'Vibraphone')
+    
+    # generate 4 - 9 note melody
+    print("\nwriting melody...")
+    notes = create.pickMode(transpose=True, octave=randint(3,5))
+    total = randint(4,9)
+    for i in range(total):
+        m.notes.append(choice(notes[2]))
+    m.rhythms = create.newRhythms(total=len(m.notes), tempo=comp.tempo)
+    m.dynamics = create.newDynamics(total=len(m.notes))
+
+    # input each list in reverse. start with getting copies of each parameter (notes, 
+    # rhythms, and dynamics), then append them to m starting at the end of each list
+    print("\nreversing", m.instrument, "part...")
+    end = len(m.notes)-1
+    while end > -1:
+        m.notes.append(m.notes[end])
+        m.rhythms.append(m.rhythms[end])
+        m.dynamics.append(m.dynamics[end])
+        end-=1
+    '''
+    alt method:
+    notes = m.notes
+    rhythms = m.rhythms
+    dynamics = m.dynamics
+    
+    notes.reverse()
+    rhythms.reverse()
+    dynamics.reverse()
+
+    m.notes.extend(notes)
+    m.rhythms.extend(rhythms)
+    m.dynamics.extend(dynamics)
+    '''
+    # write it out
+    comp.midiFileName = comp.title + '.mid'
+    comp.melodies.append(m)
+    save(comp)
