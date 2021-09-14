@@ -73,6 +73,7 @@ This module/class handles all generative methods.
 
 # IMPORTS
 import math
+from typing import List
 import urllib.request
 import core.constants as c
 import utils.midi as m
@@ -654,8 +655,10 @@ class Generate():
     # Keeps a single pitch within span of an octave (0 - 11)
     def oe(self, pitch):
         '''
-        Octave equivalance. 
+        Octave equivalance. Handles either a single int or list[int].
         Keeps a single pitch class integer within span of an octave (0 - 11). 
+
+        Returns either a modified int or list[int]
         '''
         # check a single pitch
         if type(pitch) == int:
@@ -669,18 +672,24 @@ class Generate():
 
     # reverses a melody and appends to end to create a palindrome
     # of the current part
-    def newPalindromeMelody(m):
+    def newPalindrome(m):
         '''
-        Takes a current melody and turns it into a palindrome.
-        Requires a non-empty melody() object, returns a modified
-        melody() object.'''
+        Takes either a list of chord() objects or a single melody() 
+        object, and creates a palindrome from it. 
+        
+        Returns either a modified list[chord()], or modified melody()'''
 
-        end = len(m.notes)-1
-        while end > -1:
-            m.notes.append(m.notes[end])
-            m.rhythms.append(m.rhythms[end])
-            m.dynamics.append(m.dynamics[end])
-            end-=1
+        if type(m) == List:
+            mr = m
+            mr.reverse()
+            m.extend(mr)
+        else:
+            end = len(m.notes)-1
+            while end > -1:
+                m.notes.append(m.notes[end])
+                m.rhythms.append(m.rhythms[end])
+                m.dynamics.append(m.dynamics[end])
+                end-=1
         return m 
 
 
@@ -716,7 +725,6 @@ class Generate():
             total = randint(3, 30)
         while len(rhythms) < total:
             # Pick rhythm and add to list
-            # rhythm = self.newRhythm()
             rhythm = choice(c.RHYTHMS)
             # Repeat this rhythm or not? 1 = yes, 2 = no
             if randint(1, 2) == 1:
@@ -770,8 +778,7 @@ class Generate():
         if total==None:
             total = randint(3, 30)
         while len(dynamics) < total:
-            # Pick dynamic (medium range for now)
-            # dynamic = self.newDynamic()
+            # Pick dynamic
             dynamic = choice(c.DYNAMICS)
             # Repeat this dynamic or not? 1 = yes, 2 = no
             if randint(1, 2) == 1:
@@ -896,6 +903,7 @@ class Generate():
             newchord = self.newChord(tempo, scale)
             chords.append(newchord)
         return chords
+
 
     # Generate a chord off a given interval i (between 1 and 6) to total notes for the chord n
     # starting with root r (integer)
