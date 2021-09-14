@@ -410,10 +410,8 @@ def buildfig(m, lp, arp, create):
             m.dynamics.extend(dyn)  
 
     # sync with longest part
-    mlen = m.duration()
-    while mlen < lp:
+    while m.duration() < lp:
         m.notes.extend(arp[0])
         m.rhythms.extend(rhy)
         m.dynamics.extend(dyn)
-        mlen = m.duration()
     return m

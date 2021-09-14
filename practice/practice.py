@@ -218,20 +218,7 @@ def newpalindrome():
         m.rhythms.append(m.rhythms[end])
         m.dynamics.append(m.dynamics[end])
         end-=1
-    '''
-    alt method:
-    notes = m.notes
-    rhythms = m.rhythms
-    dynamics = m.dynamics
-    
-    notes.reverse()
-    rhythms.reverse()
-    dynamics.reverse()
-
-    m.notes.extend(notes)
-    m.rhythms.extend(rhythms)
-    m.dynamics.extend(dynamics)
-    '''
+        
     # write it out
     comp.midiFileName = comp.title + '.mid'
     comp.melodies.append(m)

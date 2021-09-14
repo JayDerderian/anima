@@ -678,11 +678,12 @@ class Generate():
         object, and creates a palindrome from it. 
         
         Returns either a modified list[chord()], or modified melody()'''
-
-        if type(m) == List:
+        # chord() list
+        if type(m) == list:
             mr = m
             mr.reverse()
             m.extend(mr)
+        # melody() object
         else:
             end = len(m.notes)-1
             while end > -1:
@@ -743,7 +744,7 @@ class Generate():
                 if rhythm not in rhythms:
                     rhythms.append(rhythm)
         # convert to given tempo, if provided.
-        if tempo is not None and tempo != 60.0:
+        if tempo!=None and tempo!=60.0:
             rhythms = self.scaletotempo(tempo, rhythms)
         return rhythms
 
