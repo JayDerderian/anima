@@ -40,10 +40,8 @@ class Composition():
 
         # Ensemble size string ("duo", "trio", etc...)
         self.ensemble = ""
-        # List of instruments (strings)
+        # List of instruments
         self.instruments = []
-        # List of picked instruments
-        self.instr_used = []
         # List of melody() objects. 
         self.melodies = []
         # List dictionary of chord() object lists (progressions). 
@@ -98,15 +96,15 @@ class Composition():
         '''
         Has this instrument been picked already? 
         '''
-        return True if instr in self.instr_used else False
+        return True if instr in self.instruments else False
 
 
     # Have all the instruments been picked?
-    def allPicked(self):
+    def allPicked(self, instruments):
         '''
         Have *all* the instruments been used?
         '''
-        return True if self.instruments==self.instr_used else False
+        return True if instruments==self.instruments else False
 
     # Get duration of composition
     def duration(self):

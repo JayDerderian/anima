@@ -10,21 +10,25 @@ Try to use additive rhythms in the vibes, chords in the piano, and arpeggios in 
 # Imports
 import math
 from random import randint, choice
+from datetime import datetime as date
+
 from utils.midi import save
 from utils.save import saveInfo
 from core.constants import TEMPOS, RHYTHMS, DYNAMICS
+
 from core.generate import Generate
 from containers.chord import Chord
 from containers.melody import Melody
+
 from containers.composition import Composition
-from datetime import datetime as date
 
 
 def pnoduet(instrument=None, tempo=None):
     '''
-    generates a duet for user designated instrument, plus piano. defaults
-    to vibraphone if no instrument is inputted. composition follows the 
-    following proceses:
+    generates a duet for user designated instrument, plus piano. 
+    defaults to vibraphone if no instrument is inputted. 
+    
+    composition follows the following proceses:
 
     instrument: short/med ostinato (5-9 notes), only 16th, dotted 16th,
                 or 8th notes undergoing an additive rhythmic process. 
@@ -32,14 +36,13 @@ def pnoduet(instrument=None, tempo=None):
                 dotted quarter or half-note value until ostinato reaches 
                 a specific lenghth (longer than chord prog, in seconds). 
                 once it's this length, the whole figure just gets looped 
-                without adding more notes, until chords reaches it's end.
+                without adding more notes until chords process completes.
 
     piano: 7-11 chords using only quarter notes, dotted quarters, and half 
-           notes, with a non-repetitive-seeming rhythmic pattern. gradually 
-           *subtract* rhythms (by 1 index value in c.RHYTHMS) from the pattern 
+           notes, with a non-repetitive rhythmic pattern. gradually 
+           *subtract* rhythms (by 1 index value in RHYTHMS) from the pattern 
            as well as remove one chord from the end of the list, until there 
-           are 2 chords left, using only alternating 16th, dotted 16th, 
-           and 8th notes.
+           are 2 chords left, using only alternating 16th abd dotted 16th notes.
     
     end with 4-9 long chords played by both instruments in rhythmic unison
     '''
@@ -95,7 +98,7 @@ def pnoduet(instrument=None, tempo=None):
 
     # compose initial [instr] melody
     '''
-    NOTE: om undergoes each modification of intitial melody,
+    NOTE: om undergoes each modification of the intitial melody
           then gets appended to m, which is eventually added to comp
           once its time to write everything out.'''
     om = Melody(instrument=m.instrument, 

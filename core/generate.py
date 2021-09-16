@@ -306,7 +306,6 @@ class Generate():
         '''
         Picks tempo (float) between 40-208bpm.
         '''
-        # return c.TEMPOS[randint(0, len(c.TEMPOS) - 1)]
         return choice(c.TEMPOS)
 
 
@@ -535,7 +534,7 @@ class Generate():
         To be used externally from newNotes() to supply a new "root," as an option
         for the user.
         
-        Returns a list of note name strings and the original pitch class set.
+        Returns a tuple: notes (list[str]) and the original pitch class set, (list[int]).
         '''
         pcs = []
         total = randint(5, 9)
@@ -547,6 +546,7 @@ class Generate():
                 pcs.append(n)
         '''Trying to create a list comprehension version of the above loop...'''
         # pcs = [randint(0,11) for x in range(total) if x not in pcs]
+        # pcs = sample(c.PITCH_CLASSES, randint(5, 9))
         # sort in ascending order
         pcs.sort()
         # convert to strings (with or without supplied octave)
