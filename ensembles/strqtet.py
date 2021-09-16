@@ -31,13 +31,15 @@ duration of the longest part.
 
 # Imports
 from random import randint
+from datetime import datetime as date
+
 from utils.midi import save
 from utils.save import saveInfo
-import core.constants as c
+
 from core.generate import Generate
+
 from containers.melody import Melody
 from containers.composition import Composition
-from datetime import datetime as date
 
 
 def strqtet(tempo=None):
@@ -131,16 +133,16 @@ def strqtet(tempo=None):
     print("\nlongest part:", lp)
 
     if v1.duration() != lp:
-        v1 = buildfig(v1, lp, arpv1, create)
+        v1 = buildfig(v1, arpv1, create)
         v1 = sync(v1, lp, arpv1)
     if v2.duration() != lp:
-        v2 = buildfig(v2, lp, arpv2, create)
+        v2 = buildfig(v2, arpv2, create)
         v2 = sync(v2, lp, arpv2)
     if va.duration() != lp:
-        va = buildfig(va, lp, arpva, create)
+        va = buildfig(va, arpva, create)
         va = sync(va, lp, arpva)
     if vc.duration() != lp:
-        vc = buildfig(vc, lp, arpvc, create)
+        vc = buildfig(vc, arpvc, create)
         vc = sync(vc, lp, arpvc)
 
     print("\nlen's after adding fig...")
@@ -170,8 +172,9 @@ def strqtet(tempo=None):
 
     # write to MIDI file & .txt file
     save(comp)
-
     # saveInfo(name=comp.title, fileName=comp.txtFileName, newMusic=comp)
+
+    # display results
     print("\n\nnew quartet:", title_full)
     print("composer:", comp.composer)
     print("date:", comp.date)
@@ -366,21 +369,11 @@ def genfig(m, scales, create):
 
     return arp, rhy, dyn
 
-def buildfig(m, lp, arp, create):
+def buildfig(m, arp, create):
     '''
     constructs arpeggio with increasingly fast rhythms. 
     returns a modified melody() object.
-    
-    SCALE TO LONGEST PART (lp)
-    
-    get difference between current part and longest part, divide 
-    difference into equal sections devoted to repetitions of a specified
-    rhythm, then repeat each rhythm n times for their section
-    
-    NOTE: maybe add notes, rhythms, and dynamics ONE AT A TIME to
-    better achieve a closer length to the longest part. might mean the
-    figure will stop mid-way through. '''
-
+    '''
     # add starting arpeggio before scaling other reps...
     for i in range(2):
         m.notes.extend(arp[0])
@@ -412,17 +405,21 @@ def buildfig(m, lp, arp, create):
             m.notes.extend(arp[0])
             m.rhythms.extend(rhy)
             m.dynamics.extend(dyn)  
-    # sync with longest part
-    # while m.duration() < lp:
-    #     m.notes.extend(arp[0])
-    #     m.rhythms.extend(rhy)
-    #     m.dynamics.extend(dyn)
     return m
 
 def sync(m, lp, arptuple):
     '''
     sync all other parts against a given duration
-    (longeset part/lp)'''
+    (longeset part/lp)
+    
+    get difference between current part and longest part, divide 
+    difference into equal sections devoted to repetitions of a specified
+    rhythm, then repeat each rhythm n times for their section
+    
+    NOTE: attempting to do it one note/rhythm/dynamic at a time
+    to achieve better precision. it's less efficient than
+    simply using the list.extend() method though...'''
+
     arp = arptuple[0]
     rhy = arptuple[1]
     dyn = arptuple[2]

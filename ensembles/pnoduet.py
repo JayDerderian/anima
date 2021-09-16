@@ -53,6 +53,7 @@ def pnoduet(instrument=None, tempo=None):
 
     print("\n\nwriting new [instr]/pno duet...")
 
+    # objects
     create = Generate()    
     comp = Composition()
 
@@ -79,6 +80,7 @@ def pnoduet(instrument=None, tempo=None):
     comp.instruments.append(m.instrument)
     comp.instruments.append("Acoustic Grand Piano")
     
+    # full title
     title_full = "{}{}{}".format(
         comp.title, ", for piano and ", m.instrument)
 
@@ -89,12 +91,12 @@ def pnoduet(instrument=None, tempo=None):
 
     # pick initial starting key/mode
     print("\npicking source notes...")
-    mode, mode_pcs, mode_scale = create.pickMode(transpose=True)
+    notes = create.pickMode(transpose=True)
     # append octaves 2 - 5 to have a starting source scale. 
     """if things progress well then i'll attempt to transpose figures 
     mid additive/subtractive process to give harmonic variety,
     and possibly follow a larger harmonic plan."""
-    scale = create.newSourceScale(mode_scale)
+    scale = create.newSourceScale(notes[2])
 
     # compose initial [instr] melody
     '''
@@ -183,8 +185,6 @@ def pnoduet(instrument=None, tempo=None):
     # '''
     # NOTE: if the below cycle starts working, then this whole block could 
     #       appear in one large loop to avoid more code.
-
-    # NOTE: cor[] seems to be missing the last rhythm from the original list.
     # '''
     # print("\n\n***starting additive/subractive process!***")
     # # while len(pno) > 2:

@@ -1,12 +1,10 @@
 '''
-This module/class handles all generative methods. 
+This module handles all generative methods. 
 '''
 
 # IMPORTS
 import math
 import urllib.request
-# import core.constants as c
-import utils.midi as m
 
 from core.constants import(
     NOTES, 
@@ -25,6 +23,7 @@ from core.constants import(
     INTERVALS
 )
 
+import utils.midi as m
 from utils.mapping import mapData
 from utils.toabc import abc
 from utils.save import saveInfo
@@ -494,7 +493,6 @@ class Generate():
                 pcs.append(n)
         '''Trying to create a list comprehension version of the above loop...'''
         # pcs = [randint(0,11) for x in range(total) if x not in pcs]
-        # pcs = sample(c.PITCH_CLASSES, randint(5, 9))
         # sort in ascending order
         pcs.sort()
         # convert to strings (with or without supplied octave)
@@ -505,10 +503,11 @@ class Generate():
     def newSourceScale(self, root):
         '''
         Generates a list[str] "source scale" based off a 
-        supplied root (list[str]). Does not pick additional
-        roots! Mostly used by other methods.
+        supplied root (list[str]). 
+        
+        Does not pick additional roots! Mostly used by other methods.
+        Don't call directly.
 
-        Requires a note list (list[str]).
         Returns a list[str] with appended octaves (2-5)
         '''
         n = 0
@@ -701,8 +700,7 @@ class Generate():
     #--------------------------------------------------------------------------------#
 
 
-    # Generate a single dynamic (to be used such that a passage doesn't have consistenly
-    # changing dynamics)
+    # Generate a single dynamic 
     def newDynamic(self):
         '''
         Generates a single dynamic/velocity between 20 - 124
@@ -893,7 +891,6 @@ class Generate():
         print("\nTempo:", newMelody.tempo, "bpm")
         print("\nInstrument:", newMelody.instrument)
         print("\n\nSource data:", newMelody.sourceData)
-        print("\nSource scale:", newMelody.sourceScale)
         print("\nForte Numbers:", newMelody.fn)
         print("\n\nTotal Notes:", len(newMelody.notes))
         print("Notes:", newMelody.notes)
