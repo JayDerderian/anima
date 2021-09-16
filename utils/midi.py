@@ -332,7 +332,6 @@ def save(comp):
 
     # add melodies
     if len(comp.melodies) > 0:
-        print("\nsaving melodies...")
         for i in range(len(comp.melodies)):
             strt = 0
             end = comp.melodies[i].rhythms[0]
@@ -359,7 +358,6 @@ def save(comp):
 
     # add chords
     if len(comp.chords) > 0:
-        print("\nsaving chords...")
         # iterate through a dictionary of chord() object lists.
         key = 0
         for i in range(len(comp.chords)):

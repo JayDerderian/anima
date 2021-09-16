@@ -74,8 +74,25 @@ This module/class handles all generative methods.
 # IMPORTS
 import math
 import urllib.request
-import core.constants as c
+# import core.constants as c
 import utils.midi as m
+
+from core.constants import(
+    NOTES, 
+    RHYTHMS, 
+    DYNAMICS, 
+    TEMPOS, 
+    INSTRUMENTS,
+    MODES,
+    MODE_KEYS,
+    ARPEGGIOS,
+    SCALES,
+    MAJOR_SCALES,
+    MINOR_SCALES,
+    FORTE_NUMBERS,
+    PITCH_CLASSES,
+    INTERVALS
+)
 
 from utils.mapping import mapData
 from utils.toabc import abc
@@ -198,11 +215,11 @@ class Generate():
         scale = []
         if octave is not None:
             for i in range(len(pcs)):
-                note = "{}{}".format(c.NOTES[pcs[i]], octave)
+                note = "{}{}".format(NOTES[pcs[i]], octave)
                 scale.append(note)
         else:
             for i in range(len(pcs)):
-                scale.append(c.NOTES[pcs[i]])
+                scale.append(NOTES[pcs[i]])
         '''
         NOTE: there's probably a better way to do this...
         NOTE: need to add an oe flag to determine where we call
@@ -306,7 +323,7 @@ class Generate():
         '''
         Picks tempo (float) between 40-208bpm.
         '''
-        return choice(c.TEMPOS)
+        return choice(TEMPOS)
 
 
     #--------------------------------------------------------------------------------#
@@ -320,7 +337,7 @@ class Generate():
         Randomly picks a melodic/harmonic instrument from a given list. Returns a string.
         Does NOT pick a percussion instrument!
         '''
-        return c.INSTRUMENTS[randint(0, 110)]
+        return INSTRUMENTS[randint(0, 110)]
 
     # Picks a collection of instruments of n length.
     def newInstruments(self, total):
@@ -330,7 +347,7 @@ class Generate():
         '''
         instruments = []
         while len(instruments) < total:
-            instruments.append(c.INSTRUMENTS[randint(0, 110)])
+            instruments.append(INSTRUMENTS[randint(0, 110)])
         return instruments
 
 
@@ -350,9 +367,9 @@ class Generate():
               randomly chosen note, or leave arg fields empty
         '''
         if i==None:
-            note = choice(c.NOTES)
-        elif type(i) == int and i > -1 and i < len(c.NOTES):
-                note = c.NOTES[i]
+            note = choice(NOTES)
+        elif type(i) == int and i > -1 and i < len(NOTES):
+                note = NOTES[i]
         else:
             return -1
         if octave==None:
@@ -470,8 +487,8 @@ class Generate():
         and notes (list[str]). 
         '''
         # pick mode
-        mode = choice(c.MODE_KEYS)
-        mode_pcs = c.MODES[mode]
+        mode = choice(MODE_KEYS)
+        mode_pcs = MODES[mode]
         # transpose?
         if transpose==True:
             # how far?
@@ -500,19 +517,19 @@ class Generate():
         if randint(1, 2) == 1:
             # pick major
             if randint(1, 2) == 1:
-                scale = choice(c.MAJOR_SCALES)
+                scale = choice(MAJOR_SCALES)
                 fn = "7-35 (" + scale[0] + "major)"
             # pick minor
             else:
-                scale = choice(c.MINOR_SCALES)
+                scale = choice(MINOR_SCALES)
                 fn = "7-35 (" + scale[0] + "minor)"
         else:
             # pick prime form pitch-class set
-            fn = choice(c.FORTE_NUMBERS)
-            pcs = c.SCALES[fn]
+            fn = choice(FORTE_NUMBERS)
+            pcs = SCALES[fn]
             # convert pcs to a list of note names / strings
             for i in range(len(pcs)):
-                scale.append(c.NOTES[pcs[i]])
+                scale.append(NOTES[pcs[i]])
         # append octave, if necessary
         if octave != None:
             _scale = []
@@ -623,7 +640,7 @@ class Generate():
         Returns a list[int] of pitch classes outlining a one-octave
         arpeggio.
         '''
-        return c.ARPEGGIOS[key]
+        return ARPEGGIOS[key]
 
     # Generate a 12-tone row.
     def new12ToneRow(self, octave=None):
@@ -634,7 +651,7 @@ class Generate():
         or in a specified octave (2-5), and the original pitch class set 
         (list[int]).
         '''
-        pcs = sample(c.PITCH_CLASSES, len(c.PITCH_CLASSES))
+        pcs = sample(PITCH_CLASSES, len(PITCH_CLASSES))
         if octave==None:
             row = self.toStr(pcs, octave=4)
         else:
@@ -649,7 +666,7 @@ class Generate():
         Returns a list of 11 non-repeating intervals to generate 12-tone row
         transpositions.
         '''
-        return sample(c.INTERVALS[1], len(c.INTERVALS[1]))
+        return sample(INTERVALS[1], len(INTERVALS[1]))
 
     # Keeps a single pitch within span of an octave (0 - 11)
     def oe(self, pitch):
@@ -703,7 +720,7 @@ class Generate():
         '''
         Generates a single new rhythm. Not scaled to current tempo!
         '''
-        return choice(c.RHYTHMS)
+        return choice(RHYTHMS)
 
     # Generate a list containing a rhythmic pattern
     def newRhythms(self, total=None, tempo=None):
@@ -725,7 +742,7 @@ class Generate():
             total = randint(3, 30)
         while len(rhythms) < total:
             # Pick rhythm and add to list
-            rhythm = choice(c.RHYTHMS)
+            rhythm = choice(RHYTHMS)
             # Repeat this rhythm or not? 1 = yes, 2 = no
             if randint(1, 2) == 1:
                 # Limit reps to no more than roughly 1/3 of the supplied total
@@ -759,7 +776,7 @@ class Generate():
         '''
         Generates a single dynamic/velocity between 20 - 124
         '''
-        return choice(c.DYNAMICS)
+        return choice(DYNAMICS)
 
     # Generate a list of dynamics.
     def newDynamics(self, total=None):
@@ -779,7 +796,7 @@ class Generate():
             total = randint(3, 30)
         while len(dynamics) < total:
             # Pick dynamic
-            dynamic = choice(c.DYNAMICS)
+            dynamic = choice(DYNAMICS)
             # Repeat this dynamic or not? 1 = yes, 2 = no
             if randint(1, 2) == 1:
                 # Limit reps to no more than roughly 1/3 of the supplied total
@@ -1117,7 +1134,7 @@ class Generate():
         ch = self.newChords(len(mel.notes), mel.tempo, mel.notes)
         for i in range(len(ch)):
             # picking only various keyboard instruments for now...
-            ch[i].instrument = c.INSTRUMENTS[randint(0, 8)]
+            ch[i].instrument = INSTRUMENTS[randint(0, 8)]
             comp.instruments.append(ch[i].instrument)
 
         # Save chords to chord dictionary
