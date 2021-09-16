@@ -19,12 +19,12 @@ start_time = time.time()
 
 # newRandomComposition()
 # strqtet()
-# pnoduet()
+pnoduet()
 # newArp()
 # newProg()
 # newcanon()
 # mixedqtet()
-newpalindrome()
+# newpalindrome()
 
 
 end_time = time.time()-start_time

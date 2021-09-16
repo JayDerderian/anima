@@ -184,7 +184,7 @@ def newpalindrome():
     '''
     generate a single melody palindrome'''
 
-    print("\ngenerating melodic palendrome...")
+    print("\ngenerating melodic palindrom...")
 
     create = Generate()
     comp = Composition()
@@ -196,9 +196,8 @@ def newpalindrome():
     comp.tempo = c.TEMPOS[randint(9, 17)]
 
     # initialize melody
-    m = Melody(
-        tempo=comp.tempo,
-        instrument= 'Vibraphone')
+    m = Melody(tempo=comp.tempo,
+               instrument= 'Vibraphone')
     
     # generate 4 - 9 note melody
     print("\nwriting melody...")

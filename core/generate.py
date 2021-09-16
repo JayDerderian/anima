@@ -73,7 +73,6 @@ This module/class handles all generative methods.
 
 # IMPORTS
 import math
-from typing import List
 import urllib.request
 import core.constants as c
 import utils.midi as m

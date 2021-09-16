@@ -132,12 +132,16 @@ def strqtet(tempo=None):
 
     if v1.duration() != lp:
         v1 = buildfig(v1, lp, arpv1, create)
+        v1 = sync(v1, lp, arpv1)
     if v2.duration() != lp:
         v2 = buildfig(v2, lp, arpv2, create)
+        v2 = sync(v2, lp, arpv2)
     if va.duration() != lp:
         va = buildfig(va, lp, arpva, create)
+        va = sync(va, lp, arpva)
     if vc.duration() != lp:
         vc = buildfig(vc, lp, arpvc, create)
+        vc = sync(vc, lp, arpvc)
 
     print("\nlen's after adding fig...")
     print("v1 len:", v1.duration())
@@ -408,10 +412,25 @@ def buildfig(m, lp, arp, create):
             m.notes.extend(arp[0])
             m.rhythms.extend(rhy)
             m.dynamics.extend(dyn)  
-
     # sync with longest part
+    # while m.duration() < lp:
+    #     m.notes.extend(arp[0])
+    #     m.rhythms.extend(rhy)
+    #     m.dynamics.extend(dyn)
+    return m
+
+def sync(m, lp, arptuple):
+    '''
+    sync all other parts against a given duration
+    (longeset part/lp)'''
+    arp = arptuple[0]
+    rhy = arptuple[1]
+    dyn = arptuple[2]
     while m.duration() < lp:
-        m.notes.extend(arp[0])
-        m.rhythms.extend(rhy)
-        m.dynamics.extend(dyn)
+        for add in range(len(arp)):
+            m.notes.append(arp[add])
+            m.dynamics.append(dyn[add])
+            m.rhythms.append(rhy[add])
+            if m.duration() == lp:
+                break
     return m

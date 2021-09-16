@@ -8,12 +8,11 @@ Try to use additive rhythms in the vibes, chords in the piano, and arpeggios in 
 '''
 
 # Imports
-import time
 import math
 from random import randint, choice
 from utils.midi import save
 from utils.save import saveInfo
-import core.constants as c
+from core.constants import TEMPOS, RHYTHMS, DYNAMICS
 from core.generate import Generate
 from containers.chord import Chord
 from containers.melody import Melody
@@ -49,18 +48,23 @@ def pnoduet(instrument=None, tempo=None):
     # INITIALIZE #
     ##############
 
-    start_time = time.time()
     print("\n\nwriting new [instr]/pno duet...")
 
     create = Generate()    
     comp = Composition()
+
+    # title 'n stuff
+    comp.title = create.newTitle()
+    comp.composer = create.newComposer()
     comp.date = date.now().strftime("%d-%b-%y %H:%M:%S")
     if tempo==None:
         # using tempos between 60-88 for now
-        comp.tempo = c.TEMPOS[randint(10, 18)]
+        comp.tempo = TEMPOS[randint(10, 18)]
     else:
         comp.tempo = tempo
     print("\ntempo:", comp.tempo)
+
+    # instruments
     pno = [] # array of chord objects. 
              # assign this to comp.chords once ready
     if instrument == None:
@@ -72,11 +76,8 @@ def pnoduet(instrument=None, tempo=None):
     comp.instruments.append(m.instrument)
     comp.instruments.append("Acoustic Grand Piano")
     
-    # title 'n stuff
-    comp.title = create.newTitle()
     title_full = "{}{}{}".format(
         comp.title, ", for piano and ", m.instrument)
-    comp.composer = create.newComposer()
 
 
     ###############################
@@ -105,9 +106,9 @@ def pnoduet(instrument=None, tempo=None):
         # stay within octaves 3-5
         om.notes.append(scale[randint(7, len(scale)-1)])
         # starting with only 16th, dotted 16th, 8th, dotted 8th
-        om.rhythms.append(c.RHYTHMS[randint(5, 8)])
+        om.rhythms.append(RHYTHMS[randint(5, 8)])
         # starting with medium dynamics
-        om.dynamics.append(c.DYNAMICS[randint(9, 17)])
+        om.dynamics.append(DYNAMICS[randint(9, 17)])
 
     # compose initial piano chords
     chords = [] 
@@ -120,7 +121,7 @@ def pnoduet(instrument=None, tempo=None):
         chord.instrument = 'Acoustic Grand Piano'
         # re-select a rhythm within desired range...
         # (half, dotted qtr, qtr)
-        chord.rhythm = c.RHYTHMS[randint(2, 4)]
+        chord.rhythm = RHYTHMS[randint(2, 4)]
         # store original rhythm floats to match against base constant
         # and find next lowest value. once new list of next-lowest values
         # is generated it'll be converted against global tempo then the new
@@ -129,7 +130,7 @@ def pnoduet(instrument=None, tempo=None):
         # update dynamics if necessary (are any velocies
         # greater than 84 in this list? don't want it too loud...)
         if chord.dynamic > 84:
-            chord.dynamic = c.DYNAMICS[randint(5, 15)]
+            chord.dynamic = DYNAMICS[randint(5, 15)]
         # save chords to chords list to modify, and pno with each
         # subsequent modification
         chords.append(chord)
@@ -163,13 +164,11 @@ def pnoduet(instrument=None, tempo=None):
     fend = Chord(instrument='Acoustic Grand Piano', 
                  tempo=comp.tempo)
     # make it a half note
-    # fend.rhythm = create.tempoConvert(comp.tempo, 2.0)
     fend.rhythm = 2.0
-    # fend.notes = ['Bb2', 'F3','A3' ,'C4', 'D4', 'F4', 'G4']
     fend.notes = ['F2', 'C3', 'F3', 'A3', 'C4', 'F4']
     fend.dynamic = 110
     # add to original chord list. THIS IS THE FINAL ORIGINAL VERSION
-    cor.append(2.0)
+    cor.append(fend.rhythm)
     chords.append(fend)
     pno.append(fend)
     print("...added end-of-cycle chord!")
@@ -293,8 +292,6 @@ def pnoduet(instrument=None, tempo=None):
     # comp.txtFileName = comp.title + '.txt'
     # saveInfo(name=comp.title, fileName=comp.txtFileName, newMusic=comp)
 
-    # get run time
-    run_time = time.time()-start_time
 
     # display results
     print("\nnew duet:", title_full)
@@ -307,5 +304,4 @@ def pnoduet(instrument=None, tempo=None):
     else:
         print("duration:", dur, "seconds")
     print("midi file:", comp.midiFileName)
-    print("\nrun time:", run_time, "seconds\n")
     return "\nhooray!"
