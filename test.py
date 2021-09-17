@@ -22,7 +22,7 @@ start_time = time.time()
 
 # newRandomComposition()
 # strqtet()
-pnoduet()
+# pnoduet()
 # newArp()
 # newProg()
 # newcanon()

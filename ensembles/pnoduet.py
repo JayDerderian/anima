@@ -179,13 +179,13 @@ def pnoduet(instrument=None, tempo=None):
     print("...added end-of-cycle chord!")
 
 
-    # ###############################
-    # # ADDITIVE/SUBRACTIVE PROCESS #
-    # ###############################
-    # '''
-    # NOTE: if the below cycle starts working, then this whole block could 
-    #       appear in one large loop to avoid more code.
-    # '''
+    ###############################
+    # ADDITIVE/SUBRACTIVE PROCESS #
+    ###############################
+    '''
+    NOTE: if the below cycle starts working, then this whole block could 
+          appear in one large loop to avoid more code.
+    '''
     # print("\n\n***starting additive/subractive process!***")
     # # while len(pno) > 2:
 
@@ -196,18 +196,21 @@ def pnoduet(instrument=None, tempo=None):
     #     om.notes.append(scale[randint(0, len(scale)-1)])
     #     om.rhythms.append(c.RHYTHMS[randint(5, 8)])
     #     om.dynamics.append(c.DYNAMICS[randint(9, 17)])
+
     # # chord durations to next level down (i.e. half to dotted qtr, etc)
     #     # determine which rhythm it is (match against c.RHYTHMS), then
     #     # replace with c.RHYTHMS[i+1] for whatever rhythm it was.
     # print("\naltering rhythms...")
     # print("...original rhythms:", cor)
     # for i in range(len(cor)):
-    #     if cor[i] in c.RHYTHMS:
-    #         cor[i] = c.RHYTHMS[c.RHYTHMS.index(cor[i])+1]
+    #     if cor[i] in RHYTHMS:
+    #         cor[i] = RHYTHMS[RHYTHMS.index(cor[i])+1]
     # print("...updated rhythms:", cor)
+
     # # update chord list rhythms (and scale to tempo)
     # for i in range(len(pno)):
     #     pno[i].rhythm = cor[i]
+    
     # # remove a randomly chosen chord
     # print("\nremoving a randomly chosen chord...")
     # remove = randint(0, len(pno)-1)
@@ -263,7 +266,6 @@ def pnoduet(instrument=None, tempo=None):
     # fend = Chord(instrument='Acoustic Grand Piano', tempo=comp.tempo)
     # # make it a half note
     # fend.rhythm = 2.0
-    # # fend.notes = ['Bb2', 'F3','A3' ,'C4', 'D4', 'F4', 'G4']
     # fend.notes = ['F2', 'C3', 'F3', 'A3', 'C4', 'F4']
     # fend.dynamic=110
     # # add to original chord list + cor list. THIS IS THE FINAL ORIGINAL VERSION
