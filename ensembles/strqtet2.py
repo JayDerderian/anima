@@ -73,14 +73,10 @@ def strqtet2(tempo=None):
     # write individual lines
     total = randint(12, 30)
     # save original lines to use later
-    v1 = writeline(v1, source, total)
-    v2 = writeline(v2, source, total)
-    va = writeline(va, source, total)
-    vc = writeline(vc, source, total)
-    v1_orig = v1
-    v2_orig = v2
-    va_orig = va
-    vc_orig = vc
+    v1 = writeline(v1, source, total, create)
+    v2 = writeline(v2, source, total, create)
+    va = writeline(va, source, total, create)
+    vc = writeline(vc, source, total, create)
 
     # create rhythms
     rhy = []
@@ -90,27 +86,21 @@ def strqtet2(tempo=None):
     # create dynamics
     dyn = create.newDynamics(total=total)
 
-    # add to each part AND THE ORIGINAL SET
+    # add to each part and save original
+    # values in temp objects
     v1.rhythms.extend(rhy)
     v1.dynamics.extend(dyn)
-    v1_orig.rhythms.extend(rhy)
-    v1_orig.dynamics.extend(dyn)
-
     v2.rhythms.extend(rhy)
     v2.dynamics.extend(dyn)
-    v2_orig.rhythms.extend(rhy)
-    v2_orig.dynamics.extend(dyn)
-
     va.rhythms.extend(rhy)
     va.dynamics.extend(dyn)
-    va_orig.rhythms.extend(rhy)
-    va_orig.dynamics.extend(dyn)
-
     vc.rhythms.extend(rhy)
     vc.dynamics.extend(dyn)
-    vc_orig.rhythms.extend(rhy)
-    vc_orig.dynamics.extend(dyn)
 
+    v1_orig = v1
+    v2_orig = v2
+    va_orig = va
+    vc_orig = vc
 
     #############################
     # ASYNCHRONOUS COUNTERPOINT #
@@ -118,15 +108,22 @@ def strqtet2(tempo=None):
 
     print("\nwriting asynchronous lines...")
 
-    v1 = writeasync(v1, comp.tempo, source, create)
-    v2 = writeasync(v2, comp.tempo, source, create)
-    va = writeasync(va, comp.tempo, source, create)
-    vc = writeasync(vc, comp.tempo, source, create)
+    v1 = writeline(v1, source, total, create, asyn=True)
+    v2 = writeline(v2, source, total, create, asyn=True)
+    va = writeline(va, source, total, create, asyn=True)
+    vc = writeline(vc, source, total, create, asyn=True)
 
 
     # ###############################
     # # ORIGINAL CHORAL - DISPLACED #
     # ###############################
+
+    '''
+    NOTE: generate a "rhythm" that is the difference between a current
+    part and the longest part in the piece. append this difference to the
+    rhythms list, then attempt to add original choral at end of
+    an asynchronous section that will have each part in rhythmic 
+    unison again'''
 
     # print("\nrecapitulating choral at displaced end points...")
 
@@ -186,14 +183,16 @@ def strqtet2(tempo=None):
 #--------------------------------------------------------------------------#
 
 
-def writeline(m, scale, total):
+def writeline(m, scale, total, create, asyn=False):
     '''
     writes each individual line for each part. 
     **doesn't add rhythm or dynamics** 
     only picks notes from a given source scale
     
     returns a modified melody() object'''
-
+    if asyn==True:
+        # this will redefine supplied total if asyn is True
+        total = randint(12, 30)
     for j in range(total):
         # limited to octaves 4 and 5 for violins
         if m.instrument == 'Violin':
@@ -204,37 +203,10 @@ def writeline(m, scale, total):
         # limit to octaves 2 and 3 for cello
         elif m.instrument == 'Cello':
             m.notes.append(scale[randint(0, len(scale)-16)])
-
-    return m
-
-
-def writeasync(m, tempo, scale, create):
-    '''
-    writes each individual part for the asynchronous, free
-    counterpoint section
     
-    returns a modified melody() object
-    
-    NOTE: does the .extend() method cause a note formatting 
-    error when it's inputting one note at a time?'''
-
-    total = randint(12, 30)
-    for j in range(total):
-        # limited to octaves 4 and 5 for violins
-        if m.instrument == 'Violin':
-            m.notes.append(scale[randint(13, len(scale)-1)])
-            # m.notes.extend(scale[randint(13, len(scale)-1)])
-        # limit to octaves 3 and 4 for viola
-        elif m.instrument == 'Viola':
-            m.notes.append(scale[randint(7, len(scale)-8)])
-            # m.notes.extend(scale[randint(7, len(scale)-8)])
-        # limit to octaves 2 and 3 for cello
-        elif m.instrument == 'Cello':
-            m.notes.append(scale[randint(0, len(scale)-16)])
-            # m.notes.extend(scale[randint(0, len(scale)-16)])
-
-    # add rhythms and dynamics, plus save source scale
-    m.rhythms.extend(create.newRhythms(total=len(m.notes), tempo=tempo))
-    m.dynamics.extend(create.newDynamics(total=len(m.notes)))
+    if asyn==True:
+        # add rhythms and dynamics, plus save source scale
+        m.rhythms.extend(create.newRhythms(total=len(m.notes), tempo=m.tempo))
+        m.dynamics.extend(create.newDynamics(total=len(m.notes)))
 
     return m
