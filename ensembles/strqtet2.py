@@ -17,8 +17,6 @@ from containers.melody import Melody
 from containers.composition import Composition
 
 def strqtet2(tempo=None):
-       
-    print("\nwriting new string quartet...")
 
     ##############
     # INITIALIZE #
@@ -62,12 +60,14 @@ def strqtet2(tempo=None):
     # CHORAL GENERATION #
     #####################
 
+    print("\nwriting choral...")
+
     # pick notes. use only one scale! 
     mode = create.pickMode(transpose=True)
     source = create.newSourceScale(mode[2])
 
     # write individual lines
-    total = randint(12, 20)
+    total = randint(12, 30)
     v1 = writeline(v1, source, total)
     v2 = writeline(v2, source, total)
     va = writeline(va, source, total)
@@ -76,7 +76,7 @@ def strqtet2(tempo=None):
     # write rhythms and dynamics
     # use the same one for EACH PART.
     rhy = []
-    for rhythm in range(len(total)):
+    for rhythm in range(total):
         # use slower rhythms
         rhy.append(RHYTHMS[randint(0,4)])
     dyn = create.newDynamics(total=total)
