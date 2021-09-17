@@ -72,27 +72,47 @@ def strqtet2(tempo=None):
 
     # write individual lines
     total = randint(12, 30)
+    # save original lines to use later
     v1_orig = writeline(v1, source, total)
     v2_orig = writeline(v2, source, total)
     va_orig = writeline(va, source, total)
     vc_orig = writeline(vc, source, total)
 
-    # write rhythms and dynamics & 
-    # use the same set for EACH PART.
+    # don't forget to include the original 
+    # notes the first time lol
+    v1.notes.extend(v1_orig.notes)
+    v2.notes.extend(v2_orig.notes)
+    va.notes.extend(va_orig.notes)
+    vc.notes.extend(vc_orig.notes)
+
+    # create rhythms
     rhy = []
     for rhythm in range(total):
         # use slower rhythms
         rhy.append(RHYTHMS[randint(0,4)])
+    # create dynamics
     dyn = create.newDynamics(total=total)
 
+    # add to each part AND THE ORIGINAL SET
     v1.rhythms.extend(rhy)
     v1.dynamics.extend(dyn)
+    v1_orig.rhythms.extend(rhy)
+    v1_orig.dynamics.extend(dyn)
+
     v2.rhythms.extend(rhy)
     v2.dynamics.extend(dyn)
+    v2_orig.rhythms.extend(rhy)
+    v2_orig.dynamics.extend(dyn)
+
     va.rhythms.extend(rhy)
     va.dynamics.extend(dyn)
+    va_orig.rhythms.extend(rhy)
+    va_orig.dynamics.extend(dyn)
+
     vc.rhythms.extend(rhy)
     vc.dynamics.extend(dyn)
+    vc_orig.rhythms.extend(rhy)
+    vc_orig.dynamics.extend(dyn)
 
 
     #############################
@@ -172,8 +192,10 @@ def strqtet2(tempo=None):
 def writeline(m, scale, total):
     '''
     writes each individual line for each part. 
-    doesn't add rhythm or dynamics, only picks
-    notes from a given source scale'''
+    **doesn't add rhythm or dynamics** 
+    only picks notes from a given source scale
+    
+    returns a modified melody() object'''
 
     for j in range(total):
         # limited to octaves 4 and 5 for violins
@@ -192,7 +214,9 @@ def writeline(m, scale, total):
 def writeasync(m, tempo, scale, create):
     '''
     writes each individual part for the asynchronous, free
-    counterpoint section'''
+    counterpoint section
+    
+    returns a modified melody() object'''
 
     total = randint(12, 30)
     for j in range(total):
