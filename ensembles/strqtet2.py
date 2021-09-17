@@ -73,17 +73,14 @@ def strqtet2(tempo=None):
     # write individual lines
     total = randint(12, 30)
     # save original lines to use later
-    v1_orig = writeline(v1, source, total)
-    v2_orig = writeline(v2, source, total)
-    va_orig = writeline(va, source, total)
-    vc_orig = writeline(vc, source, total)
-
-    # don't forget to include the original 
-    # notes the first time lol
-    v1.notes.extend(v1_orig.notes)
-    v2.notes.extend(v2_orig.notes)
-    va.notes.extend(va_orig.notes)
-    vc.notes.extend(vc_orig.notes)
+    v1 = writeline(v1, source, total)
+    v2 = writeline(v2, source, total)
+    va = writeline(va, source, total)
+    vc = writeline(vc, source, total)
+    v1_orig = v1
+    v2_orig = v2
+    va_orig = va
+    vc_orig = vc
 
     # create rhythms
     rhy = []
@@ -127,27 +124,27 @@ def strqtet2(tempo=None):
     vc = writeasync(vc, comp.tempo, source, create)
 
 
-    ###############################
-    # ORIGINAL CHORAL - DISPLACED #
-    ###############################
+    # ###############################
+    # # ORIGINAL CHORAL - DISPLACED #
+    # ###############################
 
-    print("\nrecapitulating choral at displaced end points...")
+    # print("\nrecapitulating choral at displaced end points...")
 
-    v1.notes.extend(v1_orig.notes)
-    v1.rhythms.extend(v1_orig.rhythms)
-    v1.dynamics.extend(v1_orig.dynamics)
+    # v1.notes.extend(v1_orig.notes)
+    # v1.rhythms.extend(v1_orig.rhythms)
+    # v1.dynamics.extend(v1_orig.dynamics)
 
-    v2.notes.extend(v2_orig.notes)
-    v2.rhythms.extend(v2_orig.rhythms)
-    v2.dynamics.extend(v2_orig.dynamics)
+    # v2.notes.extend(v2_orig.notes)
+    # v2.rhythms.extend(v2_orig.rhythms)
+    # v2.dynamics.extend(v2_orig.dynamics)
 
-    va.notes.extend(va_orig.notes)
-    va.rhythms.extend(va_orig.rhythms)
-    va.dynamics.extend(va_orig.dynamics)
+    # va.notes.extend(va_orig.notes)
+    # va.rhythms.extend(va_orig.rhythms)
+    # va.dynamics.extend(va_orig.dynamics)
 
-    vc.notes.extend(vc_orig.notes)
-    vc.rhythms.extend(vc_orig.rhythms)
-    vc.dynamics.extend(vc_orig.dynamics)
+    # vc.notes.extend(vc_orig.notes)
+    # vc.rhythms.extend(vc_orig.rhythms)
+    # vc.dynamics.extend(vc_orig.dynamics)
 
 
     ###############################
@@ -216,22 +213,28 @@ def writeasync(m, tempo, scale, create):
     writes each individual part for the asynchronous, free
     counterpoint section
     
-    returns a modified melody() object'''
+    returns a modified melody() object
+    
+    NOTE: does the .extend() method cause a note formatting 
+    error when it's inputting one note at a time?'''
 
     total = randint(12, 30)
     for j in range(total):
         # limited to octaves 4 and 5 for violins
         if m.instrument == 'Violin':
             m.notes.append(scale[randint(13, len(scale)-1)])
+            # m.notes.extend(scale[randint(13, len(scale)-1)])
         # limit to octaves 3 and 4 for viola
         elif m.instrument == 'Viola':
             m.notes.append(scale[randint(7, len(scale)-8)])
+            # m.notes.extend(scale[randint(7, len(scale)-8)])
         # limit to octaves 2 and 3 for cello
         elif m.instrument == 'Cello':
             m.notes.append(scale[randint(0, len(scale)-16)])
+            # m.notes.extend(scale[randint(0, len(scale)-16)])
 
     # add rhythms and dynamics, plus save source scale
-    m.rhythms = create.newRhythms(total=len(m.notes), tempo=tempo)
-    m.dynamics = create.newDynamics(total=len(m.notes))
+    m.rhythms.extend(create.newRhythms(total=len(m.notes), tempo=tempo))
+    m.dynamics.extend(create.newDynamics(total=len(m.notes)))
 
     return m
