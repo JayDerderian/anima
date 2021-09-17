@@ -17,6 +17,8 @@ from containers.melody import Melody
 from containers.composition import Composition
 
 def strqtet2(tempo=None):
+    '''
+    creates a choral for string quartet using a randomly chosen mode'''
 
     ##############
     # INITIALIZE #
@@ -63,18 +65,20 @@ def strqtet2(tempo=None):
     print("\nwriting choral...")
 
     # pick notes. use only one scale! 
-    mode = create.pickMode(transpose=True)
-    source = create.newSourceScale(mode[2])
+    mode, pcs, notes = create.pickMode(transpose=True)
+    source = create.newSourceScale(notes)
+    print("...using", notes[0], mode)
+    print("...pcs:", pcs)
 
     # write individual lines
     total = randint(12, 30)
-    v1 = writeline(v1, source, total)
-    v2 = writeline(v2, source, total)
-    va = writeline(va, source, total)
-    vc = writeline(vc, source, total)
+    v1_orig = writeline(v1, source, total)
+    v2_orig = writeline(v2, source, total)
+    va_orig = writeline(va, source, total)
+    vc_orig = writeline(vc, source, total)
 
-    # write rhythms and dynamics
-    # use the same one for EACH PART.
+    # write rhythms and dynamics & 
+    # use the same set for EACH PART.
     rhy = []
     for rhythm in range(total):
         # use slower rhythms
@@ -83,15 +87,47 @@ def strqtet2(tempo=None):
 
     v1.rhythms.extend(rhy)
     v1.dynamics.extend(dyn)
-
     v2.rhythms.extend(rhy)
     v2.dynamics.extend(dyn)
-    
     va.rhythms.extend(rhy)
     va.dynamics.extend(dyn)
-
     vc.rhythms.extend(rhy)
     vc.dynamics.extend(dyn)
+
+
+    #############################
+    # ASYNCHRONOUS COUNTERPOINT #
+    #############################
+
+    print("\nwriting asynchronous lines...")
+
+    v1 = writeasync(v1, comp.tempo, source, create)
+    v2 = writeasync(v2, comp.tempo, source, create)
+    va = writeasync(va, comp.tempo, source, create)
+    vc = writeasync(vc, comp.tempo, source, create)
+
+
+    ###############################
+    # ORIGINAL CHORAL - DISPLACED #
+    ###############################
+
+    print("\nrecapitulating choral at displaced end points...")
+
+    v1.notes.extend(v1_orig.notes)
+    v1.rhythms.extend(v1_orig.rhythms)
+    v1.dynamics.extend(v1_orig.dynamics)
+
+    v2.notes.extend(v2_orig.notes)
+    v2.rhythms.extend(v2_orig.rhythms)
+    v2.dynamics.extend(v2_orig.dynamics)
+
+    va.notes.extend(va_orig.notes)
+    va.rhythms.extend(va_orig.rhythms)
+    va.dynamics.extend(va_orig.dynamics)
+
+    vc.notes.extend(vc_orig.notes)
+    vc.rhythms.extend(vc_orig.rhythms)
+    vc.dynamics.extend(vc_orig.dynamics)
 
 
     ###############################
@@ -149,5 +185,29 @@ def writeline(m, scale, total):
         # limit to octaves 2 and 3 for cello
         elif m.instrument == 'Cello':
             m.notes.append(scale[randint(0, len(scale)-16)])
+
+    return m
+
+
+def writeasync(m, tempo, scale, create):
+    '''
+    writes each individual part for the asynchronous, free
+    counterpoint section'''
+
+    total = randint(12, 30)
+    for j in range(total):
+        # limited to octaves 4 and 5 for violins
+        if m.instrument == 'Violin':
+            m.notes.append(scale[randint(13, len(scale)-1)])
+        # limit to octaves 3 and 4 for viola
+        elif m.instrument == 'Viola':
+            m.notes.append(scale[randint(7, len(scale)-8)])
+        # limit to octaves 2 and 3 for cello
+        elif m.instrument == 'Cello':
+            m.notes.append(scale[randint(0, len(scale)-16)])
+
+    # add rhythms and dynamics, plus save source scale
+    m.rhythms = create.newRhythms(total=len(m.notes), tempo=tempo)
+    m.dynamics = create.newDynamics(total=len(m.notes))
 
     return m
