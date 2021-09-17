@@ -121,27 +121,31 @@ def strqtet2(tempo=None):
     '''
     NOTE: generate a "rhythm" that is the difference between a current
     part and the longest part in the piece. append this difference to the
-    rhythms list, then attempt to add original choral at end of
-    an asynchronous section that will have each part in rhythmic 
-    unison again'''
+    *end* of a rhythm list, then attempt to add original choral at end of an 
+    asynchronous section that will have each part in rhythmic unison again. 
+    
+    THIS WILL MAKE RHTYHMS LONGER THAN THE OTHER TWO LISTS. 
+    
+    need to figure out how to make a rest... will a 'None' value in
+    lieu of a note string?'''
 
-    # print("\nrecapitulating choral at displaced end points...")
+    print("\nrecapitulating choral at displaced end points...")
 
-    # v1.notes.extend(v1_orig.notes)
-    # v1.rhythms.extend(v1_orig.rhythms)
-    # v1.dynamics.extend(v1_orig.dynamics)
+    v1.notes.extend(v1_orig.notes)
+    v1.rhythms.extend(v1_orig.rhythms)
+    v1.dynamics.extend(v1_orig.dynamics)
 
-    # v2.notes.extend(v2_orig.notes)
-    # v2.rhythms.extend(v2_orig.rhythms)
-    # v2.dynamics.extend(v2_orig.dynamics)
+    v2.notes.extend(v2_orig.notes)
+    v2.rhythms.extend(v2_orig.rhythms)
+    v2.dynamics.extend(v2_orig.dynamics)
 
-    # va.notes.extend(va_orig.notes)
-    # va.rhythms.extend(va_orig.rhythms)
-    # va.dynamics.extend(va_orig.dynamics)
+    va.notes.extend(va_orig.notes)
+    va.rhythms.extend(va_orig.rhythms)
+    va.dynamics.extend(va_orig.dynamics)
 
-    # vc.notes.extend(vc_orig.notes)
-    # vc.rhythms.extend(vc_orig.rhythms)
-    # vc.dynamics.extend(vc_orig.dynamics)
+    vc.notes.extend(vc_orig.notes)
+    vc.rhythms.extend(vc_orig.rhythms)
+    vc.dynamics.extend(vc_orig.dynamics)
 
 
     ###############################
