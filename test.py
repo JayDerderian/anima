@@ -3,15 +3,15 @@ Simplified file for testing generative functions.
 '''
 
 # Imports
-
 import time
 from random import randint, choice
 
-from modes.rando import newRandomComposition
+from ensembles.rando import newRandomComposition
 from ensembles.strqtet import strqtet
 from ensembles.strqtet2 import strqtet2
 from ensembles.pnoduet import pnoduet
 from ensembles.mixedqtet import mixedqtet
+
 from practice.practice import (newArp, 
                                newProg, 
                                newcanon, 
@@ -19,12 +19,14 @@ from practice.practice import (newArp,
 
 from core.generate import Generate
 
+#------------------------------------------------#
+
 # start timer
 start_time = time.time()
 
 # newRandomComposition()
 # strqtet()
-strqtet2()
+# strqtet2()
 # pnoduet()
 # newArp()
 # newProg()
