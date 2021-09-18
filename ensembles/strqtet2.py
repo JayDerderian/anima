@@ -86,8 +86,7 @@ def strqtet2(tempo=None):
     # create dynamics
     dyn = create.newDynamics(total=total)
 
-    # add to each part and save original
-    # values in temp objects
+    # add to each part 
     v1.rhythms.extend(rhy)
     v1.dynamics.extend(dyn)
     v2.rhythms.extend(rhy)
@@ -96,11 +95,12 @@ def strqtet2(tempo=None):
     va.dynamics.extend(dyn)
     vc.rhythms.extend(rhy)
     vc.dynamics.extend(dyn)
-
+    # save original values in temp objects
     v1_orig = v1
     v2_orig = v2
     va_orig = va
     vc_orig = vc
+
 
     #############################
     # ASYNCHRONOUS COUNTERPOINT #

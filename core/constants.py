@@ -84,8 +84,8 @@ NOTES = ["C", "C#", "D", "Eb", "E", "F",
 # indicies 0 - 17. To be used specifically by randint()
 # when trying to "randomly" pick a note.
 NOTES_EN = ["C", "C#", "Db", "D", "D#", "Eb", "E", 
-         "F", "F#", "Gb", "G", "G#", "Ab", "A", 
-         "A#", "Bb", "B"]
+            "F", "F#", "Gb", "G", "G#", "Ab", "A", 
+            "A#", "Bb", "B"]
 
 
 # All 12 major scales
@@ -100,7 +100,8 @@ MAJOR_SCALES = {1: ["C", "D", "E", "F", "G", "A", "B"],
                 9: ["Ab", "Bb", "C", "Db", "Eb", "F", "G"],
                 10: ["A", "B", "C#", "D", "E", "F#", "G#"],
                 11: ["Bb", "C", "D", "Eb", "F", "G", "A"],
-                12: ["B", "C#", "D#", "E", "F#", "G#", "A#"]}
+                12: ["B", "C#", "D#", "E", "F#", "G#", "A#"]
+}
 
 
 # All 12 relative/natural minor scales
@@ -115,7 +116,8 @@ MINOR_SCALES = {1: ["A", "B", "C", "D", "E", "F", "G"],
                 9: ["F", "G", "Ab", "Bb", "C", "Db", "Eb"],
                 10: ["F#", "G#", "A", "B", "C#", "D", "E"],
                 11: ["G", "A", "Bb", "C", "D", "Eb", "F"],
-                12: ["G#", "A#", "B", "C#", "D#", "E", "F#"]}
+                12: ["G#", "A#", "B", "C#", "D#", "E", "F#"]
+}
 
 
 # Church modes. These are modes starting on 'C', so they will need to 
