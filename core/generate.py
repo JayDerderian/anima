@@ -134,7 +134,7 @@ class Generate:
         return fileName
 
     # Converts a list of pitch class integers to note strings (with or without an octave)
-    def toStr(self, pcs, octave=None):
+    def toStr(self, pcs, octave=None, oe=True):
         '''
         Converts a list of pitch class integers to note name strings, with or without 
         a supplied octave. 
@@ -142,56 +142,56 @@ class Generate:
         Returns a list of strings representing pitches, i.e. C#, Gb or D5, Ab6, etc.
         '''
         scale = []
-        if octave is not None:
-            for i in range(len(pcs)):
-                note = "{}{}".format(NOTES[pcs[i]], octave)
-                scale.append(note)
-        else:
-            for i in range(len(pcs)):
-                scale.append(NOTES[pcs[i]])
-        '''
-        NOTE: there's probably a better way to do this...
-        NOTE: need to add an oe flag to determine where we call
-              the mess below...
+        if oe==True:
+            if octave != None:
+                for i in range(len(pcs)):
+                    note = "{}{}".format(NOTES[pcs[i]], octave)
+                    scale.append(note)
+            else:
+                for i in range(len(pcs)):
+                    scale.append(NOTES[pcs[i]])
 
-        for i in range(len(pcs)):
-            if pcs[i] % 12 == 0:
-                note = "{}{}".format('C', octave+1)
-                scale.append(note)
-            elif pcs[i] % 12 == 1:
-                note = "{}{}".format('C#', octave+1)
-                scale.append(note)
-            elif pcs[i] % 12 == 2:
-                note = "{}{}".format('D', octave+1)
-                scale.append(note)
-            elif pcs[i] % 12 == 3:
-                note = "{}{}".format('Eb', octave+1)
-                scale.append(note)
-            elif pcs[i] % 12 == 4:
-                note = "{}{}".format('E', octave+1)
-                scale.append(note)
-            elif pcs[i] % 12 == 5:
-                note = "{}{}".format('F', octave+1)
-                scale.append(note)
-            elif pcs[i] % 12 == 6:
-                note = "{}{}".format('F#', octave+1)
-                scale.append(note)
-            elif pcs[i] % 12 == 7:
-                note = "{}{}".format('G', octave+1)
-                scale.append(note)
-            elif pcs[i] % 12 == 8:
-                note = "{}{}".format('G#', octave+1)
-                scale.append(note)
-            elif pcs[i] % 12 == 9:
-                note = "{}{}".format('A', octave+1)
-                scale.append(note)
-            elif pcs[i] % 12 == 10:
-                note = "{}{}".format('Bb', octave+1)
-                scale.append(note)
-            elif pcs[i] % 12 == 11:
-                note = "{}{}".format('B', octave+1)
-                scale.append(note)
-        '''
+        '''Translates pc ints > 12 to their respective octaves'''
+        # NOTE: there's probably a better way to do this...
+        if oe==False and octave !=None:
+            for i in range(len(pcs)):
+                if pcs[i] % 12 == 0:
+                    note = "{}{}".format('C', octave+1)
+                    scale.append(note)
+                elif pcs[i] % 12 == 1:
+                    note = "{}{}".format('C#', octave+1)
+                    scale.append(note)
+                elif pcs[i] % 12 == 2:
+                    note = "{}{}".format('D', octave+1)
+                    scale.append(note)
+                elif pcs[i] % 12 == 3:
+                    note = "{}{}".format('Eb', octave+1)
+                    scale.append(note)
+                elif pcs[i] % 12 == 4:
+                    note = "{}{}".format('E', octave+1)
+                    scale.append(note)
+                elif pcs[i] % 12 == 5:
+                    note = "{}{}".format('F', octave+1)
+                    scale.append(note)
+                elif pcs[i] % 12 == 6:
+                    note = "{}{}".format('F#', octave+1)
+                    scale.append(note)
+                elif pcs[i] % 12 == 7:
+                    note = "{}{}".format('G', octave+1)
+                    scale.append(note)
+                elif pcs[i] % 12 == 8:
+                    note = "{}{}".format('G#', octave+1)
+                    scale.append(note)
+                elif pcs[i] % 12 == 9:
+                    note = "{}{}".format('A', octave+1)
+                    scale.append(note)
+                elif pcs[i] % 12 == 10:
+                    note = "{}{}".format('Bb', octave+1)
+                    scale.append(note)
+                elif pcs[i] % 12 == 11:
+                    note = "{}{}".format('B', octave+1)
+                    scale.append(note)
+
         return scale
 
     # Transpose
