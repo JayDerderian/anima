@@ -23,22 +23,21 @@ from core.constants import(
     INTERVALS
 )
 
-import utils.midi as m
+from random import randint, sample, choice
+from datetime import datetime as date
+
 from utils.mapping import mapData
 from utils.toabc import abc
-from utils.save import saveInfo
-from utils.midi import save
-
-from random import randint, sample, choice
+from utils.txtfile import saveInfo
+from utils.midi import save, saveChords
 
 from containers.chord import Chord
 from containers.melody import Melody
 from containers.composition import Composition
 
-from datetime import datetime as date
 
 # Generative functions
-class Generate():
+class Generate:
     '''
     This class handles all generative functions.
     '''
@@ -1007,7 +1006,7 @@ class Generate():
         title = self.newTitle()
         print("\ntitle:", title)
         fn = title + '.mid'
-        m.saveChords(title, chords)
+        saveChords(title, chords)
         print("\nmidi file:", fn)
         tn = title + '.txt'
         saveInfo(name=title, data=sourceScale, fileName=tn, newChords=chords)
@@ -1030,9 +1029,8 @@ class Generate():
 
         Returns a composition() object on success, or -1 on failure.
         '''
-        # Store it here
-        comp = Composition()
         # Initialize
+        comp = Composition()
         comp.title = self.newTitle()
         comp.composer = self.newComposer()
         comp.date = date.now().strftime("%d-%b-%y %H:%M:%S")
@@ -1073,13 +1071,14 @@ class Generate():
             mel.instrument, ' and various keyboards')
 
         # Export MIDI & text file, then display results
-        # if save(comp)!=-1 and saveInfo(name=comp.title, 
-        #     fileName=comp.txtFileName, newMusic=comp)==0:
-        if save(comp)!=-1:
+        if save(comp)!=-1 and saveInfo(name=comp.title, 
+            fileName=comp.txtFileName, newMusic=comp)==0:
             print("\ntitle:", title_full)
             print("composer:", comp.composer)
             print("date:", comp.date)
+            print("duration:", comp.duration())
             print("midi file:", comp.midiFileName)
+            print("text file:", comp.txtFileName)
             return comp
         else:
             print("\nnoooooooooooooooooooooo")

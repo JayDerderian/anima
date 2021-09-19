@@ -13,7 +13,7 @@ from random import randint, choice
 from datetime import datetime as date
 
 from utils.midi import save
-from utils.save import saveInfo
+from utils.txtfile import saveInfo
 from core.constants import TEMPOS, RHYTHMS, DYNAMICS
 
 from core.generate import Generate

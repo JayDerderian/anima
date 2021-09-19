@@ -9,27 +9,27 @@ Example usage for generating a single melody using a person's name
 
 .. code-block:: python
     
-    import midi as m
-    import generate as create
+    from utils.mid import midi
+    from utils.txtfile import saveInfo
+    from core.generate import Generate
+
+    # create a generate object
+    create = Generate()
 
     # get the user's name
     name = input("Enter your name:" )
 
     # generate a melody() object
-    new_melody = create.newMelody(data=name)
+    m = create.newMelody(data=name, dataType=3)
 
     # generate title and export to a MIDI file
     title = create.newTitle()
     midiFileName = title + ".mid"
-    m.saveMelody(midiFileName, new_melody)
+    midi.saveMelody(midiFileName, new_melody)
 
     # create a text file name and save melody info 
     # to a .txt file
     txtFileName = title + ".txt"
-    create.saveInfo(txtFileName, new_melody)
-
-    # generate sheet music from melody() object
-    sm = create.newScore(new_melody)
-
+    create.saveInfo(txtFileName, mid)
 '''
 __version__ = '1.0'

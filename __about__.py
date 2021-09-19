@@ -1,5 +1,0 @@
-__version__ = '1.0'
-__author__ = 'Jay Derderian'
-__author_email__ = 'maestro1286@gmail.com'
-# __url__ = 'https://mido.readthedocs.io/'
-__license__ = 'MIT'

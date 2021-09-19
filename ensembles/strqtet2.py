@@ -8,7 +8,7 @@ from random import randint
 from datetime import datetime as date
 
 from utils.midi import save
-from utils.save import saveInfo
+from utils.txtfile import saveInfo
 
 from core.generate import Generate
 from core.constants import RHYTHMS, TEMPOS
@@ -20,15 +20,8 @@ def strqtet2(tempo=None):
     '''
     creates a choral for string quartet using a randomly chosen mode'''
 
-    ##############
-    # INITIALIZE #
-    ##############
-
-    # objects
     create = Generate()
     comp = Composition()
-
-    # title 'n stuff
     comp.title = create.newTitle()
     comp.composer = create.newComposer()
     comp.date = date.now().strftime("%d-%b-%y %H:%M:%S")
@@ -41,8 +34,7 @@ def strqtet2(tempo=None):
     else:
         comp.tempo = 60.0
 
-    # initialize instrument objects and append to 
-    # instrument list
+    # create our quartet
     v1 = Melody(tempo=comp.tempo,
                 instrument='Violin')
     v2 = Melody(tempo=comp.tempo,
@@ -57,11 +49,6 @@ def strqtet2(tempo=None):
     comp.instruments.append(vc.instrument)
     comp.ensemble = 'quartet'
 
-
-    #####################
-    # CHORAL GENERATION #
-    #####################
-
     print("\nwriting choral...")
 
     # pick notes. use only one scale! 
@@ -72,7 +59,6 @@ def strqtet2(tempo=None):
 
     # write individual lines
     total = randint(12, 30)
-    # save original lines to use later
     v1 = writeline(v1, source, total, create)
     v2 = writeline(v2, source, total, create)
     va = writeline(va, source, total, create)
@@ -95,16 +81,12 @@ def strqtet2(tempo=None):
     va.dynamics.extend(dyn)
     vc.rhythms.extend(rhy)
     vc.dynamics.extend(dyn)
+
     # save original values in temp objects
     v1_orig = v1
     v2_orig = v2
     va_orig = va
     vc_orig = vc
-
-
-    #############################
-    # ASYNCHRONOUS COUNTERPOINT #
-    #############################
 
     print("\nwriting asynchronous lines...")
 
@@ -112,11 +94,6 @@ def strqtet2(tempo=None):
     v2 = writeline(v2, source, total, create, asyn=True)
     va = writeline(va, source, total, create, asyn=True)
     vc = writeline(vc, source, total, create, asyn=True)
-
-
-    # ###############################
-    # # ORIGINAL CHORAL - DISPLACED #
-    # ###############################
 
     '''
     NOTE: generate a "rhythm" that is the difference between a current
@@ -146,11 +123,6 @@ def strqtet2(tempo=None):
     vc.notes.extend(vc_orig.notes)
     vc.rhythms.extend(vc_orig.rhythms)
     vc.dynamics.extend(vc_orig.dynamics)
-
-
-    ###############################
-    # WRITE OUT & DISPLAY RESULTS #
-    ###############################
 
     # save all parts
     comp.melodies.append(v1)
@@ -195,7 +167,7 @@ def writeline(m, scale, total, create, asyn=False):
     
     returns a modified melody() object'''
     if asyn==True:
-        # this will redefine supplied total if asyn is True
+        # NOTE: this will redefine supplied total if asyn is True
         total = randint(12, 30)
     for j in range(total):
         # limited to octaves 4 and 5 for violins
