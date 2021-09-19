@@ -34,7 +34,7 @@ from random import randint
 from datetime import datetime as date
 
 from utils.midi import save
-from utils.save import saveInfo
+from utils.txtfile import saveInfo
 
 from core.generate import Generate
 
@@ -46,15 +46,9 @@ def strqtet(tempo=None):
    
     print("\nwriting new string quartet...")
 
-    ##############
-    # INITIALIZE #
-    ##############
-
     # objects
     create = Generate()
     comp = Composition()
-
-    # title 'n stuff
     comp.title = create.newTitle()
     comp.composer = create.newComposer()
     comp.date = date.now().strftime("%d-%b-%y %H:%M:%S")
@@ -82,19 +76,9 @@ def strqtet(tempo=None):
     comp.instruments.append(vc.instrument)
     comp.ensemble = 'quartet'
 
-
-    #############################
-    # SOURE MATERIAL GENERATION #
-    #############################
-
     # generate source scale for all string parts. 
     print("\ncreating modal source scale...")
     scales = newSource(create)
-
-
-    ########################################
-    # ASYNCHRONOUS NOTES/FREE COUNTERPOINT #
-    ########################################
     '''
     NOTE: There's probably a way to make the 4 loops below happen in one
           big one that happens 4 times...'''
@@ -110,11 +94,6 @@ def strqtet(tempo=None):
     # cello part
     print("\nwriting cello part...")
     vc = writeasync(vc, comp.tempo, scales, create)
-
-
-    #################################################
-    # ADD SLOWLY SPEEDING UP ARPEGGIOS TO EACH PART #
-    #################################################
 
     arpv1 = genfig(v1, scales, create)
     arpv2 = genfig(v2, scales, create)
@@ -150,11 +129,6 @@ def strqtet(tempo=None):
     print("v2 len:", v2.duration())
     print("va len:", va.duration())
     print("vc len:", vc.duration())
-
-
-    ###############################
-    # WRITE OUT & DISPLAY RESULTS #
-    ###############################
 
     # save all parts
     comp.melodies.append(v1)
@@ -251,8 +225,9 @@ def writeasync(m, tempo, scales, create):
 
 def genfig(m, scales, create):
     '''
-    builds repeated figure off last note in this part 
-    and its place in the source scale.
+    builds a figure off last note in this part 
+    and its place in the source scale to be repeated
+    as a closing gesture of the piece.
     
     returns a tuple: 
         arp notes (list[str]), 
@@ -265,27 +240,25 @@ def genfig(m, scales, create):
     # vc, if it ends in 3, go down, go up if 2
 
     # retrieve the last note (ln) and determine
-    # which octave its in
+    # which octave its in (each note string has an octave
+    # number, i.e. C#5)
 
-    # print("\nfinding last played note...")
-    # ln = m.notes[len(m.notes)-1]
-    # print("...last note:", ln)
     dn = False
     up = False
     if m.instrument == 'Violin':
-        ln = m.notes[len(m.notes)-1]
+        ln = m.notes[-1]
         if ln.count('5')  > 0:
             dn = True
         else:
             up = True
     elif m.instrument == 'Viola':
-        ln = m.notes[len(m.notes)-1]
+        ln = m.notes[-1]
         if ln.count('4')  > 0:
             dn = True
         else:
             up = True
     elif m.instrument == 'Cello':
-        ln = m.notes[len(m.notes)-1]
+        ln = m.notes[-1]
         if ln.count('3')  > 0:
             dn = True
         else:
@@ -412,7 +385,7 @@ def sync(m, lp, arptuple):
     sync all other parts against a given duration
     (longeset part/lp)
     
-    get difference between current part and longest part, divide 
+    TODO: get difference between current part and longest part, divide 
     difference into equal sections devoted to repetitions of a specified
     rhythm, then repeat each rhythm n times for their section
     
@@ -430,4 +403,12 @@ def sync(m, lp, arptuple):
             m.rhythms.append(rhy[add])
             if m.duration() == lp:
                 break
+    '''
+    while m.duration() < lp:
+        m.notes.extend(arptuple[0])
+        m.dynamics.extend(arptuple[2])
+        m.rythms.extend(arptuple[1])
+        if m.duration() == lp:
+            break
+    '''
     return m

@@ -1,22 +1,16 @@
-#************************************************************************************************************************#
-#---------------------------------This class manages MIDI file analysis functions----------------------------------------#
-#************************************************************************************************************************#
 '''
-Notes:
-
+this module handles the importing and analysis of MIDI files. 
+this uses pretty_midi as the importing tool and mingus to help
+analyze the note content.
 
 '''
 import math
+import mingus
 import pretty_midi as pm
-
 
 
 #Retrieve MIDI note number
 def getNoteNumber(self, thisTune):
-    if(not thisTune):
-        return 0
-    #Test output
-    print("\nMIDI note number: ", thisTune.instruments.Notes.pitch)
     return thisTune.instrument.note.pitch        
 
 #Returns a list of MIDI pitch numbers. 
@@ -27,11 +21,6 @@ def getNotes(self, thisTune):
     for instrument in thisTune.instruments:
         for note in instrument.notes:
             theNotes.append(note.pitch)
-    #Test output
-    if(not theNotes):
-        print("...Unable to generate note list!")
-    print("...MIDI Note list created!")
-    #print(theNotes)
     return theNotes
 
 #Collects all data about each note (Note: velocity, pitch, start/end)
@@ -40,11 +29,6 @@ def getNoteData(self, thisTune):
     print("\nCollecting note data...")
     for instrument in thisTune.instruments:
         noteData.append(instrument.notes)
-    #Test output
-    if(not noteData):
-        print("...Unable to gather note data")
-    print("...Retrieved note data!")
-    #print(noteData)
     return noteData
 
 #Get total number of notes in the MIDI file
@@ -54,10 +38,6 @@ def getTotalNotes(self, thisTune):
     for instrument in thisTune.instruments:
         for note in instrument.notes:
             noteCount += 1
-    #Test output
-    if(not noteCount):
-        print("...Unable to complete note count!")
-    print("Total Notes: ", noteCount)
     return noteCount
 
 #Check for duplicate pitch classes in a tone row.
@@ -76,10 +56,6 @@ def getTotalInstruments(self, thisTune):
     print("\nCounting instruments/tracks...")
     for instrument in thisTune.instruments:
         totalInstruments += 1
-    #Test output
-    if(totalInstruments == 0):
-        print("No tracks found!")
-    print("Total tracks: ", totalInstruments)
     return totalInstruments
 
 #Determines difference between given tempo and standard second 
@@ -91,18 +67,15 @@ def tempoDifference(self, thisTune):
 
 #Get pretty_midi's estimated global tempo in bpm
 def getTempo(self, thisTune):
-    tempo = thisTune.estimate_tempo()
-    return tempo
+    return thisTune.estimate_tempo()
 
 #Get pretty_midi's note start times
 def getBeats(self, thisTune):
-    startTimes = thisTune.get_beats(start_time = 0.0)
-    return startTimes
+    return thisTune.get_beats(start_time = 0.0)
 
 #Get pretty_midi's downbeat locations (tempo/time-sig changes)
 def getDownBeats(self, thisTune):
-    downBeats = thisTune.get_downbeats()
-    return downBeats
+    return thisTune.get_downbeats()
 
 #Gets note duration (in seconds)
 def getDuration(self, start, end):

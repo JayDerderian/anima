@@ -6,9 +6,10 @@ list[float], hex str, list[str]
 '''
 
 # Imports
-import core.constants as c
-from random import randint
+from random import randint, choice
 from random import uniform
+
+from core.constants import ALPHABET
 
 # Generate a list of 10 - 50 random numbers between 0-200
 def newInts():
@@ -43,9 +44,9 @@ def newChars():
     total = randint(10, 50)
     for i in range(total):
         # Pick letter
-        char = c.ALPHABET[randint(0, len(c.ALPHABET) - 1)]
+        char = choice(ALPHABET)
         # Captitalize? 1 = yes, 2 = no
-        if(randint(1, 2) == 1):
+        if randint(1, 2) == 1:
             char = char.upper()
         chars.append(char)
     return chars
@@ -56,13 +57,13 @@ def newData(dataType):
        Enter in 1-4 to choose (1 = int list, 2 = float list, 
        3 = char list, 4 = 0xXXXXXX hex number)'''
     # Generate ints
-    if(dataType == 1):
+    if dataType == 1:
         data = newInts()
     # Generate floats
-    elif(dataType == 2):
+    elif dataType == 2:
         data = newFloats()
     # Generate chars
-    elif(dataType == 3):
+    elif dataType == 3:
         data = newChars()
     # Generate a new hex
     else:
