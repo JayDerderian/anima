@@ -84,7 +84,7 @@ def mapData(newMelody, data, dataType):
     Wrapper method to map data used by newMelody()
     
     Returns modified data and modified melody() object, or -1 
-    on failure.
+    on failure. melody() object has original source data saved.
     '''
     print("\nProcessing incoming data...")
     # If ints, scale as necessary
@@ -110,9 +110,9 @@ def mapData(newMelody, data, dataType):
     elif dataType == 4:
         # Converts hex number to string, then saves
         # that as the first item of a list. It's silly, I know.
-        data = str(data)
+        # data = str(data)
         # Save original source data
-        newMelody.sourceData.append(data)
+        newMelody.sourceData.append(str(data))
         data = hexToIntList(data)
     else:
         print("\nmapData() - ERROR: dataType value out of range!")

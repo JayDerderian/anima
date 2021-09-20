@@ -228,17 +228,19 @@ class Generate:
 
         60/72 = .83 - The result becomes the converter value to multiply all supplied
         durations against to get the new tempo-accurate durations in seconds.
+
+        NOTE: the round() method keeps the results within three decimal places  
         '''
         diff = 60/tempo
         # is this a single float?
         if type(rhythms) == float:
             rhythms *= diff
+            rhythms = round(rhythms, 3)
         # or a list of floats?
         elif type(rhythms) == list:
             for i in range(len(rhythms)):
                 rhythms[i] *= diff
-                '''NOTE: Truncate float a bit here??? Might help
-                         with sheet music generation'''
+                rhythms[i] = round(rhythms[i], 3)
         return rhythms    
 
 
@@ -335,10 +337,10 @@ class Generate:
             # church mode in any key, or create a new scale
             ch = randint(1, 3)
             if ch == 1:
-                root, fn = self.pickScale()
+                root, fn = self.pickRoot()
                 meta_data.append(fn)
             elif ch == 2:
-                mode, mode_pcs, root = self.pickMode(transpose=True)
+                mode, mode_pcs, root = self.pickMode(t=True)
                 info = root[0] + mode
                 meta_data.append(info)
             else:
@@ -374,7 +376,7 @@ class Generate:
                     # church mode in any key, or create a new scale
                     ch = randint(1, 3)
                     if ch == 1:
-                        root, fn = self.pickScale()
+                        root, fn = self.pickRoot()
                         meta_data.append(fn)
                     elif ch == 2:
                         mode, mode_pcs, root = self.pickMode(transpose=True)
@@ -407,68 +409,79 @@ class Generate:
         return notes, meta_data, scale
 
     # Picks a church mode and randomly transposes it
-    def pickMode(self, transpose=False, octave=None):
+    def pickMode(self, t=False, o=None):
         '''
         Picks a church mode, randomly transposes it (if indicated),
         and appends a specified octave (if needed). 
         
         Returns a tuple: the mode (str), mode pcs (list[int]), 
-        and notes (list[str]). 
+        and notes (list[str]) *without assigned octave by default.* 
         '''
         # pick mode
         mode = choice(MODE_KEYS)
         mode_pcs = MODES[mode]
         # transpose?
-        if transpose==True:
+        if t==True:
             # how far?
             t = randint(1, 11)
             mode_pcs = self.transpose(mode_pcs, t, oe=True)
         # append octave, if necessary, to the final list[str]
-        if octave != None:
-            mode_notes = self.toStr(mode_pcs, octave=octave)
+        if o != None:
+            mode_notes = self.toStr(mode_pcs, octave=o)
         else:
             mode_notes = self.toStr(mode_pcs)
         return mode, mode_pcs, mode_notes
 
     # Picks either a prime form pitch-class set, or a major or minor scale.
-    def pickScale(self, octave=None):
+    def pickRoot(self, o=None, t=True):
         '''
-        Picks either 1 of 12 major or minor scales for a tonal flavor, 
-        or a 5 to 9 note Forte pitch class prime form for an atonal flavor.
+        Picks either a randomly chosen and transposed chuch mode or a 5 to 9 
+        note Forte pitch class prime form, randomly transposed as well. Set t
+        to false if untransposed root is preferred.
 
-        Returns tuple with a list[str] of note name strings with or without an 
-        assigned octave, plus the forte number (str) of the chosen scale.
-
-        NOTE: Add ability to pick mode in random key? Probably.
+        Returns tuple with a list[str] of note name strings, with or without an 
+        assigned octave, plus info (str) about the chosen scale.
         '''
-        scale = []
-        # use a major or minor scale(1), or pick a prime form(2)?
+        # use mode? (1), or prime form (2)?
         if randint(1, 2) == 1:
-            # pick major
-            if randint(1, 2) == 1:
-                scale = choice(MAJOR_SCALES)
-                fn = "7-35 (" + scale[0] + "major)"
-            # pick minor
+            if t==True:
+                mode, pcs, scale = self.pickMode(t=True)
+                info = '{}{}'.format(scale[0], mode)
             else:
-                scale = choice(MINOR_SCALES)
-                fn = "7-35 (" + scale[0] + "minor)"
+                mode, pcs, scale = self.pickMode(t=False)
+                info = '{}{}'.format(scale[0], mode)
         else:
-            # pick prime form pitch-class set
-            fn = choice(FORTE_NUMBERS)
-            pcs = SCALES[fn]
-            # convert pcs to a list of note names / strings
-            for i in range(len(pcs)):
-                scale.append(NOTES[pcs[i]])
+            if t==True:
+                fn, pcs, scale = self.pickScale(t=True)
+                info = "{} transposed to new root:{}".format(fn, scale[0])
+            else:
+                fn, pcs, scale = self.pickScale(t=False)
+                info = "{} untransposed, root:{}".format(fn, scale[0])
         # append octave, if necessary
-        if octave != None:
-            _scale = []
-            for i in range(len(scale)):
-                note = "{}{}".format(scale[i], octave) 
-                _scale.append(note)
-            # return whichever scale/list we end up needing
-            return _scale, fn
+        if o != None:
+            scale = self.toStr(pcs, octave=o)
+        return scale, info     
+
+    def pickScale(self, t=True):
+        '''
+        Selects prime form and transposes a random distance (or not)
+        
+        Returns a tuple: fn (str), prime form pcs (list[int]), and
+        transposed or untransposed notes *without an assigned octave* 
+        (list[str])'''
+        # pick prime form pitch-class set
+        fn = choice(FORTE_NUMBERS)
+        pcs = SCALES[fn]
+        # transpose pcs
+        if t==True:
+            dist = randint(1, 11)
+            pcs_t = self.transpose(pcs, dist, oe=True)
+            scale = self.toStr(pcs_t)
+        # or not
         else:
-            return scale, fn     
+            scale = self.toStr(pcs)
+        return fn, pcs, scale
+        
 
     # Generate a new scale to function as a "root"
     def newScale(self, octave=None):
@@ -795,9 +808,9 @@ class Generate:
         if scale==None:
             ch = randint(1, 3)
             if ch == 1:
-                scale, newchord.fn = self.pickScale(octave=randint(2,5))
+                scale, newchord.fn = self.pickRoot(o=randint(2,5))
             elif ch == 2:
-                mode, mode_pcs, scale = self.pickMode(transpose=True, octave=randint(2,5))
+                mode, mode_pcs, scale = self.pickMode(t=True, o=randint(2,5))
                 info = scale[0] + mode
                 newchord.fn = info
             else:

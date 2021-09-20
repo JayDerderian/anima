@@ -5,63 +5,37 @@ may vary substantially, as well as the instrumentation.
 '''
 
 #IMPORTS
-# import core.constants as c
-from core.constants import ENSEMBLE_SIZES
 from core.generate import Generate
+from core.constants import ENSEMBLE_SIZES
+
 from containers.composition import Composition
-from utils.save import saveInfo
+
 import utils.midi as mid
+from utils.txtfile import saveInfo
+from utils.data import newData
 
 from random import randint, choice
 from datetime import datetime as date
 
-'''
-------------------------------------------------------NOTES--------------------------------------------------------------
-    ALGORITHM:
-
-    0. Pure random. RNG rules all.
-        0.1. Decide on number of instruments
-
-        0.2. Decide global tempo (invariant... for now)
-
-        0.3. For each instrument, generate n number of notes and/or chords (not restricted to human playability). Each
-             instrument will decide whether it only plays notes, chords, or both.
-            0.3.1. Generate list of randomly selected note names in randomly selected octaves of n length.
-            0.3.2. Generate list of individual lists of random note names in random octaves of n length.
-                0.3.2.1. Each sub-list is a "chord"
-                0.3.2.2. Each chord's voicings will be randomized.
-            0.3.3. Generate durations for each note or chord
-                0.3.3.1. Chord durations are defined as a set of integers attached to a common time duration.
-            0.3.4 Generate dynamics for each chord
-
-------------------------------------------------------------------------------------------------------------------------
-'''
 
 # Pure "random" mode
 def newRandomComposition():
     '''
     Generates a composition with 1-11 melody and/or harmony instruments under a unified tempo. 
     Each part's material will be independently generated, with or without auto-generated source 
-    data.
+    data for the melody parts.
     
     Exports a MIDI file and a .txt file with composition info. 
     
     Returns a composition() object, or -1 on failure.
 
-    TODO: Modify to create an ensemble list not stored in comp! each time an instrument is picked, remove it from
-          this list. once complete, THEN append all instruments to comp.instruments
-
-    NOTE: Need a way to decide whether to compose a single melodic, harmonic, or percussive instrument, if
+    TODO: Need a way to decide whether to compose a single melodic, harmonic, or percussive instrument, if
           ensemble size == 1.
     '''
     print("\ngenerating new composition...")
 
-    # new generate object
     create = Generate()
-    # new composition object
     comp = Composition()
-
-    # Generate title, composer name, and pick tempo
     comp.title = create.newTitle()
     comp.composer = create.newComposer()
     comp.tempo = create.newTempo()
@@ -71,8 +45,7 @@ def newRandomComposition():
     size = randint(1, 11)
     print("\ntotal instruments:", size)
     comp.ensemble = ENSEMBLE_SIZES[size]
-    # generate instrument list. remove instr from this
-    # list when chosen! append chosen instr to comp.instruments
+    # generate instrument list. 
     instruments = create.newInstruments(size)
     print("instruments:", instruments)
 
@@ -82,8 +55,14 @@ def newRandomComposition():
     if total_melodies > 0:
         print("\npicking", total_melodies, "melodies...")
         for i in range(total_melodies):
-            '''NOTE: use randomly chosen source data at some point????'''
-            melody = create.newMelody(tempo=comp.tempo)
+            # use randomly chosen source data
+            if randint(1, 2) == 1:
+                dt = randint(1,4)
+                data = newData(dt)
+                melody = create.newMelody(tempo=comp.tempo, data=data, dataType=dt)
+            # ... or not
+            else:
+                melody = create.newMelody(tempo=comp.tempo)
             # assign a randomly-chosen instrument to this melody
             instr = choice(instruments)
             melody.instrument = instr
@@ -103,7 +82,6 @@ def newRandomComposition():
         for i in range(total_harmonies):
             # total chords in this progression
             total = randint(3, 15)
-            print("\nchord progression", i, "has", total, "chords...")
             # generate chords
             chords = create.newChords(total=total, tempo=comp.tempo)
             # pick instrument and assign to *all* chords in this progression
@@ -112,7 +90,7 @@ def newRandomComposition():
                 chords[c].instrument = instr
             instruments.remove(instr)
             comp.instruments.append(instr)
-            # save chord to comp chord dictionary
+            # save chord progression to comp chord dictionary
             comp.chords[key] = chords
             key+=1
 
@@ -139,7 +117,7 @@ def newRandomComposition():
     print("composer:", comp.composer)
     print("date", comp.date)
     print("tempo:", comp.tempo)
-    print("midi file saved as:", comp.midiFileName)
-    # print("Text file saved as:", comp.txtFileName)
+    print("midi file:", comp.midiFileName)
+    # print("text file:", comp.txtFileName)
     print()
     return comp

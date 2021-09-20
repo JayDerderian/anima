@@ -3,6 +3,7 @@ Simplified file for testing generative functions.
 '''
 
 # Imports
+import genericpath
 import time
 from random import randint, choice
 

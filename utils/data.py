@@ -45,7 +45,7 @@ def newChars():
     for i in range(total):
         # Pick letter
         char = choice(ALPHABET)
-        # Captitalize? 1 = yes, 2 = no
+        # Captitalize?
         if randint(1, 2) == 1:
             char = char.upper()
         chars.append(char)
