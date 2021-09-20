@@ -391,9 +391,7 @@ class Generate:
             else:
                 fn, pcs, scale = self.pickScale(t=False)
                 info = "{} untransposed, root:{}".format(fn, scale[0])
-        # append octave, if necessary
-        if o != None:
-            scale = self.toStr(pcs, octave=o)
+        scale = self.toStr(pcs, octave=o)
         return scale, info     
 
 
@@ -403,16 +401,15 @@ class Generate:
         Picks a church mode, randomly transposes it (if indicated),
         and appends a specified octave (if needed). 
         
-        Returns a tuple: the mode (str), mode pcs (list[int]), 
-        and notes (list[str]) *without assigned octave by default.* 
+        Returns a tuple: the mode (str), untransposed mode pcs (list[int]), 
+        and note list (list[str]) *without assigned octave by default.* 
         '''
         # pick mode
         mode = choice(MODE_KEYS)
         pcs = MODES[mode]
-        # transpose?
         if t==True:
-            pcs = self.transpose(pcs, randint(1, 11), oe=True)
-            notes = self.toStr(pcs, octave=o)
+            pcs_t = self.transpose(pcs, randint(1, 11), oe=True)
+            notes = self.toStr(pcs_t, octave=o)
         else:
             notes = self.toStr(pcs, octave=o)
         return mode, pcs, notes
@@ -424,13 +421,12 @@ class Generate:
         '''
         Selects prime form and transposes a random distance (or not)
         
-        Returns a tuple: fn (str), prime form pcs (list[int]), and
-        transposed or untransposed notes *without an assigned octave* 
-        (list[str])'''
+        Returns a tuple: forte number/fn (str), untransposed prime form pcs (list[int]), 
+        note list (list[str]) *without an assigned octave*
+        '''
         # pick prime form pitch-class set
         fn = choice(FORTE_NUMBERS)
         pcs = SCALES[fn]
-        # transpose pcs
         if t==True:
             pcs_t = self.transpose(pcs, randint(1, 11), oe=True)
             scale = self.toStr(pcs_t, octave=o)
