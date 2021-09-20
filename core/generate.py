@@ -333,20 +333,8 @@ class Generate:
         octave = randint(2, 3)
         # Pick a root scale if none provided
         if root==None:
-            # pick either a maj/min scale, forte prime form
-            # church mode in any key, or create a new scale
-            ch = randint(1, 3)
-            if ch == 1:
-                root, fn = self.pickRoot()
-                meta_data.append(fn)
-            elif ch == 2:
-                mode, mode_pcs, root = self.pickMode(t=True)
-                info = root[0] + mode
-                meta_data.append(info)
-            else:
-                root, pcs = self.newScale()
-                info = "new scale: " + str(pcs)
-                meta_data.append(info)
+            root, info = self.pickRoot(o=None, t=True)
+            meta_data.append(info)
         # Pick total: 3 - 50 if we're generating random notes
         if data==None:
             # Note that the main loop uses total + 1!
@@ -372,20 +360,9 @@ class Generate:
                 if octave > 5:
                     # Reset starting octave
                     octave = randint(2, 3)
-                    # pick either a maj/min scale, forte prime form
-                    # church mode in any key, or create a new scale
-                    ch = randint(1, 3)
-                    if ch == 1:
-                        root, fn = self.pickRoot()
-                        meta_data.append(fn)
-                    elif ch == 2:
-                        mode, mode_pcs, root = self.pickMode(t=True)
-                        info = root[0] + mode
-                        meta_data.append(info)
-                    else:
-                        root, pcs = self.newScale()
-                        info = "new scale:" + str(pcs)
-                        meta_data.append(info)
+                    # pick new root
+                    root, info = self.pickRoot(o=None, t=True)
+                    meta_data.append(info)
                 # Reset n to stay within len(root)
                 n = 0
 
@@ -408,29 +385,6 @@ class Generate:
 
         return notes, meta_data, scale
 
-    # Picks a church mode and randomly transposes it
-    def pickMode(self, t=False, o=None):
-        '''
-        Picks a church mode, randomly transposes it (if indicated),
-        and appends a specified octave (if needed). 
-        
-        Returns a tuple: the mode (str), mode pcs (list[int]), 
-        and notes (list[str]) *without assigned octave by default.* 
-        '''
-        # pick mode
-        mode = choice(MODE_KEYS)
-        mode_pcs = MODES[mode]
-        # transpose?
-        if t==True:
-            # how far?
-            t = randint(1, 11)
-            mode_pcs = self.transpose(mode_pcs, t, oe=True)
-        # append octave, if necessary, to the final list[str]
-        if o != None:
-            mode_notes = self.toStr(mode_pcs, octave=o)
-        else:
-            mode_notes = self.toStr(mode_pcs)
-        return mode, mode_pcs, mode_notes
 
     # Picks either a prime form pitch-class set, or a major or minor scale.
     def pickRoot(self, o=None, t=True):
@@ -461,6 +415,31 @@ class Generate:
         if o != None:
             scale = self.toStr(pcs, octave=o)
         return scale, info     
+
+
+    # Picks a church mode and randomly transposes it
+    def pickMode(self, t=False, o=None):
+        '''
+        Picks a church mode, randomly transposes it (if indicated),
+        and appends a specified octave (if needed). 
+        
+        Returns a tuple: the mode (str), mode pcs (list[int]), 
+        and notes (list[str]) *without assigned octave by default.* 
+        '''
+        # pick mode
+        mode = choice(MODE_KEYS)
+        pcs = MODES[mode]
+        # transpose?
+        if t==True:
+            # how far?
+            t = randint(1, 11)
+            pcs = self.transpose(pcs, t, oe=True)
+        # append octave, if necessary, to the final list[str]
+        if o != None:
+            notes = self.toStr(pcs, octave=o)
+        else:
+            notes = self.toStr(pcs)
+        return mode, pcs, notes
 
     def pickScale(self, t=True):
         '''
