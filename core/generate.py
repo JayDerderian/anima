@@ -412,14 +412,15 @@ class Generate:
         # transpose?
         if t==True:
             pcs = self.transpose(pcs, randint(1, 11), oe=True)
-        # append octave, if necessary, to the final list[str]
-        if o != None:
             notes = self.toStr(pcs, octave=o)
         else:
-            notes = self.toStr(pcs)
+            notes = self.toStr(pcs, octave=o)
         return mode, pcs, notes
 
-    def pickScale(self, t=True):
+
+    # Picks a prime form pitch class set and transposes it
+    # n semi-tones
+    def pickScale(self, t=True, o=None):
         '''
         Selects prime form and transposes a random distance (or not)
         
@@ -432,14 +433,13 @@ class Generate:
         # transpose pcs
         if t==True:
             pcs_t = self.transpose(pcs, randint(1, 11), oe=True)
-            scale = self.toStr(pcs_t)
-        # or not
+            scale = self.toStr(pcs_t, octave=o)
         else:
-            scale = self.toStr(pcs)
+            scale = self.toStr(pcs, octave=o)
         return fn, pcs, scale
         
 
-    # Generate a new scale to function as a "root"
+    # Generate a new scale
     def newScale(self, octave=None):
         '''
         Returns a randomly generated 5 to 9 note scale with or without an octave 
