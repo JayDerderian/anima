@@ -117,6 +117,12 @@ def newRandomComposition():
     print("composer:", comp.composer)
     print("date", comp.date)
     print("tempo:", comp.tempo)
+    d = comp.duration()
+    if d > 60.0:
+        d/=60.0
+        print("duration:", d, "minutes")
+    else:
+        print("duration:", d, "seconds")
     print("midi file:", comp.midiFileName)
     # print("text file:", comp.txtFileName)
     print()

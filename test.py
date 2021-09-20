@@ -25,9 +25,9 @@ from core.generate import Generate
 # start timer
 start_time = time.time()
 
-# newRandomComposition()
+newRandomComposition()
 # strqtet()
-strqtet2()
+# strqtet2()
 # pnoduet()
 # newArp()
 # newProg()
