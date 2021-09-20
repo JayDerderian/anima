@@ -16,8 +16,6 @@ from core.constants import(
     MODE_KEYS,
     ARPEGGIOS,
     SCALES,
-    MAJOR_SCALES,
-    MINOR_SCALES,
     FORTE_NUMBERS,
     PITCH_CLASSES,
     INTERVALS
@@ -114,24 +112,6 @@ class Generate:
             name = 'Rando Calrissian'
         return name
 
-    # Initializes a composition() object with a title, composer, and date
-    def newComp(title, composer, date):
-        '''
-        Initialize a new composition() object by supplying
-        the title, composer, and date
-        '''
-        return Composition(title=title, 
-                           composer=composer, 
-                           date=date)
-
-    # Auto generate a file/composition name (type - date:time)
-    def newMidiFileName(self, title):
-        '''
-        Generates a MIDI file name with date of composition.
-        '''
-        fileName = '{}{}.mid'.format(title, 
-            date.now().strftime("%d-%b-%y %H:%M:%S"))
-        return fileName
 
     # Converts a list of pitch class integers to note strings (with or without an octave)
     def toStr(self, pcs, octave=None, oe=True):
@@ -418,7 +398,7 @@ class Generate:
 
 
     # Picks a church mode and randomly transposes it
-    def pickMode(self, t=False, o=None):
+    def pickMode(self, t=True, o=None):
         '''
         Picks a church mode, randomly transposes it (if indicated),
         and appends a specified octave (if needed). 
@@ -431,9 +411,7 @@ class Generate:
         pcs = MODES[mode]
         # transpose?
         if t==True:
-            # how far?
-            t = randint(1, 11)
-            pcs = self.transpose(pcs, t, oe=True)
+            pcs = self.transpose(pcs, randint(1, 11), oe=True)
         # append octave, if necessary, to the final list[str]
         if o != None:
             notes = self.toStr(pcs, octave=o)
@@ -453,8 +431,7 @@ class Generate:
         pcs = SCALES[fn]
         # transpose pcs
         if t==True:
-            dist = randint(1, 11)
-            pcs_t = self.transpose(pcs, dist, oe=True)
+            pcs_t = self.transpose(pcs, randint(1, 11), oe=True)
             scale = self.toStr(pcs_t)
         # or not
         else:
