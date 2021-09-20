@@ -88,7 +88,7 @@ def newProg(scale=None):
     chords = []
     total = randint(4, 7)
     if scale==None:
-        mode, pcs, scale = create.pickMode(octave=randint(3, 5))
+        mode, pcs, scale = create.pickMode(t=True, o=randint(3, 5))
     if scale==None:
         print("\ncreating", total, "chords from", scale[0], mode, "scale...")
     else:
@@ -133,7 +133,7 @@ def newcanon():
     comp.instruments.append(m2.instrument)
 
     # pick initial starting mode + create title
-    mode, modepcs, notes = create.pickMode(transpose=True)
+    mode, modepcs, notes = create.pickMode(t=True)
     print("\nyes i canon in", notes[0], mode)
     comp.title = "{}{}{}{}".format("yes i canon in ", notes[0]," ",mode)
     title_full = "{}{}{}{}{}{}{}{}".format(
@@ -201,7 +201,7 @@ def newpalindrome():
     
     # generate 4 - 9 note melody
     print("\nwriting melody...")
-    notes = create.pickMode(transpose=True, octave=randint(3,5))
+    notes = create.pickMode(t=True, o=randint(3,5))
     total = randint(4,9)
     for i in range(total):
         m.notes.append(choice(notes[2]))

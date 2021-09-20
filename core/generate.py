@@ -379,7 +379,7 @@ class Generate:
                         root, fn = self.pickRoot()
                         meta_data.append(fn)
                     elif ch == 2:
-                        mode, mode_pcs, root = self.pickMode(transpose=True)
+                        mode, mode_pcs, root = self.pickMode(t=True)
                         info = root[0] + mode
                         meta_data.append(info)
                     else:
