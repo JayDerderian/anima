@@ -3,7 +3,6 @@ Simplified file for testing generative functions.
 '''
 
 # Imports
-import genericpath
 import time
 from random import randint, choice
 
@@ -25,8 +24,8 @@ from core.generate import Generate
 # start timer
 start_time = time.time()
 
-newRandomComposition()
-# strqtet()
+# newRandomComposition()
+strqtet()
 # strqtet2()
 # pnoduet()
 # newArp()

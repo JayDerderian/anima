@@ -49,14 +49,14 @@ RHYTHMS = [4.0, 3.0, 2.0, 1.5, 1.0,
            0.75, 0.5, 0.375, 0.25, 0.125]
 
 # Base durations in seconds for tuplets where q = 60bpm
-TUPLETS = { "triplet quarter": 0.66666666666666666666666666666667,
+TUPLETS = { "triplet quarter": 0.667,
             "quintuplet quarter": 0.4, 
-            "triplet eighth": 0.3333333333333333333333333333,
+            "triplet eighth": 0.333,
             "quintuplet eighth": 0.2,
-            "triplet sixteenth": 0.16666666666666666666666666666667,
-            "septuplet eighth": 0.14285714285714285714285714285714,
+            "triplet sixteenth": 0.167,
+            "septuplet eighth": 0.143,
             "quintuplet sixteenth": 0.1,
-            "septuplet sixteenth": 0.07142857142857142857142857142857,
+            "septuplet sixteenth": 0.071,
 }
 
 TUPLET_KEYS = [
@@ -77,7 +77,7 @@ PITCH_CLASSES = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
 
 # Chromatic scale
 NOTES = ["C", "C#", "D", "Eb", "E", "F", 
-                   "F#", "G", "G#", "A", "Bb", "B"]
+         "F#", "G", "G#", "A", "Bb", "B"]
 
 
 # Notes in all (reasonable) harmonic spellings for 12tet notation

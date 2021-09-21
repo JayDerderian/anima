@@ -174,7 +174,7 @@ def newSource(create):
        might require some manual fixing in finale depending on the 
        scale(s) selected.'''
 
-    mode, mode_pcs, notes = create.pickMode(transpose=True)
+    mode, mode_pcs, notes = create.pickMode(t=True)
     print("\nroot:", notes[0], mode)
     scales = {}
     # total number of scales to use
@@ -191,7 +191,7 @@ def newSource(create):
                 octave += 1
                 n = 0
         scales[i] = scale
-        mode, mode_pcs, notes = create.pickMode(transpose=True)
+        mode, mode_pcs, notes = create.pickMode(t=True)
         print("...new mode:", notes[0], mode)
     return scales
 
@@ -243,6 +243,7 @@ def genfig(m, scales, create):
     # which octave its in (each note string has an octave
     # number, i.e. C#5)
 
+    print("\ngenerating closing", m.instrument, "figure...")
     dn = False
     up = False
     if m.instrument == 'Violin':
@@ -277,11 +278,13 @@ def genfig(m, scales, create):
 
         scale = scales[i]
         try:
+            # print("\nfinding starting note...")
             note = scale.index(ln)
             arp = []
             if dn==True:
                 # how many notes in the arpeggio?
                 t = randint(1, 3)
+                # print("\nbuilding", t, "note figure...")
                 # 4-note
                 if t==1:
                     '''NOTE: replace hard-coded values with randint() values
@@ -308,6 +311,7 @@ def genfig(m, scales, create):
                 break
             elif up==True:
                 t = randint(1, 3)
+                # print("\nbuilding", t, "note figure...")
                 # 4-note
                 if t == 1:
                     arp.append(scale[note])
@@ -331,6 +335,7 @@ def genfig(m, scales, create):
                     arp.append(scale[note+3])
                 break
         except ValueError:
+            # print("...trying elsewhere...")
             continue
 
     # generate starting rhythms (half-notes) and dynamics
@@ -339,6 +344,10 @@ def genfig(m, scales, create):
     for i in range(len(arp)):
         rhy.append(create.scaletotempo(m.tempo, 2.0))
         dyn.append(52)
+    
+    print("...notes:", arp)
+    print("...rhythms:", rhy)
+    print("...dynamics:", dyn)
 
     return arp, rhy, dyn
 
@@ -348,15 +357,21 @@ def buildfig(m, arp, create):
     returns a modified melody() object.
     '''
     # add starting arpeggio before scaling other reps...
+    print("\nbuilding", m.instrument, "ending figure...")
     for i in range(2):
+        print("...adding\n",arp[0])
         m.notes.extend(arp[0])
+        print(arp[1])
         m.rhythms.extend(arp[1])
+        print(arp[2])
         m.dynamics.extend(arp[2]) 
 
     # add dotted qtrs -> 16ths
     r = [1.5, 1, 0.75, 0.5, 0.375, 0.25]
     d = [60, 72, 88, 100, 108, 112]
     for k in range(6):
+        print("\nadding rhy:", r[k], "...")
+        print("adding dyn:", d[k], "...")
         rhy = []
         dyn = []
         for i in range(len(arp[0])):
@@ -393,15 +408,20 @@ def sync(m, lp, arptuple):
     to achieve better precision. it's less efficient than
     simply using the list.extend() method though...'''
 
+    print("\nsyncing", m.instrument, "...")
+
     arp = arptuple[0]
     rhy = arptuple[1]
     dyn = arptuple[2]
-    while m.duration() < lp:
+    while m.duration() <= lp:
+        print("\n", m.instrument, "duration:", m.duration())
+        print("longest part:", lp)
         for add in range(len(arp)):
             m.notes.append(arp[add])
             m.dynamics.append(dyn[add])
             m.rhythms.append(rhy[add])
             if m.duration() == lp:
+                print("exiting!")
                 break
     '''
     while m.duration() < lp:

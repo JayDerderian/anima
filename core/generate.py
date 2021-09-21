@@ -130,48 +130,6 @@ class Generate:
             else:
                 for i in range(len(pcs)):
                     scale.append(NOTES[pcs[i]])
-
-        '''Translates pc ints > 12 to their respective octaves'''
-        # NOTE: there's probably a better way to do this...
-        if oe==False and octave !=None:
-            for i in range(len(pcs)):
-                if pcs[i] % 12 == 0:
-                    note = "{}{}".format('C', octave+1)
-                    scale.append(note)
-                elif pcs[i] % 12 == 1:
-                    note = "{}{}".format('C#', octave+1)
-                    scale.append(note)
-                elif pcs[i] % 12 == 2:
-                    note = "{}{}".format('D', octave+1)
-                    scale.append(note)
-                elif pcs[i] % 12 == 3:
-                    note = "{}{}".format('Eb', octave+1)
-                    scale.append(note)
-                elif pcs[i] % 12 == 4:
-                    note = "{}{}".format('E', octave+1)
-                    scale.append(note)
-                elif pcs[i] % 12 == 5:
-                    note = "{}{}".format('F', octave+1)
-                    scale.append(note)
-                elif pcs[i] % 12 == 6:
-                    note = "{}{}".format('F#', octave+1)
-                    scale.append(note)
-                elif pcs[i] % 12 == 7:
-                    note = "{}{}".format('G', octave+1)
-                    scale.append(note)
-                elif pcs[i] % 12 == 8:
-                    note = "{}{}".format('G#', octave+1)
-                    scale.append(note)
-                elif pcs[i] % 12 == 9:
-                    note = "{}{}".format('A', octave+1)
-                    scale.append(note)
-                elif pcs[i] % 12 == 10:
-                    note = "{}{}".format('Bb', octave+1)
-                    scale.append(note)
-                elif pcs[i] % 12 == 11:
-                    note = "{}{}".format('B', octave+1)
-                    scale.append(note)
-
         return scale
 
     # Transpose
@@ -313,7 +271,7 @@ class Generate:
         octave = randint(2, 3)
         # Pick a root scale if none provided
         if root==None:
-            root, info = self.pickRoot(o=None, t=True)
+            root, info = self.pickRoot(t=True, o=None)
             meta_data.append(info)
         # Pick total: 3 - 50 if we're generating random notes
         if data==None:
@@ -341,7 +299,7 @@ class Generate:
                     # Reset starting octave
                     octave = randint(2, 3)
                     # pick new root
-                    root, info = self.pickRoot(o=None, t=True)
+                    root, info = self.pickRoot(t=True, o=None)
                     meta_data.append(info)
                 # Reset n to stay within len(root)
                 n = 0
@@ -367,7 +325,7 @@ class Generate:
 
 
     # Picks either a prime form pitch-class set, or a major or minor scale.
-    def pickRoot(self, o=None, t=True):
+    def pickRoot(self, t=True, o=None):
         '''
         Picks either a randomly chosen and transposed chuch mode or a 5 to 9 
         note Forte pitch class prime form, randomly transposed as well. Set t
@@ -387,10 +345,10 @@ class Generate:
         else:
             if t==True:
                 fn, pcs, scale = self.pickScale(t=True)
-                info = "{} transposed to new root:{}".format(fn, scale[0])
+                info = '{} transposed to new root:{}'.format(fn, scale[0])
             else:
                 fn, pcs, scale = self.pickScale(t=False)
-                info = "{} untransposed, root:{}".format(fn, scale[0])
+                info = '{} untransposed, root:{}'.format(fn, scale[0])
         scale = self.toStr(pcs, octave=o)
         return scale, info     
 
