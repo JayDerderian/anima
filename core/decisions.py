@@ -2,42 +2,12 @@
 This module handles all large-scale decision making with regards to each composition mode. 
 '''
 
-'''
-----------------------------------------------------NOTES-------------------------------------------------------
-
-    This module contains the decide() class which handles decisions for generative and variation functions. 
-
-    Class hierarchy:
-        
-        decide():
-        
-            generate():
-                note()
-                rhythms()
-                ect..
-                
-                comp Modes:
-                    random()
-                    minimalist()
-                    tonal()
-                    atonal()
-                    serialist()
-                ect...
-
-            variate/modify()
-                mainDecision():
-                howManyNotes():
-                ect..
-
-----------------------------------------------------------------------------------------------------------------
-'''
-
-#IMPORTS
+# IMPORTS
 import constants as c
 from math import floor
 from random import randint
 
-#Decision functions
+# Decision functions
 class Decide():
     '''
     These are the RNG functions that make "decisions" about a variety of creative questions.  

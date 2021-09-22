@@ -9,11 +9,17 @@ pull against the constant pulse
 
 # Imports
 from random import randint, choice
-from utils.midi import save
-import core.constants as c
-from core.generate import Generate
-from containers.composition import Composition
 from datetime import datetime as date
+
+from utils.midi import save
+from utils.tools import scaletotempo
+
+from core.constants import TEMPOS, DYNAMICS
+from core.generate import Generate
+
+from containers.composition import Composition
+
+
 
 def mixedqtet(ensemble=None):
     '''
@@ -46,7 +52,7 @@ def mixedqtet(ensemble=None):
 
     print("\ngenerating source material...")
     # tempo
-    comp.tempo = choice(c.TEMPOS)
+    comp.tempo = choice(TEMPOS)
     print("\ntempo:", comp.tempo)
     print("\npicking source notes...")
     # total chords
@@ -98,13 +104,13 @@ def mixedqtet(ensemble=None):
         dyn = 4
         for j in range(4):
             for k in range(8):
-                chord.dynamic = c.DYNAMICS[dyn]
+                chord.dynamic = DYNAMICS[dyn]
                 prog.append(chord)
             dyn+=1
         dyn = 8
         for j in range(4):
             for k in range(8):
-                chord.dynamic = c.DYNAMICS[dyn]
+                chord.dynamic = DYNAMICS[dyn]
                 prog.append(chord)
             dyn-=1
 

@@ -6,9 +6,8 @@ a module for general note/rhythm/dynamic-related modification
 from core.constants import NOTES
 
 
-
 # Converts a list of pitch class integers to note strings (with or without an octave)
-def toStr(pcs, octave=None, oe=True):
+def toStr(pcs, o=None, oe=True):
     '''
     Converts a list of pitch class integers to note name strings, with or without 
     a supplied octave. 
@@ -17,15 +16,17 @@ def toStr(pcs, octave=None, oe=True):
     '''
     scale = []
     if oe==True:
-        if octave != None:
+        if o == None:
             for i in range(len(pcs)):
-                note = "{}{}".format(NOTES[pcs[i]], octave)
+                note = "{}{}".format(NOTES[pcs[i]], o)
                 scale.append(note)
-        else:
+        elif type(o) == int and o > 1 and o < 6:
             for i in range(len(pcs)):
+                note = "{}{}".format(NOTES[pcs[i]], o)
                 scale.append(NOTES[pcs[i]])
+        else:
+            raise ValueError
     return scale
-
 
 
 # Transpose
@@ -47,11 +48,12 @@ def transpose(pcs, t, oe=True):
     elif type(t) == list:
         for note in range(len(pcs)):
             pcs[note] += t[note]
+    else:
+        raise ValueError
     # keep resulting pcs values between 0 and 11, if desired.
     if oe==True:
         pcs = oe(pcs)
     return pcs
-
 
 
 # Keeps a single pitch within span of an octave (0 - 11)
@@ -70,8 +72,9 @@ def oe(pitch):
         for i in range(len(pitch)):
             if pitch[i] > 11 or pitch[i] < 0:
                 pitch[i] %= 12
+    else:
+        raise ValueError
     return pitch
-
 
 
 # Convert base rhythms to values in a specified tempo
@@ -97,4 +100,6 @@ def scaletotempo(tempo, rhythms):
         for i in range(len(rhythms)):
             rhythms[i] *= diff
             rhythms[i] = round(rhythms[i], 3)
+    else:
+        raise ValueError
     return rhythms    

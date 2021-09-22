@@ -50,9 +50,9 @@ class Generate:
               methods as a class. 
         '''
 
-    #------------------------------------------_-----------------------------------------------#
+    #------------------------------------------------------------------------------------------#
     #-----------------------------------TITLE AND COMPOSER-------------------------------------#
-    #-------------------------------------------_----------------------------------------------#
+    #------------------------------------------------------------------------------------------#
 
 
     # Auto generate a composition title from two random words
@@ -85,6 +85,7 @@ class Generate:
             print("\nnewTitle() - ERROR: Unable to retrieve word list!")
             name = 'untitled - '
         return name
+
 
     # Auto generate a random composer name
     def newComposer(self):
@@ -140,6 +141,7 @@ class Generate:
         Does NOT pick a percussion instrument!
         '''
         return INSTRUMENTS[randint(0, 110)]
+
 
     # Picks a collection of instruments of n length.
     def newInstruments(self, total):
@@ -354,6 +356,7 @@ class Generate:
         scale = toStr(pcs, octave)
         return scale, pcs   
 
+
     # Generates a long source scale off a given root scale 
     def newSourceScale(self, root):
         '''
@@ -385,15 +388,17 @@ class Generate:
         '''
         Generate derivative scales based on each note in a given scale.
         Requires a pitch class set (pcs) list[int] who's values are 
-        between 0 - 11, and returns a dictionary of variants (list[str])
-        Each variant scale will have an assigned octave.
+        between 0 - 11, and returns a dictionary of variant scales (list[str])
+        
+        Each variant scale will have an assigned octave, with or without
+        user input.
         
         1. Start with first note in pitch class set (pcs).
         
         2. Derive each subsequent note by adding a randomly
            chosen value to the sum of the previous
 
-           n0+=rand(1,3), n1 = n0+=rand(1,3), n2 = k1+=rand(1,3), etc...  
+           n0+=rand(1,3), n1 = n0+=rand(1,3), n2 = n1+=rand(1,3), etc...  
         
         3. Repeat step 2 with next note in supplied pcs up to end of scale.        
         '''
@@ -821,6 +826,7 @@ class Generate:
         # saveInfo(title_full, data, txtFileName, newTune)
         return 0
 
+
     # Wrapper for newChords(). Outputs chords as a MIDI file and
     # exports a .txt file with relevant data
     def newProgression(self, total=None, tempo=None, sourceScale=None):
@@ -848,6 +854,7 @@ class Generate:
         saveInfo(name=title, data=sourceScale, fileName=tn, newChords=chords)
         print("text file:", tn)
         return chords
+
 
     # Outputs a single melody with chords in a MIDI file
     def newComposition(self, data=None, dataType=None):

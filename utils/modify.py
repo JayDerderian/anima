@@ -51,74 +51,10 @@ Other TODO's:
 '''
 
 # IMPORTS
-import utils.midi
-from utils.tools import oe
+import pretty_midi as pm
+from utils.tools import transpose, oe
 from random import randint, choice
 from core.generate import Generate
-
-
-# Transpose
-def transpose(self, pcs, i):
-    '''
-    Transpose a pitch class set using a supplied interval i, or list of 
-    intervals i. Use a list of intervals to generate variations on a 
-    given pitch-class set.
-    
-    Returns a modified pcs (list[int])
-    '''
-    # modify with a single interval across all pitch-classes
-    c = Generate()
-    if type(i) == int:
-        for note in range(len(pcs)):
-            pcs[note] += i
-            if pcs[note] > 11 or pcs[note] < 0:
-                pcs[note] = oe(pcs[note])
-    # modify with list of intervals - one for each pitch class
-    elif type(i) == list:
-        for note in range(len(pcs)):
-            pcs[note] += i[note]
-            if pcs[note] > 11 or pcs[note] < 0:
-                pcs[note] = oe(pcs[note])
-    return pcs
-
-
-# Generate derivative scales based on each note in a given scale.
-def deriveScales(self, pcs, o=None):
-    '''
-    Generate derivative scales based on each note in a given scale.
-    Requires a pitch class set (pcs) list[int] who's values are 
-    between 0 - 11, and returns a dictionary of variants (list[str])
-    Each variant scale will have an assigned octave.
-    
-    1. Start with first note in pitch class set (pcs).
-    
-    2. Derive each subsequent note by adding a randomly
-        chosen value to the sum of the previous
-
-        n0+=rand(1,3), n1 = n0+=rand(1,3), n2 = k1+=rand(1,3), etc...  
-    
-    3. Repeat step 2 with next note in supplied pcs up to end of scale.        
-    '''
-    variants = {}
-    for i in range(len(pcs)):
-        sv = []
-        note = pcs[i]
-        while len(sv) < len(pcs):
-            note += randint(1, 3)
-            if note > 11:
-                note = self.oe(note)
-            sv.append(note)
-        variants[i] = sv
-    
-    # convert to strings with appended octave, if necessary
-    if o==None:
-        for scale in variants:
-            variants[scale] = self.toStr(variants[scale], octave=4)
-    else:
-        for scale in variants:
-            variants[scale] = self.toStr(variants[scale], octave=o)
-
-    return variants
 
 
 # Add note(s) at end of MIDI file
