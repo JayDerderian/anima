@@ -24,8 +24,18 @@ from core.generate import Generate
 # start timer
 start_time = time.time()
 
+create = Generate()
+notes, pcs = create.newScale()
+print("\nnotes:", notes)
+print("pcs:", pcs)
+print("\nderiving new scales...")
+variants = create.deriveScales(pcs)
+print("\nderivisions:")
+for scale in variants:
+    print(scale, ":", variants[scale])
+
 # newRandomComposition()
-strqtet()
+# strqtet()
 # strqtet2()
 # pnoduet()
 # newArp()

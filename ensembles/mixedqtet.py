@@ -92,7 +92,7 @@ def mixedqtet(ensemble=None):
         # get current chord
         chord = chords[chrd]
         # add tempo adherent 16th note
-        chord.rhythm = create.scaletotempo(tempo=comp.tempo, rhythms=0.25)
+        chord.rhythm = scaletotempo(tempo=comp.tempo, rhythms=0.25)
         # repeat each dynamic for the swell/receed 8x and append to prog list
         # repeat these 4 dyanmics 8 times each...
         dyn = 4

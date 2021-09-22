@@ -49,30 +49,27 @@ RHYTHMS = [4.0, 3.0, 2.0, 1.5, 1.0,
            0.75, 0.5, 0.375, 0.25, 0.125]
 
 # Base durations in seconds for tuplets where q = 60bpm
-TUPLETS = { "triplet quarter": 0.667,
-            "quintuplet quarter": 0.4, 
-            "triplet eighth": 0.333,
-            "quintuplet eighth": 0.2,
-            "triplet sixteenth": 0.167,
-            "septuplet eighth": 0.143,
-            "quintuplet sixteenth": 0.1,
-            "septuplet sixteenth": 0.071,
+TUPLETS = { 
+    "triplet quarter": 0.667,
+    "quintuplet quarter": 0.4, 
+    "triplet eighth": 0.333,
+    "quintuplet eighth": 0.2,
+    "triplet sixteenth": 0.167,
+    "septuplet eighth": 0.143,
+    "quintuplet sixteenth": 0.1,
+    "septuplet sixteenth": 0.071,
 }
 
 TUPLET_KEYS = [
-            "triplet quarter",
-            "quintuplet quarter", 
-            "triplet eighth",
-            "quintuplet eighth",
-            "triplet sixteenth",
-            "septuplet eighth",
-            "quintuplet sixteenth",
-            "septuplet sixteenth",
+    "triplet quarter",
+    "quintuplet quarter", 
+    "triplet eighth",
+    "quintuplet eighth",
+    "triplet sixteenth",
+    "septuplet eighth",
+    "quintuplet sixteenth",
+    "septuplet sixteenth",
 ]
-
-
-# Pitch class integers
-PITCH_CLASSES = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
 
 
 # Chromatic scale
@@ -89,34 +86,36 @@ NOTES_EN = ["C", "C#", "Db", "D", "D#", "Eb", "E",
 
 
 # All 12 major scales
-MAJOR_SCALES = {1: ["C", "D", "E", "F", "G", "A", "B"],
-                2: ["Db", "Eb", "F", "Gb", "Ab", "Bb", "C"],
-                3: ["D", "E", "F#", "G", "A", "B", "C#"],
-                4: ["Eb", "F", "G", "Ab", "Bb", "C", "D"],
-                5: ["E", "F#", "G#", "A", "B", "C#", "D#"],
-                6: ["F", "G", "A", "Bb", "C", "D", "E"],
-                7: ["F#", "G#", "A#", "B", "C#", "D#", "E#"],
-                8: ["G", "A", "B", "C", "D", "E", "F#"],
-                9: ["Ab", "Bb", "C", "Db", "Eb", "F", "G"],
-                10: ["A", "B", "C#", "D", "E", "F#", "G#"],
-                11: ["Bb", "C", "D", "Eb", "F", "G", "A"],
-                12: ["B", "C#", "D#", "E", "F#", "G#", "A#"]
+MAJOR_SCALES = {
+    1: ["C", "D", "E", "F", "G", "A", "B"],
+    2: ["Db", "Eb", "F", "Gb", "Ab", "Bb", "C"],
+    3: ["D", "E", "F#", "G", "A", "B", "C#"],
+    4: ["Eb", "F", "G", "Ab", "Bb", "C", "D"],
+    5: ["E", "F#", "G#", "A", "B", "C#", "D#"],
+    6: ["F", "G", "A", "Bb", "C", "D", "E"],
+    7: ["F#", "G#", "A#", "B", "C#", "D#", "E#"],
+    8: ["G", "A", "B", "C", "D", "E", "F#"],
+    9: ["Ab", "Bb", "C", "Db", "Eb", "F", "G"],
+    10: ["A", "B", "C#", "D", "E", "F#", "G#"],
+    11: ["Bb", "C", "D", "Eb", "F", "G", "A"],
+    12: ["B", "C#", "D#", "E", "F#", "G#", "A#"]
 }
 
 
 # All 12 relative/natural minor scales
-MINOR_SCALES = {1: ["A", "B", "C", "D", "E", "F", "G"],
-                2: ["Bb", "C","Db", "Eb", "F", "Gb", "Ab"],
-                3: ["B", "C#", "D", "E", "F#", "G", "A"],
-                4: ["C", "D","Eb", "F", "G", "Ab", "Bb"],
-                5: ["C#", "D#","E", "F#", "G#", "A", "B"],
-                6: ["D", "E", "F", "G", "A", "Bb", "C"],
-                7: ["D#", "E#", "F#", "G#", "A#", "B", "C#"],
-                8: ["E", "F#", "G", "A", "B", "C", "D"],
-                9: ["F", "G", "Ab", "Bb", "C", "Db", "Eb"],
-                10: ["F#", "G#", "A", "B", "C#", "D", "E"],
-                11: ["G", "A", "Bb", "C", "D", "Eb", "F"],
-                12: ["G#", "A#", "B", "C#", "D#", "E", "F#"]
+MINOR_SCALES = {
+    1: ["A", "B", "C", "D", "E", "F", "G"],
+    2: ["Bb", "C","Db", "Eb", "F", "Gb", "Ab"],
+    3: ["B", "C#", "D", "E", "F#", "G", "A"],
+    4: ["C", "D","Eb", "F", "G", "Ab", "Bb"],
+    5: ["C#", "D#","E", "F#", "G#", "A", "B"],
+    6: ["D", "E", "F", "G", "A", "Bb", "C"],
+    7: ["D#", "E#", "F#", "G#", "A#", "B", "C#"],
+    8: ["E", "F#", "G", "A", "B", "C", "D"],
+    9: ["F", "G", "Ab", "Bb", "C", "Db", "Eb"],
+    10: ["F#", "G#", "A", "B", "C#", "D", "E"],
+    11: ["G", "A", "Bb", "C", "D", "Eb", "F"],
+    12: ["G#", "A#", "B", "C#", "D#", "E", "F#"]
 }
 
 
@@ -159,28 +158,28 @@ NOTE: Develop interval sets that begin with 2 and end with 2,
         d, e, f#, g#, a, b, c, d ...ect.  
 '''
 INTERVALS = {
-        # Transposition distances in semi-tones
-        1: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
-        # Major
-        2: [2, 2, 1, 2, 2, 2, 1],
-        # Natural minor
-        3: [2, 1, 2, 2, 1, 2, 2],
-        # Melodic minor
-        4: [2, 1, 2, 2, 2, 2, 1],
-        # Harmonic minor
-        5: [2, 1, 2, 2, 1, 3],
-        # Whole tone
-        6: [2, 2, 2, 2, 2],
-        # Octatonic
-        7: [2, 1, 2, 1, 2, 1, 2],
-        # Major triad
-        8: [4, 3],
-        # Minor triad
-        9: [3, 4],
-        # Diminished triad
-        10: [3, 3],
-        # Augmented triad
-        11: [4, 4]
+    # Transposition distances in semi-tones
+    1: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+    # Major
+    2: [2, 2, 1, 2, 2, 2, 1],
+    # Natural minor
+    3: [2, 1, 2, 2, 1, 2, 2],
+    # Melodic minor
+    4: [2, 1, 2, 2, 2, 2, 1],
+    # Harmonic minor
+    5: [2, 1, 2, 2, 1, 3],
+    # Whole tone
+    6: [2, 2, 2, 2, 2],
+    # Octatonic
+    7: [2, 1, 2, 1, 2, 1, 2],
+    # Major triad
+    8: [4, 3],
+    # Minor triad
+    9: [3, 4],
+    # Diminished triad
+    10: [3, 3],
+    # Augmented triad
+    11: [4, 4]
 }
 
 
@@ -820,7 +819,9 @@ NOTE: obviously not complete or comprehensive.
       just some standards that could use usefull when quick 
       templates are needed.'''
 
+
 ENSEMBLES = {
+
     # strings
     "string trio": ['Violin', 'Viola', 'Cello'],
     "string quartet": ['Violin', 'Violin', 'Viola', 'Cello'],

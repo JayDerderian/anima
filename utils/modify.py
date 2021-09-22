@@ -1,6 +1,3 @@
-#********************************************************************************************************************#
-#-------------------------------------This class handles MIDI file modification--------------------------------------#
-#********************************************************************************************************************#
 '''
 Notes:
 
@@ -54,10 +51,10 @@ Other TODO's:
 '''
 
 # IMPORTS
-import pretty_midi as pm
-from random import randint
-# from core.decisions import decide as choice
-from core.generate import Generate as create
+import utils.midi
+from utils.tools import oe
+from random import randint, choice
+from core.generate import Generate
 
 
 # Transpose
@@ -70,18 +67,58 @@ def transpose(self, pcs, i):
     Returns a modified pcs (list[int])
     '''
     # modify with a single interval across all pitch-classes
+    c = Generate()
     if type(i) == int:
         for note in range(len(pcs)):
             pcs[note] += i
             if pcs[note] > 11 or pcs[note] < 0:
-                pcs[note] = self.octaveEquiv(pcs[note])
+                pcs[note] = oe(pcs[note])
     # modify with list of intervals - one for each pitch class
     elif type(i) == list:
         for note in range(len(pcs)):
             pcs[note] += i[note]
             if pcs[note] > 11 or pcs[note] < 0:
-                pcs[note] = self.octaveEquiv(pcs[note])
+                pcs[note] = oe(pcs[note])
     return pcs
+
+
+# Generate derivative scales based on each note in a given scale.
+def deriveScales(self, pcs, o=None):
+    '''
+    Generate derivative scales based on each note in a given scale.
+    Requires a pitch class set (pcs) list[int] who's values are 
+    between 0 - 11, and returns a dictionary of variants (list[str])
+    Each variant scale will have an assigned octave.
+    
+    1. Start with first note in pitch class set (pcs).
+    
+    2. Derive each subsequent note by adding a randomly
+        chosen value to the sum of the previous
+
+        n0+=rand(1,3), n1 = n0+=rand(1,3), n2 = k1+=rand(1,3), etc...  
+    
+    3. Repeat step 2 with next note in supplied pcs up to end of scale.        
+    '''
+    variants = {}
+    for i in range(len(pcs)):
+        sv = []
+        note = pcs[i]
+        while len(sv) < len(pcs):
+            note += randint(1, 3)
+            if note > 11:
+                note = self.oe(note)
+            sv.append(note)
+        variants[i] = sv
+    
+    # convert to strings with appended octave, if necessary
+    if o==None:
+        for scale in variants:
+            variants[scale] = self.toStr(variants[scale], octave=4)
+    else:
+        for scale in variants:
+            variants[scale] = self.toStr(variants[scale], octave=o)
+
+    return variants
 
 
 # Add note(s) at end of MIDI file
@@ -97,7 +134,7 @@ NOTE: Need a way to convert the duration list to start and end times for
 
 NOTE: input a composition() object with the additional note and rhythm data to be 
       appended at the end a MIDI file 
-    '''
+'''
 def addNotes(self, notesToAdd, thisTune):
 
     # Duplicate thisTune to alter data

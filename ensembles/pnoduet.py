@@ -279,9 +279,9 @@ def pnoduet(instrument=None, tempo=None):
     print("\nscaling rhythms to tempo...")
     if comp.tempo != 60:
         # om.rhythms = create.scaletotempo(comp.tempo, om.rhythms)
-        m.rhythms = create.scaletotempo(comp.tempo, m.rhythms)
+        m.rhythms = scaletotempo(comp.tempo, m.rhythms)
         for i in range(len(pno)):
-            pno[i].rhythm = create.scaletotempo(comp.tempo, pno[i].rhythm)
+            pno[i].rhythm = scaletotempo(comp.tempo, pno[i].rhythm)
 
 
     #################################

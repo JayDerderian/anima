@@ -15,6 +15,7 @@ from containers.melody import Melody
 from containers.composition import Composition
 
 from utils.midi import save, savecanon
+from utils.tools import toStr, transpose, scaletotempo
 
 
 def newArp():
@@ -42,9 +43,9 @@ def newArp():
         # get base list
         _arp_ = create.pickArp("maj triad")
         # transpose between 1-11 semi-tones
-        _arp_ = create.transpose(_arp_, randint(1, 11), oe=True)
+        _arp_ = transpose(_arp_, randint(1, 11), oe=True)
         # convert pcs to note list[str] with randomly assigned octave
-        _arp_ = create.toStr(_arp_, octave=randint(2, 5))
+        _arp_ = toStr(_arp_, octave=randint(2, 5))
         arp.notes.extend(_arp_)
     
     # append med dynamic/MIDI velocity and eighth note rhythms
@@ -172,7 +173,7 @@ def newcanon():
     comp.melodies.append(m)
     comp.melodies.append(m2)
     comp.midiFileName = "{}{}".format(comp.title, ".mid")
-    diff = create.scaletotempo(tempo=comp.tempo, rhythms=2.0)
+    diff = scaletotempo(tempo=comp.tempo, rhythms=2.0)
     savecanon(comp, s=diff)
     
     # display results

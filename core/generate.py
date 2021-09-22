@@ -17,7 +17,6 @@ from core.constants import(
     ARPEGGIOS,
     SCALES,
     FORTE_NUMBERS,
-    PITCH_CLASSES,
     INTERVALS
 )
 
@@ -25,9 +24,12 @@ from random import randint, sample, choice
 from datetime import datetime as date
 
 from utils.mapping import mapData
-from utils.toabc import abc
 from utils.txtfile import saveInfo
 from utils.midi import save, saveChords
+from utils.tools import (toStr, 
+                         transpose, 
+                         oe, 
+                         scaletotempo)
 
 from containers.chord import Chord
 from containers.melody import Melody
@@ -48,9 +50,9 @@ class Generate:
               methods as a class. 
         '''
 
-    #-----------------------------------------------------------------------------------------#
-    #-----------------------------------Utility Functions-------------------------------------#
-    #-----------------------------------------------------------------------------------------#
+    #------------------------------------------_-----------------------------------------------#
+    #-----------------------------------TITLE AND COMPOSER-------------------------------------#
+    #-------------------------------------------_----------------------------------------------#
 
 
     # Auto generate a composition title from two random words
@@ -111,75 +113,6 @@ class Generate:
             print("\nnewComposer() - ERROR: Unable to retrieve name list!")
             name = 'Rando Calrissian'
         return name
-
-
-    # Converts a list of pitch class integers to note strings (with or without an octave)
-    def toStr(self, pcs, octave=None, oe=True):
-        '''
-        Converts a list of pitch class integers to note name strings, with or without 
-        a supplied octave. 
-        
-        Returns a list of strings representing pitches, i.e. C#, Gb or D5, Ab6, etc.
-        '''
-        scale = []
-        if oe==True:
-            if octave != None:
-                for i in range(len(pcs)):
-                    note = "{}{}".format(NOTES[pcs[i]], octave)
-                    scale.append(note)
-            else:
-                for i in range(len(pcs)):
-                    scale.append(NOTES[pcs[i]])
-        return scale
-
-    # Transpose
-    def transpose(self, pcs, t, oe=True):
-        '''
-        Transpose a pitch class or list of pitch classes (list[int]) 
-        using a supplied interval i, or list of intervals i. 
-        
-        Returns a modified pcs (list[int]) or modified pitch class (int),
-        depending on input.
-        '''
-        # modify with a single interval across all pitch-classes
-        if type(t) == int:
-            for note in range(len(pcs)):
-                pcs[note] += t
-        # modify with a list of intervals across all pitch-classes. 
-        # this allows for each pitch-class to be transposed by a unique
-        # distance, allowing for rapid variation generation.
-        elif type(t) == list:
-            for note in range(len(pcs)):
-                pcs[note] += t[note]
-        # keep resulting pcs values between 0 and 11, if desired.
-        if oe==True:
-            pcs = self.oe(pcs)
-        return pcs
-
-    # Convert base rhythms to values in a specified tempo
-    def scaletotempo(self, tempo, rhythms):
-        '''
-        A rhythm converter function to translate durations in self.rhythms (list)
-        or self.rhythm (float) to actual value in seconds for a specified tempo. 
-        
-        ex: [base] q = 60, quarterNote = 1 sec, [new tempo] q = 72, quarterNote = 0.8333(...) sec
-
-        60/72 = .83 - The result becomes the converter value to multiply all supplied
-        durations against to get the new tempo-accurate durations in seconds.
-
-        NOTE: the round() method keeps the results within three decimal places  
-        '''
-        diff = 60/tempo
-        # is this a single float?
-        if type(rhythms) == float:
-            rhythms *= diff
-            rhythms = round(rhythms, 3)
-        # or a list of floats?
-        elif type(rhythms) == list:
-            for i in range(len(rhythms)):
-                rhythms[i] *= diff
-                rhythms[i] = round(rhythms[i], 3)
-        return rhythms    
 
 
     #--------------------------------------------------------------------------------#
@@ -349,7 +282,7 @@ class Generate:
             else:
                 fn, pcs, scale = self.pickScale(t=False)
                 info = '{} untransposed, root:{}'.format(fn, scale[0])
-        scale = self.toStr(pcs, octave=o)
+        scale = toStr(pcs, octave=o)
         return scale, info     
 
 
@@ -366,10 +299,10 @@ class Generate:
         mode = choice(MODE_KEYS)
         pcs = MODES[mode]
         if t==True:
-            pcs_t = self.transpose(pcs, randint(1, 11), oe=True)
-            notes = self.toStr(pcs_t, octave=o)
+            pcs_t = transpose(pcs, randint(1, 11), oe=True)
+            notes = toStr(pcs_t, octave=o)
         else:
-            notes = self.toStr(pcs, octave=o)
+            notes = toStr(pcs, octave=o)
         return mode, pcs, notes
 
 
@@ -386,10 +319,10 @@ class Generate:
         fn = choice(FORTE_NUMBERS)
         pcs = SCALES[fn]
         if t==True:
-            pcs_t = self.transpose(pcs, randint(1, 11), oe=True)
-            scale = self.toStr(pcs_t, octave=o)
+            pcs_t = transpose(pcs, randint(1, 11), oe=True)
+            scale = toStr(pcs_t, octave=o)
         else:
-            scale = self.toStr(pcs, octave=o)
+            scale = toStr(pcs, octave=o)
         return fn, pcs, scale
         
 
@@ -418,7 +351,7 @@ class Generate:
         # sort in ascending order
         pcs.sort()
         # convert to strings (with or without supplied octave)
-        scale = self.toStr(pcs, octave)
+        scale = toStr(pcs, octave)
         return scale, pcs   
 
     # Generates a long source scale off a given root scale 
@@ -446,45 +379,45 @@ class Generate:
                 n = 0
         return scale
 
+
     # Generate derivative scales based on each note in a given scale.
-    def deriveScales(self, pcs):
+    def deriveScales(self, pcs, o=None):
         '''
         Generate derivative scales based on each note in a given scale.
         Requires a pitch class set (pcs) list[int] who's values are 
-        between 0 - 11, and returns a dictionary of variants (list[int]).
-
-        variants = {
-            1: list[int],
-            2: list[int]
-            etc...
-        } 
+        between 0 - 11, and returns a dictionary of variants (list[str])
+        Each variant scale will have an assigned octave.
         
-        Algorithm:
-            1. Start with first note in prime scale.
-            2. Derive each subsequent note by adding a 
-               randomly chosen interval. Ex; 0 + 2 = 2,
-               2 + 1 = 3, 3 + 2 = 5, creating [2, 3, 5,...] etc.
-            3. Repeat step 2 with next note in prime scale
-               up to end of scale.        
+        1. Start with first note in pitch class set (pcs).
+        
+        2. Derive each subsequent note by adding a randomly
+           chosen value to the sum of the previous
+
+           n0+=rand(1,3), n1 = n0+=rand(1,3), n2 = k1+=rand(1,3), etc...  
+        
+        3. Repeat step 2 with next note in supplied pcs up to end of scale.        
         '''
         variants = {}
         for i in range(len(pcs)):
-            # Retrieve note from prime scale
             sv = []
             note = pcs[i]
             while len(sv) < len(pcs):
-                # add note with random interval value (1-3)
                 note += randint(1, 3)
                 if note > 11:
-                    note = self.oe(note)
+                    note = oe(note)
                 sv.append(note)
-            #scaleVariant = list(set(scaleVariant)) # Remove duplicates
-            #scaleVariant.sort() #Sort new derived scale 
             variants[i] = sv
         
-        # convert to strings and append octaves here???
+        # convert to strings with appended octave, if necessary
+        if o==None:
+            for scale in variants:
+                variants[scale] = toStr(variants[scale], octave=4)
+        else:
+            for scale in variants:
+                variants[scale] = toStr(variants[scale], octave=o)
 
         return variants
+
 
     # Pick an arpeggio scheme (within 1 octave)
     def pickArp(self, key):
@@ -494,21 +427,13 @@ class Generate:
         '''
         return ARPEGGIOS[key]
 
-    # Generate a 12-tone row.
-    def new12ToneRow(self, octave=None):
-        '''
-        Generates a 12-tone row. 
 
-        Returns a tuple: a list[str] of notes in octave 4 by default,
-        or in a specified octave (2-5), and the original pitch class set 
-        (list[int]).
+    # Generate a 12-tone row.
+    def new12ToneRow(self):
         '''
-        pcs = sample(PITCH_CLASSES, len(PITCH_CLASSES))
-        if octave==None:
-            row = self.toStr(pcs, octave=4)
-        else:
-            row = self.toStr(pcs, octave)
-        return row, pcs
+        Generates a 12-tone row. Returns a note list[str].
+        '''
+        return sample(NOTES, len(NOTES))
 
 
     # generate a list of 11 intervals to transpose a 12-tone row by to generate
@@ -520,23 +445,6 @@ class Generate:
         '''
         return sample(INTERVALS[1], len(INTERVALS[1]))
 
-    # Keeps a single pitch within span of an octave (0 - 11)
-    def oe(self, pitch):
-        '''
-        Octave equivalance. Handles either a single int or list[int].
-        Keeps a single pitch class integer within span of an octave (0 - 11). 
-
-        Returns either a modified int or list[int]
-        '''
-        # check a single pitch
-        if type(pitch) == int:
-            pitch %= 12
-        # check a whole list of pcs integers
-        elif type(pitch) == list:
-            for i in range(len(pitch)):
-                if pitch[i] > 11 or pitch[i] < 0:
-                    pitch[i] %= 12
-        return pitch
 
     # reverses a melody and appends to end to create a palindrome
     # of the current part
@@ -573,6 +481,7 @@ class Generate:
         Generates a single new rhythm. Not scaled to current tempo!
         '''
         return choice(RHYTHMS)
+
 
     # Generate a list containing a rhythmic pattern
     def newRhythms(self, total=None, tempo=None):
@@ -613,7 +522,7 @@ class Generate:
                     rhythms.append(rhythm)
         # convert to given tempo, if provided.
         if tempo!=None and tempo!=60.0:
-            rhythms = self.scaletotempo(tempo, rhythms)
+            rhythms = scaletotempo(tempo, rhythms)
         return rhythms
 
 
@@ -628,6 +537,7 @@ class Generate:
         Generates a single dynamic/velocity between 20 - 124
         '''
         return choice(DYNAMICS)
+
 
     # Generate a list of dynamics.
     def newDynamics(self, total=None):
@@ -679,6 +589,7 @@ class Generate:
         print("rhythm:", chord.rhythm)
         print("dynamic:", chord.dynamic)
 
+
     # Display a list of chords
     def displayChords(self, chords):
         print("\n----------------HARMONY DATA:-------------------")
@@ -698,6 +609,7 @@ class Generate:
         for j in range(len(chords)):
             d += chords[j].rhythm
         return d
+
 
     # Generates a chord with randomly chosen notes
     def newChord(self, tempo=None, scale=None):
@@ -738,11 +650,12 @@ class Generate:
         # pick a rhythm and scale if needed
         rhythm = self.newRhythm()
         if newchord.tempo != 60:
-            rhythm = self.scaletotempo(newchord.tempo, rhythm)
+            rhythm = scaletotempo(newchord.tempo, rhythm)
         newchord.rhythm = rhythm
         # pick a dynamic
         newchord.dynamic = self.newDynamic()
         return newchord
+
 
     # Generates a series of random chromatic chords 
     def newChords(self, total=None, tempo=None, scale=None):
@@ -789,13 +702,13 @@ class Generate:
         if n < 0:
             return -1
         if r > 11 or r < 0:
-            r = self.oe(r)
+            r = oe(r)
         chord = []
         while len(chord) < n:
             chord.append(r)
             r += i
             if r > 11:
-                r = self.oe(r)
+                r = oe(r)
         return chord
 
 
