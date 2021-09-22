@@ -609,7 +609,7 @@ class Generate:
                     if len(rhythms) == total:
                         break
             else:
-                if rhythm not in rhythms:
+                # if rhythm not in rhythms:
                     rhythms.append(rhythm)
         # convert to given tempo, if provided.
         if tempo!=None and tempo!=60.0:
@@ -662,7 +662,7 @@ class Generate:
                     if len(dynamics) == total:
                         break
             else:
-                if dynamic not in dynamics:
+                # if dynamic not in dynamics:
                     dynamics.append(dynamic)
         return dynamics
 
