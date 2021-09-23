@@ -3,6 +3,7 @@ a module for general note/rhythm/dynamic-related modification
 '''
 
 # imports
+from typing import Type
 from core.constants import NOTES
 
 
@@ -38,20 +39,17 @@ def getpcs(notes):
         # check if there's an octave int present
         if notes.isalpha()==False:
             note = removeoct(notes)
-            # now check NOTES and return index of note str
-            if note in NOTES:
-                pcs.append(NOTES.index(note))
+            pcs.append(NOTES.index(note))
         else:
-            if notes in NOTES:
-                pcs.append(NOTES.index(notes))
+            pcs.append(NOTES.index(notes))
     elif type(notes)==list:
         for note in range(len(notes)):
             # check if there's an octave in present
             if notes[note].isalpha()==False:
                 anote = removeoct(notes[note])
-            # now check NOTES and return index of note str
-            if anote in NOTES:
                 pcs.append(NOTES.index(anote))
+            else:
+                pcs.append(NOTES.index(notes[note]))
     return pcs
 
 
@@ -83,6 +81,8 @@ def transpose(pcs, t, octeq=True):
     
     Returns a modified pcs (list[int]) or modified pitch class (int).
     '''
+    if type(pcs)!=list:
+        raise TypeError("pcs must be a list of ints!")
     # modify with a single interval across all pitch-classes
     if type(t)==int:
         for note in range(len(pcs)):

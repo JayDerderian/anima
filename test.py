@@ -30,6 +30,13 @@ from core.generate import Generate
 # start timer
 start_time = time.time()
 
+create = Generate()
+scale = create.newScale(octave=randint(3,5))
+print("\nnew scale:", scale[0])
+print("original pcs:", scale[1])
+pcs = getpcs(scale[0])
+print("\nretrieved pcs:", pcs)
+
 # newRandomComposition()
 # strqtet()
 # strqtet2()
