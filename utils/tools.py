@@ -82,7 +82,7 @@ def removeoct(notes):
         print("...returning", note)
         return note
     # account for a len(n)==2 and an accidental!!!
-    elif len(n)==2 and n[1].isalpha()==True:
+    elif len(n)==2 and n[1]=="b" or n[1]=="#":
         note = "{}{}".format(n[0], n[1])
         print("...returning", note)
         return note     

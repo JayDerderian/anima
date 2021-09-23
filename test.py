@@ -27,9 +27,9 @@ from core.generate import Generate
 start_time = time.time()
 
 create = Generate()
-notes = create.newScale()
-print("\nnew notes:", notes[0])
-pcs = getpcs(notes[0])
+note = create.newNote()
+print("\nnew notes:", note)
+pcs = getpcs(note)
 print("\nfinal pcs:", pcs)
 
 
