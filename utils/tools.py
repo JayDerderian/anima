@@ -29,6 +29,22 @@ def toStr(pcs, o=None, oe=True):
     return scale
 
 
+# matches pitch strings to pitch class integers. 
+def getpcs(notes):
+    '''
+    matches pitch strings (THAT DON'T HAVE OCTAVES, i.e. "C# not C#5)
+    to pitch class integers. the index values of NOTES
+    are the corresponding pitch class ints! 
+    
+    returns the corresponding pcs list[int]. list is unsorted, that is,
+    it's in the original order of the elements in the submitted notes list'''
+    pcs = []
+    for note in range(len(notes)):
+        if notes[note] in NOTES:
+            pcs.append(NOTES.index(notes[note]))
+    return pcs
+
+
 # Transpose
 def transpose(pcs, t, oe=True):
     '''
@@ -78,10 +94,11 @@ def oe(pitch):
 
 
 # Convert base rhythms to values in a specified tempo
-def scaletotempo(tempo, rhythms):
+def scaletotempo(tempo, rhythms, revert=False):
     '''
-    A rhythm converter function to translate durations in self.rhythms (list)
-    or self.rhythm (float) to actual value in seconds for a specified tempo. 
+    Converts a supplied float or list[float] of rhythmic values to
+    actual value in seconds at a given tempo. can also convert back to base
+    rhythmic values of revert is set to True.
     
     ex: [base] q = 60, quarterNote = 1 sec, [new tempo] q = 72, quarterNote = 0.8333(...) sec
 
@@ -93,13 +110,19 @@ def scaletotempo(tempo, rhythms):
     diff = 60/tempo
     # is this a single float?
     if type(rhythms) == float:
-        rhythms *= diff
+        if revert == False:
+            rhythms *= diff
+        else:
+            rhythms /= diff
         rhythms = round(rhythms, 3)
     # or a list of floats?
     elif type(rhythms) == list:
         for i in range(len(rhythms)):
-            rhythms[i] *= diff
+            if revert==False:
+                rhythms[i] *= diff
+            else:
+                rhythms[i] /= diff
             rhythms[i] = round(rhythms[i], 3)
     else:
         raise ValueError
-    return rhythms    
+    return rhythms 

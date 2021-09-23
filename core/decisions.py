@@ -2,8 +2,16 @@
 This module handles all large-scale decision making with regards to each composition mode. 
 '''
 
+'''
+TODO:
+    implement a way to pick elements from a randomly generated set (like a melody or chord progression) and assign a "preference" to them. 
+    once this is done use these preferred subsets and develop them alongside other randomly generated elements. 
+    ideally it'll allow for some degree of "organic" emergence ( since each preference is chosen randomly). 
+    use these preference to generate weighted decisions. also look into weighted decisions. 
+'''
+
+
 # IMPORTS
-import constants as c
 from math import floor
 from random import randint
 

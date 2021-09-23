@@ -12,7 +12,7 @@ representation very messy.
 # Imports
 import urllib.request
 import pretty_midi as pm
-from random import randint
+from random import choice
 from datetime import datetime
 
 
@@ -33,12 +33,11 @@ def newFileName(ensemble):
         url = "https://www.mit.edu/~ecprice/wordlist.10000"
         # response = requests.get(url)
         response = urllib.request.urlopen(url)
-        # words = response.content.splitlines()
         text = response.read().decode()
         words = text.splitlines()
         # Pick two random words
-        name = words[randint(0, len(words) - 1)] + \
-            '_' + words[randint(0, len(words) - 1)]
+        name = choice(words) + \
+            '_' + choice(words)
     except urllib.error.URLError:
         name = ensemble + ' - '
 

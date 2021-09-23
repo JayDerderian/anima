@@ -51,6 +51,7 @@ Other TODO's:
 '''
 
 # IMPORTS
+import mido as mid
 import pretty_midi as pm
 from utils.tools import transpose, oe
 from random import randint, choice
@@ -71,7 +72,7 @@ NOTE: Need a way to convert the duration list to start and end times for
 NOTE: input a composition() object with the additional note and rhythm data to be 
       appended at the end a MIDI file 
 '''
-def addNotes(self, notesToAdd, thisTune):
+def addNotes(notesToAdd, thisTune):
 
     # Duplicate thisTune to alter data
     newVariant = thisTune
