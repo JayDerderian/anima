@@ -112,10 +112,8 @@ def oe(pitch):
 
     Returns either a modified int or list[int]
     '''
-    # check a single pitch
     if type(pitch) == int:
         pitch %= 12
-    # check a whole list of pcs integers
     elif type(pitch) == list:
         for i in range(len(pitch)):
             if pitch[i] > 11 or pitch[i] < 0:
@@ -140,14 +138,12 @@ def scaletotempo(tempo, rhythms, revert=False):
     NOTE: the round() method keeps the results within three decimal places  
     '''
     diff = 60/tempo
-    # is this a single float?
     if type(rhythms) == float:
-        if revert == False:
+        if revert==False:
             rhythms *= diff
         else:
             rhythms /= diff
         rhythms = round(rhythms, 3)
-    # or a list of floats?
     elif type(rhythms) == list:
         for i in range(len(rhythms)):
             if revert==False:
@@ -157,4 +153,20 @@ def scaletotempo(tempo, rhythms, revert=False):
             rhythms[i] = round(rhythms[i], 3)
     else:
         raise ValueError
-    return rhythms 
+    return rhythms
+
+
+# makes a single or list of dynamics louder or softer 
+# by a specified amount
+def changedynamic(dyn, diff):
+    # needs to be an int that's a multiple of 4 and 
+    # within the specified range! MIDI velocities start 
+    # at 0 and increase by 4 until 127.
+    if type(diff) != int or diff % 4 != 0 or dyn > 123 or dyn < 0:
+        raise ValueError
+    elif type(dyn)==int:
+        dyn += diff 
+    elif type(dyn)==list:
+        for d in range(len(dyn)):
+            dyn[d] += diff
+    return dyn
