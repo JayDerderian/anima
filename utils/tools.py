@@ -17,7 +17,7 @@ def toStr(pcs, octave=None):
     if octave==None:
         for i in range(len(pcs)):
             scale.append(NOTES[pcs[i]])
-    elif type(octave) == int and octave > 1 and octave < 6:
+    elif type(octave)==int and octave > 1 and octave < 6:
         for i in range(len(pcs)):
             note = "{}{}".format(NOTES[pcs[i]], octave)
             scale.append(note)
@@ -34,7 +34,7 @@ def getpcs(notes):
     returns the corresponding pcs list[int]. list is unsorted, that is,
     it's in the original order of the elements in the submitted notes list'''
     pcs = []
-    if type(notes) == str:
+    if type(notes)==str:
         # check if there's an octave int present
         if notes.isalpha()==False:
             note = removeoct(notes)
@@ -44,14 +44,14 @@ def getpcs(notes):
         else:
             if notes in NOTES:
                 pcs.append(NOTES.index(notes))
-    elif type(notes) == list:
+    elif type(notes)==list:
         for note in range(len(notes)):
             # check if there's an octave in present
             if notes[note].isalpha()==False:
-                notes[note] = removeoct(notes[note])
+                anote = removeoct(notes[note])
             # now check NOTES and return index of note str
-            if notes[note] in NOTES:
-                pcs.append(NOTES.index(notes[note]))
+            if anote in NOTES:
+                pcs.append(NOTES.index(anote))
     return pcs
 
 
@@ -76,12 +76,15 @@ def transpose(pcs, t, octeq=True):
     '''
     Transpose a pitch class or list of pitch classes (list[int]) 
     using a supplied interval i, or list of intervals i. 
+
+    If octeq is set to False, then resulting values may be greater than
+    11. This may work when working with a source scale (since it goes
+    from octaves 2-5) as long as the resulting value n is n <= len(source)-1.
     
-    Returns a modified pcs (list[int]) or modified pitch class (int),
-    depending on input.
+    Returns a modified pcs (list[int]) or modified pitch class (int).
     '''
     # modify with a single interval across all pitch-classes
-    if type(t) == int:
+    if type(t)==int:
         for note in range(len(pcs)):
             pcs[note] += t
     # modify with a list of intervals across all pitch-classes. 
@@ -89,12 +92,12 @@ def transpose(pcs, t, octeq=True):
     # distance, allowing for rapid variation generation. can also
     # be a list of the same repeated value but that might be less
     # efficient.
-    elif type(t) == list:
+    elif type(t)==list:
         for note in range(len(pcs)):
             pcs[note] += t[note]
     else:
         raise ValueError("incorrect input type. must be single int or list of ints!")
-    # keep resulting pcs values between 0 and 11, if desired.
+    # keep resulting pcs values between 0 and 11 by default.
     if octeq==True:
         pcs = oe(pcs)
     return pcs
@@ -107,9 +110,9 @@ def oe(pitch):
 
     Returns either a modified int or list[int]
     '''
-    if type(pitch) == int:
+    if type(pitch)==int:
         pitch %= 12
-    elif type(pitch) == list:
+    elif type(pitch)==list:
         for i in range(len(pitch)):
             if pitch[i] > 11 or pitch[i] < 0:
                 pitch[i] %= 12
@@ -117,7 +120,6 @@ def oe(pitch):
         raise ValueError("incorrect input type. must be single int or list of ints!")
     return pitch
 
-# RHYTHM TOOLS
 
 def scaletotempo(tempo, rhythms, revert=False):
     '''
@@ -133,13 +135,13 @@ def scaletotempo(tempo, rhythms, revert=False):
     NOTE: the round() method keeps the results within three decimal places  
     '''
     diff = 60/tempo
-    if type(rhythms) == float:
+    if type(rhythms)==float:
         if revert==False:
             rhythms *= diff
         else:
             rhythms /= diff
         rhythms = round(rhythms, 3)
-    elif type(rhythms) == list:
+    elif type(rhythms)==list:
         for i in range(len(rhythms)):
             if revert==False:
                 rhythms[i] *= diff
@@ -151,14 +153,17 @@ def scaletotempo(tempo, rhythms, revert=False):
     return rhythms
 
 
-# makes a single or list of dynamics louder or softer 
-# by a specified amount
 def changedynamic(dyn, diff):
+    '''
+    makes a single or list of dynamics louder or softer 
+    by a specified amount'''
     # needs to be an int that's a multiple of 4 and 
     # within the specified range! MIDI velocities start 
     # at 0 and increase by 4 until 127.
-    if type(diff)!=int or diff %4 != 0:
-        raise ValueError("supplied value note a multiple of four!")
+    if type(diff)!=int:
+        raise TypeError("supplied value not an int!")
+    elif type(diff)==int and diff % 4 != 0:
+        raise ValueError("supplied value not a multiple of four!")
     if type(dyn)==int:
         dyn += diff
     elif type(dyn)==list:

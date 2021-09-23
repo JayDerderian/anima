@@ -1,5 +1,5 @@
 '''
-Simplified file for testing generative functions.
+Simplified file for testing stuff
 '''
 
 # Imports
@@ -17,11 +17,15 @@ from practice.practice import (newArp,
                                newcanon, 
                                newpalindrome)
 
-from utils.tools import getpcs, changedynamic
+from utils.tools import (getpcs, 
+                         changedynamic, 
+                         transpose)
 
 from core.generate import Generate
 
+
 #------------------------------------------------#
+
 
 # start timer
 start_time = time.time()
