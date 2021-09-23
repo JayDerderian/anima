@@ -117,6 +117,7 @@ def oe(pitch):
         raise ValueError("incorrect input type. must be single int or list of ints!")
     return pitch
 
+# RHYTHM TOOLS
 
 def scaletotempo(tempo, rhythms, revert=False):
     '''
