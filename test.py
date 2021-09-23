@@ -17,7 +17,7 @@ from practice.practice import (newArp,
                                newcanon, 
                                newpalindrome)
 
-from utils.tools import unscaletotempo
+from utils.tools import getpcs
 
 from core.generate import Generate
 
@@ -27,13 +27,10 @@ from core.generate import Generate
 start_time = time.time()
 
 create = Generate()
-tempo = create.newTempo()
-rhythms = create.newRhythms(total=randint(3, 5), tempo=tempo)
-print("\ntempo:", tempo)
-print("new rhythms:", rhythms)
-print("\nconverting back to base values...")
-rhythms = unscaletotempo(tempo, rhythms)
-print("\nnew values:", rhythms)
+notes = create.newScale()
+print("\nnew notes:", notes[0])
+pcs = getpcs(notes[0])
+print("\nfinal pcs:", pcs)
 
 
 # newRandomComposition()

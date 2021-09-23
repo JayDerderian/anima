@@ -16,14 +16,13 @@ def toStr(pcs, o=None, oe=True):
     '''
     scale = []
     if oe==True:
-        if o == None:
+        if o==None:
             for i in range(len(pcs)):
-                note = "{}{}".format(NOTES[pcs[i]], o)
-                scale.append(note)
+                scale.append(NOTES[pcs[i]])
         elif type(o) == int and o > 1 and o < 6:
             for i in range(len(pcs)):
                 note = "{}{}".format(NOTES[pcs[i]], o)
-                scale.append(NOTES[pcs[i]])
+                scale.append(note)
         else:
             raise ValueError
     return scale
@@ -32,17 +31,64 @@ def toStr(pcs, o=None, oe=True):
 # matches pitch strings to pitch class integers. 
 def getpcs(notes):
     '''
-    matches pitch strings (THAT DON'T HAVE OCTAVES, i.e. "C# not C#5)
-    to pitch class integers. the index values of NOTES
-    are the corresponding pitch class ints! 
+    matches pitch strings to pitch class integers. modifies supplied
+    note list!
     
     returns the corresponding pcs list[int]. list is unsorted, that is,
     it's in the original order of the elements in the submitted notes list'''
+    
+    # parse note list for pcs ints
     pcs = []
-    for note in range(len(notes)):
-        if notes[note] in NOTES:
-            pcs.append(NOTES.index(notes[note]))
+    if type(notes) == str:
+        print("\nchecking string...")
+        # check if there's an octave int present
+        if notes.isalpha()==False:
+            print("...octave num found!")
+            note = removeoct(notes)
+        # now check NOTES and return index of note str
+        print("\nchecking against NOTES...")
+        if note in NOTES:
+            pcs = NOTES.index(note)
+            print("...found:", pcs)
+    elif type(notes) == list:
+        # copy the list since we'll have to modify it to check for 
+        # octave values and remove them, if found.
+        print("\nchecking list...")
+        for note in range(len(notes)):
+            # check if there's an octave
+            if notes[note].isalpha()==False:
+                print("...there's numbers here!")
+                notes[note] = removeoct(notes[note])
+            print("\nchecking againts NOTES...")
+            if notes[note] in NOTES:
+                pc = NOTES.index(notes[note])
+                print("...found:", pc)
+                pcs.append(pc)
+                # pcs.append(NOTES.index(notes[note]))
     return pcs
+
+
+# remove octave numbers from singe-note strings
+def removeoct(notes):
+    # remove from single note and append octave to list
+    print("\nremoving octave...")
+    # split single note into two or three parts:
+    # either name+oct, name+acc+oct, or name+acc
+    n = [char for char in notes]
+    print("...split note into short list:", n)
+    # account if there's an accidental!!!!
+    if len(n)==3:
+        note = "{}{}".format(n[0], n[1])
+        print("...returning", note)
+        return note
+    # account for a len(n)==2 and an accidental!!!
+    elif len(n)==2 and n[1].isalpha()==True:
+        note = "{}{}".format(n[0], n[1])
+        print("...returning", note)
+        return note     
+    else:
+        print("...returning", n[0])
+        return n[0]
 
 
 # Transpose
