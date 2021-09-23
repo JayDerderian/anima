@@ -40,29 +40,31 @@ def getpcs(notes):
         # check if there's an octave int present
         if notes.isalpha()==False:
             note = removeoct(notes)
-        # now check NOTES and return index of note str
-        if note in NOTES:
-            pcs.append(NOTES.index(note))
+            # now check NOTES and return index of note str
+            if note in NOTES:
+                pcs.append(NOTES.index(note))
+        else:
+            if notes in NOTES:
+                pcs.append(NOTES.index(notes))
     elif type(notes) == list:
-        # copy the list since we'll have to modify it to check for 
-        # octave values and remove them, if found.
         for note in range(len(notes)):
             # check if there's an octave in present
             if notes[note].isalpha()==False:
                 notes[note] = removeoct(notes[note])
+            # now check NOTES and return index of note str
             if notes[note] in NOTES:
                 pcs.append(NOTES.index(notes[note]))
     return pcs
 
 
 # remove octave numbers from singe-note strings
-def removeoct(notes):
+def removeoct(anote):
     '''
     removes octave integer from a note name string. 
     shouldn't be called directly.'''
     # split single note into two or three parts:
     # either name + oct or name + acc + oct. 
-    n = [char for char in notes]
+    n = [char for char in anote]
     if len(n)==3:
         note = "{}{}".format(n[0], n[1])
         return note

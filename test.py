@@ -26,6 +26,25 @@ from core.generate import Generate
 # start timer
 start_time = time.time()
 
+create = Generate()
+note = create.newNote(octave=randint(3,5))
+print("\nnew notes:", note)
+pcs = getpcs(note)
+print("\nfinal pcs:", pcs)
+
+notes = create.newScale(octave=randint(3,5))
+print("\nnew notes:", notes[0])
+print("original pcs:", notes[1])
+pcs = getpcs(notes[0])
+print("\nfinal pcs:", pcs)
+
+notes = create.pickScale(t=True, o=randint(3,5))
+print("\nnew notes:", notes[2])
+print("original pcs:", notes[1])
+pcs = getpcs(notes[2])
+print("\nfinal pcs:", pcs)
+
+
 # newRandomComposition()
 # strqtet()
 # strqtet2()
