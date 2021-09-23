@@ -6,7 +6,6 @@ a module for general note/rhythm/dynamic-related modification
 from core.constants import NOTES
 
 
-# Converts a list of pitch class integers to note strings (with or without an octave)
 def toStr(pcs, octave=None):
     '''
     Converts a list of pitch class integers to note name strings, with or without 
@@ -23,11 +22,10 @@ def toStr(pcs, octave=None):
             note = "{}{}".format(NOTES[pcs[i]], octave)
             scale.append(note)
     else:
-        raise ValueError
+        raise ValueError("octave must be within 2-5!")
     return scale
 
 
-# matches pitch strings to pitch class integers. 
 def getpcs(notes):
     '''
     matches pitch strings to pitch class integers. modifies supplied
@@ -57,7 +55,6 @@ def getpcs(notes):
     return pcs
 
 
-# remove octave numbers from singe-note strings
 def removeoct(anote):
     '''
     removes octave integer from a note name string. 
@@ -75,7 +72,6 @@ def removeoct(anote):
         return n[0]
 
 
-# Transpose
 def transpose(pcs, t, octeq=True):
     '''
     Transpose a pitch class or list of pitch classes (list[int]) 
@@ -97,14 +93,13 @@ def transpose(pcs, t, octeq=True):
         for note in range(len(pcs)):
             pcs[note] += t[note]
     else:
-        raise ValueError
+        raise ValueError("incorrect input type. must be single int or list of ints!")
     # keep resulting pcs values between 0 and 11, if desired.
     if octeq==True:
         pcs = oe(pcs)
     return pcs
 
 
-# Keeps a single pitch within span of an octave (0 - 11)
 def oe(pitch):
     '''
     Octave equivalance. Handles either a single int or list[int].
@@ -119,11 +114,10 @@ def oe(pitch):
             if pitch[i] > 11 or pitch[i] < 0:
                 pitch[i] %= 12
     else:
-        raise ValueError
+        raise ValueError("incorrect input type. must be single int or list of ints!")
     return pitch
 
 
-# Convert base rhythms to values in a specified tempo
 def scaletotempo(tempo, rhythms, revert=False):
     '''
     Converts a supplied float or list[float] of rhythmic values to
@@ -152,7 +146,7 @@ def scaletotempo(tempo, rhythms, revert=False):
                 rhythms[i] /= diff
             rhythms[i] = round(rhythms[i], 3)
     else:
-        raise ValueError
+        raise ValueError("incorrect input type. must be float or list of floats!")
     return rhythms
 
 
@@ -162,11 +156,16 @@ def changedynamic(dyn, diff):
     # needs to be an int that's a multiple of 4 and 
     # within the specified range! MIDI velocities start 
     # at 0 and increase by 4 until 127.
-    if type(diff) != int or diff % 4 != 0 or dyn > 123 or dyn < 0:
-        raise ValueError
-    elif type(dyn)==int:
-        dyn += diff 
+    if type(diff)!=int or diff %4 != 0:
+        raise ValueError("supplied value note a multiple of four!")
+    if type(dyn)==int:
+        dyn += diff
     elif type(dyn)==list:
+        # only modify dynamics that will be within proper
+        # MIDI velocity range
         for d in range(len(dyn)):
-            dyn[d] += diff
+            if dyn[d] < 123:
+                dyn[d] += diff
+            else:
+                continue
     return dyn

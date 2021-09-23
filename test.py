@@ -17,7 +17,7 @@ from practice.practice import (newArp,
                                newcanon, 
                                newpalindrome)
 
-from utils.tools import getpcs
+from utils.tools import getpcs, changedynamic
 
 from core.generate import Generate
 
@@ -25,6 +25,14 @@ from core.generate import Generate
 
 # start timer
 start_time = time.time()
+
+create = Generate()
+
+dyn = create.newDynamics(total=randint(3, 10))
+print("\ninitial dynamics:", dyn)
+print("\nincreasing by each by 4...")
+dyn_mod = changedynamic(dyn, diff=5)
+print("\nnew dynamics:", dyn_mod)
 
 # newRandomComposition()
 # strqtet()
