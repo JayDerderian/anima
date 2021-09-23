@@ -43,7 +43,7 @@ def newArp():
         # get base list
         _arp_ = create.pickArp("maj triad")
         # transpose between 1-11 semi-tones
-        _arp_ = transpose(_arp_, randint(1, 11), oe=True)
+        _arp_ = transpose(_arp_, randint(1, 11), octeq=True)
         # convert pcs to note list[str] with randomly assigned octave
         _arp_ = toStr(_arp_, octave=randint(2, 5))
         arp.notes.extend(_arp_)

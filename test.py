@@ -26,13 +26,6 @@ from core.generate import Generate
 # start timer
 start_time = time.time()
 
-create = Generate()
-note = create.newNote()
-print("\nnew notes:", note)
-pcs = getpcs(note)
-print("\nfinal pcs:", pcs)
-
-
 # newRandomComposition()
 # strqtet()
 # strqtet2()

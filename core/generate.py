@@ -301,7 +301,7 @@ class Generate:
         mode = choice(MODE_KEYS)
         pcs = MODES[mode]
         if t==True:
-            pcs_t = transpose(pcs, randint(1, 11), oe=True)
+            pcs_t = transpose(pcs, randint(1, 11), octeq=True)
             notes = toStr(pcs_t, octave=o)
         else:
             notes = toStr(pcs, octave=o)
@@ -321,7 +321,7 @@ class Generate:
         fn = choice(FORTE_NUMBERS)
         pcs = SCALES[fn]
         if t==True:
-            pcs_t = transpose(pcs, randint(1, 11), oe=True)
+            pcs_t = transpose(pcs, randint(1, 11), octeq=True)
             scale = toStr(pcs_t, octave=o)
         else:
             scale = toStr(pcs, octave=o)

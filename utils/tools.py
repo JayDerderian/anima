@@ -7,7 +7,7 @@ from core.constants import NOTES
 
 
 # Converts a list of pitch class integers to note strings (with or without an octave)
-def toStr(pcs, o=None):
+def toStr(pcs, octave=None):
     '''
     Converts a list of pitch class integers to note name strings, with or without 
     a supplied octave. 
@@ -15,12 +15,12 @@ def toStr(pcs, o=None):
     Returns a list of strings representing pitches, i.e. C#, Gb or D5, Ab6, etc.
     '''
     scale = []
-    if o==None:
+    if octave==None:
         for i in range(len(pcs)):
             scale.append(NOTES[pcs[i]])
-    elif type(o) == int and o > 1 and o < 6:
+    elif type(octave) == int and octave > 1 and octave < 6:
         for i in range(len(pcs)):
-            note = "{}{}".format(NOTES[pcs[i]], o)
+            note = "{}{}".format(NOTES[pcs[i]], octave)
             scale.append(note)
     else:
         raise ValueError
@@ -74,7 +74,7 @@ def removeoct(notes):
 
 
 # Transpose
-def transpose(pcs, t, oe=True):
+def transpose(pcs, t, octeq=True):
     '''
     Transpose a pitch class or list of pitch classes (list[int]) 
     using a supplied interval i, or list of intervals i. 
@@ -88,14 +88,16 @@ def transpose(pcs, t, oe=True):
             pcs[note] += t
     # modify with a list of intervals across all pitch-classes. 
     # this allows for each pitch-class to be transposed by a unique
-    # distance, allowing for rapid variation generation.
+    # distance, allowing for rapid variation generation. can also
+    # be a list of the same repeated value but that might be less
+    # efficient.
     elif type(t) == list:
         for note in range(len(pcs)):
             pcs[note] += t[note]
     else:
         raise ValueError
     # keep resulting pcs values between 0 and 11, if desired.
-    if oe==True:
+    if octeq==True:
         pcs = oe(pcs)
     return pcs
 
