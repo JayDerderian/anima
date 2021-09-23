@@ -42,13 +42,13 @@ def getpcs(notes):
         else:
             pcs.append(NOTES.index(notes))
     elif type(notes)==list:
-        for note in range(len(notes)):
+        for n in range(len(notes)):
             # check if there's an octave in present
-            if notes[note].isalpha()==False:
-                anote = removeoct(notes[note])
-                pcs.append(NOTES.index(anote))
+            if notes[n].isalpha()==False:
+                note = removeoct(notes[n])
+                pcs.append(NOTES.index(note))
             else:
-                pcs.append(NOTES.index(notes[note]))
+                pcs.append(NOTES.index(notes[n]))
     return pcs
 
 
