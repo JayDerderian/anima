@@ -3,7 +3,6 @@ a module for general note/rhythm/dynamic-related modification
 '''
 
 # imports
-from typing import Type
 from core.constants import NOTES
 
 
@@ -127,12 +126,14 @@ def scaletotempo(tempo, rhythms, revert=False):
     actual value in seconds at a given tempo. can also convert back to base
     rhythmic values of revert is set to True.
     
-    ex: [base] q = 60, quarterNote = 1 sec, [new tempo] q = 72, quarterNote = 0.8333(...) sec
+    ex: [base] q = 60, quarterNote = 1 sec, 
+        [new tempo] q = 72, quarterNote = 0.8333(...) sec
 
-    60/72 = .83 - The result becomes the converter value to multiply all supplied
-    durations against to get the new tempo-accurate durations in seconds.
+    60/72 = .83 - The result becomes the converter value to multiply or divide
+    all supplied durations against to get the new tempo-accurate durations in seconds.
 
-    NOTE: the round() method keeps the results within three decimal places  
+    NOTE: the round() method keeps the results within three decimal places to help 
+          facilitate sheet music generation.  
     '''
     diff = 60/tempo
     if type(rhythms)==float:
