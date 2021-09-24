@@ -3,6 +3,7 @@ a module for general note/rhythm/dynamic-related modification
 '''
 
 # imports
+from typing import Type
 from core.constants import NOTES, PITCH_CLASSES
 
 
@@ -99,6 +100,22 @@ def transpose_m(notes, dist):
         raise ValueError("distance must be an int: 1<=n<=11")
     pcs = transpose(getindex(notes), t=dist, octeq=False)
     return tostr(pcs, octeq=False)
+
+
+def transpose_c(chords, dist):
+    '''
+    wrapper to use with chord() lists
+    '''
+    if type(chords)!=list or type(dist) != int:
+        raise TypeError("list must be chord object list, and distance must be an int")
+    elif dist > 11 or dist < 1:
+        raise ValueError("distance must be an int: 1<=n<=11")
+    for c in range(len(chords)):
+        pcs = transpose(getindex(chords[c].notes), 
+                        t=dist, 
+                        octeq=False)
+        chords[c].notes = tostr(pcs, octeq=False)
+    return chords
 
 
 def transpose(pcs, t, octeq=True):
