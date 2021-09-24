@@ -17,7 +17,9 @@ from practice.practice import (newArp,
                                newcanon, 
                                newpalindrome)
 
-from utils.tools import (getpcs, 
+from utils.tools import (tostr, 
+                         getpcs,
+                         getindex, 
                          changedynamic, 
                          transpose)
 
@@ -32,9 +34,13 @@ start_time = time.time()
 
 create = Generate()
 m = create.newMelody()
-print("\nnew scale:", m.notes)
-pcs = getpcs(m.notes)
-print("\npcs:", pcs)
+print("\noriginal notes:", m.notes)
+indicies = getindex(m.notes)
+dist = randint(1, 11)
+print("\ntransposing", dist, "semi-tones...")
+pcs = transpose(indicies, t=dist, octeq=False)
+m.notes = tostr(pcs, octeq=False)
+print("\ntransposed notes:", m.notes)
 
 # newRandomComposition()
 # strqtet()

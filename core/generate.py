@@ -26,7 +26,7 @@ from datetime import datetime as date
 from utils.mapping import mapData
 from utils.txtfile import saveInfo
 from utils.midi import save, saveChords
-from utils.tools import (toStr, 
+from utils.tools import (tostr, 
                          transpose, 
                          oe, 
                          scaletotempo)
@@ -284,7 +284,7 @@ class Generate:
             else:
                 fn, pcs, scale = self.pickScale(t=False)
                 info = '{} untransposed, root:{}'.format(fn, scale[0])
-        scale = toStr(pcs, octave=o)
+        scale = tostr(pcs, octave=o)
         return scale, info     
 
 
@@ -302,9 +302,9 @@ class Generate:
         pcs = MODES[mode]
         if t==True:
             pcs_t = transpose(pcs, randint(1, 11), octeq=True)
-            notes = toStr(pcs_t, octave=o)
+            notes = tostr(pcs_t, octave=o)
         else:
-            notes = toStr(pcs, octave=o)
+            notes = tostr(pcs, octave=o)
         return mode, pcs, notes
 
 
@@ -322,9 +322,9 @@ class Generate:
         pcs = SCALES[fn]
         if t==True:
             pcs_t = transpose(pcs, randint(1, 11), octeq=True)
-            scale = toStr(pcs_t, octave=o)
+            scale = tostr(pcs_t, octave=o)
         else:
-            scale = toStr(pcs, octave=o)
+            scale = tostr(pcs, octave=o)
         return fn, pcs, scale
         
 
@@ -353,7 +353,7 @@ class Generate:
         # sort in ascending order
         pcs.sort()
         # convert to strings (with or without supplied octave)
-        scale = toStr(pcs, octave)
+        scale = tostr(pcs, octave)
         return scale, pcs   
 
 
@@ -416,10 +416,10 @@ class Generate:
         # convert to strings with appended octave, if necessary
         if o==None:
             for scale in variants:
-                variants[scale] = toStr(variants[scale], octave=4)
+                variants[scale] = tostr(variants[scale], octave=4)
         else:
             for scale in variants:
-                variants[scale] = toStr(variants[scale], octave=o)
+                variants[scale] = tostr(variants[scale], octave=o)
 
         return variants
 

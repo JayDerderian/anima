@@ -15,7 +15,7 @@ from containers.melody import Melody
 from containers.composition import Composition
 
 from utils.midi import save, savecanon
-from utils.tools import toStr, transpose, scaletotempo
+from utils.tools import tostr, transpose, scaletotempo
 
 
 def newArp():
@@ -45,7 +45,7 @@ def newArp():
         # transpose between 1-11 semi-tones
         _arp_ = transpose(_arp_, randint(1, 11), octeq=True)
         # convert pcs to note list[str] with randomly assigned octave
-        _arp_ = toStr(_arp_, octave=randint(2, 5))
+        _arp_ = tostr(_arp_, octave=randint(2, 5))
         arp.notes.extend(_arp_)
     
     # append med dynamic/MIDI velocity and eighth note rhythms

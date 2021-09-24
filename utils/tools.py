@@ -3,10 +3,10 @@ a module for general note/rhythm/dynamic-related modification
 '''
 
 # imports
-from core.constants import PITCH_CLASSES
+from core.constants import NOTES, PITCH_CLASSES
 
 
-def toStr(pcs, octave=None):
+def tostr(pcs, octave=None, octeq=True):
     '''
     Converts a list of pitch class integers to note name strings, with or without 
     a supplied octave. 
@@ -14,15 +14,20 @@ def toStr(pcs, octave=None):
     Returns a list of strings representing pitches, i.e. C#, Gb or D5, Ab6, etc.
     '''
     scale = []
-    if octave==None:
-        for i in range(len(pcs)):
-            scale.append(PITCH_CLASSES[pcs[i]])
-    elif type(octave)==int and octave > 1 and octave < 6:
-        for i in range(len(pcs)):
-            note = "{}{}".format(PITCH_CLASSES[pcs[i]], octave)
-            scale.append(note)
+    if octeq==True:
+        if octave==None:
+            for i in range(len(pcs)):
+                scale.append(PITCH_CLASSES[pcs[i]])     
+        elif type(octave)==int and octave > 1 and octave < 6:
+            for i in range(len(pcs)):
+                note = "{}{}".format(PITCH_CLASSES[pcs[i]], octave)
+                scale.append(note)
+        else:
+            raise ValueError("octave must be within 2-5!")
     else:
-        raise ValueError("octave must be within 2-5!")
+        # this only uses pcs, even if an octave is supplied.
+        for i in range(len(pcs)):
+            scale.append(NOTES[pcs[i]])  
     return scale
 
 
@@ -66,6 +71,19 @@ def removeoct(anote):
         return note     
     else:
         return n[0]
+
+
+def getindex(notes):
+    '''
+    gets the index of a given note in NOTES. 
+    
+    the returned list[int] should be used by transpose() with 
+    octeq set to False. those resulting values should be mapped 
+    back against NOTES to get octave-accurate transposed notes'''
+    indicies = []
+    for n in range(len(notes)):
+        indicies.append(NOTES.index(notes[n]))
+    return indicies
 
 
 def transpose(pcs, t, octeq=True):
