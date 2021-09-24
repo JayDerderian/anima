@@ -9,7 +9,7 @@ from core.constants import NOTES, PITCH_CLASSES
 def tostr(pcs, octave=None, octeq=True):
     '''
     Converts a list of pitch class integers to note name strings, with or without 
-    a supplied octave. 
+    a supplied octave. Works within one octave or beyond one octave. 
     
     Returns a list of strings representing pitches, i.e. C#, Gb or D5, Ab6, etc.
     '''
@@ -79,7 +79,8 @@ def removeoct(anote):
 
 def getindex(notes):
     '''
-    gets the index of a given note in NOTES. 
+    gets the index of a given note in NOTES. note name str
+    must have an assigned octave between 0-8. 
     
     the returned list[int] should be used by transpose() with 
     octeq set to False. those resulting values should be mapped 
@@ -88,6 +89,16 @@ def getindex(notes):
     for n in range(len(notes)):
         indicies.append(NOTES.index(notes[n]))
     return indicies
+
+
+def transpose_m(notes, dist):
+    '''
+    wrapper to use with melody() objects.
+    '''
+    if type(dist)!= int or dist > 11 or dist < 1:
+        raise ValueError("distance must be an int: 1<=n<=11")
+    pcs = transpose(getindex(notes), t=dist, octeq=False)
+    return tostr(pcs, octeq=False)
 
 
 def transpose(pcs, t, octeq=True):

@@ -48,6 +48,7 @@ though other values will be added eventually.
 RHYTHMS = [4.0, 3.0, 2.0, 1.5, 1.0, 
            0.75, 0.5, 0.375, 0.25, 0.125]
 
+
 # Base durations in seconds for tuplets where q = 60bpm
 TUPLETS = { 
     "triplet quarter": 0.667,
@@ -77,8 +78,8 @@ PITCH_CLASSES = ["C", "C#", "D", "Eb", "E", "F",
                  "F#", "G", "G#", "A", "Bb", "B"]
 
 
-# All notes! Complete piano range from bottom key to top key
-# octaves 0 - 8
+# All the notes! 
+# Complete piano range from bottom key to top key, octaves 0 - 8
 NOTES = [
     "A0", "Bb0", "B0", "C1", "C#1", "D1", "Eb1", "E1", "F1", "F#1", "G1", "G#1",
     "A1", "Bb1", "B1", "C2", "C#2", "D2", "Eb2", "E2", "F2", "F#2", "G2", "G#2",
@@ -803,17 +804,18 @@ FORTE_NUMBERS = [
 
 
 # Ensemble sizes
-ENSEMBLE_SIZES = {1: 'solo',
-                  2: 'duo',
-                  3: 'trio',
-                  4: 'quartet',
-                  5: 'quintet',
-                  6: 'sextet',
-                  7: 'septet',
-                  8: 'octet',
-                  9: 'nonet',
-                  10: 'decet',
-                  11: 'large ensemble'
+ENSEMBLE_SIZES = {
+    1: 'solo',
+    2: 'duo',
+    3: 'trio',
+    4: 'quartet',
+    5: 'quintet',
+    6: 'sextet',
+    7: 'septet',
+    8: 'octet',
+    9: 'nonet',
+    10: 'decet',
+    11: 'large ensemble'
 }
 
 
@@ -869,22 +871,24 @@ ENSEMBLES = {
                     'Tenor Sax', 'Baritone Sax'],
 
     # orchestral (2222/2221/pno/strings) no percussion yet!
-    "orchestra": [# woodwinds (0-7)
-                  'Flute', 'Flute', 'Oboe', 'Oboe', 'Clarinet', 'Clarinet', 'Bassoon', 'Bassoon',
-                  # brass (8-14)
-                  'French Horn', 'French Horn', 'Trumpet', 'Trumpet', 'Trombone', 'Trombone', 'Tuba',
-                  # pno (15)
-                  'Acoustic Grand Piano',
-                  # violin 1 (16)
-                  'String Ensemble 1',
-                  # violin 2 (17)
-                  'String Ensemble 2',
-                  # violas (18)
-                  'String Ensemble 1',
-                  # cellos (19)
-                  'String Ensemble 2',
-                  # basses (20)
-                  'String Ensemble 2']
+    "orchestra": [
+        # woodwinds (0-7)
+        'Flute', 'Flute', 'Oboe', 'Oboe', 'Clarinet', 'Clarinet', 'Bassoon', 'Bassoon',
+        # brass (8-14)
+        'French Horn', 'French Horn', 'Trumpet', 'Trumpet', 'Trombone', 'Trombone', 'Tuba',
+        # pno (15)
+        'Acoustic Grand Piano',
+        # violin 1 (16)
+        'String Ensemble 1',
+        # violin 2 (17)
+        'String Ensemble 2',
+        # violas (18)
+        'String Ensemble 1',
+        # cellos (19)
+        'String Ensemble 2',
+        # basses (20)
+        'String Ensemble 2'
+    ]
 }
 
 
@@ -929,6 +933,12 @@ ENSEMBLE_KEYS = [
     # orchesra
     "orchestra"
 ]
+
+
+'''
+TODO: ADD INSTRUMENT RANGES DICTIONARY HERE!!!
+
+'''
 
 
 # MIDI instruments list (standard) 
