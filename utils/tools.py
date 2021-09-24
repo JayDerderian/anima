@@ -136,7 +136,7 @@ def transpose(pcs, t, octeq=True):
     Returns a modified pcs (list[int]) or modified pitch class (int).
     '''
     if type(pcs)!=list or type(t)!=int or type(t)!=list:
-        raise TypeError("pcs must be a list of ints, or t must an int")
+        raise TypeError("pcs must be a list[int], t must an int or list[int]")
     # modify with a single interval across all pitch-classes
     if type(t)==int:
         for note in range(len(pcs)):
