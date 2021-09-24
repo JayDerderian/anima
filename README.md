@@ -17,7 +17,7 @@ To set up the backend, run `pip install -r requirements.txt` in order to install
 
 Example usage for generating a single melody using a person's name:
 
-.. code-block:: python
+<!-- .. code-block:: python -->
     
     from containers.composition import Composition
     from utils.mid import midi
