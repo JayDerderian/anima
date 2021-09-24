@@ -1,5 +1,11 @@
 '''
-a module for general note/rhythm/dynamic-related modification
+a module containing a variety of tools to analyze and manipulate melody() 
+objects and chord() lists. these methods will likely be used in other large
+classes in the analyze.py and modify.py files.
+'''
+
+'''
+TODO: add melody inversion, retrogression, and inversion + retrogression methods
 '''
 
 # imports

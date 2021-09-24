@@ -7,6 +7,7 @@ import math
 import urllib.request
 
 from core.constants import(
+    NOTES,
     PITCH_CLASSES, 
     RHYTHMS, 
     DYNAMICS, 

@@ -51,10 +51,20 @@ Other TODO's:
 '''
 
 # IMPORTS
+from random import (randint, 
+                    choice, 
+                    choices, 
+                    sample)
+
 import mido as mid
 import pretty_midi as pm
-from utils.tools import transpose, oe
-from random import randint, choice
+
+from utils.tools import (tostr,
+                         transpose_m, 
+                         transpose_c, 
+                         transpose, 
+                         scaletotempo)
+
 from core.generate import Generate
 
 
