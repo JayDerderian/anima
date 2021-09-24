@@ -7,7 +7,7 @@ import math
 import urllib.request
 
 from core.constants import(
-    NOTES, 
+    PITCH_CLASSES, 
     RHYTHMS, 
     DYNAMICS, 
     TEMPOS, 
@@ -171,9 +171,9 @@ class Generate:
               randomly chosen note, or leave arg fields empty
         '''
         if i==None:
-            note = choice(NOTES)
-        elif type(i) == int and i > -1 and i < len(NOTES):
-                note = NOTES[i]
+            note = choice(PITCH_CLASSES)
+        elif type(i) == int and i > -1 and i < len(PITCH_CLASSES):
+                note = PITCH_CLASSES[i]
         else:
             return -1
         if octave==None:
@@ -438,7 +438,7 @@ class Generate:
         '''
         Generates a 12-tone row. Returns a note list[str].
         '''
-        return sample(NOTES, len(NOTES))
+        return sample(PITCH_CLASSES, len(PITCH_CLASSES))
 
 
     # generate a list of 11 intervals to transpose a 12-tone row by to generate

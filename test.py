@@ -31,11 +31,10 @@ from core.generate import Generate
 start_time = time.time()
 
 create = Generate()
-scale = create.newScale(octave=randint(3,5))
-print("\nnew scale:", scale[0])
-print("original pcs:", scale[1])
-pcs = getpcs(scale[0])
-print("\nretrieved pcs:", pcs)
+m = create.newMelody()
+print("\nnew scale:", m.notes)
+pcs = getpcs(m.notes)
+print("\npcs:", pcs)
 
 # newRandomComposition()
 # strqtet()

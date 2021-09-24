@@ -3,7 +3,7 @@ a module for general note/rhythm/dynamic-related modification
 '''
 
 # imports
-from core.constants import NOTES
+from core.constants import PITCH_CLASSES
 
 
 def toStr(pcs, octave=None):
@@ -16,10 +16,10 @@ def toStr(pcs, octave=None):
     scale = []
     if octave==None:
         for i in range(len(pcs)):
-            scale.append(NOTES[pcs[i]])
+            scale.append(PITCH_CLASSES[pcs[i]])
     elif type(octave)==int and octave > 1 and octave < 6:
         for i in range(len(pcs)):
-            note = "{}{}".format(NOTES[pcs[i]], octave)
+            note = "{}{}".format(PITCH_CLASSES[pcs[i]], octave)
             scale.append(note)
     else:
         raise ValueError("octave must be within 2-5!")
@@ -28,8 +28,7 @@ def toStr(pcs, octave=None):
 
 def getpcs(notes):
     '''
-    matches pitch strings to pitch class integers. modifies supplied
-    note list!
+    matches pitch strings to pitch class integers.
     
     returns the corresponding pcs list[int]. list is unsorted, that is,
     it's in the original order of the elements in the submitted notes list'''
@@ -38,17 +37,17 @@ def getpcs(notes):
         # check if there's an octave int present
         if notes.isalpha()==False:
             note = removeoct(notes)
-            pcs.append(NOTES.index(note))
+            pcs.append(PITCH_CLASSES.index(note))
         else:
-            pcs.append(NOTES.index(notes))
+            pcs.append(PITCH_CLASSES.index(notes))
     elif type(notes)==list:
         for n in range(len(notes)):
             # check if there's an octave in present
             if notes[n].isalpha()==False:
                 note = removeoct(notes[n])
-                pcs.append(NOTES.index(note))
+                pcs.append(PITCH_CLASSES.index(note))
             else:
-                pcs.append(NOTES.index(notes[n]))
+                pcs.append(PITCH_CLASSES.index(notes[n]))
     return pcs
 
 

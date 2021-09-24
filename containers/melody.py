@@ -14,6 +14,7 @@ class Melody():
             
         # Meta-data
         self.fn = 'None'
+        self.pcs = []
         self.sourceData = 'None'
         self.sourceScale = 'None'
 
