@@ -4,10 +4,11 @@ This module handles all large-scale decision making with regards to each composi
 
 '''
 TODO:
-    implement a way to pick elements from a randomly generated set (like a melody or chord progression) and assign a "preference" to them. 
-    once this is done use these preferred subsets and develop them alongside other randomly generated elements. 
-    ideally it'll allow for some degree of "organic" emergence ( since each preference is chosen randomly). 
-    use these preference to generate weighted decisions. also look into weighted decisions. 
+    implement a way to pick elements from a randomly generated set (like a melody or chord progression) and 
+    assign a "preference" to them. once this is done use these preferred subsets and develop them alongside 
+    other randomly generated elements. ideally it'll allow for some degree of "organic" emergence (since each 
+    preference is chosen randomly). use these preference to generate weighted decisions. 
+    also, look into weighted decisions. 
 '''
 
 
@@ -32,9 +33,11 @@ class Decide():
         self.modal_choices = {}
         self.atonal_choices = {}
 
+
     #-----------------------------------------------------------------------------------------------------------#
     #-----------------------------------------MATERIAL GENERATION-----------------------------------------------#
     #-----------------------------------------------------------------------------------------------------------#
+    
     '''
     NOTE: This will eventually contain a series of decision trees that will determine how to execute 
             different composition "modes"
@@ -64,6 +67,8 @@ class Decide():
     # Atonal mode choices
 
     # 
+
+
 
     #---------------------------------------------------------------------------------------------------------------------#
     #------------------------------------------------VARIATION GENERATION-------------------------------------------------#
@@ -152,7 +157,7 @@ class Decide():
         return choice
 
     # Determines how many notes to modify of a given total.
-    def howManyModify(self, totalNotes):
+    def howManyToModify(self, totalNotes):
         '''
         Determines how many notes to modify of a given total.
         '''
@@ -178,21 +183,15 @@ class Decide():
         if(len(notes) == 0):
             return 1
         reps = 0
-        '''Note: change to if(len(notes)) % 3 == 0), etc?
-                 Use total notes as divisible by n as the decider rather than
-                 total notes itself. I dunno.'''
         if(len(notes) > 10):
-            #Limit to 1/5
-            limit = floor(len(notes) / 5)
-            reps = randint(1, limit)
+            # Limit to max 1/5
+            reps = randint(1, floor(len(notes) / 5))
         elif(len(notes) > 8):
-            #Limit to 1/4
-            limit = floor(len(notes) / 4)
-            reps = randint(1, limit)
+            # Limit to max 1/4
+            reps = randint(1, floor(len(notes) / 4))
         elif(len(notes) > 6):
-            #Limit to 1/3
-            limit = floor(len(notes) / 3)
-            reps = randint(1, limit)
+            # Limit to max 1/3
+            reps = randint(1, floor(len(notes) / 3))
         return reps
 
     # Scales howMany to different MIDI note file sizes
@@ -227,12 +226,12 @@ class Decide():
         '''   
         notesToModify = []
         print("\nDeciding which notes to modify...") 
-        #Generate raw, un-sorted index choice list within given range (totalNotes)
+        # Generate raw, un-sorted index choice list within given range (totalNotes)
         while(len(notesToModify) < totalModify):
             notesToModify.append(randint(0, totalNotes))
-        #Remove any duplicates
+        # Remove any duplicates
         notesToModify = list(set(notesToModify))
-        #Sort resulting list by ascending value 
+        # Sort resulting list by ascending value 
         notesToModify.sort()
         if(not notesToModify):
             print("...Unable to decide!")

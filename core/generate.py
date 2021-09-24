@@ -301,7 +301,7 @@ class Generate:
         mode = choice(MODE_KEYS)
         pcs = MODES[mode]
         if t==True:
-            pcs_t = transpose(pcs, randint(1, 11), octeq=True)
+            pcs_t = transpose(pcs, randint(1, 11), octeq=False)
             notes = tostr(pcs_t, octave=o)
         else:
             notes = tostr(pcs, octave=o)
@@ -321,7 +321,7 @@ class Generate:
         fn = choice(FORTE_NUMBERS)
         pcs = SCALES[fn]
         if t==True:
-            pcs_t = transpose(pcs, randint(1, 11), octeq=True)
+            pcs_t = transpose(pcs, randint(1, 11), octeq=False)
             scale = tostr(pcs_t, octave=o)
         else:
             scale = tostr(pcs, octave=o)
@@ -408,19 +408,14 @@ class Generate:
             note = pcs[i]
             while len(sv) < len(pcs):
                 note += randint(1, 3)
-                if note > 11:
-                    note = oe(note)
                 sv.append(note)
             variants[i] = sv
-        
-        # convert to strings with appended octave, if necessary
-        if o==None:
-            for scale in variants:
-                variants[scale] = tostr(variants[scale], octave=4)
-        else:
-            for scale in variants:
-                variants[scale] = tostr(variants[scale], octave=o)
-
+        # convert to strings with appended octave
+        # tostr() handles whether or not o==None
+        for scale in variants:
+            variants[scale] = tostr(variants[scale], 
+                                    octave=o, 
+                                    octeq=False)
         return variants
 
 
@@ -437,6 +432,7 @@ class Generate:
     def new12ToneRow(self):
         '''
         Generates a 12-tone row. Returns a note list[str].
+        Notes don't have an assigned octave.
         '''
         return sample(PITCH_CLASSES, len(PITCH_CLASSES))
 
@@ -876,6 +872,7 @@ class Generate:
         comp = Composition()
         comp.title = self.newTitle()
         comp.composer = self.newComposer()
+        comp.tempo = self.newTempo()
         comp.date = date.now().strftime("%d-%b-%y %H:%M:%S")
         comp.ensemble = 'duet'
         comp.midiFileName = comp.title + '.mid'
@@ -883,24 +880,24 @@ class Generate:
         
         # Generate a melody
         if data != None and dataType != None:
-            mel = self.newMelody(data=data, dataType=dataType)
-            mel.tempo = comp.tempo
+            m = self.newMelody(tempo=comp.tempo, 
+                               data=data, 
+                               dataType=dataType)
             # pick instrument for melody
-            mel.instrument = self.newInstrument()
-            comp.instruments.append(mel.instrument)
+            m.instrument = self.newInstrument()
+            comp.instruments.append(m.instrument)
 
         else:
-            mel = self.newMelody()
-            mel.tempo = comp.tempo
+            m = self.newMelody(tempo=comp.tempo)
             # pick instrument for melody
-            mel.instrument = self.newInstrument()
-            comp.instruments.append(mel.instrument)
+            m.instrument = self.newInstrument()
+            comp.instruments.append(m.instrument)
 
         # Save melody info
-        comp.melodies.append(mel)
+        comp.melodies.append(m)
 
         # Generate harmonies from this melody
-        ch = self.newChords(len(mel.notes), mel.tempo, mel.notes)
+        ch = self.newChords(len(m.notes), m.tempo, m.notes)
         for i in range(len(ch)):
             # picking only various keyboard instruments for now...
             ch[i].instrument = INSTRUMENTS[randint(0, 8)]
@@ -911,7 +908,7 @@ class Generate:
 
         # Full title
         title_full = "{}{}{}{}".format(comp.title, ' for ', 
-            mel.instrument, ' and various keyboards')
+            m.instrument, ' and various keyboards')
 
         # Export MIDI & text file, then display results
         if save(comp)!=-1 and saveInfo(name=comp.title, 
