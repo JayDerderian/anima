@@ -15,6 +15,9 @@ def tostr(pcs, octave=None, octeq=True):
     '''
     scale = []
     if octeq==True:
+        # ensure oe is enforced in case octeq flag isn't 
+        # set to False by mistake
+        pcs = oe(pcs)
         if octave==None:
             for i in range(len(pcs)):
                 scale.append(PITCH_CLASSES[pcs[i]])     
@@ -26,6 +29,7 @@ def tostr(pcs, octave=None, octeq=True):
             raise ValueError("octave must be within 2-5!")
     else:
         # this only uses pcs, even if an octave is supplied.
+        # NOTES already has note strings with assigned octaves. 
         for i in range(len(pcs)):
             scale.append(NOTES[pcs[i]])  
     return scale

@@ -32,15 +32,23 @@ from core.generate import Generate
 # start timer
 start_time = time.time()
 
-create = Generate()
-m = create.newMelody()
-print("\noriginal notes:", m.notes)
-indicies = getindex(m.notes)
-dist = randint(1, 11)
-print("\ntransposing", dist, "semi-tones...")
-pcs = transpose(indicies, t=dist, octeq=False)
-m.notes = tostr(pcs, octeq=False)
-print("\ntransposed notes:", m.notes)
+# create = Generate()
+# m = create.newMelody()
+# print("\noriginal notes:", m.notes)
+# indicies = getindex(m.notes)
+# dist = randint(1, 11)
+# print("\ntransposing", dist, "semi-tones...")
+# pcs = transpose(indicies, t=dist, octeq=False)
+# m.notes = tostr(pcs, octeq=False)
+# print("\ntransposed notes:", m.notes)
+
+pcs = []
+total = randint(3, 20)
+for i in range(total):
+    pcs.append(randint(0, 75))
+print("\nrandom non-oe pcs list:", pcs)
+notes = tostr(pcs)
+print("\nnotes:", notes)
 
 # newRandomComposition()
 # strqtet()
