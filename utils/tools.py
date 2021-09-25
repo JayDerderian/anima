@@ -212,26 +212,22 @@ def invert(notes):
     
     # list of inverted intervals
     invert = []
-    # get list of intervals
+    # get list of intervals and invert values
     intr = getintervals(notes)
-    # invert interval values
     for i in range(len(intr)):
         if ispos(intr[i])==True:
             invert.append(-abs(intr[i]))
         else:
             invert.append(abs(intr[i]))
     # get index of first note, we don't need them all
-    # add first index to inverted list
+    # add first index to inverted index list
     ind_inv = []
     ind_inv.append(getindex(notes[0]))
-    # # build new index list off this inverted interval list 
+    # build new index list off this inverted interval list 
     for i in range(len(intr)):
         ind_inv.append(ind_inv[i]+invert[i])
-    # translate to note name strings
-    notes_inv = []
-    for n in range(len(ind_inv)):
-        notes_inv.append(NOTES[ind_inv[n]])
-    return notes_inv
+    # translate to note name strings and return
+    return tostr(ind_inv, octeq=False)
 
         
 
