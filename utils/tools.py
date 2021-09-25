@@ -4,12 +4,11 @@ objects and chord() lists. these methods will likely be used in other large
 classes in the analyze.py and modify.py files.
 '''
 
-'''
-TODO: add melody inversion, retrogression, and inversion + retrogression methods
-'''
-
 # imports
-from random import randint
+from random import (randint, 
+                    shuffle, 
+                    choice)
+
 from core.constants import NOTES, PITCH_CLASSES
 from containers.melody import Melody
 
@@ -131,6 +130,7 @@ def ispos(num):
 def transpose_m(notes, dist):
     '''
     wrapper to use with melody() objects.
+    returns a new note list[str]
     '''
     if type(dist)!= int or dist > 11 or dist < 1:
         raise ValueError("distance must be an int: 1<=n<=11")
@@ -189,12 +189,11 @@ def transpose(pcs, t, octeq=True):
         pcs = oe(pcs)
     return pcs
 
+
 def reverse(m):
     '''
     reverses the elements in a melody object (notes, rhythms, dynamics)
     returns a duplicated melody() object'''
-    # copy object and reverse each list. dont want
-    # to modify the original melody object!
     retro = m
     retro.notes.reverse()
     retro.dynamics.reverse()
@@ -252,8 +251,14 @@ def getfrag(m):
 def mutate(m):
     '''
     randomly permutates the order of notes, rhythms, and dynamics
-    in a given melody object. returns a separate melody() object of
-    this permutation'''
+    in a given melody object. 
+
+    returns a separate melody() object containing this permutation'''
+    mutant = m
+    shuffle(mutant.notes)
+    shuffle(mutant.rhythms)
+    shuffle(mutant.dynamics)
+    return mutant
 
 
 def oe(pitch):
@@ -308,7 +313,7 @@ def scaletotempo(tempo, rhythms, revert=False):
     return rhythms
 
 
-def changedynamic(dyn, diff):
+def changedynamics(dyn, diff):
     '''
     makes a single or list of dynamics louder or softer 
     by a specified amount'''
@@ -317,8 +322,10 @@ def changedynamic(dyn, diff):
     # at 0 and increase by 4 until 127.
     if type(diff)!=int:
         raise TypeError("supplied value not an int!")
-    elif type(diff)==int and diff % 4 != 0:
+    if type(diff)==int and diff % 4 != 0:
         raise ValueError("supplied value not a multiple of four!")
+    if type(dyn) == int and dyn > 123:
+        raise ValueError("supplied dynamic is too high")
     if type(dyn)==int:
         dyn += diff
     elif type(dyn)==list:
