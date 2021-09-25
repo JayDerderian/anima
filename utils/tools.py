@@ -9,7 +9,9 @@ TODO: add melody inversion, retrogression, and inversion + retrogression methods
 '''
 
 # imports
+from random import randint
 from core.constants import NOTES, PITCH_CLASSES
+from containers.melody import Melody
 
 
 def tostr(pcs, octave=None, octeq=True):
@@ -202,13 +204,7 @@ def reverse(m):
 
 def invert(notes):
     '''
-    inverts a melody.
-    1. get intervals between each notes. get this by subtracting the 
-       difference between index values of each adjacent note in the melody
-    2. invert interval values (pos->neg, neg->pos)
-    3. start with first index and generate new note index list by adding 
-       inverted interval values sequentially. if the first index is 10 and
-       the first inverted value is -1, then the next note will have index '''
+    inverts a melody. returns a new note list[str]'''
     
     # list of inverted intervals
     invert = []
@@ -229,7 +225,36 @@ def invert(notes):
     # translate to note name strings and return
     return tostr(ind_inv, octeq=False)
 
-        
+
+def getfrag(m):
+    '''
+    randomly picks a subset of notes, rhythms, and dynamics (all
+    from the same position in the melody) from a given melody and 
+    returns this subset as a melodic fragment in a new melody() object'''
+    frag = Melody()
+    # copy other info from supplied melody object to not miss anything 
+    # important
+    frag.info = m.info
+    frag.tempo = m.tempo
+    frag.instrument = m.instrument
+    # generate fragment
+    frag_len = randint(3, len(m.notes)-2)
+    # pick starting index and build fragment from here
+    strt = randint(0, len(m.notes)-frag_len)
+    for stuff in range(frag_len):
+        frag.notes.append(m.notes[strt])
+        frag.rhythms.append(m.rhythms[strt])
+        frag.dynamics.append(m.dynamics[strt])
+        strt+=1
+    return frag
+
+
+def mutate(m):
+    '''
+    randomly permutates the order of notes, rhythms, and dynamics
+    in a given melody object. returns a separate melody() object of
+    this permutation'''
+
 
 def oe(pitch):
     '''

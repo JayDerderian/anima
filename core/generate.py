@@ -720,7 +720,7 @@ class Generate:
         print("\nTempo:", newMelody.tempo, "bpm")
         print("\nInstrument:", newMelody.instrument)
         print("\n\nSource data:", newMelody.sourceData)
-        print("\nForte Numbers:", newMelody.fn)
+        print("\nInfo:", newMelody.info)
         print("\n\nTotal Notes:", len(newMelody.notes))
         print("Notes:", newMelody.notes)
         print("\nTotal rhythms:", len(newMelody.rhythms))
