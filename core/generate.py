@@ -641,9 +641,6 @@ class Generate:
         # pick notes and add to list (allows for doublings)
         while len(newchord.notes) < total:
             newchord.notes.append(choice(scale))
-        # this is avoids getting the while loop stuck
-        # if there's a lot of repeated notes in the melody
-        newchord.notes = list(dict.fromkeys(newchord.notes))
         # pick a rhythm and scale if needed
         rhythm = self.newRhythm()
         if newchord.tempo != 60:
