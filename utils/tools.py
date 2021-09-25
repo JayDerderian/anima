@@ -324,7 +324,7 @@ def changedynamics(dyn, diff):
         raise TypeError("supplied value not an int!")
     if type(diff)==int and diff % 4 != 0:
         raise ValueError("supplied value not a multiple of four!")
-    if type(dyn) == int and dyn > 123:
+    if type(dyn)==int and dyn > 123:
         raise ValueError("supplied dynamic is too high")
     if type(dyn)==int:
         dyn += diff
