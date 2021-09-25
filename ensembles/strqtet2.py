@@ -20,6 +20,7 @@ def strqtet2(tempo=None):
     '''
     creates a choral for string quartet using a randomly chosen mode'''
 
+    # initialize
     create = Generate()
     comp = Composition()
     comp.title = create.newTitle()
@@ -57,6 +58,8 @@ def strqtet2(tempo=None):
     print("...using", notes[0], mode)
     print("...pcs:", pcs)
 
+    print("\nwriting choral...")
+
     # write individual lines
     total = randint(12, 30)
     v1 = writeline(v1, source, total, create)
@@ -68,7 +71,7 @@ def strqtet2(tempo=None):
     rhy = []
     for rhythm in range(total):
         # use slower rhythms
-        rhy.append(RHYTHMS[randint(0,4)])
+        rhy.append(RHYTHMS[randint(1,4)])
     # create dynamics
     dyn = create.newDynamics(total=total)
 

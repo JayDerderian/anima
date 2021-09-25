@@ -85,16 +85,45 @@ def removeoct(anote):
 
 def getindex(notes):
     '''
-    gets the index of a given note in NOTES. note name str
-    must have an assigned octave between 0-8. 
+    gets the index or list of indicies of a given note or 
+    list of notes in NOTES. 
+    
+    note name str must have an assigned octave between 0-8. 
     
     the returned list[int] should be used by transpose() with 
     octeq set to False. those resulting values should be mapped 
     back against NOTES to get octave-accurate transposed notes'''
-    indicies = []
-    for n in range(len(notes)):
-        indicies.append(NOTES.index(notes[n]))
-    return indicies
+    if type(notes)==str:
+        return NOTES.index(notes)
+    elif type(notes)==list:
+        indicies = []
+        for n in range(len(notes)):
+            indicies.append(NOTES.index(notes[n]))
+        return indicies
+    else:
+        return None
+
+
+def getintervals(notes):
+    '''
+    generates a list of intervals from a given melody.
+    total intervals will be len(m.notes)-1'''
+    intr = []
+    ind = getindex(notes)
+    for n in range(len(ind)):
+        try:
+            intr.append(ind[n+1]-ind[n])
+        except IndexError:
+            break
+    return intr
+
+
+def ispos(num):
+    '''
+    helper method to tell if an int is positive or negative. 
+    zero counts as positive here because reasons'''
+    num = float(num)
+    return True if num >= 0 else False
 
 
 def transpose_m(notes, dist):
@@ -158,6 +187,53 @@ def transpose(pcs, t, octeq=True):
         pcs = oe(pcs)
     return pcs
 
+def reverse(m):
+    '''
+    reverses the elements in a melody object (notes, rhythms, dynamics)
+    returns a duplicated melody() object'''
+    # copy object and reverse each list. dont want
+    # to modify the original melody object!
+    retro = m
+    retro.notes.reverse()
+    retro.dynamics.reverse()
+    retro.rhythms.reverse()
+    return retro
+
+
+def invert(notes):
+    '''
+    inverts a melody.
+    1. get intervals between each notes. get this by subtracting the 
+       difference between index values of each adjacent note in the melody
+    2. invert interval values (pos->neg, neg->pos)
+    3. start with first index and generate new note index list by adding 
+       inverted interval values sequentially. if the first index is 10 and
+       the first inverted value is -1, then the next note will have index '''
+    
+    # list of inverted intervals
+    invert = []
+    # get list of intervals
+    intr = getintervals(notes)
+    # invert interval values
+    for i in range(len(intr)):
+        if ispos(intr[i])==True:
+            invert.append(-abs(intr[i]))
+        else:
+            invert.append(abs(intr[i]))
+    # get index of first note, we don't need them all
+    # add first index to inverted list
+    ind_inv = []
+    ind_inv.append(getindex(notes[0]))
+    # # build new index list off this inverted interval list 
+    for i in range(len(intr)):
+        ind_inv.append(ind_inv[i]+invert[i])
+    # translate to note name strings
+    notes_inv = []
+    for n in range(len(ind_inv)):
+        notes_inv.append(NOTES[ind_inv[n]])
+    return notes_inv
+
+        
 
 def oe(pitch):
     '''
