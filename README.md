@@ -2,7 +2,9 @@
 `anima` is a generative music application and python library. The program can be used in the terminal, or in the browser
 using the app.js script. 
 
-`anima` contains a number of [generative methods](https://en.wikipedia.org/wiki/Generative_music) used to automatically create a music composition, a MIDI file, its sheet music, as well as a .txt file containing data about how that piece was composed and the raw materials used during its generation. 
+`anima` contains a number of [generative](https://en.wikipedia.org/wiki/Generative_music) methods used to automatically create a music composition.
+New compositions are exported as a MIDI file, sheet music in a PDF, anda .txt file containing data about how that piece was composed and the raw
+elements used during creation (for example, a pitch-class set that was selected as a 'seed' to build material off of). 
 
 ## Installation
 

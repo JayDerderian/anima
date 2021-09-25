@@ -26,7 +26,7 @@ from datetime import datetime as date
 
 from utils.mapping import mapData
 from utils.txtfile import saveInfo
-from utils.midi import save, saveChords
+from utils.midi import save
 from utils.tools import (tostr, 
                          transpose, 
                          oe, 
@@ -630,15 +630,10 @@ class Generate:
             newchord.tempo = tempo
         # pick or generate a new scale if we don't get one supplied
         if scale==None:
-            ch = randint(1, 3)
-            if ch == 1:
-                scale, newchord.fn = self.pickRoot(o=randint(2,5))
-            elif ch == 2:
-                mode, mode_pcs, scale = self.pickMode(t=True, o=randint(2,5))
-                info = scale[0] + mode
-                newchord.fn = info
+            if randint(1, 2) == 1:
+                scale, newchord.info = self.pickRoot(o=randint(2,5))
             else:
-                scale = self.newScale(octave=randint(2,5))
+                scale, newchord.info = self.newScale(octave=randint(2,5))
         # save original scale
         newchord.sourceNotes = scale
         # how many notes in this chord?
@@ -796,61 +791,6 @@ class Generate:
     #-------------------------------------------------------------------------------------#
     #-------------------------------COMPOSITION GENERATION--------------------------------#
     #-------------------------------------------------------------------------------------#
-
-
-    # Wrapper for newMelody() method. 
-    # Exports MIDI file + generates title + .txt data file
-    def aNewMelody(self, data=None, dataType=None):
-        '''
-        Wrapper for the newMelody() method. 
-        Exports MIDI file + generates title + .txt data file. 
-        Returns 0 on succcess, -1 on failure.
-        '''
-        # apply data and dataType as necessary
-        if data != None and dataType != None:
-            tempo = self.newTempo()
-            newTune = self.newMelody(tempo=tempo, data=data, dataType=dataType)
-        else:
-            tempo = self.newTempo()
-            newTune = self.newMelody(tempo=tempo)
-        newTune.instrument = self.newInstrument()
-        title = self.newTitle()
-        # midiFileName = title + '.mid'
-        # m.saveMelody(midiFileName, newTune)
-        # txtFileName = "{}{}".format(title, '.txt')
-        title_full = "{}{}{}".format(title, ' for solo ', newTune.instrument)
-        print("\nnew melody title:", title_full)
-        # saveInfo(title_full, data, txtFileName, newTune)
-        return 0
-
-
-    # Wrapper for newChords(). Outputs chords as a MIDI file and
-    # exports a .txt file with relevant data
-    def newProgression(self, total=None, tempo=None, sourceScale=None):
-        '''
-        Wrapper for newChords(). Outputs chords as a MIDI file and
-        exports a .txt file with relevant data. 
-        
-        Needs *ALL* required data or none. No in-between at the moment.
-        
-        Returns a list of chord() objects
-        '''
-        if total==None:
-            total = randint(3, 15)
-        elif tempo==None:
-            tempo = self.newTempo()
-        elif sourceScale==None:
-            sourceScale = self.newNotes()
-        chords = self.newChords(total, tempo, sourceScale)
-        title = self.newTitle()
-        print("\ntitle:", title)
-        fn = title + '.mid'
-        saveChords(title, chords)
-        print("\nmidi file:", fn)
-        tn = title + '.txt'
-        saveInfo(name=title, data=sourceScale, fileName=tn, newChords=chords)
-        print("text file:", tn)
-        return chords
 
 
     # Outputs a single melody with chords in a MIDI file

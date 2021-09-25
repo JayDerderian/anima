@@ -103,7 +103,9 @@ def transpose_m(notes, dist):
     '''
     if type(dist)!= int or dist > 11 or dist < 1:
         raise ValueError("distance must be an int: 1<=n<=11")
-    pcs = transpose(getindex(notes), t=dist, octeq=False)
+    pcs = transpose(getindex(notes), 
+                    t=dist, 
+                    octeq=False)
     return tostr(pcs, octeq=False)
 
 
@@ -135,8 +137,8 @@ def transpose(pcs, t, octeq=True):
     
     Returns a modified pcs (list[int]) or modified pitch class (int).
     '''
-    if type(pcs)!=list or type(t)!=int or type(t)!=list:
-        raise TypeError("pcs must be a list[int], t must an int or list[int]")
+    if type(pcs)!=list:
+        raise TypeError("pcs must be a list[int]")
     # modify with a single interval across all pitch-classes
     if type(t)==int:
         for note in range(len(pcs)):
