@@ -13,7 +13,7 @@ class Melody():
     def __init__(self, tempo=None, instrument=None):
             
         # Meta-data
-        self.fn = 'None'
+        self.info = 'None'
         self.pcs = []
         self.sourceData = 'None'
         self.sourceScale = 'None'
@@ -29,45 +29,6 @@ class Melody():
         self.rhythms = []
         self.dynamics = []
 
-    # Check if there's complete melody data
-    def hasData(self):
-        '''
-        Is there complete melody data? 
-        If True, all data fields have been used.
-        NOTE: doesn't include meta-data! 
-        '''
-        if(self.tempo != 0.0
-            and self.instrument != 'None'
-            and len(self.notes) > 0
-            and len(self.rhythms) > 0
-            and len(self.dynamics) > 0
-            and len(self.sourceData) > 0):
-            return True
-        else:
-            if(self.tempo == 0.0):
-                print("\nmelody() - ERROR: no tempo inputted!")
-            elif(self.instrument == 'None'):
-                print("\nmelody() - ERROR: no instrument selected!")
-            elif(len(self.notes) == 0):
-                print("\nmelody() - ERROR: no notes inputted!")
-            elif(len(self.rhythms) == 0):
-                print("\nmelody() - ERROR: no rhythms inputted!")
-            elif(len(self.dynamics) == 0):
-                print("\nmelody() - ERROR: no dynamics inputted!")
-            return False
-    
-    # Adjust for given tempo when calculating composition duration
-    def tempoAdjust(self, rhythms):
-        '''
-        Alters given list[float] or single float against self.tempo 
-        '''
-        diff = 60/self.tempo
-        if type(rhythms) == float:
-            rhythms *= diff
-        elif type(rhythms) == list:
-            for i in range(len(rhythms)-1):
-                rhythms[i] *= diff
-        return rhythms 
 
     # Get duration of melody
     def duration(self):

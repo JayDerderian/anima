@@ -47,49 +47,7 @@ class Composition():
         # List dictionary of chord() object lists (progressions). 
         # Key (int) functions as index. 
         self.chords = {}
-    
 
-    # Check if there's data in this instance
-    def isComplete(self):
-        '''
-        Check if this composition has all required data:
-
-        -Title (str)
-        -Composer (str)
-        -Date (str)
-        -MIDI File name (str)
-        -Tempo (float)
-        -Instruments (list[str])
-        -Melodies (list[melody()])
-        -Dictionary of harmonies (lists of chord() objects)
-        '''
-        if(self.title != "" 
-            and self.composer != "" 
-            and self.date != ""
-            and self.midiFileName != ""
-            and self.tempo != 0.0
-            and len(self.instruments) != 0
-            and len(self.melodies) != 0 
-            and len(self.chords) != 0):
-            return True
-        else:
-            if(self.title == ""):
-                print("\ncomposition() - ERROR: no title inputted!")
-            elif(self.composer == ""):
-                print("\ncomposition() - ERROR: no composer info inputted!")
-            elif(self.date == ""):
-                print("\ncomposition() - ERROR: no date info inputted!")
-            elif(self.midiFileName == ""):
-                print("\ncomposition() - ERROR: no MIDI file name inputted!")
-            elif(self.tempo == 0.0):
-                print("\ncomposition() - ERROR: no tempo inputted!")
-            elif(len(self.instruments) == 0):
-                print("\ncomposition() - ERROR: no instruments inputted!")
-            elif(len(self.melodies) == 0):
-                print("\ncomposition() - ERROR: no melodies inputted!")
-            elif(len(self.chords) == 0):
-                print("\ncomposition() - ERROR: no harmonies inputted!")
-            return False
 
     # Has this instrument been picked?
     def isPicked(self, instr):
@@ -102,7 +60,8 @@ class Composition():
     # Have all the instruments been picked?
     def allPicked(self, instruments):
         '''
-        Have *all* the instruments been used?
+        Have *all* the instruments been used? 
+        Compares against an externally generated instrument list.
         '''
         return True if instruments==self.instruments else False
 

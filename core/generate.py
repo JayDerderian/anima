@@ -752,33 +752,23 @@ class Generate:
         # Process any incoming data
         if dataType != None and data != None:
             data, m = mapData(m, data, dataType)
-            if data != -1 or m != -1:
-                print()
-            else:
-                print("\nnewMelody() - ERROR: unable to map data to integers!")
-                return -1
         else:
             # Otherwise just add single string to list
             m.sourceData ='None Inputted'
 
         # Pick tempo if none is supplied
-        if tempo == None:
+        if tempo==None:
             m.tempo = self.newTempo()
         else:
             m.tempo = tempo
 
         # Pick notes from scratch  
-        if data == None:
-            m.notes, m.fn, m.sourceScale = self.newNotes()
-            if m.notes == -1:
-                print("\nnewMelody() - ERROR: unable to generate notes!")
-                return -1
+        if data==None:
+            m.notes, m.info, m.sourceScale = self.newNotes()
+
         # Or use supplied data
-        elif data != None:
-            m.notes, m.fn, m.sourceScale = self.newNotes(data=data)
-            if m.notes == -1:
-                print("\nnewMelody() - ERROR: unable to generate notes!")
-                return -1
+        else:
+            m.notes, m.info, m.sourceScale = self.newNotes(data=data)
 
         # Pick rhythms
         m.rhythms = self.newRhythms(len(m.notes), m.tempo)
@@ -862,5 +852,5 @@ class Generate:
             print("text file:", comp.txtFileName)
             return comp
         else:
-            print("\nnoooooooooooooooooooooo")
+            print("\nnoooooooooooooooooooooo!!!!")
             return -1
