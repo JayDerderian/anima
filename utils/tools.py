@@ -176,9 +176,9 @@ def transpose(pcs, t, octeq=True):
             pcs[note] += t
     # modify with a list of intervals across all pitch-classes. 
     # this allows for each pitch-class to be transposed by a unique
-    # distance, allowing for rapid variation generation. can also
-    # be a list of the same repeated value but that might be less
-    # efficient.
+    # distance, allowing for rapid variation generation. 
+    # it could also be a list of the same repeated value but that 
+    # might be less efficient.
     elif type(t)==list:
         for note in range(len(pcs)):
             pcs[note] += t[note]
@@ -190,7 +190,7 @@ def transpose(pcs, t, octeq=True):
     return pcs
 
 
-def reverse(m):
+def retrograde(m):
     '''
     reverses the elements in a melody object (notes, rhythms, dynamics)
     returns a duplicated melody() object'''
@@ -214,7 +214,7 @@ def invert(notes):
             invert.append(-abs(intr[i]))
         else:
             invert.append(abs(intr[i]))
-    # get index of first note, we don't need them all
+    # get index of first note. we don't need them all.
     # add first index to inverted index list
     ind_inv = []
     ind_inv.append(getindex(notes[0]))
@@ -225,7 +225,7 @@ def invert(notes):
     return tostr(ind_inv, octeq=False)
 
 
-def getfrag(m):
+def frag(m):
     '''
     randomly picks a subset of notes, rhythms, and dynamics (all
     from the same position in the melody) from a given melody and 
@@ -239,6 +239,8 @@ def getfrag(m):
     # generate fragment
     frag_len = randint(3, len(m.notes)-2)
     # pick starting index and build fragment from here
+    # NOTE: this method exclused the last frag_len notes
+    # in the original set.
     strt = randint(0, len(m.notes)-frag_len)
     for stuff in range(frag_len):
         frag.notes.append(m.notes[strt])
@@ -316,7 +318,7 @@ def scaletotempo(tempo, rhythms, revert=False):
 def changedynamics(dyn, diff):
     '''
     makes a single or list of dynamics louder or softer 
-    by a specified amount'''
+    by a specified amount. returns a modified dynamics list[int]'''
     # needs to be an int that's a multiple of 4 and 
     # within the specified range! MIDI velocities start 
     # at 0 and increase by 4 until 127.

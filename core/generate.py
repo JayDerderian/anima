@@ -76,10 +76,8 @@ class Generate:
             # pick 1 to 4 random words
             t = 0
             total = randint(1, 3)
-            # name = words[randint(0, len(words) - 1)]
             name = choice(words)
             while(t < total):
-                # name = name + ' ' + words[randint(0, len(words) - 1)]
                 name = name + ' ' + choice(words)
                 t += 1
         except urllib.error.URLError:
@@ -105,10 +103,8 @@ class Generate:
             # pick 1 to 3 random names
             t = 0
             total = randint(1, 3)
-            # name = names[randint(0, len(names) - 1)]
             name = choice(names)
             while(t < total):
-                # name = name + ' ' + names[randint(0, len(names) - 1)]
                 name = name + ' ' + choice(names)
                 t += 1
         except urllib.error.URLError:
@@ -274,10 +270,10 @@ class Generate:
         if randint(1, 2) == 1:
             if t==True:
                 mode, pcs, scale = self.pickMode(t=True)
-                info = '{}{}'.format(scale[0], mode)
+                info = '{} {}'.format(scale[0], mode)
             else:
                 mode, pcs, scale = self.pickMode(t=False)
-                info = '{}{}'.format(scale[0], mode)
+                info = '{} {}'.format(scale[0], mode)
         else:
             if t==True:
                 fn, pcs, scale = self.pickScale(t=True)
