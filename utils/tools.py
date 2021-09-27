@@ -5,9 +5,7 @@ classes in the analyze.py and modify.py files.
 '''
 
 # imports
-from random import (randint, 
-                    shuffle, 
-                    choice)
+from random import randint, shuffle, choice
 
 from core.constants import NOTES, PITCH_CLASSES
 from containers.melody import Melody
@@ -36,7 +34,7 @@ def tostr(pcs, octave=None, octeq=True):
             raise ValueError("octave must be within 2-5!")
     else:
         # this only uses pcs, even if an octave is supplied.
-        # NOTES already has note strings with assigned octaves. 
+        # NOTES has note strings with assigned octaves. 
         for i in range(len(pcs)):
             scale.append(NOTES[pcs[i]])  
     return scale
@@ -58,7 +56,6 @@ def getpcs(notes):
             pcs.append(PITCH_CLASSES.index(notes))
     elif type(notes)==list:
         for n in range(len(notes)):
-            # check if there's an octave in present
             if notes[n].isalpha()==False:
                 note = removeoct(notes[n])
                 pcs.append(PITCH_CLASSES.index(note))
@@ -101,8 +98,6 @@ def getindex(notes):
         for n in range(len(notes)):
             indicies.append(NOTES.index(notes[n]))
         return indicies
-    else:
-        return None
 
 
 def getintervals(notes):
@@ -114,6 +109,8 @@ def getintervals(notes):
     for n in range(len(ind)):
         try:
             intr.append(ind[n+1]-ind[n])
+        # if this is the last element, then subtract randint(1,3)
+        # from it??? i dont think this modifies the last element.
         except IndexError:
             break
     return intr
@@ -134,9 +131,7 @@ def transpose_m(notes, dist):
     '''
     if type(dist)!= int or dist > 11 or dist < 1:
         raise ValueError("distance must be an int: 1<=n<=11")
-    pcs = transpose(getindex(notes), 
-                    t=dist, 
-                    octeq=False)
+    pcs = transpose(getindex(notes), t=dist, octeq=False)
     return tostr(pcs, octeq=False)
 
 
@@ -188,6 +183,24 @@ def transpose(pcs, t, octeq=True):
     if octeq==True:
         pcs = oe(pcs)
     return pcs
+
+
+def oe(pitch):
+    '''
+    Octave equivalance. Handles either a single int or list[int].
+    Keeps a single pitch class integer within span of an octave (0 - 11). 
+
+    Returns either a modified int or list[int]
+    '''
+    if type(pitch)==int:
+        pitch %= 12
+    elif type(pitch)==list:
+        for i in range(len(pitch)):
+            if pitch[i] > 11 or pitch[i] < 0:
+                pitch[i] %= 12
+    else:
+        raise ValueError("incorrect input type. must be single int or list of ints!")
+    return pitch
 
 
 def retrograde(m):
@@ -261,24 +274,6 @@ def mutate(m):
     shuffle(mutant.rhythms)
     shuffle(mutant.dynamics)
     return mutant
-
-
-def oe(pitch):
-    '''
-    Octave equivalance. Handles either a single int or list[int].
-    Keeps a single pitch class integer within span of an octave (0 - 11). 
-
-    Returns either a modified int or list[int]
-    '''
-    if type(pitch)==int:
-        pitch %= 12
-    elif type(pitch)==list:
-        for i in range(len(pitch)):
-            if pitch[i] > 11 or pitch[i] < 0:
-                pitch[i] %= 12
-    else:
-        raise ValueError("incorrect input type. must be single int or list of ints!")
-    return pitch
 
 
 def scaletotempo(tempo, rhythms, revert=False):

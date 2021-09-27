@@ -4,7 +4,7 @@ which will be used to map against newNotes()'s generated source scale in newMelo
 '''
 
 # Imports
-import core.constants as c
+from core.constants import ALPHABET
 
 
 # Converts an array of floats to an array of ints
@@ -58,11 +58,16 @@ def lettersToNumbers(letters):
         # make all uppercase characters lowercase
         if letters[i].isupper() == True:
             letters[i] = letters[i].lower()
-        if letters[i] in c.ALPHABET:
-            numbers.append(c.ALPHABET.index(letters[i]))
+        if letters[i] in ALPHABET:
+            numbers.append(ALPHABET.index(letters[i]))
+        # is this str a str of an int???
         elif letters[i].isnumeric():
-            # if it's already a number, add it's *index*
-            numbers.append(c.ALPHABET.index(letters[i]))
+            # convert to int, keep within bounds of len(letters)-1,
+            # then add to list.
+            num = int(letters[i])
+            if num > len(ALPHABET)-1:
+                num %= len(ALPHABET)-1
+            numbers.append(num)
     return numbers
 
 
@@ -72,10 +77,10 @@ def hexToIntList(hex):
     Converts a prefixed hex number to an array of integers.
     '''
     # convert to int
-    hexStr = int(hex, 0)
-    # convert to array of ints (ie. 132 -> [1, 3, 2])
-    hexList = [int(x) for x in str(hexStr)]
-    return hexList
+    hexint = int(hex, 0)
+    # then convert to list of ints (ie. 132 -> [1, 3, 2])
+    hexlist = [int(x) for x in str(hexint)]
+    return hexlist
 
 
 # Call appropriate mapping method and return modified data
@@ -86,7 +91,6 @@ def mapData(newMelody, data, dataType):
     Returns modified data and modified melody() object, or -1 
     on failure. melody() object has original source data saved.
     '''
-    print("\nProcessing incoming data...")
     # If ints, scale as necessary
     if dataType == 1:
         # Save original source data
@@ -115,6 +119,5 @@ def mapData(newMelody, data, dataType):
         newMelody.sourceData.append(str(data))
         data = hexToIntList(data)
     else:
-        print("\nmapData() - ERROR: dataType value out of range!")
-        return -1
+        raise ValueError("dataType value out of range!")
     return data, newMelody

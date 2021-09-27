@@ -205,10 +205,10 @@ class Generate:
         if root==None:
             root, info = self.pickRoot(t=True, o=None)
             meta_data.append(info)
-        # Pick total: 3 - 50 if we're generating random notes
+        # Pick total: 3 - 30 if we're generating random notes
         if data==None:
             # Note that the main loop uses total + 1!
-            total = randint(2, 49)
+            total = randint(2, 29)
         # Or the largest value of the supplied data set
         else:
             total = max(data)
@@ -277,10 +277,10 @@ class Generate:
         else:
             if t==True:
                 fn, pcs, scale = self.pickScale(t=True)
-                info = '{} transposed to new root:{}'.format(fn, scale[0])
+                info = '{} transposed to new root: {}'.format(fn, scale[0])
             else:
                 fn, pcs, scale = self.pickScale(t=False)
-                info = '{} untransposed, root:{}'.format(fn, scale[0])
+                info = '{} untransposed, root: {}'.format(fn, scale[0])
         scale = tostr(pcs, octave=o)
         return scale, info     
 
