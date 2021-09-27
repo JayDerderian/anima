@@ -4,14 +4,15 @@ unison before the second part gets a single additional rhythm introduced, making
 "out of sync" with part 1. eventually the parts re-align, hopefully'''
 
 # Imports
-from random import randint
+from containers.melody import Melody
+from random import randint, choice
 from datetime import datetime as date
 
 from utils.tools import scaletotempo
 from utils.midi import save
 
 from core.generate import Generate
-from core.constants import TEMPOS
+from core.constants import TEMPOS, RHYTHMS, DYNAMICS
 
 from containers.composition import Composition
 
@@ -27,7 +28,7 @@ def phaseshift(tempo=None):
     comp.title = create.newTitle()
     comp.composer = create.newComposer()
     comp.date = date.now().strftime("%d-%b-%y %H:%M:%S")
-    title_full = comp.title + "(phase shift) for piano duet"
+    title_full = comp.title + " (phase shift), for piano duet"
     if tempo==None:
         # using med tempos (60-88bpm)
         comp.tempo = TEMPOS[randint(9,17)]
@@ -37,21 +38,36 @@ def phaseshift(tempo=None):
         comp.tempo = 60.0
     comp.ensemble = 'duet'
 
-    print("\nwriting melody...")
-    # creat unison melody and duplicate
-    m1 = create.newMelody(tempo=comp.tempo)
-    m2 = m1
-    m1.instrument = 'Acoustic Grand Piano'
-    m2.instrument = 'Electric Piano 1'
+    # create our instruments
+    m1 = Melody(tempo=comp.tempo, 
+                instrument='Acoustic Grand Piano')
+    m2 = Melody(tempo=comp.tempo, 
+                instrument='Electric Piano 2')
 
-    # repeat figure 2 times in unison
-    for repeat in range(2):
-        m1.notes.extend(m1.notes)
-        m1.rhythms.extend(m1.rhythms)
-        m1.dynamics.extend(m1.dynamics)
-        m2.notes.extend(m2.notes)
-        m2.rhythms.extend(m2.rhythms)
-        m2.dynamics.extend(m2.dynamics)
+    print("\nwriting melody...")
+    scale = create.pickMode()
+    source = create.newSourceScale(scale[2])
+    total = randint(2, 10)
+    print("...picking", total, "notes from", scale[2][0], scale[0])
+    for stuff in range(total):
+        m1.notes.append(choice(source))
+        # using only dotted 8ths, 8ths, dotted 16ths, or 16ths
+        m1.rhythms.append(RHYTHMS[randint(5,8)])
+        # using medium dynamics
+        m1.dynamics.append(DYNAMICS[randint(9,17)])
+    # copy over
+    m2.notes = m1.notes
+    m2.rhythms = m1.rhythms
+    m2.dynamics = m1.dynamics
+
+    # repeat figure 2 times in unison (played 3 times total)
+    print("\nlooping melody...")
+    m1.notes.extend(m1.notes)
+    m1.rhythms.extend(m1.rhythms)
+    m1.dynamics.extend(m1.dynamics)
+    # m2.notes.extend(m2.notes)
+    # m2.rhythms.extend(m2.rhythms)
+    # m2.dynamics.extend(m2.dynamics)
 
     # print("\noffsetting second instrument...")
     # # add a single 16th note to m2 to create the offset

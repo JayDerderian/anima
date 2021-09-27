@@ -219,23 +219,23 @@ def invert(notes):
     inverts a melody. returns a new note list[str]'''
     
     # list of inverted intervals
-    invert = []
+    inverted = []
     # get list of intervals and invert values
     intr = getintervals(notes)
     for i in range(len(intr)):
         if ispos(intr[i])==True:
-            invert.append(-abs(intr[i]))
+            inverted.append(-abs(intr[i]))
         else:
-            invert.append(abs(intr[i]))
+            inverted.append(abs(intr[i]))
     # get index of first note. we don't need them all.
-    # add first index to inverted index list
-    ind_inv = []
-    ind_inv.append(getindex(notes[0]))
-    # build new index list off this inverted interval list 
+    # add first note index to new melody note list
+    mel = []
+    mel.append(getindex(notes[0]))
+    # build new melody note list off this inverted interval list 
     for i in range(len(intr)):
-        ind_inv.append(ind_inv[i]+invert[i])
+        mel.append(mel[i]+inverted[i])
     # translate to note name strings and return
-    return tostr(ind_inv, octeq=False)
+    return tostr(mel, octeq=False)
 
 
 def frag(m):
@@ -327,7 +327,7 @@ def changedynamics(dyn, diff):
         dyn += diff
     elif type(dyn)==list:
         # only modify dynamics that will be within proper
-        # MIDI velocity range
+        # MIDI velocity range.
         for d in range(len(dyn)):
             if dyn[d] < 123:
                 dyn[d] += diff
