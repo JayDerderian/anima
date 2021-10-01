@@ -323,6 +323,7 @@ def changedynamics(dyn, diff):
         raise ValueError("supplied value not a multiple of four!")
     if type(dyn)==int and dyn > 123:
         raise ValueError("supplied dynamic is too high")
+    # main alteration section
     if type(dyn)==int:
         dyn += diff
     elif type(dyn)==list:

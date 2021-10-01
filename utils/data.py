@@ -13,20 +13,20 @@ from core.constants import ALPHABET
 
 # Generate a list of 10 - 50 random numbers between 0-200
 def newInts():
-    '''List of random integers between 0 and 200'''
+    '''List of random integers between 0 and 500'''
     nums = []
     total = randint(10, 50)
     for i in range(total):
-        nums.append(randint(0, 200))
+        nums.append(randint(0, 500))
     return nums
 
 # Generate a list of 10 - 50 random floating point numbers between 0 - 200
 def newFloats():
-    '''List of floats between 0.001 and 200.001'''
+    '''List of floats between 0.001 and 500.001'''
     floats = []
     total = randint(10, 50)
     for i in range(total):
-        floats.append(uniform(0.001, 200.001))
+        floats.append(uniform(0.001, 500.001))
     return floats
 
 # Generates a random hex color number 0x000000 to 0xFFFFFF

@@ -8,7 +8,7 @@ from core.constants import ALPHABET
 
 
 # Converts an array of floats to an array of ints
-def floatToInt(self, data):
+def floatToInt(data):
     '''
     Converts an array of floats to an array of ints
     '''
@@ -21,25 +21,16 @@ def floatToInt(self, data):
 # Scale individual data set integers such that i = i < len(dataSet) - 1
 def scaleTheScale(data):
     '''
-    Returns inputted integer array with any ints i > len(data) - 1 altered to 
+    Returns inputted list[int] with any ints i > len(data) 1 altered to 
     adhere to this limit. This will keep the newly inputted data array's 
-    values within the bounds of the scale array. These values function as a 
-    collection of index numbers to sequentially map to a new source
+    values within the bounds of the scale array. These values function 
+    as a collection of index numbers to sequentially map to a new source
     scale to generate melodic ideas.
  
     '''
-    # scale it
     for i in range(len(data)):
-        # Repeat this subtraction until we're under our threshold. Not ideal.
-        while data[i] > len(data) - 1:
-            data[i] -= 1
-            # data[i] = math.floor(data[i] / len(data)-1)
-            # data[i] -= len(data)-1
-            # data[i] %= len(data)-1
-        '''
         if data[i] > len(data)-1:
             data[i] %= len(data)-1
-        '''
     return data
 
 
@@ -79,8 +70,8 @@ def hexToIntList(hex):
     # convert to int
     hexint = int(hex, 0)
     # then convert to list of ints (ie. 132 -> [1, 3, 2])
-    hexlist = [int(x) for x in str(hexint)]
-    return hexlist
+    # hexlist = [int(x) for x in str(hexint)]
+    return [int(x) for x in str(hexint)]
 
 
 # Call appropriate mapping method and return modified data
@@ -114,7 +105,6 @@ def mapData(newMelody, data, dataType):
     elif dataType == 4:
         # Converts hex number to string, then saves
         # that as the first item of a list. It's silly, I know.
-        # data = str(data)
         # Save original source data
         newMelody.sourceData.append(str(data))
         data = hexToIntList(data)
