@@ -14,6 +14,7 @@ from datetime import datetime as date
 
 from utils.midi import save
 from utils.txtfile import saveInfo
+from utils.tools import scaletotempo
 from core.constants import TEMPOS, RHYTHMS, DYNAMICS
 
 from core.generate import Generate
@@ -91,7 +92,7 @@ def pnoduet(instrument=None, tempo=None):
 
     # pick initial starting key/mode
     print("\npicking source notes...")
-    notes = create.pickMode(t=True)
+    notes = create.pickScale(t=True)
     # append octaves 2 - 5 to have a starting source scale. 
     """if things progress well then i'll attempt to transpose figures 
     mid additive/subtractive process to give harmonic variety,

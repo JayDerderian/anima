@@ -45,7 +45,7 @@ def phaseshift(tempo=None):
                 instrument='Electric Piano 2')
 
     print("\nwriting melody...")
-    scale = create.pickMode()
+    scale = create.pickScale()
     source = create.newSourceScale(scale[2])
     total = randint(2, 10)
     print("...picking", total, "notes from", scale[2][0], scale[0])

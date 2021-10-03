@@ -13,10 +13,10 @@ from core.constants import(
     DYNAMICS, 
     TEMPOS, 
     INSTRUMENTS,
-    MODES,
+    SCALES,
     MODE_KEYS,
     ARPEGGIOS,
-    SCALES,
+    SETS,
     FORTE_NUMBERS,
     INTERVALS
 )
@@ -269,24 +269,24 @@ class Generate:
         # use mode? (1), or prime form (2)?
         if randint(1, 2) == 1:
             if t==True:
-                mode, pcs, scale = self.pickMode(t=True)
+                mode, pcs, scale = self.pickScale(t=True)
                 info = '{} {}'.format(scale[0], mode)
             else:
-                mode, pcs, scale = self.pickMode(t=False)
+                mode, pcs, scale = self.pickScale(t=False)
                 info = '{} {}'.format(scale[0], mode)
         else:
             if t==True:
-                fn, pcs, scale = self.pickScale(t=True)
+                fn, pcs, scale = self.pickSet(t=True)
                 info = '{} transposed to new root: {}'.format(fn, scale[0])
             else:
-                fn, pcs, scale = self.pickScale(t=False)
+                fn, pcs, scale = self.pickSet(t=False)
                 info = '{} untransposed, root: {}'.format(fn, scale[0])
         scale = tostr(pcs, octave=o)
         return scale, info     
 
 
     # Picks a church mode and randomly transposes it
-    def pickMode(self, t=True, o=None):
+    def pickScale(self, t=True, o=None):
         '''
         Picks a church mode, randomly transposes it (if indicated),
         and appends a specified octave (if needed). 
@@ -296,7 +296,7 @@ class Generate:
         '''
         # pick mode
         mode = choice(MODE_KEYS)
-        pcs = MODES[mode]
+        pcs = SCALES[mode]
         if t==True:
             pcs_t = transpose(pcs, randint(1, 11), octeq=False)
             notes = tostr(pcs_t, octave=o)
@@ -307,7 +307,7 @@ class Generate:
 
     # Picks a prime form pitch class set and transposes it
     # n semi-tones
-    def pickScale(self, t=True, o=None):
+    def pickSet(self, t=True, o=None):
         '''
         Selects prime form and transposes a random distance (or not)
         
@@ -316,7 +316,7 @@ class Generate:
         '''
         # pick prime form pitch-class set
         fn = choice(FORTE_NUMBERS)
-        pcs = SCALES[fn]
+        pcs = SETS[fn]
         if t==True:
             pcs_t = transpose(pcs, randint(1, 11), octeq=False)
             scale = tostr(pcs_t, octave=o)

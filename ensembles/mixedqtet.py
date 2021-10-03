@@ -58,7 +58,7 @@ def mixedqtet(ensemble=None):
     # total chords
     t = randint(5, 9)
     # pick starting mode
-    mode, mode_pcs, mode_notes = create.pickMode(t=True)
+    mode, mode_pcs, mode_notes = create.pickScale(t=True)
     print("...using", mode_notes[0], mode)
     print("...scale:", mode_notes)
     print("...pcs:", mode_pcs)

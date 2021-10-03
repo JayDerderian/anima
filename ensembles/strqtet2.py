@@ -53,7 +53,7 @@ def strqtet2(tempo=None):
     print("\nwriting choral...")
 
     # pick notes. use only one scale! 
-    mode, pcs, notes = create.pickMode(t=True)
+    mode, pcs, notes = create.pickScale(t=True)
     source = create.newSourceScale(notes)
     print("...using", notes[0], mode)
     print("...pcs:", pcs)
