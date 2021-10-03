@@ -14,7 +14,7 @@ from core.constants import(
     TEMPOS, 
     INSTRUMENTS,
     SCALES,
-    MODE_KEYS,
+    SCALE_KEYS,
     ARPEGGIOS,
     SETS,
     FORTE_NUMBERS,
@@ -295,14 +295,14 @@ class Generate:
         and note list (list[str]) *without assigned octave by default.* 
         '''
         # pick mode
-        mode = choice(MODE_KEYS)
-        pcs = SCALES[mode]
+        scale = choice(SCALE_KEYS)
+        pcs = SCALES[scale]
         if t==True:
             pcs_t = transpose(pcs, randint(1, 11), octeq=False)
             notes = tostr(pcs_t, octave=o)
         else:
             notes = tostr(pcs, octave=o)
-        return mode, pcs, notes
+        return scale, pcs, notes
 
 
     # Picks a prime form pitch class set and transposes it
