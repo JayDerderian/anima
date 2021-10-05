@@ -103,7 +103,10 @@ def getindex(notes):
 def getintervals(notes):
     '''
     generates a list of intervals from a given melody.
-    total intervals will be len(m.notes)-1'''
+    total intervals will be len(m.notes)-1.
+    
+    difference between index values corresponds to distance
+    in semi-tones!'''
     intr = []
     ind = getindex(notes)
     for n in range(len(ind)):
@@ -199,7 +202,7 @@ def oe(pitch):
             if pitch[i] > 11 or pitch[i] < 0:
                 pitch[i] %= 12
     else:
-        raise ValueError("incorrect input type. must be single int or list of ints!")
+        raise ValueError("must be single int or list of ints!")
     return pitch
 
 

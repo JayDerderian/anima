@@ -13,7 +13,10 @@ import os.path
 import PySimpleGUI as sg
 
 # layout
-layout = [[sg.Text("Hellow from PySimpleGUI")], [sg.Button('OK')]]
+layout = [
+    [sg.Text("Hello from PySimpleGUI")], 
+    [sg.Button('OK')]
+]
 
 # create window
 window = sg.Window('Demo', layout)

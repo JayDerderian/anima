@@ -5,6 +5,8 @@ This module handles all generative methods.
 # IMPORTS
 import math
 import urllib.request
+from datetime import datetime as date
+from random import randint, sample, choice
 
 from core.constants import(
     NOTES,
@@ -20,9 +22,6 @@ from core.constants import(
     FORTE_NUMBERS,
     INTERVALS
 )
-
-from random import randint, sample, choice
-from datetime import datetime as date
 
 from utils.mapping import mapData
 from utils.txtfile import saveInfo
@@ -285,16 +284,15 @@ class Generate:
         return scale, info     
 
 
-    # Picks a church mode and randomly transposes it
+    # Picks a scale and randomly transposes it
     def pickScale(self, t=True, o=None):
         '''
-        Picks a church mode, randomly transposes it (if indicated),
+        Picks a scale, randomly transposes it (if indicated),
         and appends a specified octave (if needed). 
         
-        Returns a tuple: the mode (str), untransposed mode pcs (list[int]), 
-        and note list (list[str]) *without assigned octave by default.* 
+        Returns a tuple: the scale name (str), untransposed scale pcs 
+        (list[int]), and note list (list[str]) *without assigned octave by default.* 
         '''
-        # pick mode
         scale = choice(SCALE_KEYS)
         pcs = SCALES[scale]
         if t==True:
@@ -314,7 +312,6 @@ class Generate:
         Returns a tuple: forte number/fn (str), untransposed prime form pcs (list[int]), 
         note list (list[str]) *without an assigned octave*
         '''
-        # pick prime form pitch-class set
         fn = choice(FORTE_NUMBERS)
         pcs = SETS[fn]
         if t==True:
@@ -355,7 +352,7 @@ class Generate:
 
 
     # Generates a long source scale off a given root scale 
-    def newSourceScale(self, root):
+    def newSourceScale(self, root, o=None):
         '''
         Generates a list[str] "source scale" based off a 
         supplied root (list[str]). 
@@ -372,7 +369,7 @@ class Generate:
             note = "{}{}".format(root[n], o)
             scale.append(note)
             n += 1
-            if n == 7:
+            if n == len(root):
                 o += 1
                 if o == 6:
                     o = 2
@@ -676,14 +673,46 @@ class Generate:
         return chords
 
 
+    # Generates a list of triads from a given scale
+    def newTriads(self, scale, t=None):
+        '''
+        generates a list of triads of t length from a given multi-octave
+        source scale. a single octave scale will only yield 3 triads since
+        the third chord will pick the last element in the list..
+        
+        ideally a list[str] of note chars in at least two octaves will 
+        be supplied.
+        
+        picks notes by accessing every other index three times.
+
+        returns a list of chord() objects. if t is not supplied, then
+        it will generate as many chords as it can until an IndexError 
+        exception is raised.
+
+        NOTE: chords dont have tempo or instrument assigned!'''
+        triads = []
+        for i in range(len(scale)):
+            triad = Chord()
+            try:
+                triad.notes = [scale[i], scale[i+2], scale[i+4]]
+            except IndexError:
+                break
+            triad.rhythm = 2.0
+            triad.dynamic = 100
+            triads.append(triad)
+            if type(t) == int and len(triads) == t:
+                break
+        return triads
+
+
     # Generate a chord off a given interval i (between 1 and 6) to total notes for the chord n
     # starting with root r (integer)
     def newSymTriad(self, r, i, n):
         '''
-        Generates an intervallicly symmetrical chord of n length 
-        based off a given root (r) and interval (i). Returns a 
-        list of integers between 0 - 11 of n length. Does not specify
-        octave of the notes! Only pitch classes. 
+        generates an intervallicly symmetrical chord of n length 
+        based off a given root (r) and interval (i). 
+        
+        returns a list[int] between 0 - 11 of n length. 
         
         Returns -1 if given interval is invalid.
         '''
