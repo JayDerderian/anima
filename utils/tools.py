@@ -148,9 +148,7 @@ def transpose_c(chords, dist):
         if dist > 11 or dist < 1:
             raise ValueError("distance must be an int: 1<=n<=11")
     for c in range(len(chords)):
-        pcs = transpose(getindex(chords[c].notes), 
-                        t=dist, 
-                        octeq=False)
+        pcs = transpose(getindex(chords[c].notes), t=dist, octeq=False)
         chords[c].notes = tostr(pcs, octeq=False)
     return chords
 
@@ -252,11 +250,10 @@ def frag(m):
     frag.info = m.info
     frag.tempo = m.tempo
     frag.instrument = m.instrument
-    # generate fragment
+    # generate fragment. any subset will necessarily
+    # be at least one element less than the original set.
     frag_len = randint(3, len(m.notes)-2)
     # pick starting index and build fragment from here
-    # NOTE: this method exclused the last frag_len notes
-    # in the original set.
     strt = randint(0, len(m.notes)-frag_len)
     for stuff in range(frag_len):
         frag.notes.append(m.notes[strt])
@@ -269,7 +266,8 @@ def frag(m):
 def mutate(m):
     '''
     randomly permutates the order of notes, rhythms, and dynamics
-    in a given melody object. 
+    in a given melody object. each list is permutated independtly of the
+    other, meaning original associations aren't preserved! 
 
     returns a separate melody() object containing this permutation'''
     mutant = m
@@ -277,6 +275,22 @@ def mutate(m):
     shuffle(mutant.rhythms)
     shuffle(mutant.dynamics)
     return mutant
+
+
+def rotate(notes):
+    '''
+    moves the first note of a given list of notes
+    to the end of the list.
+    
+    use method in a loop to rotate n times (such that you don't 
+    return to the original ordering) to generate a series
+    of "modes."
+
+    returns a list[str]'''
+    note = notes[0]
+    notes.remove(note)
+    notes.append(note)
+    return notes
 
 
 def scaletotempo(tempo, rhythms, revert=False):

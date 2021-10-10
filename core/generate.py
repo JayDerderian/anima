@@ -26,10 +26,7 @@ from core.constants import(
 from utils.mapping import mapData
 from utils.txtfile import saveInfo
 from utils.midi import save
-from utils.tools import (tostr, 
-                         transpose, 
-                         oe, 
-                         scaletotempo)
+from utils.tools import tostr, transpose, oe, scaletotempo
 
 from containers.chord import Chord
 from containers.melody import Melody
@@ -407,9 +404,7 @@ class Generate:
         # convert to strings with appended octave
         # tostr() handles whether or not o==None
         for scale in variants:
-            variants[scale] = tostr(variants[scale], 
-                                    octave=o, 
-                                    octeq=False)
+            variants[scale] = tostr(variants[scale], octave=o, octeq=False)
         return variants
 
 
@@ -833,9 +828,7 @@ class Generate:
         
         # Generate a melody
         if data != None and dataType != None:
-            m = self.newMelody(tempo=comp.tempo, 
-                               data=data, 
-                               dataType=dataType)
+            m = self.newMelody(tempo=comp.tempo, data=data, dataType=dataType)
             # pick instrument for melody
             m.instrument = self.newInstrument()
             comp.instruments.append(m.instrument)
