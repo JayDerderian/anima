@@ -247,7 +247,11 @@ def frag(m):
     frag = Melody()
     # copy other info from supplied melody object to not miss anything 
     # important
-    frag.info = m.info
+    data = m.getMetaData()
+    frag.info = data[0]
+    frag.pcs = data[1]
+    frag.sourceData = data[2]
+    frag.sourceScale = data[3]
     frag.tempo = m.tempo
     frag.instrument = m.instrument
     # generate fragment. any subset will necessarily

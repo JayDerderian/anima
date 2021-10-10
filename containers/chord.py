@@ -30,3 +30,10 @@ class Chord():
         self.notes = []
         self.rhythm = 0.0
         self.dynamic = 0.0
+
+    # get meta-data
+    def getMetaData(self):
+        '''
+        returns meta-data as a 3-part tuple
+        (info, pcs, sourceNotes)'''
+        return self.info, self.pcs, self.sourceNotes 
