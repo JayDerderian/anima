@@ -270,8 +270,8 @@ def frag(m):
 def mutate(m):
     '''
     randomly permutates the order of notes, rhythms, and dynamics
-    in a given melody object. each list is permutated independtly of the
-    other, meaning original associations aren't preserved! 
+    in a given melody object. each list is permutated independently of 
+    each other, meaning original associations aren't preserved! 
 
     returns a separate melody() object containing this permutation'''
     mutant = m

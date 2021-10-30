@@ -55,7 +55,7 @@ def save(comp):
     '''
     # create PM object. PM object is used to just write out the file.
     mid = pm.PrettyMIDI(initial_tempo=comp.tempo)
-
+    
     # add melodies
     if len(comp.melodies) > 0:
         for i in range(len(comp.melodies)):
