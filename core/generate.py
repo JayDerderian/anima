@@ -161,7 +161,7 @@ class Generate:
         string (i.e. "C#4"), or -1 on failure.
 
         NOTE: use randint(0, 11) and randint(2, 5) for num/octave args to get a 
-              randomly chosen note, or leave arg fields empty
+              randomly chosen note, or leave arg fields empty 
         '''
         if i==None:
             note = choice(PITCH_CLASSES)
@@ -176,21 +176,28 @@ class Generate:
 
 
     # Generate a series of notes based off an inputted array of integers
-    def newNotes(self, data=None, root=None):
+    def newNotes(self, data=None, root=None, t=None):
         '''
-        Generates a set of notes to be used as a melody.
+        NOTE: modify to accomodate a specified instrument's range!
 
-        Can also return a list of notes without any data input. If this is the case,
-        then newNotes() will decide how many to generate (between 3 and 50).
+        Generates a set of notes to be used as a melody. Can also
+        use a specified root scale, and a specified note total.
 
-        A supplied data list (list[int]) of n length functions as *index numbers* against a generated
-        "source scale" to select notes in order to generate a melody. User also has the option to 
-        supply a "root" scale, though only if the program is accessing this method directly!
-        newMelody() and other methods that call this function don't supply a root if none is 
-        chosen by the user.
+        Can also return a list of notes without any input. If this is the case,
+        newNotes() will decide how many to generate (between 3 and 50).
 
-        Returns a tuple: notes list to be used as a melody (list[str]), 
-        a list of forte_numbers (list[str]), and the original source scale (list[str])
+        Data that can be used: 
+            A supplied data list (list[int]) of n length functions as *index numbers* 
+            against a generated "source scale" to select melody notes. 
+        
+        User also has the option to  supply a "root" scale, though only if the program 
+        is accessing this method directly! newMelody() and other methods that call this 
+        function don't supply a root if none is chosen by the user.
+
+        Returns a tuple: 
+            notes list to be used as a melody (list[str]), 
+            note meta data (list[str]),
+            original source scale (list[str])
         '''           
         # Generate seed scale
         # Save forte numbers and/or pitch class sets
@@ -204,7 +211,10 @@ class Generate:
         # Pick total: 3 - 30 if we're generating random notes
         if data==None:
             # Note that the main loop uses total + 1!
-            total = randint(2, 29)
+            if t==None:
+                total = randint(2, 29)
+            else:
+                total = t
         # Or the largest value of the supplied data set
         else:
             total = max(data)
@@ -238,7 +248,10 @@ class Generate:
         if data==None:
             # Total notes in melody will be between 3 and 
             # however many notes are in the source scale
-            total = randint(3, len(scale))
+            if t == None:
+                total = randint(3, len(scale))
+            else:
+                total = randint(t-2, t)
             for i in range(total):
                 notes.append(choice(scale))
 
@@ -510,7 +523,7 @@ class Generate:
             else:
                 # if rhythm not in rhythms:
                     rhythms.append(rhythm)
-        # convert to given tempo, if provided.
+        # scale to given tempo, if provided and necessary.
         if tempo!=None and tempo!=60.0:
             rhythms = scaletotempo(tempo, rhythms)
         return rhythms
@@ -843,13 +856,14 @@ class Generate:
         comp.melodies.append(m)
 
         # Generate harmonies from this melody
-        ch = self.newChords(len(m.notes), m.tempo, m.notes)
+        ch = self.newChords(total=len(m.notes), tempo=comp.tempo, scale=m.notes)
+        # pick keyboard instrument and apply to all chord objects
+        instr = INSTRUMENTS[randint(0, 8)]
         for i in range(len(ch)):
-            # picking only various keyboard instruments for now...
-            ch[i].instrument = INSTRUMENTS[randint(0, 8)]
-            comp.instruments.append(ch[i].instrument)
-
-        # Save chords to chord dictionary
+            ch[i].instrument = instr
+        # save instrument to comp instr list
+        comp.instruments.append(instr)
+        # Save keyboard part part to chord dictionary
         comp.chords[0] = ch
 
         # Full title
