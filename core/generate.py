@@ -77,7 +77,7 @@ class Generate:
                 name = name + ' ' + choice(words)
                 t += 1
         except urllib.error.URLError:
-            print("\nnewTitle() - ERROR: Unable to retrieve word list!")
+            print("\nnew_title() - ERROR: Unable to retrieve word list!")
             name = 'untitled - '
         return name
 
@@ -104,7 +104,7 @@ class Generate:
                 name = name + ' ' + choice(names)
                 t += 1
         except urllib.error.URLError:
-            print("\nnewComposer() - ERROR: Unable to retrieve name list!")
+            print("\nnew_composer() - ERROR: Unable to retrieve name list!")
             name = 'Rando Calrissian'
         return name
 

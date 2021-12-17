@@ -19,7 +19,7 @@ from datetime import datetime as date
 
 
 # Pure "random" mode
-def newRandomComposition():
+def new_random_composition():
     '''
     Generates a composition with 1-11 melody and/or harmony instruments under a unified tempo. 
     Each part's material will be independently generated, with or without auto-generated source 
