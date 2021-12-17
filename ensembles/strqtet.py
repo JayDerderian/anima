@@ -50,12 +50,12 @@ def strqtet(tempo=None):
     # objects
     create = Generate()
     comp = Composition()
-    comp.title = create.newTitle()
-    comp.composer = create.newComposer()
+    comp.title = create.new_title()
+    comp.composer = create.new_composer()
     comp.date = date.now().strftime("%d-%b-%y %H:%M:%S")
     title_full = comp.title + "for string quartet"
     if tempo==None:
-        comp.tempo = create.newTempo()
+        comp.tempo = create.new_tempo()
     elif tempo > 40.0 or tempo < 208.0:
         comp.tempo = tempo
     else:
@@ -139,8 +139,8 @@ def strqtet(tempo=None):
 
     # generate MIDI & .txt file names
     print("\ngenerating file names...")
-    comp.midiFileName = "{}{}".format(comp.title, ".mid")
-    print("...midi file:", comp.midiFileName)
+    comp.midi_file_name = "{}{}".format(comp.title, ".mid")
+    print("...midi file:", comp.midi_file_name)
     # comp.txtFileName = "{}{}".format(comp.title, '.txt')
     # print("...text file:", comp.txtFileName)
     title_full = "{}{}".format(comp.title, ' for string quartet')
@@ -167,7 +167,7 @@ def strqtet(tempo=None):
 #-----------------------------------------------------------------------------------------------#
 
 
-def newSource(create):
+def new_source(create):
     '''generates a dictionary of source scales
        repeats a scale 4x to the top octave, then starts over 
        (i.e. Bb maj in octaves 2, 3, 4, and 5). 
@@ -175,7 +175,7 @@ def newSource(create):
        might require some manual fixing in finale depending on the 
        scale(s) selected.'''
 
-    mode, mode_pcs, notes = create.pickScale(t=True)
+    mode, mode_pcs, notes = create.pick_scale(t=True)
     print("\nroot:", notes[0], mode)
     scales = {}
     # total number of scales to use
@@ -192,7 +192,7 @@ def newSource(create):
                 octave += 1
                 n = 0
         scales[i] = scale
-        mode, mode_pcs, notes = create.pickScale(t=True)
+        mode, mode_pcs, notes = create.pick_scale(t=True)
         print("...new mode:", notes[0], mode)
     return scales
 
@@ -217,9 +217,9 @@ def writeasync(m, tempo, scales, create):
             elif m.instrument == 'Cello':
                 m.notes.append(scale[randint(0, len(scale)-16)])
     # add rhythms and dynamics, plus save source scale
-    m.rhythms = create.newRhythms(total=len(m.notes), tempo=tempo)
-    m.dynamics = create.newDynamics(total=len(m.notes))
-    m.sourceScale = scales
+    m.rhythms = create.new_rhythms(total=len(m.notes), tempo=tempo)
+    m.dynamics = create.new_dynamics(total=len(m.notes))
+    m.source_scale = scales
 
     return m
 
@@ -261,7 +261,7 @@ def genfig(m, scales):
             # source scale? if so, go down, else go up
             # NOTE: check all scales in scales?
             ind = m.notes.index(ln)
-            if ind >= len(m.sourceScale) - 8:
+            if ind >= len(m.source_scale) - 8:
                 dn = True
             else:
                 up = True
