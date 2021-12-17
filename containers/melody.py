@@ -15,8 +15,8 @@ class Melody():
         # Meta-data
         self.info = 'None'
         self.pcs = []
-        self.sourceData = 'None'
-        self.sourceScale = 'None'
+        self.source_data = 'None'
+        self.source_scale = 'None'
 
         # Data
         if tempo==None and instrument==None:
@@ -41,8 +41,8 @@ class Melody():
         return dur
 
     # Get meta-data
-    def getMetaData(self):
+    def get_meta_data(self):
         '''
         returns meta-data as a 4-part tuple
         (info, pcs, sourceData, sourceScale)'''
-        return self.info, self.pcs, self.sourceData, self.sourceScale
+        return self.info, self.pcs, self.source_data, self.source_scale

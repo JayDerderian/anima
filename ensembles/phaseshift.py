@@ -25,8 +25,8 @@ def phaseshift(tempo=None):
     # initialize
     create = Generate()
     comp = Composition()
-    comp.title = create.newTitle()
-    comp.composer = create.newComposer()
+    comp.title = create.new_title()
+    comp.composer = create.new_composer()
     comp.date = date.now().strftime("%d-%b-%y %H:%M:%S")
     title_full = comp.title + " (phase shift), for piano duet"
     if tempo==None:
@@ -45,8 +45,8 @@ def phaseshift(tempo=None):
                 instrument='Electric Piano 2')
 
     print("\nwriting melody...")
-    scale = create.pickScale()
-    source = create.newSourceScale(scale[2])
+    scale = create.pick_scale()
+    source = create.new_source_scale(scale[2])
     total = randint(2, 10)
     print("...picking", total, "notes from", scale[2][0], scale[0])
     for stuff in range(total):
@@ -89,8 +89,8 @@ def phaseshift(tempo=None):
     comp.melodies.append(m1)
     comp.melodies.append(m2)
     print("\ngenerating MIDI file...")
-    comp.midiFileName = comp.title + '.mid'
-    print("...midi file:", comp.midiFileName)
+    comp.midi_file_name = comp.title + '.mid'
+    print("...midi file:", comp.midi_file_name)
 
     # save to MIDI file
     save(comp)

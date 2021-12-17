@@ -34,16 +34,16 @@ def mixedqtet(ensemble=None):
     # objects, title, midi file name, composer, and date
     create = Generate()
     comp = Composition()
-    comp.title = create.newTitle()
-    comp.composer = create.newComposer()
+    comp.title = create.new_title()
+    comp.composer = create.new_composer()
     comp.date = date.now().strftime("%d-%b-%y %H:%M:%S")
     title_full = '{}{}'.format(comp.title, ' for mixed quartet')
-    comp.midiFileName = '{}{}'.format(comp.title, '.mid')
+    comp.midi_file_name = '{}{}'.format(comp.title, '.mid')
 
     print("\npicking instruments...")
     # create the ensemble, if none is supplied
     if ensemble==None:
-        e = create.newInstruments(4)
+        e = create.new_instruments(4)
     else:
         e = ensemble
     # save list
@@ -58,17 +58,17 @@ def mixedqtet(ensemble=None):
     # total chords
     t = randint(5, 9)
     # pick starting mode
-    mode, mode_pcs, mode_notes = create.pickScale(t=True)
+    mode, mode_pcs, mode_notes = create.pick_scale(t=True)
     print("...using", mode_notes[0], mode)
     print("...scale:", mode_notes)
     print("...pcs:", mode_pcs)
     # generate source scale from mode
-    source = create.newSourceScale(mode_notes)
+    source = create.new_source_scale(mode_notes)
 
     print("\ngenerating", t, "chords...")
     # generate chords from source scale. each chord will be repeated either
     # 64x with 16th notes or 18x with dotted sixteenth notes
-    chords = create.newChords(total=t, tempo=comp.tempo, scale=source)
+    chords = create.new_chords(total=t, tempo=comp.tempo, scale=source)
 
     # this list will store each repeated chord object with its growing and
     # receeding dynamics values. once this is finished it'l be dispersed across

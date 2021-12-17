@@ -10,32 +10,32 @@ import pretty_midi as pm
 
 
 #Retrieve MIDI note number
-def getNoteNumber(thisTune):
-    return thisTune.instrument.note.pitch        
+def get_note_number(tune):
+    return tune.instrument.note.pitch        
 
 # Returns a list of MIDI pitch numbers. 
 # Each index number functions as a tag to reference specific pitches in the file
-def getNotes(thisTune):
+def get_notes(tune):
     theNotes = []  
     print("\nGenerating MIDI note list...")
-    for instrument in thisTune.instruments:
+    for instrument in tune.instruments:
         for note in instrument.notes:
             theNotes.append(note.pitch)
     return theNotes
 
 #Collects all data about each note (Note: velocity, pitch, start/end)
-def getNoteData(thisTune):
+def get_note_data(tune):
     noteData = []
     print("\nCollecting note data...")
-    for instrument in thisTune.instruments:
+    for instrument in tune.instruments:
         noteData.append(instrument.notes)
     return noteData
 
 #Get total number of notes in the MIDI file
-def getTotalNotes(thisTune):
+def get_total_notes(tune):
     noteCount = 0
     print("\nCounting notes...")
-    for instrument in thisTune.instruments:
+    for instrument in tune.instruments:
         for note in instrument.notes:
             noteCount += 1
     return noteCount
@@ -51,34 +51,34 @@ def duplicates(row):
     return result
     
 #Get total number of tracks/instruments
-def getTotalInstruments(thisTune):
+def get_total_instruments(tune):
     totalInstruments = 0
     print("\nCounting instruments/tracks...")
-    for instrument in thisTune.instruments:
+    for instrument in tune.instruments:
         totalInstruments += 1
     return totalInstruments
 
 #Determines difference between given tempo and standard second 
-def tempoDifference(thisTune):
+def tempo_difference(tune):
     second = 60
-    tempo = thisTune.estimate_tempo()
+    tempo = tune.estimate_tempo()
     difference = second/tempo
     return difference
 
 #Get pretty_midi's estimated global tempo in bpm
-def getTempo(thisTune):
+def get_tempo(thisTune):
     return thisTune.estimate_tempo()
 
 #Get pretty_midi's note start times
-def getBeats(thisTune):
-    return thisTune.get_beats(start_time = 0.0)
+def get_beats(tune):
+    return tune.get_beats(start_time = 0.0)
 
 #Get pretty_midi's downbeat locations (tempo/time-sig changes)
-def getDownBeats(thisTune):
-    return thisTune.get_downbeats()
+def get_down_beats(tune):
+    return tune.get_downbeats()
 
 #Displays piano roll of MIDI data
-def displayMIDIterminal():
+def display_MIDI_terminal():
     roll = pm.PrettyMIDI.get_piano_roll()
     print(roll)
 

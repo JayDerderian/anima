@@ -11,8 +11,8 @@ from core.constants import ENSEMBLE_SIZES
 from containers.composition import Composition
 
 import utils.midi as mid
-from utils.txtfile import saveInfo
-from utils.data import newData
+from utils.txtfile import save_info
+from utils.data import new_data
 
 from random import randint, choice
 from datetime import datetime as date
@@ -36,9 +36,9 @@ def newRandomComposition():
 
     create = Generate()
     comp = Composition()
-    comp.title = create.newTitle()
-    comp.composer = create.newComposer()
-    comp.tempo = create.newTempo()
+    comp.title = create.new_title()
+    comp.composer = create.new_composer()
+    comp.tempo = create.new_tempo()
     comp.date = date.now().strftime("%b-%d-%y %H:%M:%S")
 
     # pick ensemble size (1 - 11 instruments for now) and instrumentation
@@ -46,7 +46,7 @@ def newRandomComposition():
     print("\ntotal instruments:", size)
     comp.ensemble = ENSEMBLE_SIZES[size]
     # generate instrument list. 
-    instruments = create.newInstruments(size)
+    instruments = create.new_instruments(size)
     print("instruments:", instruments)
 
     # how many melody instruments?
@@ -59,10 +59,10 @@ def newRandomComposition():
             if randint(1, 2) == 1:
                 dt = randint(1,4)
                 data = newData(dt)
-                melody = create.newMelody(tempo=comp.tempo, data=data, dataType=dt)
+                melody = create.new_melody(tempo=comp.tempo, data=data, dataType=dt)
             # ... or not
             else:
-                melody = create.newMelody(tempo=comp.tempo)
+                melody = create.new_melody(tempo=comp.tempo)
             # assign a randomly-chosen instrument to this melody
             instr = choice(instruments)
             melody.instrument = instr
@@ -83,7 +83,7 @@ def newRandomComposition():
             # total chords in this progression
             total = randint(3, 15)
             # generate chords
-            chords = create.newChords(total=total, tempo=comp.tempo)
+            chords = create.new_chords(total=total, tempo=comp.tempo)
             # pick instrument and assign to *all* chords in this progression
             instr = choice(instruments)
             for c in range(len(chords)):
@@ -96,10 +96,10 @@ def newRandomComposition():
 
     # generate MIDI and .txt file names
     print("\ngenerating file names...")
-    comp.midiFileName = "{}{}".format(comp.title, ".mid")
-    print("...MIDI file:", comp.midiFileName)
-    # comp.txtFileName = "{}{}".format(comp.title, '.txt')
-    # print("...text file:", comp.txtFileName)
+    comp.midi_file_name = "{}{}".format(comp.title, ".mid")
+    print("...MIDI file:", comp.midi_file_name)
+    # comp.txt_file_name = "{}{}".format(comp.title, '.txt')
+    # print("...text file:", comp.txt_file_name)
     if size == 1:
         if len(comp.melodies) > 1:
             title_full = "{}{}{}".format(comp.title, ' for solo ', comp.melodies[0].instrument)
@@ -123,7 +123,7 @@ def newRandomComposition():
         print("duration:", d, "minutes")
     else:
         print("duration:", d, "seconds")
-    print("midi file:", comp.midiFileName)
+    print("midi file:", comp.midi_file_name)
     # print("text file:", comp.txtFileName)
     print()
     return comp

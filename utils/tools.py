@@ -40,6 +40,23 @@ def tostr(pcs, octave=None, octeq=True):
     return scale
 
 
+def removeoct(anote):
+    '''
+    removes octave integer from a note name string. 
+    shouldn't be called directly.'''
+    # split single note into two or three parts:
+    # either name + oct or name + acc + oct. 
+    n = [char for char in anote]
+    if len(n)==3:
+        note = "{}{}".format(n[0], n[1])
+        return note
+    elif len(n)==2 and n[1]=="b" or n[1]=="#":
+        note = "{}{}".format(n[0], n[1])
+        return note     
+    else:
+        return n[0]
+
+
 def getpcs(notes):
     '''
     matches pitch strings to pitch class integers.
@@ -62,23 +79,6 @@ def getpcs(notes):
             else:
                 pcs.append(PITCH_CLASSES.index(notes[n]))
     return pcs
-
-
-def removeoct(anote):
-    '''
-    removes octave integer from a note name string. 
-    shouldn't be called directly.'''
-    # split single note into two or three parts:
-    # either name + oct or name + acc + oct. 
-    n = [char for char in anote]
-    if len(n)==3:
-        note = "{}{}".format(n[0], n[1])
-        return note
-    elif len(n)==2 and n[1]=="b" or n[1]=="#":
-        note = "{}{}".format(n[0], n[1])
-        return note     
-    else:
-        return n[0]
 
 
 def getindex(notes):
@@ -250,7 +250,7 @@ def frag(m):
     data = m.getMetaData()
     frag.info = data[0]
     frag.pcs = data[1]
-    frag.sourceData = data[2]
+    frag.source_data = data[2]
     frag.sourceScale = data[3]
     frag.tempo = m.tempo
     frag.instrument = m.instrument

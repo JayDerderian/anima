@@ -17,7 +17,7 @@ class Chord():
         # Metadata
         self.info = ""
         self.pcs = []
-        self.sourceNotes = []
+        self.source_notes = []
         
         # Data
         if instrument==None and tempo==None:
@@ -32,8 +32,8 @@ class Chord():
         self.dynamic = 0.0
 
     # get meta-data
-    def getMetaData(self):
+    def get_meta_data(self):
         '''
         returns meta-data as a 3-part tuple
-        (info, pcs, sourceNotes)'''
-        return self.info, self.pcs, self.sourceNotes 
+        (info, pcs, source_notes)'''
+        return self.info, self.pcs, self.source_notes 

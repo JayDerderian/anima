@@ -8,7 +8,7 @@ from core.constants import ALPHABET
 
 
 # Converts an array of floats to an array of ints
-def floatToInt(data):
+def float_to_int(data):
     '''
     Converts an array of floats to an array of ints
     '''
@@ -19,7 +19,7 @@ def floatToInt(data):
 
 
 # Scale individual data set integers such that i = i < len(dataSet) - 1
-def scaleTheScale(data):
+def scale_the_scale(data):
     '''
     Returns inputted list[int] with any ints i > len(data) 1 altered to 
     adhere to this limit. This will keep the newly inputted data array's 
@@ -35,7 +35,7 @@ def scaleTheScale(data):
 
 
 # Maps letters to index numbers
-def lettersToNumbers(letters):
+def letters_to_numbers(letters):
     '''
     Takes a string of any length as an argument, 
     then maps the letters to index numbers, which will then be 
@@ -63,7 +63,7 @@ def lettersToNumbers(letters):
 
 
 # Convert a hex number representing a color to an array of integers
-def hexToIntList(hex):
+def hex_to_int_list(hex):
     '''
     Converts a prefixed hex number to an array of integers.
     '''
@@ -75,7 +75,7 @@ def hexToIntList(hex):
 
 
 # Call appropriate mapping method and return modified data
-def mapData(newMelody, data, dataType):
+def map_data(mel, data, dt):
     '''
     Wrapper method to map data used by newMelody()
     
@@ -83,31 +83,31 @@ def mapData(newMelody, data, dataType):
     on failure. melody() object has original source data saved.
     '''
     # If ints, scale as necessary
-    if dataType == 1:
+    if dt == 1:
         # Save original source data
-        newMelody.sourceData = data
-        data = scaleTheScale(data)
+        mel.source_data = data
+        data = scale_the_scale(data)
 
     # If floats then convert to ints and scale
-    elif dataType == 2:
+    elif dt == 2:
         # Save original source data
-        newMelody.sourceData = data
-        data = floatToInt(data)
-        data = scaleTheScale(data)
+        mel.source_data = data
+        data = float_to_int(data)
+        data = scale_the_scale(data)
 
     # If letters/chars then match letters to their corresponding index numbers.
-    elif dataType == 3:
+    elif dt == 3:
         # Save original source data
-        newMelody.sourceData = data
-        data = lettersToNumbers(data)
+        mel.source_data = data
+        data = letters_to_numbers(data)
 
     # If hex convert to array of ints and scale
-    elif dataType == 4:
+    elif dt == 4:
         # Converts hex number to string, then saves
         # that as the first item of a list. It's silly, I know.
         # Save original source data
-        newMelody.sourceData.append(str(data))
-        data = hexToIntList(data)
+        mel.source_data.append(str(data))
+        data = hex_to_int_list(data)
     else:
         raise ValueError("dataType value out of range!")
-    return data, newMelody
+    return data, mel

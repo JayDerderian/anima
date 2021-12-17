@@ -17,7 +17,7 @@ from datetime import datetime
 
 
 # Autogenerates a new filename
-def newFileName(ensemble):
+def new_file_name(ensemble):
     '''
     Generates a title/file name by picking two random words
     then attaching the composition type (solo, duo, ensemble, etc..),
@@ -115,8 +115,8 @@ def save(comp):
             key+=1
 
     # write to MIDI file
-    print("\nsaving", comp.midiFileName, "...")
-    mid.write(f'./midi/{comp.midiFileName}')
+    print("\nsaving", comp.midi_file_name, "...")
+    mid.write(f'./midi/{comp.midi_file_name}')
     return 0
 
 
@@ -188,5 +188,4 @@ def savecanon(comp, s):
         #     s += s
     # write to MIDI file
     print("\nwriting MIDI file...")
-    mid.write(f'./midi/{comp.midiFileName}')
-    return 0
+    mid.write(f'./midi/{comp.midi_file_name}')

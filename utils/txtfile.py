@@ -14,7 +14,7 @@ import sys
 from datetime import datetime as date
 
 # Generates a new .txt file to save a new composition's meta-data to
-def saveInfo(name, data=None, fileName=None, newMelody=None, newChords=None, newMusic=None):
+def save_info(name, data=None, fileName=None, newMelody=None, newChords=None, newMusic=None):
     '''
     Generates a new .txt file to save a new composition's data and meta-data to. 
     Can take a melody() object, a list of chord() objects, or a composition() object as arguments. 

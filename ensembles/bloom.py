@@ -26,21 +26,21 @@ def bloom(aged=True):
 
     create = Generate()
     comp = Composition()
-    if aged==True:
+    if aged:
         comp.title = 'Aged Face'
     else:
-        comp.title = create.newTitle()
+        comp.title = create.new_title()
     title_full = "{}{}".format(comp.title, " for mixed septet")
     comp.composer = 'Rando Calrisian'
     comp.ensemble = 'mixed septet'
     comp.date = date.now().strftime("%b-%d-%y %H:%M:%S")
-    comp.midiFileName = comp.title + ".mid"
-    comp.txtFileName = comp.title + ".txt"
+    comp.midi_file_name = comp.title + ".mid"
+    comp.txt_file_name = comp.title + ".txt"
     # defaults to mid-range tempos
     comp.tempo = TEMPOS[randint(5,20)]
 
-    def new_mel(tempo, notes=None):
-        m = Melody(tempo=tempo)
+    def new_mel(t, notes=None):
+        m = Melody(tempo=t)
         # only picking keyboards, metal or 
         # wood percussion, or the first three 
         # organs (indicies 0->18)
@@ -53,16 +53,15 @@ def bloom(aged=True):
         # the notes
         '''NOTE: find a way to disperse these notes one octave
                  above and two below current note strings'''
-        if aged==True:
+        if aged:
             m.notes = ['A4','G4','E4','D5','F4','A4','C5','E5']
-            print("\ntotal notes:", len(m.notes))
         elif aged==False and notes != None:
             m.notes = notes[0]
-            print("\ntotal notes:", len(m.notes))
+            m.info = notes[1]
         else:
-            notes = create.newNotes(t=randint(7,13))
+            notes = create.new_notes(t=randint(7,13))
             m.notes = notes[0]
-            print("\ntotal notes:", len(m.notes))
+            m.info = notes[1]
         # add rhythmic initial burst to all the 
         # last two notes
         for r in range(len(m.notes)-2):
@@ -72,15 +71,13 @@ def bloom(aged=True):
         for r in range(2):
             m.rhythms.append(RHYTHMS[randint(0,2)])
             m.dynamics.append(DYNAMICS[randint(9,17)])
-        print("total rhythms:", len(m.rhythms))
-        print("total dynamics:", len(m.dynamics))
         return m
 
     # generate 7 melodies/parts
     print("\nwriting initial melody...")
     melodies = []
     if aged==False:
-        notes = create.newNotes(t=randint(7,13))
+        notes = create.new_notes(t=randint(7,13))
         for melody in range(7):
             melodies.append(new_mel(comp.tempo, notes))
     else:
@@ -91,19 +88,16 @@ def bloom(aged=True):
     for melody in range(len(melodies)):
         comp.instruments.append(melodies[melody].instrument)
 
-    # repeat each melody 4 times in each part
-    print("\nrepeating each part 4 times...")
-    for melody in range(len(melodies)):
-        # get copy of current melody
-        m = melodies[melody]
-        # append all it's data 4 times to itself
-        for add in range(4):
-            m.notes.extend(m.notes)
-            m.rhythms.extend(m.rhythms)
-            m.dynamics.extend(m.dynamics)
-        # replace current object in melodies with 
-        # this new one: m
-        melodies[melody] = m
+    # # repeat each melody 4 times in each part
+    # print("\nrepeating each part 4 times...")
+    # for mel in range(len(melodies)):
+    #     # get copy of current melody
+    #     m = melodies[mel]
+    #     # append all it's data 4 times to itself
+    #     for add in range(4):
+    #         melodies[mel].notes.extend(m.notes)
+    #         melodies[mel].rhythms.extend(m.rhythms)
+    #         melodies[mel].dynamics.extend(m.dynamics)
 
     # save all melodies to comp object,
     # then export MIDI file

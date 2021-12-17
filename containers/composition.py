@@ -27,9 +27,9 @@ class Composition():
 
         # MIDI file name
         # NOTE: May need to store individual user's file path here?
-        self.midiFileName = ""
+        self.midi_file_name= ""
         # Text file name
-        self.txtFileName = ""
+        self.txt_file_name = ""
 
         # Global tempo (float)
         if tempo != None:
@@ -50,7 +50,7 @@ class Composition():
 
 
     # Has this instrument been picked?
-    def isPicked(self, instr):
+    def is_picked(self, instr):
         '''
         Has this instrument been picked already? 
         '''
@@ -58,7 +58,7 @@ class Composition():
 
 
     # Have all the instruments been picked?
-    def allPicked(self, instruments):
+    def all_picked(self, instruments):
         '''
         Have *all* the instruments been used? 
         Compares against an externally generated instrument list.
@@ -80,16 +80,16 @@ class Composition():
         mlg = 0.0
         clg = 0.0
         if len(self.melodies) > 0:
-            ml = 0.0
-            mlg = 0.0
+            # ml = 0.0
+            # mlg = 0.0
             for m in range(len(self.melodies)):
                 ml = self.melodies[m].duration()
                 if ml > mlg:
                     mlg = ml
         # get chord totals
         if len(self.chords) > 0:
-            cl = 0.0
-            clg = 0.0
+            # cl = 0.0
+            # clg = 0.0
             for c in range(len(self.chords)):
                 chords = self.chords[c]
                 for chord in range(len(chords)):

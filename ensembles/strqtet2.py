@@ -8,7 +8,7 @@ from random import randint
 from datetime import datetime as date
 
 from utils.midi import save
-from utils.txtfile import saveInfo
+from utils.txtfile import save_info
 
 from core.generate import Generate
 from core.constants import RHYTHMS, TEMPOS
@@ -23,8 +23,8 @@ def strqtet2(tempo=None):
     # initialize
     create = Generate()
     comp = Composition()
-    comp.title = create.newTitle()
-    comp.composer = create.newComposer()
+    comp.title = create.new_title()
+    comp.composer = create.new_composer()
     comp.date = date.now().strftime("%d-%b-%y %H:%M:%S")
     title_full = comp.title + "for string quartet"
     if tempo==None:
@@ -53,8 +53,8 @@ def strqtet2(tempo=None):
     print("\nwriting choral...")
 
     # pick notes. use only one scale! 
-    mode, pcs, notes = create.pickScale(t=True)
-    source = create.newSourceScale(notes)
+    mode, pcs, notes = create.pick_scale(t=True)
+    source = create.new_source_scale(notes)
     print("...using", notes[0], mode)
     print("...pcs:", pcs)
 
@@ -73,7 +73,7 @@ def strqtet2(tempo=None):
         # use slower rhythms
         rhy.append(RHYTHMS[randint(1,4)])
     # create dynamics
-    dyn = create.newDynamics(total=total)
+    dyn = create.new_dynamics(total=total)
 
     # add to each part 
     v1.rhythms.extend(rhy)
@@ -135,10 +135,10 @@ def strqtet2(tempo=None):
 
     # generate MIDI & .txt file names
     print("\ngenerating file names...")
-    comp.midiFileName = "{}{}".format(comp.title, ".mid")
-    print("...midi file:", comp.midiFileName)
-    # comp.txtFileName = "{}{}".format(comp.title, '.txt')
-    # print("...text file:", comp.txtFileName)
+    comp.midi_file_name = "{}{}".format(comp.title, ".mid")
+    print("...midi file:", comp.midi_file_name)
+    # comp.txt_file_name = "{}{}".format(comp.title, '.txt')
+    # print("...text file:", comp.txt_file_name)
     title_full = "{}{}".format(comp.title, ' for string quartet')
 
     # write to MIDI file & .txt file
@@ -169,10 +169,10 @@ def writeline(m, scale, total, create, asyn=False):
     only picks notes from a given source scale
     
     returns a modified melody() object'''
-    if asyn==True:
+    if asyn:
         # NOTE: this will redefine supplied total if asyn is True
         total = randint(12, 30)
-    for j in range(total):
+    for things in range(total):
         # limited to octaves 4 and 5 for violins
         if m.instrument == 'Violin':
             m.notes.append(scale[randint(13, len(scale)-1)])
@@ -185,7 +185,7 @@ def writeline(m, scale, total, create, asyn=False):
     
     if asyn==True:
         # add rhythms and dynamics, plus save source scale
-        m.rhythms.extend(create.newRhythms(total=len(m.notes), tempo=m.tempo))
-        m.dynamics.extend(create.newDynamics(total=len(m.notes)))
+        m.rhythms.extend(create.new_rhythms(total=len(m.notes), tempo=m.tempo))
+        m.dynamics.extend(create.new_dynamics(total=len(m.notes)))
 
     return m

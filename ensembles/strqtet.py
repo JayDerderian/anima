@@ -34,7 +34,8 @@ from random import randint
 from datetime import datetime as date
 
 from utils.midi import save
-from utils.txtfile import saveInfo
+from utils.txtfile import save_info
+from utils.tools import scaletotempo
 
 from core.generate import Generate
 
@@ -95,10 +96,10 @@ def strqtet(tempo=None):
     print("\nwriting cello part...")
     vc = writeasync(vc, comp.tempo, scales, create)
 
-    arpv1 = genfig(v1, scales, create)
-    arpv2 = genfig(v2, scales, create)
-    arpva = genfig(va, scales, create)
-    arpvc = genfig(vc, scales, create)
+    arpv1 = genfig(v1, scales)
+    arpv2 = genfig(v2, scales)
+    arpva = genfig(va, scales)
+    arpvc = genfig(vc, scales)
 
     # figure out which of these is the longest (lp = longest part)
     durations = [v1.duration(), v2.duration(), va.duration(), vc.duration()]
@@ -112,16 +113,16 @@ def strqtet(tempo=None):
     print("\nlongest part:", lp)
 
     if v1.duration() != lp:
-        v1 = buildfig(v1, arpv1, create)
+        v1 = buildfig(v1, arpv1)
         v1 = sync(v1, lp, arpv1)
     if v2.duration() != lp:
-        v2 = buildfig(v2, arpv2, create)
+        v2 = buildfig(v2, arpv2)
         v2 = sync(v2, lp, arpv2)
     if va.duration() != lp:
-        va = buildfig(va, arpva, create)
+        va = buildfig(va, arpva)
         va = sync(va, lp, arpva)
     if vc.duration() != lp:
-        vc = buildfig(vc, arpvc, create)
+        vc = buildfig(vc, arpvc)
         vc = sync(vc, lp, arpvc)
 
     print("\nlen's after adding fig...")
@@ -174,7 +175,7 @@ def newSource(create):
        might require some manual fixing in finale depending on the 
        scale(s) selected.'''
 
-    mode, mode_pcs, notes = create.pickMode(t=True)
+    mode, mode_pcs, notes = create.pickScale(t=True)
     print("\nroot:", notes[0], mode)
     scales = {}
     # total number of scales to use
@@ -191,7 +192,7 @@ def newSource(create):
                 octave += 1
                 n = 0
         scales[i] = scale
-        mode, mode_pcs, notes = create.pickMode(t=True)
+        mode, mode_pcs, notes = create.pickScale(t=True)
         print("...new mode:", notes[0], mode)
     return scales
 
@@ -223,7 +224,7 @@ def writeasync(m, tempo, scales, create):
     return m
 
 
-def genfig(m, scales, create):
+def genfig(m, scales):
     '''
     builds a figure off last note in this part 
     and its place in the source scale to be repeated
@@ -243,15 +244,27 @@ def genfig(m, scales, create):
     # which octave its in (each note string has an octave
     # number, i.e. C#5)
 
+    '''
+    NOTE: getting an index error when trying to build an upward figure
+    from the last note in the violins. last notes might appear towards the
+    end of the source scales (arg - scales: Dict), need to check placement
+    in CORRECT scale and build downward if it's near the end of the source 
+    scale'''
+
     print("\ngenerating closing", m.instrument, "figure...")
     dn = False
     up = False
     if m.instrument == 'Violin':
         ln = m.notes[-1]
         if ln.count('5')  > 0:
-            dn = True
-        else:
-            up = True
+            # is this  last note towards the end of the
+            # source scale? if so, go down, else go up
+            # NOTE: check all scales in scales?
+            ind = m.notes.index(ln)
+            if ind >= len(m.sourceScale) - 8:
+                dn = True
+            else:
+                up = True
     elif m.instrument == 'Viola':
         ln = m.notes[-1]
         if ln.count('4')  > 0:
@@ -278,7 +291,7 @@ def genfig(m, scales, create):
 
         scale = scales[i]
         try:
-            # print("\nfinding starting note...")
+            '''NOTE: put up/dn determinations here??'''
             note = scale.index(ln)
             arp = []
             if dn==True:
@@ -342,7 +355,7 @@ def genfig(m, scales, create):
     rhy = []
     dyn = []
     for i in range(len(arp)):
-        rhy.append(create.scaletotempo(m.tempo, 2.0))
+        rhy.append(scaletotempo(m.tempo, 2.0))
         dyn.append(52)
     
     print("...notes:", arp)
@@ -351,7 +364,7 @@ def genfig(m, scales, create):
 
     return arp, rhy, dyn
 
-def buildfig(m, arp, create):
+def buildfig(m, arp):
     '''
     constructs arpeggio with increasingly fast rhythms. 
     returns a modified melody() object.
@@ -375,7 +388,7 @@ def buildfig(m, arp, create):
         rhy = []
         dyn = []
         for i in range(len(arp[0])):
-            rhy.append(create.scaletotempo(m.tempo, r[k]))
+            rhy.append(scaletotempo(m.tempo, r[k]))
             dyn.append(d[k])
         # repeat each rhy/dyn set 3x
         for i in range(3):
@@ -387,7 +400,7 @@ def buildfig(m, arp, create):
         rhy = []
         dyn = []
         for i in range(len(arp[0])):
-            rhy.append(create.scaletotempo(m.tempo, 0.125))
+            rhy.append(scaletotempo(m.tempo, 0.125))
             dyn.append(112)
         for i in range(2):
             m.notes.extend(arp[0])

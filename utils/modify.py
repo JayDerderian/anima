@@ -82,7 +82,7 @@ NOTE: Need a way to convert the duration list to start and end times for
 NOTE: input a composition() object with the additional note and rhythm data to be 
       appended at the end a MIDI file 
 '''
-def addNotes(notesToAdd, thisTune):
+def add_notes(notesToAdd, thisTune):
 
     # Duplicate thisTune to alter data
     newVariant = thisTune

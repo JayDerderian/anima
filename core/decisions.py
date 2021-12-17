@@ -45,7 +45,7 @@ class Decide():
     '''
     
     # Minimalist mode choices
-    def minChoices(self):
+    def min_choices(self):
         '''
         Decides generation parameters for minimalist mode
         '''
@@ -55,7 +55,7 @@ class Decide():
         return choices
 
     # Tonal/modal mode choices
-    def modalChoices(self):
+    def modal_choices(self):
         '''
         Decides generation parameters for tonal/modal mode
         '''
@@ -85,7 +85,7 @@ class Decide():
     '''    
 
     # What do we want to do? modify notes (1), modify rhythms (2), both (3)
-    def varMainChoice(self):
+    def var_main_choice(self):
         '''
         What do we want to do?
         1 - Modify notes 
@@ -116,7 +116,7 @@ class Decide():
 
     # Choices (notes): Transpose Up (1), down (2), transpose up AND down (3), 
     # add note (4), remove note (5), both add AND remove(6)
-    def whatToDoNotes(self):
+    def what_to_do_notes(self):
         '''
         Choices: 
             1. Add/remove notes, transpose, or both?
@@ -142,7 +142,7 @@ class Decide():
         return choice
     
     # Choices (rythms): Augment (1), diminish(2), augment AND diminish (3)
-    def whatToDoRhythms(self):
+    def what_to_do_rhythms(self):
         '''
         Choices (rhythms): Augment (1), diminish(2), augment AND diminish (3)
         '''
@@ -157,22 +157,22 @@ class Decide():
         return choice
 
     # Determines how many notes to modify of a given total.
-    def howManyToModify(self, totalNotes):
+    def how_many_to_modify(self, total):
         '''
         Determines how many notes to modify of a given total.
         '''
         print("\nDeciding how many notes or rhythms to modify...")
         # Scale to file size/note count
-        totalModify = self.scaleHowMany(totalNotes)
+        total_mod = self.scale_how_many(total)
         # Decide how many to modify given this new total
-        totalModify = randint(1, totalModify)
-        if(totalModify <= 0):
+        total_mod = randint(1, total_mod)
+        if(total_mod <= 0):
             print("...Unable to decide!")
         # print("Total:", totalModify)
-        return totalModify
+        return total_mod
 
     # How many times should we repeat this note?
-    def howManyRepetitions(self, notes):
+    def how_many_reps(self, notes):
         '''
         Determines how many times to repeat a note, scaled to
         the amount of rhythms generated for this melody.
@@ -195,45 +195,42 @@ class Decide():
         return reps
 
     # Scales howMany to different MIDI note file sizes
-    def scaleHowMany(self, totalNotes):
-        if(totalNotes == 0):
+    def scale_how_many(self, total):
+        if(total == 0):
             return 0
-        if(totalNotes > 1000):
-            totalNotes *= 0.6
-        elif(totalNotes > 5000):
-            totalNotes *= 0.55
-        elif(totalNotes > 10000):
-            totalNotes *= 0.5
-        elif(totalNotes > 20000):
-            totalNotes *= 0.35
-        elif(totalNotes > 50000):
-            totalNotes *= 0.3
-        elif(totalNotes > 100000):
-            totalNotes *= 0.25
-        elif(totalNotes > 200000):
-            totalNotes *= 0.2
-        elif(totalNotes > 500000):
-            totalNotes *= 0.1 
-        return floor(totalNotes) 
+        if(total > 1000):
+            total *= 0.6
+        elif(total > 5000):
+            total *= 0.55
+        elif(total > 10000):
+            total *= 0.5
+        elif(total > 20000):
+            total *= 0.35
+        elif(total > 50000):
+            total *= 0.3
+        elif(total > 100000):
+            total *= 0.25
+        elif(total > 200000):
+            total *= 0.2
+        elif(total > 500000):
+            total *= 0.1 
+        return floor(total) 
 
     # Which notes should we modify given a list of note numbers?
     # Generates list of index numbers to be used with theNotes[] 
-    def whichNotesToModify(self, totalModify, totalNotes):    
+    def which_notes_to_modify(self, total, total_notes):    
         '''
         Which notes should we modify given a list of note numbers?
         Generates list of index numbers to be used with a pretty_midi object.
         Formerly used with theNotes[]
         '''   
-        notesToModify = []
+        notes_to_modify = []
         print("\nDeciding which notes to modify...") 
         # Generate raw, un-sorted index choice list within given range (totalNotes)
-        while(len(notesToModify) < totalModify):
-            notesToModify.append(randint(0, totalNotes))
+        while(len(notes_to_modify) < total):
+            notes_to_modify.append(randint(0, total))
         # Remove any duplicates
-        notesToModify = list(set(notesToModify))
+        notes_to_modify = list(set(notes_to_modify))
         # Sort resulting list by ascending value 
-        notesToModify.sort()
-        if(not notesToModify):
-            print("...Unable to decide!")
-        # print("Notes to modify: ", notesToModify)
-        return notesToModify
+        notes_to_modify.sort()
+        return notes_to_modify

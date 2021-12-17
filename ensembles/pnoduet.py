@@ -13,7 +13,7 @@ from random import randint, choice
 from datetime import datetime as date
 
 from utils.midi import save
-from utils.txtfile import saveInfo
+from utils.txtfile import save_info
 from utils.tools import scaletotempo
 from core.constants import TEMPOS, RHYTHMS, DYNAMICS
 
@@ -59,8 +59,8 @@ def pnoduet(instrument=None, tempo=None):
     comp = Composition()
 
     # title 'n stuff
-    comp.title = create.newTitle()
-    comp.composer = create.newComposer()
+    comp.title = create.new_title()
+    comp.composer = create.new_composer()
     comp.date = date.now().strftime("%d-%b-%y %H:%M:%S")
     if tempo==None:
         # using tempos between 60-88 for now
@@ -92,12 +92,12 @@ def pnoduet(instrument=None, tempo=None):
 
     # pick initial starting key/mode
     print("\npicking source notes...")
-    notes = create.pickScale(t=True)
+    notes = create.pick_scale(t=True)
     # append octaves 2 - 5 to have a starting source scale. 
     """if things progress well then i'll attempt to transpose figures 
     mid additive/subtractive process to give harmonic variety,
     and possibly follow a larger harmonic plan."""
-    scale = create.newSourceScale(notes[2])
+    scale = create.new_source_scale(notes[2])
 
     # compose initial [instr] melody
     '''
@@ -123,7 +123,7 @@ def pnoduet(instrument=None, tempo=None):
     print("\nwriting", total, "chords...")
     for i in range(total):
         # 2 to 9 note chords!
-        chord = create.newChord(tempo=comp.tempo, scale=scale)
+        chord = create.new_chord(tempo=comp.tempo, scale=scale)
         chord.instrument = 'Acoustic Grand Piano'
         # re-select a rhythm within desired range...
         # (half, dotted qtr, qtr)
@@ -149,9 +149,9 @@ def pnoduet(instrument=None, tempo=None):
     # amount of melody repetition as the additive process unfolds. eventually
     # the chords will start repeating as their duration is surpassed by the 
     # melody's. 
-    reps = math.ceil(create.chordDurations(pno)/om.duration())
+    reps = math.ceil(create.chord_durations(pno)/om.duration())
     '''NOTE: might need to hand-tune this a bit...'''
-    if reps == 1 and (om.duration() * 2) < create.chordDurations(pno):
+    if reps == 1 and (om.duration() * 2) < create.chord_durations(pno):
         reps += 2
     print("\nrepeating melody", reps, "time(s) to line up with pno better...")
     for i in range(reps):
@@ -228,7 +228,7 @@ def pnoduet(instrument=None, tempo=None):
     # # melody exceeds chord length, since chords are getting shorter and shorter.
 
     # md = om.duration()
-    # cd = create.chordDurations(pno)
+    # cd = create.chord_durations(pno)
     # mlonger = False
     # if cd > md:
     #     diff = cd - md
@@ -291,7 +291,7 @@ def pnoduet(instrument=None, tempo=None):
 
     comp.melodies.append(m)
     comp.chords[0] = pno
-    comp.midiFileName = comp.title + '.mid'
+    comp.midi_file_name = comp.title + '.mid'
     # export MIDI file
     save(comp)
     # export .txt file
@@ -309,5 +309,5 @@ def pnoduet(instrument=None, tempo=None):
         print("duration:", dur, "minutes")
     else:
         print("duration:", dur, "seconds")
-    print("midi file:", comp.midiFileName)
+    print("midi file:", comp.midi_file_name)
     return "\nhooray!"
