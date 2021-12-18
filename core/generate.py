@@ -108,6 +108,29 @@ class Generate:
             name = 'Rando Calrissian'
         return name
 
+    # Intialize a new composition object
+    def init_comp(self, tempo=None, composer=None):
+        '''
+        Initializes a Composition() object by creating
+        the title, composer name
+        '''
+        comp = Composition()
+        comp.title = self.new_title()
+        if composer==None:
+            comp.composer = self.new_composer()
+        else:
+            comp.composer = composer
+        comp.date = date.now().strftime("%d-%b-%y %H:%M:%S")
+        if tempo==None:
+            comp.tempo = self.new_tempo()
+        elif tempo > 40.0 or tempo < 208.0:
+            comp.tempo = tempo
+        else:
+            comp.tempo = 60.0
+        comp.midi_file_name = comp.title + ".mid"
+        comp.txt_file_name = comp.title + ".txt"
+        return comp
+
 
     #--------------------------------------------------------------------------------#
     #-------------------------------------Tempo--------------------------------------#

@@ -22,18 +22,11 @@ def strqtet2(tempo=None):
 
     # initialize
     create = Generate()
-    comp = Composition()
-    comp.title = create.new_title()
-    comp.composer = create.new_composer()
-    comp.date = date.now().strftime("%d-%b-%y %H:%M:%S")
-    title_full = comp.title + "for string quartet"
     if tempo==None:
-        # using slow tempos (40-58)
-        comp.tempo = TEMPOS[randint(0,8)]
-    elif tempo > 40.0 or tempo < 208.0:
-        comp.tempo = tempo
+        comp = create.init_comp(TEMPOS[randint(0,8)])
     else:
-        comp.tempo = 60.0
+        comp = create.init_comp(tempo)
+    title_full = comp.title + "for string quartet"
 
     # create our quartet
     v1 = Melody(tempo=comp.tempo,

@@ -49,17 +49,7 @@ def strqtet(tempo=None):
 
     # objects
     create = Generate()
-    comp = Composition()
-    comp.title = create.new_title()
-    comp.composer = create.new_composer()
-    comp.date = date.now().strftime("%d-%b-%y %H:%M:%S")
-    title_full = comp.title + "for string quartet"
-    if tempo==None:
-        comp.tempo = create.new_tempo()
-    elif tempo > 40.0 or tempo < 208.0:
-        comp.tempo = tempo
-    else:
-        comp.tempo = 60.0
+    comp = create.init_comp(tempo)
 
     # initialize instrument objects and append to 
     # instrument list
@@ -79,7 +69,7 @@ def strqtet(tempo=None):
 
     # generate source scale for all string parts. 
     print("\ncreating modal source scale...")
-    scales = newSource(create)
+    scales = new_source(create)
     '''
     NOTE: There's probably a way to make the 4 loops below happen in one
           big one that happens 4 times...'''
