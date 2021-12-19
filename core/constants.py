@@ -49,6 +49,14 @@ though other values will be added eventually.
 RHYTHMS = [4.0, 3.0, 2.0, 1.5, 1.0, 
            0.75, 0.5, 0.375, 0.25, 0.125]
 
+'''
+MIDI doesn't actually have rests. Instead a "rest" is just a 
+completely silent note in a MIDI file, so rests need to be notated
+in the sheet music accordingly and be able to recognize the constant
+REST in a given composition object
+'''
+REST = 0
+
 
 # Base durations in seconds for tuplets where q = 60bpm
 TUPLETS = { 
@@ -1033,11 +1041,79 @@ ENSEMBLE_KEYS = [
     "orchestra"
 ]
 
-
 '''
-TODO: ADD INSTRUMENT RANGES DICTIONARY HERE!!!
-
+List of each possible note for a limited set of instruments
+Currently covers all of the orchestral instruments, plus a 
+few others. 
 '''
+
+RANGE = {
+    "Flute": ["C4", "C#4", "D4", "Eb4", "E4", "F4", "F#4", "G4", "G#4",
+              "A4", "Bb4", "B4", "C5", "C#5", "D5", "Eb5", "E5", "F5", 
+              "F#5", "G5", "G#5","A5", "Bb5", "B5", "C6", "C#6", "D6", 
+              "Eb6", "E6"],
+
+    "Oboe": ["Bb3", "B3", "C4", "C#4", "D4", "Eb4", "E4", "F4", "F#4", 
+             "G4", "G#4","A4", "Bb4", "B4", "C5", "C#5", "D5", "Eb5", 
+             "E5", "F5", "F#5", "G5", "C6", "C#6", "D6", "Eb6", "E6", 
+             "F6", "F#6", "G6"],
+
+    "Clarinet": ["G3", "G#3", "A3", "Bb3", "B3", "C4", "C#4", "D4", "Eb4", 
+                 "E4", "F4", "F#4", "G4", "G#4", "A4", "Bb4", "B4", "C5", 
+                 "C#5", "D5", "Eb5", "E5", "F5", "F#5", "G5", "G#5", "A5", 
+                 "Bb5", "B5", "C6", "C#6", "D6", "Eb6", "E6"],
+
+    "Bassoon": ["Bb2", "B2", "C3", "C#3", "D3", "Eb3", "E3", "F3", "F#3", 
+                "G3", "G#3", "A3", "Bb3", "B3", "C4", "C#4", "D4", "Eb4", 
+                "E4", "F4", "F#4", "G4", "G#4", "A4", "Bb4", "B4", "C5",],
+
+    "French Horn": ["F2", "F#2", "G2", "G#2", "A2", "Bb2", "B2", "C3", "C#3", 
+                    "D3", "Eb3", "E3", "F3", "F#3", "G3", "G#3", "A3", "Bb3", 
+                    "B3", "C4", "C#4", "D4", "Eb4", "E4", "F4"],
+
+    "Trumpet": ["Bb3", "B3", "C4", "C#4", "D4", "Eb4", "E4", "F4", "F#4", 
+                "G4", "G#4", "A4", "Bb4", "B4", "C5", "C#5", "D5", "Eb5", 
+                "E5", "F5"],
+
+    "Trombone": ["Bb1", "B1", "C2", "C#2", "D2", "Eb2", "E2", "F2", "F#2", 
+                 "G2", "G#2","A2", "Bb2", "B2", "C3", "C#3", "D3", "Eb3", 
+                 "E3", "F3", "F#3", "G3", "G#3", "A3", "Bb3"],
+
+    "Tuba": ["E1", "F1", "F#1", "G1", "G#1", "A1", "Bb1", "B1", "C2", "C#2", 
+             "D2", "Eb2", "E2", "F2", "F#2", "G2", "G#2", "A2", "Bb2", "B2", 
+             "C3", "C#3", "D3", "Eb3", "E3", "F3", "F#3", "G3", "G#3", "A3", 
+             "Bb3"],
+
+    "Violin": ["G3", "G#3", "A3", "Bb3", "B3", "C4", "C#4", "D4", "Eb4", "E4", 
+               "F4", "F#4", "G4", "G#4", "A4", "Bb4", "B4", "C5", "C#5", "D5", 
+               "Eb5", "E5", "F5", "F#5", "G5", "G#5", "A5", "Bb5", "B5", "C6", 
+               "C#6", "D6", "Eb6", "E6", "F6", "F#6", "G6", "G#6", "A6", "Bb6", 
+               "B6", "C7", "C#7", "D7", "Eb7", "E7"],
+
+    "Viola": ["C3", "C#3", "D3", "Eb3", "E3", "F3", "F#3", "G3", "G#3", "A3", 
+              "Bb3", "B3", "C4", "C#4", "D4", "Eb4", "E4", "F4", "F#4", "G4", 
+              "G#4", "A4", "Bb4", "B4", "C5", "C#5", "D5", "Eb5", "E5", "F5", 
+              "F#5", "G5", "G#5", "A5", "Bb5", "B5", "C6", "C#6", "D6", "Eb6", 
+              "E6", "F6", "F#6", "G6", "G#6", "A6"],
+
+    "Cello": ["C2", "C#2", "D2", "Eb2", "E2", "F2", "F#2", "G2", "G#2", "A2", 
+              "Bb2", "B2", "C3", "C#3", "D3", "Eb3", "E3", "F3", "F#3", "G3", 
+              "G#3", "A3", "Bb3", "B3", "C4", "C#4", "D4", "Eb4", "E4", "F4", 
+              "F#4", "G4", "G#4", "A4", "Bb4", "B4", "C5", "C#5", "D5", "Eb5", 
+              "E5", "F5", "F#5", "G5"],
+
+    "Contrabass": ["C1", "C#1", "D1", "Eb1", "E1", "F1", "F#1", "G1", "G#1",
+                   "A1", "Bb1", "B1", "C2", "C#2", "D2", "Eb2", "E2", "F2", 
+                   "F#2", "G2", "G#2", "A2", "Bb2", "B2", "C3", "C#3", "D3", 
+                   "Eb3", "E3", "F3", "F#3", "G3",],
+
+    # NOTE: guitar range includes de-tuning low e to D!
+    "Guitar": ["D3", "Eb3", "E3", "F3", "F#3", "G3", "G#3", "A3", "Bb3", 
+               "B3", "C4", "C#4", "D4", "Eb4", "E4", "F4", "F#4", "G4",
+               "G#4", "A4", "Bb4", "B4", "C5", "C#5", "D5", "Eb5", "E5", 
+               "F5", "F#5", "G5", "G#5", "A5", "Bb5", "B5",],
+
+}
 
 
 # MIDI instruments list (standard) 

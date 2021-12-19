@@ -31,16 +31,11 @@ duration of the longest part.
 
 # Imports
 from random import randint
-from datetime import datetime as date
-
 from utils.midi import save
 from utils.txtfile import save_info
 from utils.tools import scaletotempo
-
 from core.generate import Generate
-
 from containers.melody import Melody
-from containers.composition import Composition
 
 
 def strqtet(tempo=None):
@@ -250,8 +245,7 @@ def genfig(m, scales):
             # is this  last note towards the end of the
             # source scale? if so, go down, else go up
             # NOTE: check all scales in scales?
-            ind = m.notes.index(ln)
-            if ind >= len(m.source_scale) - 8:
+            if m.notes.index(ln) >= len(m.source_scale) - 8:
                 dn = True
             else:
                 up = True
@@ -370,7 +364,7 @@ def buildfig(m, arp):
         m.dynamics.extend(arp[2]) 
 
     # add dotted qtrs -> 16ths
-    r = [1.5, 1, 0.75, 0.5, 0.375, 0.25]
+    r = [1.5, 1.0, 0.75, 0.5, 0.375, 0.25]
     d = [60, 72, 88, 100, 108, 112]
     for k in range(6):
         print("\nadding rhy:", r[k], "...")
@@ -416,6 +410,7 @@ def sync(m, lp, arptuple):
     arp = arptuple[0]
     rhy = arptuple[1]
     dyn = arptuple[2]
+    '''
     while m.duration() <= lp:
         print("\n", m.instrument, "duration:", m.duration())
         print("longest part:", lp)
@@ -427,11 +422,12 @@ def sync(m, lp, arptuple):
                 print("exiting!")
                 break
     '''
-    while m.duration() < lp:
+    while m.duration() <= lp:
+        print("\n", m.instrument, "duration:", m.duration())
+        print("longest part:", lp)
         m.notes.extend(arptuple[0])
         m.dynamics.extend(arptuple[2])
-        m.rythms.extend(arptuple[1])
+        m.rhythms.extend(arptuple[1])
         if m.duration() == lp:
             break
-    '''
     return m

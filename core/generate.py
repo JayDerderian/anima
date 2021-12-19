@@ -12,6 +12,7 @@ from core.constants import(
     NOTES,
     PITCH_CLASSES, 
     RHYTHMS, 
+    REST,
     DYNAMICS, 
     TEMPOS, 
     INSTRUMENTS,
@@ -108,7 +109,7 @@ class Generate:
             name = 'Rando Calrissian'
         return name
 
-    # Intialize a new composition object
+    # Intialize a new composition object/form
     def init_comp(self, tempo=None, composer=None):
         '''
         Initializes a Composition() object by creating

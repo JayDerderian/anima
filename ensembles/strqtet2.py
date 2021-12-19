@@ -1,7 +1,10 @@
 '''
 this module handles another string quartet. this one is a simple choral
 each part will have the same rhythm and dynamics. notes are separate and
-independent'''
+independent
+
+NOTE: add looped arpeggios to each part based off the first four notes of 
+their part from the opening choral. '''
 
 # Imports
 from random import randint
