@@ -302,6 +302,8 @@ def scaletotempo(tempo, rhythms, revert=False):
     Converts a supplied float or list[float] of rhythmic values to
     actual value in seconds at a given tempo. can also convert back to base
     rhythmic values of revert is set to True.
+
+    Returns either a single float or list[float]
     
     ex: [base] q = 60, quarterNote = 1 sec, 
         [new tempo] q = 72, quarterNote = 0.8333(...) sec
@@ -327,7 +329,7 @@ def scaletotempo(tempo, rhythms, revert=False):
                 rhythms[i] /= diff
             rhythms[i] = round(rhythms[i], 3)
     else:
-        raise ValueError("incorrect input type. must be float or list of floats!")
+        raise ValueError("incorrect input type. must be single float or list of floats!")
     return rhythms
 
 

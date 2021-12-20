@@ -1046,7 +1046,6 @@ List of each possible note for a limited set of instruments
 Currently covers all of the orchestral instruments, plus a 
 few others. 
 '''
-
 RANGE = {
     "Flute": ["C4", "C#4", "D4", "Eb4", "E4", "F4", "F#4", "G4", "G#4",
               "A4", "Bb4", "B4", "C5", "C#5", "D5", "Eb5", "E5", "F5", 

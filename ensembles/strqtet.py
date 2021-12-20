@@ -90,23 +90,23 @@ def strqtet(tempo=None):
     durations = [v1.duration(), v2.duration(), va.duration(), vc.duration()]
     lp = max(durations)
 
-    print("\nv1 len:", v1.duration())
-    print("v2 len:", v2.duration())
-    print("va len:", va.duration())
-    print("vc len:", vc.duration())
+    print("\nv1 len:", durations[0])
+    print("v2 len:", durations[1])
+    print("va len:", durations[2])
+    print("vc len:", durations[3])
 
     print("\nlongest part:", lp)
 
-    if v1.duration() != lp:
+    if durations[0] != lp:
         v1 = buildfig(v1, arpv1)
         v1 = sync(v1, lp, arpv1)
-    if v2.duration() != lp:
+    if durations[1] != lp:
         v2 = buildfig(v2, arpv2)
         v2 = sync(v2, lp, arpv2)
-    if va.duration() != lp:
+    if durations[2] != lp:
         va = buildfig(va, arpva)
         va = sync(va, lp, arpva)
-    if vc.duration() != lp:
+    if durations[3] != lp:
         vc = buildfig(vc, arpvc)
         vc = sync(vc, lp, arpvc)
 
@@ -397,10 +397,6 @@ def sync(m, lp, arptuple):
     sync all other parts against a given duration
     (longeset part/lp)
     
-    TODO: get difference between current part and longest part, divide 
-    difference into equal sections devoted to repetitions of a specified
-    rhythm, then repeat each rhythm n times for their section
-    
     NOTE: attempting to do it one note/rhythm/dynamic at a time
     to achieve better precision. it's less efficient than
     simply using the list.extend() method though...'''
@@ -411,23 +407,27 @@ def sync(m, lp, arptuple):
     rhy = arptuple[1]
     dyn = arptuple[2]
     '''
-    while m.duration() <= lp:
+    # NOTE for some reason the for-loop isn't starting????
+    while m.duration() < lp:
         print("\n", m.instrument, "duration:", m.duration())
         print("longest part:", lp)
         for add in range(len(arp)):
+            print("note:", arp[add])
             m.notes.append(arp[add])
-            m.dynamics.append(dyn[add])
+            print("rhy:", rhy[add])
             m.rhythms.append(rhy[add])
+            print("dyn:", dyn[add])
+            m.dynamics.append(dyn[add])
             if m.duration() == lp:
                 print("exiting!")
                 break
     '''
-    while m.duration() <= lp:
+    while m.duration() < lp:
         print("\n", m.instrument, "duration:", m.duration())
         print("longest part:", lp)
-        m.notes.extend(arptuple[0])
-        m.dynamics.extend(arptuple[2])
-        m.rhythms.extend(arptuple[1])
+        m.notes.extend(arp)
+        m.rhythms.extend(rhy)
+        m.dynamics.extend(dyn)
         if m.duration() == lp:
             break
     return m

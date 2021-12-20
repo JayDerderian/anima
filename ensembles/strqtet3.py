@@ -1,7 +1,8 @@
 '''
 this module handles another string quartet. this one is a simple choral
-each part will have the same rhythm and dynamics. notes are separate and
-independent
+each part will have the same rhythm and dynamics. After this a free counter-
+point section ensues, then each part has a repeated 3-7 note figure that
+gets faster and faster, and louder and louder before ending. 
 
 NOTE: add looped arpeggios to each part based off the first four notes of 
 their part from the opening choral. '''
@@ -11,15 +12,16 @@ from random import randint
 from datetime import datetime as date
 
 from utils.midi import save
+from utils.tools import scaletotempo
 from utils.txtfile import save_info
 
 from core.generate import Generate
-from core.constants import RHYTHMS, TEMPOS
+from core.constants import DYNAMICS, RANGE, RHYTHMS, TEMPOS
 
 from containers.melody import Melody
 from containers.composition import Composition
 
-def strqtet2(tempo=None):
+def strqtet3(tempo=None):
     '''
     creates a choral for string quartet using a randomly chosen mode'''
 
@@ -53,8 +55,6 @@ def strqtet2(tempo=None):
     source = create.new_source_scale(notes)
     print("...using", notes[0], mode)
     print("...pcs:", pcs)
-
-    print("\nwriting choral...")
 
     # write individual lines
     total = randint(12, 30)
@@ -123,6 +123,12 @@ def strqtet2(tempo=None):
     vc.rhythms.extend(vc_orig.rhythms)
     vc.dynamics.extend(vc_orig.dynamics)
 
+    print("\ngenerating ending figure and repeating until closure...")
+    v1 = buildending(v1)
+    v2 = buildending(v2)
+    va = buildending(va)
+    vc = buildending(vc)
+
     # save all parts
     comp.melodies.append(v1)
     comp.melodies.append(v2)
@@ -161,27 +167,82 @@ def strqtet2(tempo=None):
 def writeline(m, scale, total, create, asyn=False):
     '''
     writes each individual melodic line for each part. 
-    **doesn't add rhythm or dynamics** only notes!!
-    only picks notes from a given source scale
+    **doesn't add rhythm or dynamics** if asyn==False,
+    which it is by default. if asyn== true, then supplied
+    total will be overwritten! still working on that
+    quirk...
     
-    returns a modified melody() object'''
+    returns a modified Melody() object'''
+
     if asyn:
         # NOTE: this will redefine supplied total if asyn is True
         total = randint(12, 30)
     for things in range(total):
         # limited to octaves 4 and 5 for violins
         if m.instrument == 'Violin':
-            m.notes.append(scale[randint(13, len(scale)-1)])
+            note = scale[randint(13, len(scale)-1)]
+            # trying to account for random notes chosen out of range...
+            if note not in RANGE["Violin"]:
+                while note not in RANGE["Violin"]:
+                    note = scale[randint(13, len(scale)-1)]
+            m.notes.append(note)
         # limit to octaves 3 and 4 for viola
         elif m.instrument == 'Viola':
-            m.notes.append(scale[randint(7, len(scale)-8)])
+            note = scale[randint(7, len(scale)-8)]
+            if note not in RANGE["Viola"]:
+                while note not in RANGE["Viola"]:
+                    note = scale[randint(7, len(scale)-8)]
+            m.notes.append(note)
         # limit to octaves 2 and 3 for cello
         elif m.instrument == 'Cello':
-            m.notes.append(scale[randint(0, len(scale)-16)])
+            note = scale[randint(0, len(scale)-16)]
+            if note not in RANGE["Cello"]:
+                while note not in RANGE["Cello"]:
+                    note = scale[randint(0, len(scale)-16)]
+            m.notes.append(note)
     
-    if asyn==True:
-        # add rhythms and dynamics, plus save source scale
+    if asyn:
+        # add independent rhythms and dynamics of n length
         m.rhythms.extend(create.new_rhythms(total=len(m.notes), tempo=m.tempo))
         m.dynamics.extend(create.new_dynamics(total=len(m.notes)))
 
+    return m
+
+def buildending(m):
+    '''
+    builds an arpeggio based off the last 3-7 notes and slowly shortens the rhythms
+    until they're 16th's, while increasing the volume of each note.
+    
+    returns a modified Melody() object'''
+
+    # get last 3-7 notes of melody
+    n = randint(3,7)
+
+    # build initial figure
+    fig = {"notes": [], "rhythms": [], "dynamics": []}
+    fig["notes"] = m.notes[-n:]
+    fig["rhythms"] = scaletotempo(m.tempo, [2.0] * n)
+    fig["dynamics"] = [100] * n
+
+    # add initial figure 2 times
+    for add in range(2):
+        m.notes.extend(fig["notes"])
+        m.rhythms.extend(fig["rhythms"])
+        m.dynamics.extend(fig["dynamics"])
+    # change each rhythm list to next quickest value, 
+    # and increase number of reps by 2 with each change.
+    # volume increases with each iteration.
+    cur = 2
+    rep = 4
+    dyn = 9 
+    while cur < 9:
+        fig["rhythms"] = scaletotempo(m.tempo, [RHYTHMS[cur]] * n)
+        fig["dynamics"] = [DYNAMICS[dyn]] * n
+        for i in range(rep):
+            m.notes.extend(fig["notes"])
+            m.rhythms.extend(fig["rhythms"])
+            m.dynamics.extend(fig["dynamics"])
+        cur+=1
+        rep+=2
+        dyn+=1
     return m
