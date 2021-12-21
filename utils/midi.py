@@ -93,7 +93,7 @@ def save(comp):
             if type(chords) == list:
                 strt = 0
                 end = chords[key].rhythm
-            elif type(chords) == object:
+            else:
                 strt = 0
                 end = chord.rhythm
             # create instrument object.

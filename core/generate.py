@@ -177,7 +177,8 @@ class Generate:
     #--------------------------------------------------------------------------------#
 
 
-    # Converts a given integer to a pitch in a specified octave (ex C#6)
+    # Converts a given integer to a pitch in a specified octave (ex C#6),
+    # or randomly selects a new one.
     def new_note(self, i=None, octave=None):
         '''
         Converts a given integer to a pitch in a specified octave (ex C#6), 
@@ -190,7 +191,7 @@ class Generate:
         if i==None:
             note = choice(PITCH_CLASSES)
         elif type(i) == int and i > -1 and i < len(PITCH_CLASSES):
-                note = PITCH_CLASSES[i]
+            note = PITCH_CLASSES[i]
         else:
             return -1
         if octave==None:
@@ -199,7 +200,7 @@ class Generate:
         return note    
 
 
-    # Generate a series of notes based off an inputted array of integers
+    # Generate a series of notes for a melody
     def new_notes(self, data=None, root=None, t=None):
         '''
         NOTE: modify to accomodate a specified instrument's range!
@@ -574,6 +575,8 @@ class Generate:
         where n is supplied from elsewhere. Uses infrequent repetition.
         Can also pick between 3 and 30 rhythms if no total is supplied.
 
+        Randomly selects REST to insert a rest into a composition.
+
         Uses infrequent repetition.
 
         NOTE: Supply a smaller value for 'total' if a shorter pattern 
@@ -587,15 +590,12 @@ class Generate:
             # Pick dynamic OR a rest
             if randint(0,1) == 1:
                 dynamic = choice(DYNAMICS)
-            else:
-                dynamic = REST
-            if dynamic != REST:
-                # repeat this non-rest dynamic?
-                if randint(1, 2) == 1:
+                # repeat?
+                if randint(1,2) == 1:
                     # Limit reps to no more than roughly 1/3 of the supplied total
                     limit = math.floor(total * 0.333333333333)
                     '''NOTE: This limit will increase rep levels w/longer totals
-                            May need to scale for larger lists'''
+                             May need to scale for larger lists'''
                     if limit == 0:
                         limit += 2
                     reps = randint(1, limit)
@@ -606,17 +606,17 @@ class Generate:
                 else:
                     dynamics.append(dynamic)
             else:
-                # repeat this REST?
+                dynamic = REST
+                # repeat?
                 if randint(1,2) == 1:
-                    # only repeat rests 2-5 times for now...
-                    reps = randint(2, 5)
+                    # only repeat rests 1-3 times for now...
+                    reps = randint(1, 3)
                     for i in range(reps):
                         dynamics.append(dynamic)
                         if len(dynamics) == total:
                             break
                 else:
                     dynamics.append(dynamic)
-
         return dynamics
 
 
@@ -882,9 +882,7 @@ class Generate:
         
         # Generate a melody
         if data != None and dt != None:
-            m = self.new_melody(tempo=comp.tempo, 
-                                data=data, 
-                                dataType=dt)
+            m = self.new_melody(tempo=comp.tempo, data=data, dt=dt)
             # pick instrument for melody
             m.instrument = self.new_instrument()
             comp.instruments.append(m.instrument)
@@ -898,10 +896,9 @@ class Generate:
         # Save melody info
         comp.melodies.append(m)
 
-        # Generate harmonies from this melody
-        ch = self.new_chords(total=len(m.notes), 
-                             tempo=comp.tempo, 
-                             scale=m.notes)
+        # Generate harmonies from this melody. Total is between half the number of notes
+        # in the melody and total num of notes.
+        ch = self.new_chords(total=randint(len(m.notes)/2, len(m.notes)), tempo=comp.tempo, scale=m.notes)
         # pick keyboard instrument and apply to all chord objects
         instr = INSTRUMENTS[randint(0, 8)]
         for i in range(len(ch)):

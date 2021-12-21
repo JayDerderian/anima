@@ -39,9 +39,7 @@ def organ(t=None):
     # 2 - 3
     source = new_source(create, scale_total=3, oct_total=2)
     for scale in range(len(source)):
-        chords = create.new_chords(total=randint(2,5),
-                                   tempo=comp.tempo, 
-                                   scale=source[scale])
+        chords = create.new_chords(total=randint(2,5), tempo=comp.tempo, scale=source[scale])
         for chord in range(len(chords)):
             chords[chord].instrument = 'Reed Organ'
     comp.chords = chords
