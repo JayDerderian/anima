@@ -179,9 +179,9 @@ def transpose(pcs, t, octeq=True):
         for note in range(len(pcs)):
             pcs[note] += t[note]
     else:
-        raise ValueError("incorrect input type. must be single int or list of ints!")
+        raise TypeError("incorrect input type. must be single int or list of ints!")
     # keep resulting pcs values between 0 and 11 by default.
-    if octeq==True:
+    if octeq:
         pcs = oe(pcs)
     return pcs
 
@@ -305,8 +305,8 @@ def scaletotempo(tempo, rhythms, revert=False):
 
     Returns either a single float or list[float]
     
-    ex: [base] q = 60, quarterNote = 1 sec, 
-        [new tempo] q = 72, quarterNote = 0.8333(...) sec
+    ex: [base] q = 60, quarter_note = 1 sec, 
+        [new tempo] q = 72, quarter_note = 0.8333(...) sec
 
     60/72 = .83 - The result becomes the converter value to multiply or divide
     all supplied durations against to get the new tempo-accurate durations in seconds.
@@ -329,7 +329,7 @@ def scaletotempo(tempo, rhythms, revert=False):
                 rhythms[i] /= diff
             rhythms[i] = round(rhythms[i], 3)
     else:
-        raise ValueError("incorrect input type. must be single float or list of floats!")
+        raise TypeError("incorrect input type. must be single float or list of floats!")
     return rhythms
 
 

@@ -109,5 +109,5 @@ def map_data(mel, data, dt):
         mel.source_data.append(str(data))
         data = hex_to_int_list(data)
     else:
-        raise ValueError("dataType value out of range!")
+        raise ValueError("dt value out of range! 1-4")
     return data, mel

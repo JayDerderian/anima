@@ -303,10 +303,10 @@ class Generate:
         if randint(1, 2) == 1:
             if t==True:
                 mode, pcs, scale = self.pick_scale(t=True)
-                info = '{} {}'.format(scale[0], mode)
+                info = '{}{}'.format(scale[0], mode)
             else:
                 mode, pcs, scale = self.pick_scale(t=False)
-                info = '{} {}'.format(scale[0], mode)
+                info = '{}{}'.format(scale[0], mode)
         else:
             if t==True:
                 fn, pcs, scale = self.pick_set(t=True)
@@ -688,6 +688,12 @@ class Generate:
             rhythm = scaletotempo(newchord.tempo, rhythm)
         newchord.rhythm = rhythm
         # pick a dynamic
+        dyn = self.new_dynamic()
+        # make sure this isn't a REST. if so, keep choosing until we get 
+        # a non-REST dynamic (d > 0)
+        if dyn == REST:
+            while dyn == REST:
+                dyn = self.new_dynamic()
         newchord.dynamic = self.new_dynamic()
         return newchord
 
@@ -801,6 +807,7 @@ class Generate:
         print("\nTotal dynamics:", len(m.dynamics))
         print("Dynamics:", m.dynamics)
 
+
     # Generate a melody from an array of integers (or not).
     def new_melody(self, tempo=None, data=None, dt=None):
         '''
@@ -870,18 +877,14 @@ class Generate:
         Returns a composition() object on success, or -1 on failure.
         '''
         # Initialize
-        comp = Composition()
-        comp.title = self.new_title()
-        comp.composer = self.new_composer()
-        comp.tempo = self.new_tempo()
-        comp.date = date.now().strftime("%d-%b-%y %H:%M:%S")
+        comp = self.init_comp()
         comp.ensemble = 'duet'
-        comp.midi_file_name = comp.title + '.mid'
-        comp.txt_file_name = comp.title + '.txt'
         
         # Generate a melody
         if data != None and dt != None:
-            m = self.new_melody(tempo=comp.tempo, data=data, dataType=dt)
+            m = self.new_melody(tempo=comp.tempo, 
+                                data=data, 
+                                dataType=dt)
             # pick instrument for melody
             m.instrument = self.new_instrument()
             comp.instruments.append(m.instrument)
@@ -896,7 +899,9 @@ class Generate:
         comp.melodies.append(m)
 
         # Generate harmonies from this melody
-        ch = self.new_chords(total=len(m.notes), tempo=comp.tempo, scale=m.notes)
+        ch = self.new_chords(total=len(m.notes), 
+                             tempo=comp.tempo, 
+                             scale=m.notes)
         # pick keyboard instrument and apply to all chord objects
         instr = INSTRUMENTS[randint(0, 8)]
         for i in range(len(ch)):
