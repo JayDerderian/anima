@@ -124,6 +124,7 @@ def strqtet3(tempo=None):
     vc.dynamics.extend(vc_orig.dynamics)
 
     print("\ngenerating ending figure and repeating until closure...")
+    
     v1 = buildending(v1)
     v2 = buildending(v2)
     va = buildending(va)

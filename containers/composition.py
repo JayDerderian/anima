@@ -75,25 +75,28 @@ class Composition():
         of the two. 
         '''
         # get melody totals
+        mlong = 0.0
+        clong = 0.0
         ml = 0.0
         cl = 0.0
-        mlg = 0.0
-        clg = 0.0
         if len(self.melodies) > 0:
-            # ml = 0.0
-            # mlg = 0.0
             for m in range(len(self.melodies)):
                 ml = self.melodies[m].duration()
-                if ml > mlg:
-                    mlg = ml
+                if ml > mlong:
+                    mlong = ml
         # get chord totals
         if len(self.chords) > 0:
-            # cl = 0.0
-            # clg = 0.0
-            for c in range(len(self.chords)):
-                chords = self.chords[c]
-                for chord in range(len(chords)):
-                    cl += chords[chord].rhythm
-                if cl > clg:
-                    clg = cl
-        return mlg if mlg > clg else clg
+            for prog in range(len(self.chords)):
+                c = self.chords[prog]
+                # entries might be a list of chord() objects or
+                # a single chord!
+                if type(c) == list:
+                    for chord in len(c):
+                        cl = chord.rhythm
+                    if cl > clong:
+                        clong = cl
+                else:
+                    cl = c.rhythm
+                    if cl > clong:
+                        clong = cl
+        return mlong if mlong > clong else clong

@@ -667,7 +667,7 @@ class Generate:
         while len(newchord.notes) < total:
             newchord.notes.append(choice(scale))
         # pick a rhythm and scale if needed
-        rhythm = self.newRhythm()
+        rhythm = self.new_rhythm()
         if newchord.tempo != 60:
             rhythm = scaletotempo(newchord.tempo, rhythm)
         newchord.rhythm = rhythm

@@ -10,6 +10,7 @@ representation very messy.
 '''
 
 # Imports
+from typing import List
 import urllib.request
 import pretty_midi as pm
 from random import choice
@@ -89,8 +90,12 @@ def save(comp):
         for i in range(len(comp.chords)):
             # retrieve current chord object list
             chords = comp.chords[key]
-            strt = 0
-            end = chords[key].rhythm
+            if type(chords) == list:
+                strt = 0
+                end = chords[key].rhythm
+            elif type(chords) == object:
+                strt = 0
+                end = chord.rhythm
             # create instrument object.
             instrument = pm.instrument_name_to_program(chords[i].instrument)
             chord = pm.Instrument(program=instrument)

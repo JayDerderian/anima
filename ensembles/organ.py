@@ -26,16 +26,18 @@ def organ(t=None):
     set t to a desired tempo, otherwise do nothing.
     
     exports a new midi file with name of the composition.'''
+    print("\nwriting organ piece...")
     create = Generate()
     if t == None:
         tempo = TEMPOS[randint(7,12)]
     comp = create.init_comp(tempo=tempo)
     comp.instruments.append('Reed Organ')
+    title_full = comp.title + "for solo organ"
 
     # generate 2-5 chords based off 2-4 
     # randomly chosen and built scales between octaves
     # 2 - 3
-    source = new_source(create, 2)
+    source = new_source(create, scale_total=3, oct_total=2)
     for scale in range(len(source)):
         chords = create.new_chords(total=randint(2,5),
                                    tempo=comp.tempo, 
@@ -43,6 +45,16 @@ def organ(t=None):
         for chord in range(len(chords)):
             chords[chord].instrument = 'Reed Organ'
     comp.chords = chords
+    print("\n\ntitle:", title_full)
+    print("composer:", comp.composer)
+    print("date:", comp.date)
+    print("tempo:", comp.tempo)
+    duration = comp.duration()
+    if duration > 60.0:
+        duration /=60.0
+        print("duration", duration, "minutes\n")
+    else:
+        print("duration:", duration, "seconds\n")
     save(comp)
 
 
