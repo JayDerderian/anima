@@ -589,22 +589,34 @@ class Generate:
                 dynamic = choice(DYNAMICS)
             else:
                 dynamic = REST
-            # Repeat this dynamic or not? 1 = yes, 2 = no
-            if randint(1, 2) == 1:
-                # Limit reps to no more than roughly 1/3 of the supplied total
-                limit = math.floor(total * 0.333333333333)
-                '''NOTE: This limit will increase rep levels w/longer totals
-                         May need to scale for larger lists'''
-                if limit == 0:
-                    limit += 2
-                reps = randint(1, limit)
-                for i in range(reps):
+            if dynamic != REST:
+                # repeat this non-rest dynamic?
+                if randint(1, 2) == 1:
+                    # Limit reps to no more than roughly 1/3 of the supplied total
+                    limit = math.floor(total * 0.333333333333)
+                    '''NOTE: This limit will increase rep levels w/longer totals
+                            May need to scale for larger lists'''
+                    if limit == 0:
+                        limit += 2
+                    reps = randint(1, limit)
+                    for i in range(reps):
+                        dynamics.append(dynamic)
+                        if len(dynamics) == total:
+                            break
+                else:
                     dynamics.append(dynamic)
-                    if len(dynamics) == total:
-                        break
             else:
-                # if dynamic not in dynamics:
+                # repeat this REST?
+                if randint(1,2) == 1:
+                    # only repeat rests 2-5 times for now...
+                    reps = randint(2, 5)
+                    for i in range(reps):
+                        dynamics.append(dynamic)
+                        if len(dynamics) == total:
+                            break
+                else:
                     dynamics.append(dynamic)
+
         return dynamics
 
 
