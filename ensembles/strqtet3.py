@@ -125,10 +125,22 @@ def strqtet3(tempo=None):
 
     print("\ngenerating ending figure and repeating until closure...")
     
-    v1 = buildending(v1)
-    v2 = buildending(v2)
-    va = buildending(va)
-    vc = buildending(vc)
+    v1, v1fig = buildending(v1)
+    v2, v2fig = buildending(v2)
+    va, vafig = buildending(va)
+    vc, vcfig = buildending(vc)
+
+    durations = [v1.duration(), v2.duration(), va.duration(), vc.duration()]
+    lp = max(durations)
+
+    if v1.duration() < lp:
+        v1 = sync(v1, lp, v1fig)
+    if v2.duration() < lp:
+        v2 = sync(v2, lp, v2fig)
+    if va.duration() < lp:
+        va = sync(va, lp, vafig)
+    if vc.duration() < lp:
+        vc = sync(vc, lp, vcfig)
 
     # save all parts
     comp.melodies.append(v1)
@@ -246,4 +258,11 @@ def buildending(m):
         cur+=1
         rep+=2
         dyn+=1
+    return m, fig
+
+def sync(m, lp, fig):
+    while m.duration() < lp:
+        m.notes.extend(fig["notes"])
+        m.rhythms.extend(fig["rhythms"])
+        m.dynamics.extend(fig["dynamics"])
     return m
