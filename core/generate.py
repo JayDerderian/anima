@@ -412,7 +412,7 @@ class Generate:
 
 
     # Generate derivative scales based on each note in a given scale.
-    def deriveScales(self, pcs, o=None):
+    def derive_scales(self, pcs, o=None):
         '''
         Generate derivative scales based on each note in a given scale.
         Requires a pitch class set (pcs) list[int] who's values are 
@@ -562,8 +562,9 @@ class Generate:
     def new_dynamic(self):
         '''
         Generates a single dynamic/velocity between 20 - 124
+        OR a single rest!
         '''
-        return choice(DYNAMICS)
+        return choice(DYNAMICS) if randint(0,1) == 1 else REST
 
 
     # Generate a list of dynamics.
@@ -583,8 +584,11 @@ class Generate:
         if total==None:
             total = randint(3, 30)
         while len(dynamics) < total:
-            # Pick dynamic
-            dynamic = choice(DYNAMICS)
+            # Pick dynamic OR a rest
+            if randint(0,1) == 1:
+                dynamic = choice(DYNAMICS)
+            else:
+                dynamic = REST
             # Repeat this dynamic or not? 1 = yes, 2 = no
             if randint(1, 2) == 1:
                 # Limit reps to no more than roughly 1/3 of the supplied total

@@ -56,7 +56,7 @@ def strqtet3(tempo=None):
     print("...using", notes[0], mode)
     print("...pcs:", pcs)
 
-    # write individual lines
+    # write individual *choral* lines
     total = randint(12, 30)
     v1 = writeline(v1, source, total, create)
     v2 = writeline(v2, source, total, create)
@@ -221,6 +221,7 @@ def writeline(m, scale, total, create, asyn=False):
 
     return m
 
+
 def buildending(m):
     '''
     builds an arpeggio based off the last 3-7 notes and slowly shortens the rhythms
@@ -259,6 +260,7 @@ def buildending(m):
         rep+=2
         dyn+=1
     return m, fig
+
 
 def sync(m, lp, fig):
     while m.duration() < lp:
