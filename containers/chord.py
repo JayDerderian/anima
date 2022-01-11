@@ -18,6 +18,7 @@ class Chord():
         self.info = ""
         self.pcs = []
         self.source_notes = []
+        self.source_data = []
         
         # Data
         if instrument==None and tempo==None:

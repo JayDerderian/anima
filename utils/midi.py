@@ -10,7 +10,7 @@ representation very messy.
 '''
 
 # Imports
-from typing import List
+from tqdm import trange
 import urllib.request
 import pretty_midi as pm
 from random import choice
@@ -52,14 +52,16 @@ def save(comp):
     
     Requires a composition() object.
 
-    NOTE: Might modify to allow for modified start times and ***RESTS***!!!
+    NOTE: Might modify to allow lists that contain both Melody() and Chord() objects!
+          guitar.py can't save using this method as it is.
     '''
     # create PM object. PM object is used to just write out the file.
     mid = pm.PrettyMIDI(initial_tempo=comp.tempo)
     
     # add melodies
     if len(comp.melodies) > 0:
-        for i in range(len(comp.melodies)):
+        for i in trange((len(comp.melodies)), desc='Saving melodies: '):
+        # for i in range(len(comp.melodies)):
             strt = 0
             end = comp.melodies[i].rhythms[0]
             # create melody instrument
@@ -87,17 +89,18 @@ def save(comp):
     if len(comp.chords) > 0:
         # iterate through a dictionary of chord() object lists.
         key = 0
-        for i in range(len(comp.chords)):
+        for i in trange((len(comp.chords)), desc='Saving harmonies: '):
+        # for i in range(len(comp.chords)):
             # retrieve current chord object list
             chords = comp.chords[key]
             if type(chords) == list:
                 strt = 0
                 end = chords[key].rhythm
+                instrument = pm.instrument_name_to_program(chords[i].instrument)
             else:
                 strt = 0
                 end = chord.rhythm
-            # create instrument object.
-            instrument = pm.instrument_name_to_program(chords[i].instrument)
+                instrument = pm.instrument_name_to_program(chords.instrument)
             chord = pm.Instrument(program=instrument)
             # iterate through current chord list
             for j in range(len(chords)):

@@ -6,6 +6,7 @@ classes in the analyze.py and modify.py files.
 
 # imports
 from random import randint, shuffle, choice
+from typing import Type
 
 from core.constants import NOTES, PITCH_CLASSES
 from containers.melody import Melody
@@ -19,7 +20,7 @@ def tostr(pcs, octave=None, octeq=True):
     Returns a list of strings representing pitches, i.e. C#, Gb or D5, Ab6, etc.
     '''
     scale = []
-    if octeq==True:
+    if octeq:
         # ensure oe is enforced in case octeq flag isn't 
         # set to False by mistake
         pcs = oe(pcs)
@@ -224,7 +225,7 @@ def invert(notes):
     # get list of intervals and invert values
     intr = getintervals(notes)
     for i in range(len(intr)):
-        if ispos(intr[i])==True:
+        if ispos(intr[i]):
             inverted.append(-abs(intr[i]))
         else:
             inverted.append(abs(intr[i]))
@@ -247,11 +248,11 @@ def frag(m):
     frag = Melody()
     # copy other info from supplied melody object to not miss anything 
     # important
-    data = m.getMetaData()
+    data = m.get_meta_data()
     frag.info = data[0]
     frag.pcs = data[1]
     frag.source_data = data[2]
-    frag.sourceScale = data[3]
+    frag.source_scale = data[3]
     frag.tempo = m.tempo
     frag.instrument = m.instrument
     # generate fragment. any subset will necessarily
@@ -342,12 +343,13 @@ def changedynamics(dyn, diff):
     # at 0 and increase by 4 until 127.
     if type(diff)!=int:
         raise TypeError("supplied value not an int!")
-    if type(diff)==int and diff % 4 != 0:
-        raise ValueError("supplied value not a multiple of four!")
-    if type(dyn)==int and dyn > 123:
-        raise ValueError("supplied dynamic is too high")
+    else:
+        if diff % 4 != 0:
+            raise ValueError("supplied value not a multiple of four!")
     # main alteration section
     if type(dyn)==int:
+        if dyn > 123:
+            raise ValueError("supplied dynamic is too high")
         dyn += diff
     elif type(dyn)==list:
         # only modify dynamics that will be within proper
@@ -358,3 +360,23 @@ def changedynamics(dyn, diff):
             else:
                 continue
     return dyn
+
+def checkrange(notes, ran):
+    '''
+    notes = list[str]
+    ran = list[str]
+
+    checks for and removes and removes any notes
+    not within the range of a given instrument.
+
+    returns a modified note list[str]
+    '''
+    if type(notes) != list:
+        raise TypeError("notes was not a list!") 
+    if type(ran) != list:
+        raise TypeError("ran was not a list!")
+    total = len(notes)-1
+    for n in range(total):
+        if notes[n] not in ran:
+            notes.remove(notes[n])
+    return notes

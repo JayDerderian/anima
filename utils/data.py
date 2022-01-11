@@ -12,10 +12,13 @@ from random import uniform
 from core.constants import ALPHABET
 
 # Generate a list of 10 - 50 random numbers between 0-200
-def new_ints():
+def new_ints(t=None):
     '''List of random integers between 0 and 500'''
     nums = []
-    total = randint(10, 50)
+    if t == None:
+        total = randint(10, 50)
+    else: 
+        total = t
     for i in range(total):
         nums.append(randint(0, 500))
     return nums

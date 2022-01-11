@@ -113,7 +113,10 @@ class Generate:
     def init_comp(self, tempo=None, composer=None):
         '''
         Initializes a Composition() object by creating
-        the title, composer name
+        the title, composer name, tempo, and file names:
+        (date, midi and txt file names)
+
+        tempo and composer name could also be provided.
         '''
         comp = Composition()
         comp.title = self.new_title()
@@ -166,10 +169,7 @@ class Generate:
         Generates a list of instruments of n length, where n is supplied from elsewhere.
         Returns a list.
         '''
-        instruments = []
-        while len(instruments) < total:
-            instruments.append(INSTRUMENTS[randint(0, 110)])
-        return instruments
+        return [INSTRUMENTS[randint(0, 110)] for i in range(total)]
 
 
     #--------------------------------------------------------------------------------#
@@ -193,7 +193,7 @@ class Generate:
         elif type(i) == int and i > -1 and i < len(PITCH_CLASSES):
             note = PITCH_CLASSES[i]
         else:
-            return -1
+            raise TypeError("wrong type for i! i supplied is:", type(i))
         if octave==None:
             octave = randint(2, 5)
         note = "{}{}".format(note, octave)
@@ -201,10 +201,8 @@ class Generate:
 
 
     # Generate a series of notes for a melody
-    def new_notes(self, data=None, root=None, t=None):
+    def new_notes(self, data=None, root=None, t=None, r=None):
         '''
-        NOTE: modify to accomodate a specified instrument's range!
-
         Generates a set of notes to be used as a melody. Can also
         use a specified root scale, and a specified note total.
 
@@ -268,7 +266,7 @@ class Generate:
                 n = 0
 
         # Randomly pick notes from the generated source scale to 
-        # create an arhythmic melody.
+        # create an arhythmic melody. 
         notes = []
         if data==None:
             # Total notes in melody will be between 3 and 
@@ -277,15 +275,29 @@ class Generate:
                 total = randint(3, len(scale))
             else:
                 total = randint(t-2, t)
-            for i in range(total):
-                notes.append(choice(scale))
+            # was a specified instrument range supplied?
+            if r:
+                for i in range(total):
+                    note = choice(scale)
+                    if note in r:
+                        notes.append(note)
+            else:
+                for i in range(total):
+                    notes.append(choice(scale))
 
         # ...Or pick notes according to integers in data array
         else:
             # Total number of notes is equivalent to the 
-            # number of elements in the data set
-            for i in range(len(data)):
-                notes.append(scale[data[i]])
+            # number of elements in the data set. Any supplied
+            # t doesn't matter since we're going of len(data) 
+            # for our total because reasons.
+            if r:
+                for d in range(len(data)):
+                    if scale[data[d]] in r:
+                        notes.append(scale[data[d]])
+            else:
+                for i in range(len(data)):
+                    notes.append(scale[data[i]])
 
         return notes, meta_data, scale
 
@@ -302,14 +314,14 @@ class Generate:
         '''
         # use mode? (1), or prime form (2)?
         if randint(1, 2) == 1:
-            if t==True:
+            if t:
                 mode, pcs, scale = self.pick_scale(t=True)
                 info = '{}{}'.format(scale[0], mode)
             else:
                 mode, pcs, scale = self.pick_scale(t=False)
                 info = '{}{}'.format(scale[0], mode)
         else:
-            if t==True:
+            if t:
                 fn, pcs, scale = self.pick_set(t=True)
                 info = '{} transposed to new root: {}'.format(fn, scale[0])
             else:
@@ -330,7 +342,7 @@ class Generate:
         '''
         scale = choice(SCALE_KEYS)
         pcs = SCALES[scale]
-        if t==True:
+        if t:
             pcs_t = transpose(pcs, randint(1, 11), octeq=False)
             notes = tostr(pcs_t, octave=o)
         else:
@@ -349,7 +361,7 @@ class Generate:
         '''
         fn = choice(FORTE_NUMBERS)
         pcs = SETS[fn]
-        if t==True:
+        if t:
             pcs_t = transpose(pcs, randint(1, 11), octeq=False)
             scale = tostr(pcs_t, octave=o)
         else:
@@ -546,8 +558,7 @@ class Generate:
                     if len(rhythms) == total:
                         break
             else:
-                # if rhythm not in rhythms:
-                    rhythms.append(rhythm)
+                rhythms.append(rhythm)
         # scale to given tempo, if provided and necessary.
         if tempo!=None and tempo!=60.0:
             rhythms = scaletotempo(tempo, rhythms)
@@ -569,7 +580,7 @@ class Generate:
 
 
     # Generate a list of dynamics.
-    def new_dynamics(self, total=None):
+    def new_dynamics(self, total=None, rests=True):
         '''
         Generates a list of dynamics (MIDI velocites) of n length, 
         where n is supplied from elsewhere. Uses infrequent repetition.
@@ -586,16 +597,44 @@ class Generate:
         dynamics = []
         if total==None:
             total = randint(3, 30)
-        while len(dynamics) < total:
-            # Pick dynamic OR a rest
-            if randint(0,1) == 1:
+        if rests:
+            while len(dynamics) < total:
+                # Pick dynamic OR a rest
+                if randint(0,1) == 1:
+                    dynamic = choice(DYNAMICS)
+                    # repeat?
+                    if randint(1,2) == 1:
+                        # Limit reps to no more than roughly 1/3 of the supplied total
+                        limit = math.floor(total * 0.333333333333)
+                        '''NOTE: This limit will increase rep levels w/longer totals
+                                May need to scale for larger lists'''
+                        if limit == 0:
+                            limit += 2
+                        reps = randint(1, limit)
+                        for i in range(reps):
+                            dynamics.append(dynamic)
+                            if len(dynamics) == total:
+                                break
+                    else:
+                        dynamics.append(dynamic)
+                else:
+                    dynamic = REST
+                    # repeat?
+                    if randint(1,2) == 1:
+                        # only repeat rests 1-3 times for now...
+                        reps = randint(1, 3)
+                        for i in range(reps):
+                            dynamics.append(dynamic)
+                            if len(dynamics) == total:
+                                break
+                    else:
+                        dynamics.append(dynamic)
+        else:
+            while len(dynamics) < total:
                 dynamic = choice(DYNAMICS)
                 # repeat?
                 if randint(1,2) == 1:
-                    # Limit reps to no more than roughly 1/3 of the supplied total
                     limit = math.floor(total * 0.333333333333)
-                    '''NOTE: This limit will increase rep levels w/longer totals
-                             May need to scale for larger lists'''
                     if limit == 0:
                         limit += 2
                     reps = randint(1, limit)
@@ -605,18 +644,7 @@ class Generate:
                             break
                 else:
                     dynamics.append(dynamic)
-            else:
-                dynamic = REST
-                # repeat?
-                if randint(1,2) == 1:
-                    # only repeat rests 1-3 times for now...
-                    reps = randint(1, 3)
-                    for i in range(reps):
-                        dynamics.append(dynamic)
-                        if len(dynamics) == total:
-                            break
-                else:
-                    dynamics.append(dynamic)
+
         return dynamics
 
 
@@ -649,8 +677,8 @@ class Generate:
         of chord() objects (chord progression).
         '''
         d = 0.0
-        for j in range(len(chords)):
-            d += chords[j].rhythm
+        for chord in range(len(chords)):
+            d += chords[chord].rhythm
         return d
 
 
@@ -680,8 +708,7 @@ class Generate:
         # how many notes in this chord?
         total = randint(2, 9)
         # pick notes and add to list (allows for doublings)
-        while len(newchord.notes) < total:
-            newchord.notes.append(choice(scale))
+        newchord.notes = [choice(scale) for c in range(total)]
         # pick a rhythm and scale if needed
         rhythm = self.new_rhythm()
         if newchord.tempo != 60:
@@ -723,6 +750,8 @@ class Generate:
         # Pick chords
         while len(chords) < total:
             newchord = self.new_chord(tempo, scale)
+            newchord.source_data = data
+            newchord.source_notes = source
             chords.append(newchord)
         return chords
 
@@ -809,12 +838,14 @@ class Generate:
 
 
     # Generate a melody from an array of integers (or not).
-    def new_melody(self, tempo=None, data=None, dt=None):
+    def new_melody(self, tempo=None, data=None, dt=None, t=None, r=None):
         '''
         Picks tempo, notes, rhythms, and dynamics, with or without a 
         supplied list from the user. It can process a list of ints 
         (dataType == 1), floats(2), single char strings/letters(3), 
         or a hex number, represented as a single string(4)
+
+        t = total notes, only works when data and dt == None! 
 
         If no data is supplied, then it will generate a melody anyways. 
 
@@ -841,11 +872,27 @@ class Generate:
 
         # Pick notes from scratch  
         if data==None:
-            m.notes, m.info, m.source_scale = self.new_notes()
+            if t==None:
+                if r==None:
+                    m.notes, m.info, m.source_scale = self.new_notes()
+                else:
+                    m.notes, m.info, m.source_scale = self.new_notes(r=r)
+            else:
+                if r==None:
+                    m.notes, m.info, m.source_scale = self.new_notes(t=t)
+                else:
+                    m.notes, m.info, m.source_scale = self.new_notes(t=t, r=r)
 
-        # Or use supplied data
+        # Or use supplied data ( supplied total(t),
+        # just does its thing)
         else:
             m.notes, m.info, m.source_scale = self.new_notes(data=data)
+            if r != None:
+                # find and remove any note not in the range 
+                # of this instrument if we care about this
+                for note in range(len(m.notes)):
+                    if m.notes[note] not in r:
+                        m.notes.remove[m.notes[note]]
 
         # Pick rhythms
         m.rhythms = self.new_rhythms(len(m.notes), m.tempo)

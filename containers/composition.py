@@ -42,11 +42,13 @@ class Composition():
         self.ensemble = ""
         # List of instruments
         self.instruments = []
-        # List of melody() objects. 
+        # List of melody() objects. Used for single-line instruments 
         self.melodies = []
         # List dictionary of chord() object lists (progressions). 
         # Key (int) functions as index. 
         self.chords = {}
+        # List of both melody() and chord() objects (for pianos and guitars). better name forthcoming.
+        self.melodichords = []
 
 
     # Has this instrument been picked?
