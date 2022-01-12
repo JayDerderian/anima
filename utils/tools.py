@@ -2,13 +2,20 @@
 a module containing a variety of tools to analyze and manipulate melody() 
 objects and chord() lists. these methods will likely be used in other large
 classes in the analyze.py and modify.py files.
+
+TODO: scale_limit()
+      copy() should be used to copy melody() or chord() objects
+
+      should also loot into __eq__ dunder method for classes. might 
+      not need to make my own copy() method, but we'll see...
+
 '''
 
 # imports
-from random import randint, shuffle, choice
-from typing import Type
+from random import randint, shuffle
 
 from core.constants import NOTES, PITCH_CLASSES
+
 from containers.melody import Melody
 
 
@@ -154,8 +161,11 @@ def transpose_c(chords, dist):
     return chords
 
 
-def transpose(pcs, t, octeq=True):
+def transpose(pcs:list[int], t:int , octeq=True):
     '''
+    pcs = list[int]
+    t = transposition distance (int)
+
     Transpose a pitch class or list of pitch classes (list[int]) 
     using a supplied interval i, or list of intervals i. 
 
@@ -167,11 +177,11 @@ def transpose(pcs, t, octeq=True):
     '''
     if type(pcs)!=list:
         raise TypeError("pcs must be a list[int]")
-    # modify with a single interval across all pitch-classes
+    # modify with a single interval across all pitch-class integers
     if type(t)==int:
         for note in range(len(pcs)):
             pcs[note] += t
-    # modify with a list of intervals across all pitch-classes. 
+    # modify with a list of intervals across all pitch-class integers. 
     # this allows for each pitch-class to be transposed by a unique
     # distance, allowing for rapid variation generation. 
     # it could also be a list of the same repeated value but that 
@@ -205,7 +215,7 @@ def oe(pitch):
     return pitch
 
 
-def retrograde(m):
+def retrograde(m:Melody):
     '''
     reverses the elements in a melody object (notes, rhythms, dynamics)
     returns a duplicated melody() object'''
@@ -216,7 +226,7 @@ def retrograde(m):
     return retro
 
 
-def invert(notes):
+def invert(notes: list[str]):
     '''
     inverts a melody. returns a new note list[str]'''
     
@@ -232,7 +242,7 @@ def invert(notes):
     # get index of first note. we don't need them all.
     # add first note index to new melody note list
     mel = []
-    mel.append(getindex(notes[0]))
+    mel.append(getindex(notes))
     # build new melody note list off this inverted interval list 
     for i in range(len(intr)):
         mel.append(mel[i]+inverted[i])
@@ -240,7 +250,7 @@ def invert(notes):
     return tostr(mel, octeq=False)
 
 
-def frag(m):
+def frag(m:Melody):
     '''
     randomly picks a subset of notes, rhythms, and dynamics (all
     from the same position in the melody) from a given melody and 
@@ -268,7 +278,7 @@ def frag(m):
     return frag
 
 
-def mutate(m):
+def mutate(m:Melody):
     '''
     randomly permutates the order of notes, rhythms, and dynamics
     in a given melody object. each list is permutated independently of 
@@ -282,7 +292,7 @@ def mutate(m):
     return mutant
 
 
-def rotate(notes):
+def rotate(notes: list[str]):
     '''
     moves the first note of a given list of notes
     to the end of the list.
@@ -292,9 +302,7 @@ def rotate(notes):
     of "modes."
 
     returns a list[str]'''
-    note = notes[0]
-    notes.remove(note)
-    notes.append(note)
+    notes.append(notes.pop(0))
     return notes
 
 
@@ -361,7 +369,7 @@ def changedynamics(dyn, diff):
                 continue
     return dyn
 
-def checkrange(notes, ran):
+def checkrange(notes:list[str], ran:list[str]):
     '''
     notes = list[str]
     ran = list[str]
@@ -370,13 +378,28 @@ def checkrange(notes, ran):
     not within the range of a given instrument.
 
     returns a modified note list[str]
+
+    see for more:
+    https://stackoverflow.com/questions/3428536/python-list-subtraction-operation
     '''
-    if type(notes) != list:
-        raise TypeError("notes was not a list!") 
-    if type(ran) != list:
-        raise TypeError("ran was not a list!")
-    total = len(notes)-1
-    for n in range(total):
-        if notes[n] not in ran:
-            notes.remove(notes[n])
+    # total = len(notes)-1
+    # for n in range(total):
+    #     if notes[n] not in ran:
+    #         notes.remove(notes[n])
+    # return notes
+    diff = [note for note in ran if note not in ran]
+    if len(diff) > 0:
+        difflen = len(diff)
+        for note in range(difflen):
+            notes.remove(diff[note])
     return notes
+
+def scale_limit(limit, total):
+    '''
+    scales repetition limits according to total notes
+    higher total == fewer reps, basically
+    '''
+    '''
+    TODO: implement...
+    '''
+    return 0

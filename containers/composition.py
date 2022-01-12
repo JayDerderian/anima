@@ -10,45 +10,31 @@ class Composition():
     ensemble type, instrument list, list of picked instruments, lists melodies, and 
     a dictionary of chord progressions.
     '''
-    # Constructor
+
     def __init__(self, title=None, composer=None, tempo=None):
 
-        if title==None and composer==None:
-            # Title
+        if title==None and composer==None:  # title and composer
             self.title = title
-            # Composer name
             self.composer = composer
         else:
             self.title = ""
             self.composer = ""
             
-        # Date of composition
-        self.date = ""
+        self.date = ""                      # date
 
-        # MIDI file name
-        # NOTE: May need to store individual user's file path here?
-        self.midi_file_name= ""
-        # Text file name
-        self.txt_file_name = ""
+        self.midi_file_name= ""             # midi file name
+        self.txt_file_name = ""             # text file name
 
-        # Global tempo (float)
-        if tempo != None:
+        if tempo != None:                   # global tempo
             self.tempo = tempo
         else:
-            # Default tempo if none is provided
             self.tempo = 60.0
 
-        # Ensemble size string ("duo", "trio", etc...)
-        self.ensemble = ""
-        # List of instruments
-        self.instruments = []
-        # List of melody() objects. Used for single-line instruments 
-        self.melodies = []
-        # List dictionary of chord() object lists (progressions). 
-        # Key (int) functions as index. 
-        self.chords = {}
-        # List of both melody() and chord() objects (for pianos and guitars). better name forthcoming.
-        self.melodichords = []
+        self.ensemble = ""                  # "trio," "duet", etc.. 
+        self.instruments = []               # list of all instruments in the piece
+        self.melodies = []                  # list of Melody() objects
+        self.chords = {}                    # dictionary of Chord() object lists
+        self.melodichords = []              # list of alternating Melody() and Chord() objects
 
 
     # Has this instrument been picked?

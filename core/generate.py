@@ -5,6 +5,7 @@ This module handles all generative methods.
 # IMPORTS
 import math
 import urllib.request
+from names import get_full_name
 from datetime import datetime as date
 from random import randint, sample, choice
 
@@ -85,29 +86,7 @@ class Generate:
 
     # Auto generate a random composer name
     def new_composer(self):
-        '''
-        Generate a random composer name (1-3 names)
-        '''
-        try:
-            # get word list
-            url = "https://svnweb.freebsd.org/csrg/share/dict/propernames?revision=61766&view=co"
-            # response = requests.get(url)
-            response = urllib.request.urlopen(url)
-            # decode data to text string
-            text = response.read().decode()
-            # separate names into list
-            names = text.splitlines()
-            # pick 1 to 4 random names
-            t = 0
-            total = randint(1, 3)
-            name = choice(names)
-            while(t < total):
-                name = name + ' ' + choice(names)
-                t += 1
-        except urllib.error.URLError:
-            print("\nnew_composer() - ERROR: Unable to retrieve name list!")
-            name = 'Rando Calrissian'
-        return name
+        return get_full_name()
 
     # Intialize a new composition object/form
     def init_comp(self, tempo=None, composer=None):
@@ -201,7 +180,7 @@ class Generate:
 
 
     # Generate a series of notes for a melody
-    def new_notes(self, data=None, root=None, t=None, r=None):
+    def new_notes(self, data=None, root=None, t=None):
         '''
         Generates a set of notes to be used as a melody. Can also
         use a specified root scale, and a specified note total.
@@ -213,8 +192,8 @@ class Generate:
             A supplied data list (list[int]) of n length functions as *index numbers* 
             against a generated "source scale" to select melody notes. 
         
-        User also has the option to  supply a "root" scale, though only if the program 
-        is accessing this method directly! newMelody() and other methods that call this 
+        User also has the option to supply a "root" scale, though only if the program 
+        is accessing this method directly! new_melody() and other methods that call this 
         function don't supply a root if none is chosen by the user.
 
         Returns a tuple: 
@@ -235,18 +214,18 @@ class Generate:
         if data==None:
             # Note that the main loop uses total + 1!
             if t==None:
-                total = randint(2, 29)
+                gentotal = randint(2, 29)
             else:
-                total = t
+                gentotal = t
         # Or the largest value of the supplied data set
         else:
-            total = max(data)
+            gentotal = max(data)
     
         # Generate source scale 
         '''NOTE: this only uses the supplied root scale once!'''
         n = 0
         scale = []
-        for i in range(total + 1):
+        for i in range(gentotal+1):
             # Pick note and add to list
             note = "{}{}".format(root[n], octave)
             scale.append(note)
@@ -271,19 +250,12 @@ class Generate:
         if data==None:
             # Total notes in melody will be between 3 and 
             # however many notes are in the source scale
-            if t == None:
-                total = randint(3, len(scale))
+            if t==None:
+                pick_total = randint(3, len(scale))
             else:
-                total = randint(t-2, t)
+                pick_total = randint(math.floor(t*0.5), t)
             # was a specified instrument range supplied?
-            if r:
-                for i in range(total):
-                    note = choice(scale)
-                    if note in r:
-                        notes.append(note)
-            else:
-                for i in range(total):
-                    notes.append(choice(scale))
+            notes = [choice(scale) for n in range(pick_total)]
 
         # ...Or pick notes according to integers in data array
         else:
@@ -291,13 +263,9 @@ class Generate:
             # number of elements in the data set. Any supplied
             # t doesn't matter since we're going of len(data) 
             # for our total because reasons.
-            if r:
-                for d in range(len(data)):
-                    if scale[data[d]] in r:
-                        notes.append(scale[data[d]])
-            else:
-                for i in range(len(data)):
-                    notes.append(scale[data[i]])
+            dl = len(data)
+            for i in range(dl):
+                notes.append(scale[data[i]])
 
         return notes, meta_data, scale
 
@@ -370,7 +338,7 @@ class Generate:
         
 
     # Generate a new scale
-    def new_scale(self, octave=None):
+    def new_scale(self, o=None):
         '''
         Returns a randomly generated 5 to 9 note scale with or without an octave 
         to be used as a 'root'. Can take an int as a starting octave 
@@ -394,7 +362,7 @@ class Generate:
         # sort in ascending order
         pcs.sort()
         # convert to strings (with or without supplied octave)
-        scale = tostr(pcs, octave)
+        scale = tostr(pcs, o)
         return scale, pcs   
 
 
@@ -444,10 +412,11 @@ class Generate:
         3. Repeat step 2 with next note in supplied pcs up to end of scale.        
         '''
         variants = {}
-        for i in range(len(pcs)):
+        pcsl = len(pcs)
+        for i in range(pcsl):
             sv = []
             note = pcs[i]
-            while len(sv) < len(pcs):
+            while len(sv) < pcsl:
                 note += randint(1, 3)
                 sv.append(note)
             variants[i] = sv
@@ -593,6 +562,9 @@ class Generate:
         NOTE: Supply a smaller value for 'total' if a shorter pattern 
               is needed. 'total' can be used to sync up with a given list or 
               be hard-coded.
+
+        TODO: develop a scale_limit() method in tools.py to handle limit scaling
+        
         '''
         dynamics = []
         if total==None:
@@ -664,7 +636,8 @@ class Generate:
     # Display a list of chords
     def display_chords(self, chords):
         print("\n----------------HARMONY DATA:-------------------")
-        for i in range(len(chords)):
+        cl = len(chords)
+        for i in range(cl):
             print('\n', i + 1, ': ', 'Notes:', chords[i].notes)
             print('      Rhythm:', chords[i].rhythm)
             print('      Dynamics:', chords[i].dynamic)
@@ -677,7 +650,8 @@ class Generate:
         of chord() objects (chord progression).
         '''
         d = 0.0
-        for chord in range(len(chords)):
+        cl = len(chords)
+        for chord in range(cl):
             d += chords[chord].rhythm
         return d
 
@@ -774,7 +748,8 @@ class Generate:
 
         NOTE: chords dont have tempo or instrument assigned!'''
         triads = []
-        for i in range(len(scale)):
+        sl = len(scale)
+        for i in range(sl):
             triad = Chord()
             try:
                 triad.notes = [scale[i], scale[i+2], scale[i+4]]
@@ -827,7 +802,7 @@ class Generate:
         print("\n-----------MELODY Data:------------")
         print("\nTempo:", m.tempo, "bpm")
         print("\nInstrument:", m.instrument)
-        print("\nSource data:", m.sourceData)
+        print("\nSource data:", m.source_data)
         print("\nInfo:", m.info)
         print("\nTotal Notes:", len(m.notes))
         print("Notes:", m.notes)
@@ -890,7 +865,8 @@ class Generate:
             if r != None:
                 # find and remove any note not in the range 
                 # of this instrument if we care about this
-                for note in range(len(m.notes)):
+                ml = len(m.notes)
+                for note in range(ml):
                     if m.notes[note] not in r:
                         m.notes.remove[m.notes[note]]
 
