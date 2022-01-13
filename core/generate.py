@@ -328,6 +328,12 @@ class Generate:
         note list (list[str]) *without an assigned octave*
         '''
         fn = choice(FORTE_NUMBERS)
+        '''NOTE: for some reason 7-z38A8-1 keeps getting selected
+                 even though it's not in FORTE_NUMBERS, so this brute-force
+                 while-loop is a temp fix until I figure that out. 
+                 i suspect its some sort of caching error somewhere...'''           
+        while fn=='7-z38A8-1': 
+            fn = choice(FORTE_NUMBERS)
         pcs = SETS[fn]
         if t:
             pcs_t = transpose(pcs, randint(1, 11), octeq=False)

@@ -43,6 +43,5 @@ class Melody():
     # Get meta-data
     def get_meta_data(self):
         '''
-        returns meta-data as a 4-part tuple
-        (info, pcs, sourceData, sourceScale)'''
-        return self.info, self.pcs, self.source_data, self.source_scale
+        returns meta-data as a dictionary'''
+        return {"Info": self.info, "PCS": self.pcs, "Source Data": self.source_data, "Source Scale": self.source_scale}

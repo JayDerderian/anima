@@ -35,6 +35,10 @@ class Chord():
     # get meta-data
     def get_meta_data(self):
         '''
-        returns meta-data as a 3-part tuple
-        (info, pcs, source_notes)'''
-        return self.info, self.pcs, self.source_notes 
+        returns meta-data as a dictionary'''
+        return {"Info": self.info, "PC": self.pcs, "Source Notes": self.source_notes, "Source Data": self.source_data}
+
+    # get duration
+    def duration(self):
+        '''returns the assigned rhythm, which is in seconds adjusted for tempo (hopefully)'''
+        return self.rhythm 

@@ -96,12 +96,10 @@ def save(comp):
     # add melodichords
     if len(comp.melodichords) > 0:
 
-        '''NOTE NOT TESTED YET'''
-        
         for item in trange((len(comp.melodichords)), desc='Saving harm & mel: '):
 
             # is this a melody object?
-            if type(comp.melodichords[item]) == Melody:
+            if isinstance(comp.melodichords[item], Melody):
 
                 print("saving melody...")
 
@@ -129,7 +127,10 @@ def save(comp):
                 mid.instruments.append(mel)
 
             # or a chord object?
-            elif type(comp.melodichords[item]) == Chord:
+            elif isinstance(comp.melodichords[item], Chord):
+                
+                print("saving chord...")
+
                 strt = 0
                 end = chord.rhythm
                 instrument = pm.instrument_name_to_program(comp.melodichords[item].instrument)
@@ -145,9 +146,9 @@ def save(comp):
                 try:
                     # increment strt/end times
                     strt += comp.melodichords[item].rhythm
-                    if type(comp.melodichords[item+1]) == Chord:
+                    if isinstance(comp.melodichords[item+1], Chord):
                         end += comp.melodichords[item+1].rhythm
-                    elif type(comp.melodichords[item]) == Melody:
+                    elif isinstance(comp.melodichords[item], Melody):
                         end += comp.melodichords[item+1].rhythm[0]
                 except IndexError:
                     break

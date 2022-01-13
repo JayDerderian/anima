@@ -2,6 +2,10 @@
 Module for handling all composition data. Contains a Composition() class/container. 
 '''
 
+from containers.chord import Chord
+from containers.melody import Melody
+
+
 class Composition():
     '''
     This is a container for all things related to a stand-alone music composition. 
@@ -59,10 +63,9 @@ class Composition():
         Returns the duration of a composition in seconds.
 
         Finds the longest melody duration, the longest chord 
-        progression duration, compares then returns the largest 
-        of the two. 
+        progression duration, and the longest melodichord duration,
+        compares them then returns the largest of the three. 
         '''
-        # get melody totals
         mlong = 0.0
         clong = 0.0
         ml = 0.0
@@ -87,4 +90,21 @@ class Composition():
                     cl = c.rhythm
                     if cl > clong:
                         clong = cl
+        # get melodichord totals
+        if len(self.melodichords) > 0:
+            mclen = len(self.melodichords)
+            for item in range(mclen):
+                if isinstance(self.melodichords[item], Melody):
+                    ml = self.melodichords[item].duration()
+                    if ml > mlong:
+                        mlong = ml
+                elif isinstance(self.melodichords[item], Chord):
+                    cl = self.melodichords[item].duration()
+                    if cl > clong:
+                        clong = cl
+
         return mlong if mlong > clong else clong
+    
+    def get_info(self):
+        '''returns a dictionary with the title, composer, and duration'''
+        return {"Title": self.title, "Composer": self.composer, "Duration": self.duration()}
