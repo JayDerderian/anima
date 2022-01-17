@@ -28,7 +28,7 @@ from core.constants import(
 from utils.mapping import map_data
 from utils.txtfile import save_info
 from utils.midi import save
-from utils.tools import tostr, transpose, oe, scaletotempo
+from utils.tools import getpcs, tostr, transpose, oe, scaletotempo
 
 from containers.chord import Chord
 from containers.melody import Melody
@@ -148,7 +148,7 @@ class Generate:
         Generates a list of instruments of n length, where n is supplied from elsewhere.
         Returns a list.
         '''
-        return [INSTRUMENTS[randint(0, 110)] for i in range(total)]
+        return [INSTRUMENTS[randint(0, 110)] for inst in range(total)]
 
 
     #--------------------------------------------------------------------------------#
@@ -169,10 +169,10 @@ class Generate:
         '''
         if i==None:
             note = choice(PITCH_CLASSES)
-        elif type(i) == int and i > -1 and i < len(PITCH_CLASSES):
+        elif type(i)==int and i > -1 and i < len(PITCH_CLASSES):
             note = PITCH_CLASSES[i]
         else:
-            raise TypeError("wrong type for i! i supplied is:", type(i))
+            raise TypeError("wrong type or value for i! i type is:", type(i))
         if octave==None:
             octave = randint(2, 5)
         note = "{}{}".format(note, octave)
@@ -365,10 +365,8 @@ class Generate:
                 pcs.append(n)
         '''Trying to create a list comprehension version of the above loop...'''
         # pcs = [randint(0,11) for x in range(total) if x not in pcs]
-        # sort in ascending order
-        pcs.sort()
-        # convert to strings (with or without supplied octave)
-        scale = tostr(pcs, o)
+        pcs.sort() # sort in ascending order
+        scale = tostr(pcs, o) # convert to strings (with or without supplied octave)
         return scale, pcs   
 
 
@@ -458,7 +456,7 @@ class Generate:
         Returns a list of 11 non-repeating intervals to generate 12-tone row
         transpositions.
         '''
-        return sample(INTERVALS[1], len(INTERVALS[1]))
+        return sample(INTERVALS["Chromatic Scale"], len(INTERVALS["Chromatic Scale"]))
 
 
     # reverses a melody and appends to end to create a palindrome
@@ -551,7 +549,7 @@ class Generate:
         Generates a single dynamic/velocity between 20 - 124
         OR a single rest!
         '''
-        return choice(DYNAMICS) if randint(0,1) == 1 else REST
+        return choice(DYNAMICS) if randint(0,1)==1 else REST
 
 
     # Generate a list of dynamics.
@@ -568,9 +566,6 @@ class Generate:
         NOTE: Supply a smaller value for 'total' if a shorter pattern 
               is needed. 'total' can be used to sync up with a given list or 
               be hard-coded.
-
-        TODO: develop a scale_limit() method in tools.py to handle limit scaling
-        
         '''
         dynamics = []
         if total==None:
@@ -670,38 +665,29 @@ class Generate:
         
         Returns a chord() object. Does not assign an instrument!
         '''
-        # new chord() object
-        newchord = Chord()
-        # add tempo if one isn't supplied
+        
+        newchord = Chord() 
         if tempo==None:
             newchord.tempo = 60.0
         else:
             newchord.tempo = tempo
-        # pick or generate a new scale if we don't get one supplied
         if scale==None:
-            if randint(1, 2) == 1:
+            # pick an existing scale/set or make a new one?
+            if randint(1, 2) == 1: 
                 scale, newchord.info = self.pick_root(o=randint(2,5))
+                newchord.pcs = getpcs(scale)
             else:
-                scale, newchord.info = self.new_scale(octave=randint(2,5))
-        # save original scale
+                scale, newchord.pcs = self.new_scale(o=randint(2,5))
+                newchord.info = "Invented Scale"
         newchord.source_notes = scale
-        # how many notes in this chord?
+        # notes, rhythms, dynamics...
         total = randint(2, 9)
-        # pick notes and add to list (allows for doublings)
         newchord.notes = [choice(scale) for c in range(total)]
-        # pick a rhythm and scale if needed
         rhythm = self.new_rhythm()
         if newchord.tempo != 60:
             rhythm = scaletotempo(newchord.tempo, rhythm)
         newchord.rhythm = rhythm
-        # pick a dynamic
-        dyn = self.new_dynamic()
-        # make sure this isn't a REST. if so, keep choosing until we get 
-        # a non-REST dynamic (d > 0)
-        if dyn == REST:
-            while dyn == REST:
-                dyn = self.new_dynamic()
-        newchord.dynamic = self.new_dynamic()
+        newchord.dynamic = self.new_dynamics(total=1, rests=False)
         return newchord
 
 

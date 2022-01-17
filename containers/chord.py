@@ -1,7 +1,6 @@
 '''
 This module contains the Chord() class, used to contain information unique to Chord() objects.
 '''
-
 class Chord():
     '''
     A class/container for managing all data relevant to a single chord. 
@@ -15,7 +14,7 @@ class Chord():
         Initialize with several empty lists. Use any inputted instrument or tempo data!
         '''
         # Metadata
-        self.info = ""
+        self.info = "None"
         self.pcs = []
         self.source_notes = []
         self.source_data = []
@@ -32,13 +31,14 @@ class Chord():
         self.rhythm = 0.0
         self.dynamic = 0.0
 
-    # get meta-data
-    def get_meta_data(self):
-        '''
-        returns meta-data as a dictionary'''
-        return {"Info": self.info, "PC": self.pcs, "Source Notes": self.source_notes, "Source Data": self.source_data}
-
     # get duration
     def duration(self):
         '''returns the assigned rhythm, which is in seconds adjusted for tempo (hopefully)'''
         return self.rhythm 
+
+    # get meta-data
+    def get_meta_data(self):
+        '''
+        returns meta-data as a dictionary'''
+        return {"Info": self.info, "PCs": self.pcs, "Source Notes": self.source_notes, "Source Data": self.source_data}
+

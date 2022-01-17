@@ -52,7 +52,6 @@ though other values will be added eventually.
     [7] 0.375 = dotted sixteenth
     [8] 0.25 = sixteenth 
     [9] 0.125 = thirty-second
-    [10] 0 = REST
 ''' 
 RHYTHMS = [4.0, 3.0, 2.0, 1.5, 1.0, 
            0.75, 0.5, 0.375, 0.25, 0.125]
@@ -279,34 +278,23 @@ NOTE: Develop interval sets that begin with 2 and end with 2,
         db, eb, f, g, ab, bB, cb, db,
         d, e, f#, g#, a, b, c, d ...ect.  
 '''
+
+# intervals between notes in semi-tones
 INTERVALS = {
-    # Transposition distances in semi-tones
-    1: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
-    # Major
-    2: [2, 2, 1, 2, 2, 2, 1],
-    # Natural minor
-    3: [2, 1, 2, 2, 1, 2, 2],
-    # Melodic minor
-    4: [2, 1, 2, 2, 2, 2, 1],
-    # Harmonic minor
-    5: [2, 1, 2, 2, 1, 3],
-    # Whole tone
-    6: [2, 2, 2, 2, 2],
-    # Octatonic
-    7: [2, 1, 2, 1, 2, 1, 2],
-    # Major triad
-    8: [4, 3],
-    # Minor triad
-    9: [3, 4],
-    # Diminished triad
-    10: [3, 3],
-    # Augmented triad
-    11: [4, 4]
+    "Chromatic Scale" : [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],   
+    "Major Scale":      [2, 2, 1, 2, 2, 2, 1],                 
+    "Natural Minor":    [2, 1, 2, 2, 1, 2, 2],                 
+    "Melodic Minor":    [2, 1, 2, 2, 2, 2, 1],                 
+    "Harmonic Minor":   [2, 1, 2, 2, 1, 3],                    
+    "Whole Tone":       [2, 2, 2, 2, 2],                       
+    "Octatonic":        [2, 1, 2, 1, 2, 1, 2],                
+    "Maj Triad":        [4, 3], 
+    "Min Triad":        [3, 4],  
+    "Dim Triad":        [3, 3],  
+    "Aug Triad":        [4, 4] 
 }
 
 
-# dictionary of pitch class integers (starting on C) to generate ascending apreggios.
-# must be mapped against CHROMATIC_SCALE to generate strings using toStr()
 
 # NOTE: figure out to account of octaves if pcs below are transposed!
 ARPEGGIOS = {
@@ -1051,7 +1039,7 @@ ENSEMBLE_KEYS = [
 '''
 List of each possible note for a limited set of instruments
 Currently covers all of the orchestral instruments, plus a 
-few others. 
+few others in CONCERT pitch!. 
 '''
 RANGE = {
     
@@ -1134,7 +1122,7 @@ RANGE = {
 
 
 # MIDI instruments list (standard) 
-# NOTE:Indicies 0 - 110 are MELODIC/HARMONIC instruments!
+# NOTE: indicies 0 - 110 are MELODIC/HARMONIC instruments!
 INSTRUMENTS = [
     # 0-8: keyboards
     'Acoustic Grand Piano', 

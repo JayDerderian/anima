@@ -9,8 +9,8 @@ representation very messy.
   
 '''
 
-from tqdm import trange
 import pretty_midi as pm
+from tqdm import trange
 from containers.melody import Melody
 from containers.chord import Chord
 
@@ -22,17 +22,14 @@ def save(comp):
     Exports a MIDI file for any sized composition (1 solo melody to ensemble sized n). 
     
     Requires a composition() object.
-
-    NOTE: Might modify to allow lists that contain both Melody() and Chord() objects!
-          guitar.py can't save using this method as it is.
     '''
     # create PM object. PM object is used to just write out the file.
     mid = pm.PrettyMIDI(initial_tempo=comp.tempo)
     
     # add melodies
     if len(comp.melodies) > 0:
-        for i in trange((len(comp.melodies)), desc='Saving melodies: '):
-        # for i in range(len(comp.melodies)):
+        ml = len(comp.melodies)
+        for i in range(ml):
             strt = 0
             end = comp.melodies[i].rhythms[0]
             # create melody instrument
@@ -60,8 +57,8 @@ def save(comp):
     if len(comp.chords) > 0:
         # iterate through a dictionary of chord() object lists.
         key = 0
-        for i in trange((len(comp.chords)), desc='Saving harmonies: '):
-        # for i in range(len(comp.chords)):
+        cl = len(comp.chords)
+        for i in range(cl):
             # retrieve current chord object list
             chrds = comp.chords[key]
             if type(chrds) == list:
@@ -96,14 +93,22 @@ def save(comp):
     # add melodichords
     if len(comp.melodichords) > 0:
 
-        for item in trange((len(comp.melodichords)), desc='Saving harm & mel: '):
+        '''NOTE: figure out a way to check next object type when incrementing strt and end
+                 next melody -> comp.melodichords[item+1].rhythm[0]
+                 next chord -> comp.melodichords[item+1].rhythm '''
+        
+        strt = 0
+        l = len(comp.melodichords)
+
+        # MAIN LOOP
+        for item in range(l):
 
             # is this a melody object?
             if isinstance(comp.melodichords[item], Melody):
 
                 print("saving melody...")
 
-                strt = 0
+                # strt = 0
                 end = comp.melodichords[item].rhythms[0]
                 # create melody instrument
                 instrument = pm.instrument_name_to_program(comp.melodichords[item].instrument)
@@ -123,6 +128,7 @@ def save(comp):
                         end += comp.melodichords[item].rhythms[j+1]
                     except IndexError:
                         break
+
                 # add melody to instrument list
                 mid.instruments.append(mel)
 
@@ -131,8 +137,8 @@ def save(comp):
                 
                 print("saving chord...")
 
-                strt = 0
-                end = chord.rhythm
+                # strt = 0
+                end = comp.melodichords[item].rhythm
                 instrument = pm.instrument_name_to_program(comp.melodichords[item].instrument)
                 ci = pm.Instrument(program=instrument)
 
@@ -157,4 +163,3 @@ def save(comp):
     # write to MIDI file
     print("\nsaving", comp.midi_file_name, "...")
     mid.write(f'./midi/{comp.midi_file_name}')
-    return 0

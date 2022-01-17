@@ -43,5 +43,14 @@ class Melody():
     # Get meta-data
     def get_meta_data(self):
         '''
-        returns meta-data as a dictionary'''
+        returns meta-data as a dictionary
+        '''
         return {"Info": self.info, "PCS": self.pcs, "Source Data": self.source_data, "Source Scale": self.source_scale}
+    
+    # get pitch classes
+    def get_pcs(self):
+        '''
+        return a list[int] of all pitch classes in this melody. may need to use tools.getpcs() prior
+        to calling this
+        '''
+        return self.pcs

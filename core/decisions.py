@@ -1,5 +1,12 @@
 '''
 This module handles all large-scale decision making with regards to each composition mode. 
+
+This should essentially be a wrapper for the generate module, wherein this module applies
+weighted decisions towards the randomly generated material from the various methods in 
+the generate file. 
+
+This should also handle all large-scale decision making with regards to some "higher" level
+compositon "modes" (i.e. styles - "minimalise" mode, "tonal" mode, "12-tone mode", etc...)
 '''
 
 '''

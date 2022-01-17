@@ -36,10 +36,12 @@ class Composition():
 
         self.ensemble = ""                  # "trio," "duet", etc.. 
         self.instruments = []               # list of all instruments in the piece
+        self.bars = []                      # list of Bar() objects
         self.melodies = []                  # list of Melody() objects
-        self.chords = {}                    # dictionary of Chord() object lists
-        self.melodichords = []              # list of alternating Melody() and Chord() objects
-
+        self.chords = {}                    # dictionary of Chord() objects or lists of Chord() objects
+        self.melodichords = []              # list of alternating Melody() and Chord() objects for instruments
+                                            # that can play both (like a piano, guitar, etc...)
+        self.percussion = []                # list of percussion instruments
 
     # Has this instrument been picked?
     def is_picked(self, instr):
@@ -56,6 +58,15 @@ class Composition():
         Compares against an externally generated instrument list.
         '''
         return True if instruments==self.instruments else False
+
+    # get info about composition
+    def get_info(self):
+        '''
+        Returns a dictionary with the title, composer, duration, midi and txt file names
+        '''
+        return {"Title": self.title, "Composer": self.composer, "Ensemble": self.ensemble,
+                "Instruments": self.instruments, "Duration": self.duration(), 
+                "MIDI file": self.midi_file_name, "Text File": self.txt_file_name}
 
     # Get duration of composition
     def duration(self):
@@ -105,6 +116,9 @@ class Composition():
 
         return mlong if mlong > clong else clong
     
-    def get_info(self):
-        '''returns a dictionary with the title, composer, and duration'''
-        return {"Title": self.title, "Composer": self.composer, "Duration": self.duration()}
+    def duration_str(self):
+        '''
+        returns the compositions duration as a formatted string
+        '''
+        min, sec = divmod(self.duration(), 60)
+        return str(min) + " min " + str(sec) + " sec "

@@ -7,9 +7,8 @@ gets faster and faster, and louder and louder before ending.
 NOTE: add looped arpeggios to each part based off the first four notes of 
 their part from the opening choral. '''
 
-# Imports
+
 from random import randint
-from datetime import datetime as date
 
 from utils.midi import save
 from utils.tools import scaletotempo
@@ -19,7 +18,7 @@ from core.generate import Generate
 from core.constants import DYNAMICS, RANGE, RHYTHMS, TEMPOS
 
 from containers.melody import Melody
-from containers.composition import Composition
+
 
 def strqtet3(tempo=None):
     '''
@@ -195,23 +194,20 @@ def writeline(m, scale, total, create, asyn=False):
         if m.instrument == 'Violin':
             note = scale[randint(13, len(scale)-1)]
             # trying to account for random notes chosen out of range...
-            if note not in RANGE["Violin"]:
-                while note not in RANGE["Violin"]:
-                    note = scale[randint(13, len(scale)-1)]
+            while note not in RANGE["Violin"]:
+                note = scale[randint(13, len(scale)-1)]
             m.notes.append(note)
         # limit to octaves 3 and 4 for viola
         elif m.instrument == 'Viola':
             note = scale[randint(7, len(scale)-8)]
-            if note not in RANGE["Viola"]:
-                while note not in RANGE["Viola"]:
-                    note = scale[randint(7, len(scale)-8)]
+            while note not in RANGE["Viola"]:
+                note = scale[randint(7, len(scale)-8)]
             m.notes.append(note)
         # limit to octaves 2 and 3 for cello
         elif m.instrument == 'Cello':
             note = scale[randint(0, len(scale)-16)]
-            if note not in RANGE["Cello"]:
-                while note not in RANGE["Cello"]:
-                    note = scale[randint(0, len(scale)-16)]
+            while note not in RANGE["Cello"]:
+                note = scale[randint(0, len(scale)-16)]
             m.notes.append(note)
     
     if asyn:

@@ -11,11 +11,8 @@ TODO: scale_limit()
 
 '''
 
-# imports
 from random import randint, shuffle
-
 from core.constants import NOTES, PITCH_CLASSES
-
 from containers.melody import Melody
 
 
@@ -43,6 +40,9 @@ def tostr(pcs, octave=None, octeq=True):
     else:
         # this only uses pcs, even if an octave is supplied.
         # NOTES has note strings with assigned octaves. 
+        # assigning an octave value as an arg is redundant 
+        # here since a list of any ints such that 
+        # i < len(NOTES) will do.
         for i in range(len(pcs)):
             scale.append(NOTES[pcs[i]])  
     return scale
@@ -51,7 +51,8 @@ def tostr(pcs, octave=None, octeq=True):
 def removeoct(anote):
     '''
     removes octave integer from a note name string. 
-    shouldn't be called directly.'''
+    shouldn't be called directly.
+    '''
     # split single note into two or three parts:
     # either name + oct or name + acc + oct. 
     n = [char for char in anote]
@@ -70,7 +71,8 @@ def getpcs(notes):
     matches pitch strings to pitch class integers.
     
     returns the corresponding pcs list[int]. list is unsorted, that is,
-    it's in the original order of the elements in the submitted notes list'''
+    it's in the original order of the elements in the submitted notes list
+    '''
     pcs = []
     if type(notes)==str:
         # check if there's an octave int present
@@ -98,14 +100,18 @@ def getindex(notes):
     
     the returned list[int] should be used by transpose() with 
     octeq set to False. those resulting values should be mapped 
-    back against NOTES to get octave-accurate transposed notes'''
+    back against NOTES to get octave-accurate transposed notes
+    '''
     if type(notes)==str:
         return NOTES.index(notes)
     elif type(notes)==list:
         indicies = []
-        for n in range(len(notes)):
+        l = len(notes)
+        for n in range(l):
             indicies.append(NOTES.index(notes[n]))
         return indicies
+    else:
+        raise TypeError("notes must be a single str or list[str]! type is:", type(notes))
 
 
 def getintervals(notes):
@@ -114,10 +120,12 @@ def getintervals(notes):
     total intervals will be len(m.notes)-1.
     
     difference between index values corresponds to distance
-    in semi-tones!'''
+    in semi-tones!
+    '''
     intr = []
     ind = getindex(notes)
-    for n in range(len(ind)):
+    l = len(ind)
+    for n in range(l):
         try:
             intr.append(ind[n+1]-ind[n])
         # if this is the last element, then subtract randint(1,3)
@@ -130,7 +138,8 @@ def getintervals(notes):
 def ispos(num):
     '''
     helper method to tell if an int is positive or negative. 
-    zero counts as positive here because reasons'''
+    zero counts as positive here because reasons
+    '''
     num = float(num)
     return True if num >= 0 else False
 
@@ -155,13 +164,14 @@ def transpose_c(chords, dist):
     if type(dist)==int:
         if dist > 11 or dist < 1:
             raise ValueError("distance must be an int: 1<=n<=11")
-    for c in range(len(chords)):
+    cl = len(chords)
+    for c in range(cl):
         pcs = transpose(getindex(chords[c].notes), t=dist, octeq=False)
         chords[c].notes = tostr(pcs, octeq=False)
     return chords
 
 
-def transpose(pcs:list[int], t:int , octeq=True):
+def transpose(pcs, t, octeq=True):
     '''
     pcs = list[int]
     t = transposition distance (int)
@@ -177,9 +187,10 @@ def transpose(pcs:list[int], t:int , octeq=True):
     '''
     if type(pcs)!=list:
         raise TypeError("pcs must be a list[int]")
+    pcsl = len(pcs)
     # modify with a single interval across all pitch-class integers
     if type(t)==int:
-        for note in range(len(pcs)):
+        for note in range(pcsl):
             pcs[note] += t
     # modify with a list of intervals across all pitch-class integers. 
     # this allows for each pitch-class to be transposed by a unique
@@ -187,7 +198,7 @@ def transpose(pcs:list[int], t:int , octeq=True):
     # it could also be a list of the same repeated value but that 
     # might be less efficient.
     elif type(t)==list:
-        for note in range(len(pcs)):
+        for note in range(pcsl):
             pcs[note] += t[note]
     else:
         raise TypeError("incorrect input type. must be single int or list of ints!")
@@ -207,18 +218,20 @@ def oe(pitch):
     if type(pitch)==int:
         pitch %= 12
     elif type(pitch)==list:
-        for i in range(len(pitch)):
+        pl = len(pitch)
+        for i in range(pl):
             if pitch[i] > 11 or pitch[i] < 0:
                 pitch[i] %= 12
     else:
-        raise ValueError("must be single int or list of ints!")
+        raise ValueError("must be single int or list[int], supplied arg is type:", type(pitch))
     return pitch
 
 
 def retrograde(m:Melody):
     '''
     reverses the elements in a melody object (notes, rhythms, dynamics)
-    returns a duplicated melody() object'''
+    returns a duplicated melody() object
+    '''
     retro = m
     retro.notes.reverse()
     retro.dynamics.reverse()
@@ -228,13 +241,12 @@ def retrograde(m:Melody):
 
 def invert(notes: list[str]):
     '''
-    inverts a melody. returns a new note list[str]'''
-    
-    # list of inverted intervals
-    inverted = []
-    # get list of intervals and invert values
-    intr = getintervals(notes)
-    for i in range(len(intr)):
+    inverts a melody. returns a new note list[str]
+    '''
+    inverted = []               # list of inverted intervals
+    intr = getintervals(notes)  # get list of intervals and invert values
+    il = len(intr)
+    for i in range(il):
         if ispos(intr[i]):
             inverted.append(-abs(intr[i]))
         else:
@@ -244,7 +256,7 @@ def invert(notes: list[str]):
     mel = []
     mel.append(getindex(notes))
     # build new melody note list off this inverted interval list 
-    for i in range(len(intr)):
+    for i in range(il):
         mel.append(mel[i]+inverted[i])
     # translate to note name strings and return
     return tostr(mel, octeq=False)
@@ -284,7 +296,8 @@ def mutate(m:Melody):
     in a given melody object. each list is permutated independently of 
     each other, meaning original associations aren't preserved! 
 
-    returns a separate melody() object containing this permutation'''
+    returns a separate melody() object containing this permutation
+    '''
     mutant = m
     shuffle(mutant.notes)
     shuffle(mutant.rhythms)
@@ -301,7 +314,8 @@ def rotate(notes: list[str]):
     return to the original ordering) to generate a series
     of "modes."
 
-    returns a list[str]'''
+    returns a list[str]
+    '''
     notes.append(notes.pop(0))
     return notes
 
@@ -324,6 +338,8 @@ def scaletotempo(tempo, rhythms, revert=False):
           facilitate sheet music generation.  
     '''
     diff = 60/tempo
+    if type(rhythms) == int:
+        rhythms = float(rhythms)
     if type(rhythms)==float:
         if revert==False:
             rhythms *= diff
@@ -331,7 +347,8 @@ def scaletotempo(tempo, rhythms, revert=False):
             rhythms /= diff
         rhythms = round(rhythms, 3)
     elif type(rhythms)==list:
-        for i in range(len(rhythms)):
+        rl = len(rhythms)
+        for i in range(rl):
             if revert==False:
                 rhythms[i] *= diff
             else:
@@ -345,7 +362,8 @@ def scaletotempo(tempo, rhythms, revert=False):
 def changedynamics(dyn, diff):
     '''
     makes a single or list of dynamics louder or softer 
-    by a specified amount. returns a modified dynamics list[int]'''
+    by a specified amount. returns a modified dynamics list[int]
+    '''
     # needs to be an int that's a multiple of 4 and 
     # within the specified range! MIDI velocities start 
     # at 0 and increase by 4 until 127.
@@ -362,12 +380,14 @@ def changedynamics(dyn, diff):
     elif type(dyn)==list:
         # only modify dynamics that will be within proper
         # MIDI velocity range.
-        for d in range(len(dyn)):
+        dl = len(dyn)
+        for d in range(dl):
             if dyn[d] < 123:
                 dyn[d] += diff
             else:
                 continue
     return dyn
+
 
 def checkrange(notes:list[str], ran:list[str]):
     '''
@@ -382,17 +402,28 @@ def checkrange(notes:list[str], ran:list[str]):
     see for more:
     https://stackoverflow.com/questions/3428536/python-list-subtraction-operation
     '''
-    # total = len(notes)-1
-    # for n in range(total):
-    #     if notes[n] not in ran:
-    #         notes.remove(notes[n])
-    # return notes
     diff = [note for note in ran if note not in ran]
     if len(diff) > 0:
         difflen = len(diff)
         for note in range(difflen):
             notes.remove(diff[note])
     return notes
+
+
+def getrange(notes:list[str]):
+    '''
+    returns the lowest and highest note in a given set of notes
+    in a tuple: (min, max)
+    '''
+    for note in notes:
+        (min, max) = (10000, -1)
+        n = NOTES.index(note)
+        if n <  int(min):
+            min = n
+        elif n > int(max):
+            max = n
+    return (min, max)
+
 
 def scale_limit(limit, total):
     '''
