@@ -24,7 +24,9 @@ rhy = [0.25, 0.5, 1.0, 2.0]
 
 def sologuitar(tempo=None):
     '''
-    NOTE: i think create.new_notes() isn't quite staying within
+    NOTE: Not ready yet!
+    
+    i think create.new_notes() isn't quite staying within
     the range of the guitar. it'll produce 3-note lists like ()
 
     generates a composition for solo guitar, either acoustic
@@ -95,6 +97,7 @@ def sologuitar(tempo=None):
     print("\ntitle:", title_full)
     print("composer:", comp.composer)
     print("date:", comp.date)
+    print("duration:", comp.duration_str())
     print("midi file:", comp.midi_file_name, "\n")
 
     comp.melodichords = piece                        # save and export MIDI file
@@ -117,12 +120,12 @@ def solo_guitar_simple(tempo=None):
     ran = RANGE["Guitar"]                                                      # guitar note range
 
     m = Melody(tempo=comp.tempo, instrument=gtr)                               # create the guitar
-    notes, m.info, m.source_scale = create.new_notes(t=randint(5,11))          # pick some notes
+    notes, m.info, m.source_scale = create.new_notes(t=randint(5,21))          # pick some notes
     m.notes = checkrange(notes, ran)                                           # make sure final notes are within the guitar's range
     m.rhythms = scaletotempo(tempo=comp.tempo,                                 # pick rhythms & dynamics  
                              rhythms=[rhy[randint(0,3)] for r in range(len(m.notes))])
     m.dynamics = [DYNAMICS[randint(9,17)] for d in range(len(m.notes))] 
-    m.pcs = getpcs(m.notes)                                                    # get pcs of              
+    m.pcs = getpcs(m.notes)                                                    # get pcs of new melody              
     comp.melodies.append(m) 
     
     print("...success!")                                                       # display results and write out

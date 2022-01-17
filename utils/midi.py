@@ -43,12 +43,18 @@ def save(comp):
                     velocity=comp.melodies[i].dynamics[j], pitch=note, start=strt, end=end)
                 # add to instrument object
                 mel.notes.append(anote)
-                try:
-                    # increment strt/end times
-                    strt += comp.melodies[i].rhythms[j]
-                    end += comp.melodies[i].rhythms[j+1]
-                except IndexError:
+                # increment strt/end times
+                strt += comp.melodies[i].rhythms[j]
+                # try:
+                #     end += comp.melodies[i].rhythms[j+1]
+                # except (ValueError, IndexError):
+                #     break
+                '''NOTE: for some reason the above try/catch block isn't working...'''
+                j+=1
+                if j == len(comp.melodies[i].notes):
                     break
+                else:
+                    end += comp.melodies[i].rhythms[j]
                 
             # add melody to instrument list
             mid.instruments.append(mel)
@@ -80,9 +86,9 @@ def save(comp):
                         velocity=chrds[j].dynamic, pitch=note, start=strt, end=end)
                     # add to instrument object
                     chord.notes.append(anote)
+                # increment strt/end times
+                strt += chrds[j].rhythm
                 try:
-                    # increment strt/end times
-                    strt += chrds[j].rhythm
                     end += chrds[j+1].rhythm
                 except IndexError:
                     break
@@ -99,8 +105,6 @@ def save(comp):
         
         strt = 0
         l = len(comp.melodichords)
-
-        # MAIN LOOP
         for item in range(l):
 
             # is this a melody object?
@@ -122,12 +126,16 @@ def save(comp):
                         velocity=comp.melodichords[item].dynamics[j], pitch=note, start=strt, end=end)
                     # add to instrument object
                     mel.notes.append(anote)
-                    try:
-                        # increment strt/end times
-                        strt += comp.melodichords[item].rhythms[j]
-                        end += comp.melodichords[item].rhythms[j+1]
-                    except IndexError:
+                    # try:
+                    #     end += comp.melodichords[i].rhythms[j+1]
+                    # except (ValueError, IndexError):
+                    #     break
+                    '''NOTE: for some reason the above try/catch block isn't working...'''
+                    j+=1
+                    if j == len(comp.melodichords[item].notes):
                         break
+                    else:
+                        end += comp.melodichords[item].rhythms[j]
 
                 # add melody to instrument list
                 mid.instruments.append(mel)
@@ -146,7 +154,7 @@ def save(comp):
                     # translate note to MIDI note
                     note = pm.note_name_to_number(comp.melodichords[item].notes[k])
                     anote = pm.Note(
-                        velocity=chrds.dynamic, pitch=note, start=strt, end=end)
+                        velocity=comp.melodichords[item].dynamic, pitch=note, start=strt, end=end)
                     # add to instrument object
                     ci.notes.append(anote)
                 try:

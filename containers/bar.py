@@ -2,11 +2,10 @@
 class/container for dealing with individual measures.
 '''
 
-from typing import Dict
-from unittest.util import _MAX_LENGTH
 from containers.melody import Melody
 from utils.meter import is_valid
 from utils.tools import scaletotempo
+
 
 class Bar():
     '''
@@ -126,13 +125,11 @@ class Bar():
             left_overs["Dynamics"] = mel.dynamics
 
         elif type(mel)==dict:
-
             # move items over to pull from and return after each added item is 
             # popped from the list
             left_overs["Notes"] = mel["Notes"]
             left_overs["Rhythms"] = mel["Rhythms"]
             left_overs["Dynamics"] = mel["Dynamics"]
-
 
         # iterate through notes/rhythms/dynamics until we reach or exceed our 
         # limit

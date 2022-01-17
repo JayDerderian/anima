@@ -173,11 +173,8 @@ def transpose_c(chords, dist):
 
 def transpose(pcs, t, octeq=True):
     '''
-    pcs = list[int]
-    t = transposition distance (int)
-
-    Transpose a pitch class or list of pitch classes (list[int]) 
-    using a supplied interval i, or list of intervals i. 
+    Transpose a pitch class (int) or list of pitch classes (list[int]) 
+    using a supplied interval t (int), or list of intervals t (list[int]). 
 
     If octeq is set to False, then resulting values may be greater than
     11. This may work when working with a source scale (since it goes
@@ -391,9 +388,6 @@ def changedynamics(dyn, diff):
 
 def checkrange(notes:list[str], ran:list[str]):
     '''
-    notes = list[str]
-    ran = list[str]
-
     checks for and removes and removes any notes
     not within the range of a given instrument.
 
