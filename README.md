@@ -13,7 +13,7 @@ This package requires `python` (3.6+) in order to run and install all dependenci
 
 Run `pip install -r requirements.txt` in order to install dependencies.
 
-## Using the libary directly
+## Using the Generate library
 
 Example usage for generating a single melody using a person's name:
 
@@ -31,7 +31,23 @@ Example usage for generating a single melody using a person's name:
     comp.melodies.append(m)                                   # save to comp object 
     save(comp)                                                # generate MIDI file           
 
+This will export a new MIDI file with the title of the composition into the directory 
+where this script was executed. 
+
+There will also be a .txt file with the same name with information about how the piece was generated,
+what kinds of (if any) source material were used, as well as some music theory-adjacent data.
+
 ## Example Compositions
 
 There are several example compositions under the "ensembles" directory. Each module
 has a description of the underlying process governing the composition's generation.
+
+Included compositions:
+    - bloom
+    - mixedqtet
+    - strqtet
+    - pnoduet
+    - rando
+
+Each of these has a description in the file about the underlying process governing
+how each composition is created.

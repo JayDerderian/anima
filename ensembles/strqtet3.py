@@ -41,6 +41,7 @@ def strqtet3(tempo=None):
                    instrument='Viola'),
             Melody(tempo=comp.tempo,
                    instrument='Cello')]
+    qtet_len = len(qtet)
 
     # add instruments to comp object
     for inst in range(len(qtet)):
@@ -53,10 +54,11 @@ def strqtet3(tempo=None):
     mode, pcs, notes = create.pick_scale(t=True)
     source = create.new_source_scale(notes)
     print("...using", notes[0], mode)
+    print("...notes:", notes)
     print("...pcs:", pcs)
 
     # save source info to each Melody() object
-    for q in range(4):
+    for q in range(qtet_len):
         qtet[q].pcs = pcs
         qtet[q].source_data = source
 
@@ -75,7 +77,7 @@ def strqtet3(tempo=None):
 
     # add rhy & dyn to each part 
 
-    for q in range(4):
+    for q in range(qtet_len):
         qtet[q].rhythms.extend(rhy)
         qtet[q].dynamics.extend(dyn)
 
@@ -89,7 +91,7 @@ def strqtet3(tempo=None):
 
     print("\nwriting asynchronous lines...")
 
-    for q in range(4):
+    for q in range(qtet_len):
         qtet[q] = writeline(qtet[q], source, total, create, asyn=True)
 
     '''
@@ -105,7 +107,7 @@ def strqtet3(tempo=None):
 
     print("\nrecapitulating choral at displaced end points...")
 
-    for q in range(4):
+    for q in range(qtet_len):
         qtet[q].notes.extend(qtet_orig[q].notes)
         qtet[q].rhythms.extend(qtet_orig[q].rhythms)
         qtet[q].dynamics.extend(qtet_orig[q].dynamics)
@@ -119,7 +121,7 @@ def strqtet3(tempo=None):
     qtet[3], vcfig = buildending(qtet[3])
 
     durations = []
-    for q in range(4):
+    for q in range(qtet_len):
         durations.append(qtet[q].duration())
     lp = max(durations)
 
@@ -133,12 +135,12 @@ def strqtet3(tempo=None):
         qtet[3] = sync(qtet[3], lp, vcfig)
 
     # save all parts then write out
-    for q in range(3):
+    for q in range(qtet_len):
         comp.melodies.append(qtet[q])
     save(comp)
 
     # display results
-    print("\n\nnew quartet:", title_full)
+    print("\nnew quartet:", title_full)
     print("composer:", comp.composer)
     print("date:", comp.date)
     print("tempo:", comp.tempo)
