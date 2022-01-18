@@ -1,19 +1,17 @@
 # About
-`anima` is a generative music application and python library. The program can be used in the terminal, or in the browser
-using the app.js script. 
+`anima` is a generative music application and python library. The program can be used in the terminal using a CLI (forthcoming)
 
 `anima` contains a number of [generative](https://en.wikipedia.org/wiki/Generative_music) methods used to automatically create a music composition.
 New compositions are exported as a MIDI file, sheet music in a PDF, anda .txt file containing data about how that piece was composed and the raw
 elements used during creation (for example, a pitch-class set that was selected as a 'seed' to build material off of). 
 
+I wrote an essay on the underlying methods and techniques behind the generative methods, which can be found here[instert hyperlink here...]
+
 ## Installation
 
-This package requires `python` (3.6+) and `npm` in order to run and install all dependencies.
+This package requires `python` (3.6+) in order to run and install all dependencies.
 
-For the frontend, simply run `npm install` in the main directory, and finally
-
-To set up the backend, run `pip install -r requirements.txt` in order to install Flask and its dependencies.
-## Using the program in the browser
+Run `pip install -r requirements.txt` in order to install dependencies.
 
 ## Using the libary directly
 
@@ -21,33 +19,19 @@ Example usage for generating a single melody using a person's name:
 
 <!-- .. code-block:: python -->
     
-    from containers.composition import Composition
-    from utils.mid import midi
-    from utils.txtfile import saveInfo
+    from utils.midi import save
     from core.generate import Generate
 
-    # create a generate object
-    create = Generate()
-    # create a composition object
-    comp = Composition()
-    # pick a tempo
-    comp.tempo= create.newTempo()
-    # pick a title
-    comp.title = create.newTitle()
-    
-    # get the user's name
-    name = input("Enter your name:")
+    name = input("Enter your name:")                          # get the user's name
+    create = Generate()                                       # create a generate object
+    comp = create.init_comp(tempo=60.0, composer=name)        # intialize a new composition object
 
-    # generate a melody() object
-    m = create.newMelody(tempo=comp.tempo, 
-                         data=name, 
-                         dataType=3)
-    # pick an instrument for this melody
-    m.instrument = create.newInstrument()
-    # save to comp object to write out a MIDI file with
-    comp.melodies.append(m)
+    m = create.new_melody(tempo=comp.tempo, data=name, dt=3)  # generate a melody() object
+    m.instrument = create.new_instrument()                    # pick an instrument for this melody
+    comp.melodies.append(m)                                   # save to comp object 
+    save(comp)                                                # generate MIDI file           
 
-    # create file names and write out
-    comp.midiFileName = comp.title + ".mid"
-    comp.txtFileName = compt.title + ".txt"
-    midi.save(comp)
+## Example Compositions
+
+There are several example compositions under the "ensembles" directory. Each module
+has a description of the underlying process governing the composition's generation.

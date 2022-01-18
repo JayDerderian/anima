@@ -10,6 +10,7 @@ representation very messy.
 '''
 
 import pretty_midi as pm
+
 from tqdm import trange
 from containers.melody import Melody
 from containers.chord import Chord
@@ -99,9 +100,8 @@ def save(comp):
     # add melodichords
     if len(comp.melodichords) > 0:
 
-        '''NOTE: figure out a way to check next object type when incrementing strt and end
-                 next melody -> comp.melodichords[item+1].rhythm[0]
-                 next chord -> comp.melodichords[item+1].rhythm '''
+        '''NOTE: currently creating a separate track every time a chord 
+        or melody is inputted. this was a similar problem from before...'''
         
         strt = 0
         l = len(comp.melodichords)

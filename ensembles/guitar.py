@@ -89,11 +89,11 @@ def sologuitar(tempo=None):
                 c.instrument = gtr
                 c.rhythm = scaletotempo(tempo=comp.tempo, rhythms=rhy[randint(0,3)])
                 c.dynamic = DYNAMICS[randint(9,17)]
-                piece.append(c)                             # add to temp list
-                if len(piece) == total:   
+                piece.append(c)                               # add to temp list
+                if len(piece) == total:     
                     break
     
-    print("\n...success!")                                  # display results
+    print("\n...success!")                                    # display results
     print("\ntitle:", title_full)
     print("composer:", comp.composer)
     print("date:", comp.date)

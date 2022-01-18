@@ -33,18 +33,28 @@ def strqtet3(tempo=None):
     title_full = comp.title + "for string quartet"
 
     # create our quartet
-    v1 = Melody(tempo=comp.tempo,
-                instrument='Violin')
-    v2 = Melody(tempo=comp.tempo,
-                instrument='Violin')
-    va = Melody(tempo=comp.tempo,
-                instrument='Viola')
-    vc = Melody(tempo=comp.tempo,
-                instrument='Cello')
-    comp.instruments.append(v1.instrument)
-    comp.instruments.append(v2.instrument)
-    comp.instruments.append(va.instrument)
-    comp.instruments.append(vc.instrument)
+    
+    # v1 = Melody(tempo=comp.tempo,
+    #             instrument='Violin')
+    # v2 = Melody(tempo=comp.tempo,
+    #             instrument='Violin')
+    # va = Melody(tempo=comp.tempo,
+    #             instrument='Viola')
+    # vc = Melody(tempo=comp.tempo,
+    #             instrument='Cello')
+
+    qtet = [Melody(tempo=comp.tempo,
+                   instrument='Violin'),
+            Melody(tempo=comp.tempo,
+                   instrument='Violin'),
+            Melody(tempo=comp.tempo,
+                   instrument='Viola'),
+            Melody(tempo=comp.tempo,
+                   instrument='Cello')]
+
+    # add instruments to comp object
+    for inst in range(len(qtet)):
+        comp.instruments.append(qtet[inst])
     comp.ensemble = 'quartet'
 
     print("\nwriting choral...")
@@ -57,10 +67,13 @@ def strqtet3(tempo=None):
 
     # write individual *choral* lines
     total = randint(12, 30)
-    v1 = writeline(v1, source, total, create)
-    v2 = writeline(v2, source, total, create)
-    va = writeline(va, source, total, create)
-    vc = writeline(vc, source, total, create)
+    for q in range(len(qtet)):
+        qtet[q] = writeline(qtet[q], source, total, create)
+
+    # v1 = writeline(v1, source, total, create)
+    # v2 = writeline(v2, source, total, create)
+    # va = writeline(va, source, total, create)
+    # vc = writeline(vc, source, total, create)
 
     # create rhythms
     rhy = []
@@ -70,7 +83,7 @@ def strqtet3(tempo=None):
     # create dynamics
     dyn = create.new_dynamics(total=total)
 
-    # add to each part 
+    # add rhy & dyn to each part 
     v1.rhythms.extend(rhy)
     v1.dynamics.extend(dyn)
     v2.rhythms.extend(rhy)

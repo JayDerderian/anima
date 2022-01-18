@@ -13,11 +13,11 @@ class Bar():
     '''
 
     meter = ()                    # the meter of this bar
+    tempo = 0.0                   # global composition tempo
     length = 0.0                  # length of bar in seconds using the meter
     current_beat = 0.0            # current UNUSED beat (in seconds)
     instrument = ""               # instrument assigned to this bar
-    bar = {"Tempo": 0.0,          # dictionary representing the current bar
-           "Notes":[], 
+    bar = {"Notes":[],            # dictionary representing the current bar
            "Rhythms":[], 
            "Dynamics":[]
           }                      
@@ -63,9 +63,9 @@ class Bar():
         clears all fields
         '''
         self.meter = ()
+        self.tempo = 0.0
         self.length = 0.0
         self.current_beat = 0.0
-        self.bar["Tempo"] = 0.0
         self.bar["Notes"].clear()
         self.bar["Rhythms"].clear()
         self.bar["Dynamics"].clear()
