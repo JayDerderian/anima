@@ -7,7 +7,7 @@ gets faster and faster, and louder and louder before ending.
 NOTE: add looped arpeggios to each part based off the first four notes of 
 their part from the opening choral. '''
 
-
+from tqdm import trange
 from random import randint
 
 from utils.midi import save
@@ -33,16 +33,6 @@ def strqtet3(tempo=None):
     title_full = comp.title + "for string quartet"
 
     # create our quartet
-    
-    # v1 = Melody(tempo=comp.tempo,
-    #             instrument='Violin')
-    # v2 = Melody(tempo=comp.tempo,
-    #             instrument='Violin')
-    # va = Melody(tempo=comp.tempo,
-    #             instrument='Viola')
-    # vc = Melody(tempo=comp.tempo,
-    #             instrument='Cello')
-
     qtet = [Melody(tempo=comp.tempo,
                    instrument='Violin'),
             Melody(tempo=comp.tempo,
@@ -65,15 +55,15 @@ def strqtet3(tempo=None):
     print("...using", notes[0], mode)
     print("...pcs:", pcs)
 
+    # save source info to each Melody() object
+    for q in range(4):
+        qtet[q].pcs = pcs
+        qtet[q].source_data = source
+
     # write individual *choral* lines
     total = randint(12, 30)
-    for q in range(len(qtet)):
+    for q in range(4):
         qtet[q] = writeline(qtet[q], source, total, create)
-
-    # v1 = writeline(v1, source, total, create)
-    # v2 = writeline(v2, source, total, create)
-    # va = writeline(va, source, total, create)
-    # vc = writeline(vc, source, total, create)
 
     # create rhythms
     rhy = []
@@ -84,27 +74,23 @@ def strqtet3(tempo=None):
     dyn = create.new_dynamics(total=total)
 
     # add rhy & dyn to each part 
-    v1.rhythms.extend(rhy)
-    v1.dynamics.extend(dyn)
-    v2.rhythms.extend(rhy)
-    v2.dynamics.extend(dyn)
-    va.rhythms.extend(rhy)
-    va.dynamics.extend(dyn)
-    vc.rhythms.extend(rhy)
-    vc.dynamics.extend(dyn)
+
+    for q in range(4):
+        qtet[q].rhythms.extend(rhy)
+        qtet[q].dynamics.extend(dyn)
 
     # save original values in temp objects
-    v1_orig = v1
-    v2_orig = v2
-    va_orig = va
-    vc_orig = vc
+    # v1_orig = v1
+    # v2_orig = v2
+    # va_orig = va
+    # vc_orig = vc
+
+    qtet_orig = qtet
 
     print("\nwriting asynchronous lines...")
 
-    v1 = writeline(v1, source, total, create, asyn=True)
-    v2 = writeline(v2, source, total, create, asyn=True)
-    va = writeline(va, source, total, create, asyn=True)
-    vc = writeline(vc, source, total, create, asyn=True)
+    for q in range(4):
+        qtet[q] = writeline(qtet[q], source, total, create, asyn=True)
 
     '''
     NOTE: generate a "rhythm" that is the difference between a current
@@ -119,70 +105,44 @@ def strqtet3(tempo=None):
 
     print("\nrecapitulating choral at displaced end points...")
 
-    v1.notes.extend(v1_orig.notes)
-    v1.rhythms.extend(v1_orig.rhythms)
-    v1.dynamics.extend(v1_orig.dynamics)
+    for q in range(4):
+        qtet[q].notes.extend(qtet_orig[q].notes)
+        qtet[q].rhythms.extend(qtet_orig[q].rhythms)
+        qtet[q].dynamics.extend(qtet_orig[q].dynamics)
 
-    v2.notes.extend(v2_orig.notes)
-    v2.rhythms.extend(v2_orig.rhythms)
-    v2.dynamics.extend(v2_orig.dynamics)
-
-    va.notes.extend(va_orig.notes)
-    va.rhythms.extend(va_orig.rhythms)
-    va.dynamics.extend(va_orig.dynamics)
-
-    vc.notes.extend(vc_orig.notes)
-    vc.rhythms.extend(vc_orig.rhythms)
-    vc.dynamics.extend(vc_orig.dynamics)
 
     print("\ngenerating ending figure and repeating until closure...")
     
-    v1, v1fig = buildending(v1)
-    v2, v2fig = buildending(v2)
-    va, vafig = buildending(va)
-    vc, vcfig = buildending(vc)
+    qtet[0], v1fig = buildending(qtet[0])
+    qtet[1], v2fig = buildending(qtet[1])
+    qtet[2], vafig = buildending(qtet[2])
+    qtet[3], vcfig = buildending(qtet[3])
 
-    durations = [v1.duration(), v2.duration(), va.duration(), vc.duration()]
+    durations = []
+    for q in range(4):
+        durations.append(qtet[q].duration())
     lp = max(durations)
 
-    if v1.duration() < lp:
-        v1 = sync(v1, lp, v1fig)
-    if v2.duration() < lp:
-        v2 = sync(v2, lp, v2fig)
-    if va.duration() < lp:
-        va = sync(va, lp, vafig)
-    if vc.duration() < lp:
-        vc = sync(vc, lp, vcfig)
+    if qtet[0].duration() < lp:
+        qtet[0] = sync(qtet[0], lp, v1fig)
+    if qtet[1].duration() < lp:
+        qtet[1] = sync(qtet[1], lp, v2fig)
+    if qtet[2].duration() < lp:
+        qtet[2] = sync(qtet[2], lp, vafig)
+    if qtet[3].duration() < lp:
+        qtet[3] = sync(qtet[3], lp, vcfig)
 
-    # save all parts
-    comp.melodies.append(v1)
-    comp.melodies.append(v2)
-    comp.melodies.append(va)
-    comp.melodies.append(vc)
-
-    # generate MIDI & .txt file names
-    print("\ngenerating file names...")
-    comp.midi_file_name = "{}{}".format(comp.title, ".mid")
-    print("...midi file:", comp.midi_file_name)
-    # comp.txt_file_name = "{}{}".format(comp.title, '.txt')
-    # print("...text file:", comp.txt_file_name)
-    title_full = "{}{}".format(comp.title, ' for string quartet')
-
-    # write to MIDI file & .txt file
+    # save all parts then write out
+    for q in range(3):
+        comp.melodies.append(qtet[q])
     save(comp)
-    # saveInfo(name=comp.title, fileName=comp.txtFileName, newMusic=comp)
 
     # display results
     print("\n\nnew quartet:", title_full)
     print("composer:", comp.composer)
     print("date:", comp.date)
     print("tempo:", comp.tempo)
-    duration = comp.duration()
-    if duration > 60.0:
-        duration /=60.0
-        print("duration", duration, "minutes\n")
-    else:
-        print("duration:", duration, "seconds\n")
+    print("duration:", comp.duration_str())
     return comp
 
 
