@@ -44,7 +44,7 @@ def strqtet3(tempo=None):
     qtet_len = len(qtet)
 
     # add instruments to comp object
-    for inst in range(len(qtet)):
+    for inst in range(qtet_len):
         comp.instruments.append(qtet[inst])
     comp.ensemble = 'quartet'
 
@@ -64,7 +64,7 @@ def strqtet3(tempo=None):
 
     # write individual *choral* lines
     total = randint(12, 30)
-    for q in range(4):
+    for q in range(qtet_len):
         qtet[q] = writeline(qtet[q], source, total, create)
 
     # create rhythms
@@ -76,17 +76,11 @@ def strqtet3(tempo=None):
     dyn = create.new_dynamics(total=total)
 
     # add rhy & dyn to each part 
-
     for q in range(qtet_len):
         qtet[q].rhythms.extend(rhy)
         qtet[q].dynamics.extend(dyn)
 
     # save original values in temp objects
-    # v1_orig = v1
-    # v2_orig = v2
-    # va_orig = va
-    # vc_orig = vc
-
     qtet_orig = qtet
 
     print("\nwriting asynchronous lines...")
@@ -138,6 +132,8 @@ def strqtet3(tempo=None):
     for q in range(qtet_len):
         comp.melodies.append(qtet[q])
     save(comp)
+
+    print("\n...success!")
 
     # display results
     print("\nnew quartet:", title_full)
@@ -195,11 +191,13 @@ def writeline(m, scale, total, create, asyn=False):
 
 def buildending(m):
     '''
+    NOTE: this is SUPER long! figure out a way to shorten it a bit...
+    
     builds an arpeggio based off the last 3-7 notes and slowly shortens the rhythms
     until they're 16th's, while increasing the volume of each note.
     
-    returns a modified Melody() object'''
-
+    returns a modified Melody() object
+    '''
     # get last 3-7 notes of melody
     n = randint(3,7)
 

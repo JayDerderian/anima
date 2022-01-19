@@ -10,7 +10,7 @@ TODO: scale_limit()
       not need to make my own copy() method, but we'll see...
 
 '''
-
+from math import floor
 from random import randint, shuffle
 from core.constants import NOTES, PITCH_CLASSES
 from containers.melody import Melody
@@ -419,12 +419,24 @@ def getrange(notes:list[str]):
     return (min, max)
 
 
-def scale_limit(limit, total):
+def scale_limit(total:int):
     '''
     scales repetition limits according to total notes
     higher total == fewer reps, basically
     '''
     '''
-    TODO: implement...
+    TODO: look at proportional scaling methods...
     '''
-    return 0
+    if 1 <= total <= 100:                        
+        total = randint(1, floor(total * 0.1))   
+    elif 101 <= total <= 300:
+        total = randint(1, floor(total * 0.075)) 
+    elif 301 <= total <= 500:
+        total = randint(1, floor(total * 0.05)) 
+    elif 501 <= total <= 700:
+        total = randint(1, floor(total * 0.035)) 
+    elif 701 <= total <= 1000:
+        total = randint(1, floor(total * 0.02))
+    elif total > 1000:
+        total = randint(1, floor(total * 0.001)) 
+    return total

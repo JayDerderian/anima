@@ -3,9 +3,7 @@ This module handles mapping functions when converting raw data to index numbers,
 which will be used to map against newNotes()'s generated source scale in newMelody()
 '''
 
-# Imports
 from core.constants import ALPHABET
-
 
 # Converts an array of floats to an array of ints
 def float_to_int(data):
@@ -95,7 +93,7 @@ def map_data(mel, data, dt):
         data = float_to_int(data)
         data = scale_the_scale(data)
 
-    # If letters/chars then match letters to their corresponding index numbers.
+    # If name or other multi-word input then matches letters to their corresponding index numbers.
     elif dt == 3:
         # Save original source data
         mel.source_data = data

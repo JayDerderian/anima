@@ -28,7 +28,7 @@ from core.constants import(
 from utils.mapping import map_data
 from utils.txtfile import save_info
 from utils.midi import save
-from utils.tools import getpcs, tostr, transpose, oe, scaletotempo
+from utils.tools import getpcs, tostr, transpose, oe, scaletotempo, scale_limit
 
 from containers.chord import Chord
 from containers.melody import Melody
@@ -253,6 +253,7 @@ class Generate:
             if t==None:
                 pick_total = randint(3, len(scale))
             else:
+                # otherwise, pick between 50-100 % of given total t. 
                 pick_total = randint(math.floor(t*0.5), t)
             # was a specified instrument range supplied?
             notes = [choice(scale) for n in range(pick_total)]
@@ -520,9 +521,8 @@ class Generate:
             # Repeat this rhythm or not? 1 = yes, 2 = no
             if randint(1, 2) == 1:
                 # Limit reps to no more than roughly 1/3 of the supplied total
-                limit = math.floor(total * 0.333333333333)
-                '''NOTE: This limit will increase rep levels w/longer list lengths
-                         May need to scale for larger lists'''
+                # limit = math.floor(total * 0.333333333333)
+                limit = scale_limit(total)
                 if limit == 0:
                     limit += 2
                 reps = randint(1, limit)
@@ -578,9 +578,8 @@ class Generate:
                     # repeat?
                     if randint(1,2) == 1:
                         # Limit reps to no more than roughly 1/3 of the supplied total
-                        limit = math.floor(total * 0.333333333333)
-                        '''NOTE: This limit will increase rep levels w/longer totals
-                                May need to scale for larger lists'''
+                        # limit = math.floor(total * 0.333333333333)
+                        limit = scale_limit(total)
                         if limit == 0:
                             limit += 2
                         reps = randint(1, limit)
@@ -594,8 +593,8 @@ class Generate:
                     dynamic = REST
                     # repeat?
                     if randint(1,2) == 1:
-                        # only repeat rests 1-3 times for now...
-                        reps = randint(1, 3)
+                        # only repeat rests 1-2 times for now...
+                        reps = randint(1, 2)
                         for i in range(reps):
                             dynamics.append(dynamic)
                             if len(dynamics) == total:
@@ -607,7 +606,8 @@ class Generate:
                 dynamic = choice(DYNAMICS)
                 # repeat?
                 if randint(1,2) == 1:
-                    limit = math.floor(total * 0.333333333333)
+                    # limit = math.floor(total * 0.333333333333)
+                    limit = scale_limit(total)
                     if limit == 0:
                         limit += 2
                     reps = randint(1, limit)
@@ -809,7 +809,7 @@ class Generate:
         '''
         Picks tempo, notes, rhythms, and dynamics, with or without a 
         supplied list from the user. It can process a list of ints 
-        (dataType == 1), floats(2), single char strings/letters(3), 
+        (dt == 1), floats(2), single char strings/letters(3), 
         or a hex number, represented as a single string(4)
 
         t = total notes, only works when data and dt == None! 
