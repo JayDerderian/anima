@@ -35,6 +35,7 @@ class Composition():
             self.tempo = 60.0
 
         self.ensemble = ""                  # "trio," "duet", etc.. 
+        self.mode = "None"                  # mode used in composition, if any
         self.instruments = []               # list of all instruments in the piece
         self.bars = []                      # list of Bar() objects
         self.melodies = []                  # list of Melody() objects
@@ -121,4 +122,4 @@ class Composition():
         returns the compositions duration as a formatted string
         '''
         min, sec = divmod(self.duration(), 60)
-        return str(min) + " min " + str(sec) + " sec "
+        return str(int(min)) + " min " + str(sec) + " sec "

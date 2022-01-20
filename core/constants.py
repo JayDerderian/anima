@@ -18,13 +18,6 @@ TEMPOS = [40.0, 42.0, 44.0, 46.0, 50.0, 52.0, 54.0, 56.0, 58.0,  # 1-9 (0-8)
 
 
 # Dynamics (MIDI velocities: 0 - 127)
-'''
-MIDI doesn't actually have rests. Instead a "rest" is just a 
-completely silent note in a MIDI file, so rests need to be notated
-in the sheet music accordingly and be able to recognize the constant
-REST in a given composition object
-'''
-REST = 0
 '''NOTE: use indicies 0-8 for soft dynamics only. 
          9-17 for med, and
          18-26 for loud dynamics'''

@@ -5,8 +5,21 @@ point section ensues, then each part has a repeated 3-7 note figure that
 gets faster and faster, and louder and louder before ending. 
 
 NOTE: add looped arpeggios to each part based off the first four notes of 
-their part from the opening choral. '''
+their part from the opening choral. 
 
+NOTE: generate a "rhythm" that is the difference between a current
+part and the longest part in the piece. append this difference to the
+*end* of a rhythm list, then attempt to add original choral at end of an 
+asynchronous section that will have each part in rhythmic unison again. 
+
+THIS WILL MAKE RHTYHMS LONGER THAN THE OTHER TWO LISTS. 
+
+need to figure out how to make a rest... will a 'None' value in
+lieu of a note string?
+'''
+    
+
+from distutils.command.build import build
 from tqdm import trange
 from random import randint
 
@@ -27,10 +40,10 @@ def strqtet3(tempo=None):
     # initialize
     create = Generate()
     if tempo==None:
-        comp = create.init_comp(TEMPOS[randint(0,8)])
+        comp = create.init_comp(TEMPOS[randint(9,27)]) # 60 - 126bpm
     else:
         comp = create.init_comp(tempo)
-    title_full = comp.title + "for string quartet"
+    title_full = comp.title + " for string quartet"
 
     # create our quartet
     qtet = [Melody(tempo=comp.tempo,
@@ -48,8 +61,6 @@ def strqtet3(tempo=None):
         comp.instruments.append(qtet[inst])
     comp.ensemble = 'quartet'
 
-    print("\nwriting choral...")
-
     # pick notes. use only one scale! 
     mode, pcs, notes = create.pick_scale(t=True)
     source = create.new_source_scale(notes)
@@ -61,6 +72,8 @@ def strqtet3(tempo=None):
     for q in range(qtet_len):
         qtet[q].pcs = pcs
         qtet[q].source_data = source
+
+    print("\nwriting choral...")
 
     # write individual *choral* lines
     total = randint(12, 30)
@@ -85,34 +98,22 @@ def strqtet3(tempo=None):
 
     print("\nwriting asynchronous lines...")
 
-    for q in range(qtet_len):
+    for q in trange((qtet_len), desc= "progress:"):
         qtet[q] = writeline(qtet[q], source, total, create, asyn=True)
-
-    '''
-    NOTE: generate a "rhythm" that is the difference between a current
-    part and the longest part in the piece. append this difference to the
-    *end* of a rhythm list, then attempt to add original choral at end of an 
-    asynchronous section that will have each part in rhythmic unison again. 
-    
-    THIS WILL MAKE RHTYHMS LONGER THAN THE OTHER TWO LISTS. 
-    
-    need to figure out how to make a rest... will a 'None' value in
-    lieu of a note string?'''
 
     print("\nrecapitulating choral at displaced end points...")
 
-    for q in range(qtet_len):
+    for q in trange((qtet_len), desc= "progress:"):
         qtet[q].notes.extend(qtet_orig[q].notes)
         qtet[q].rhythms.extend(qtet_orig[q].rhythms)
         qtet[q].dynamics.extend(qtet_orig[q].dynamics)
 
-
     print("\ngenerating ending figure and repeating until closure...")
     
-    qtet[0], v1fig = buildending(qtet[0])
-    qtet[1], v2fig = buildending(qtet[1])
-    qtet[2], vafig = buildending(qtet[2])
-    qtet[3], vcfig = buildending(qtet[3])
+    figs = []
+    for q in trange((qtet_len), desc="progress:"):
+        qtet[q], f = buildending(qtet[q])
+        figs.append(f)
 
     durations = []
     for q in range(qtet_len):
@@ -120,13 +121,13 @@ def strqtet3(tempo=None):
     lp = max(durations)
 
     if qtet[0].duration() < lp:
-        qtet[0] = sync(qtet[0], lp, v1fig)
+        qtet[0] = sync(qtet[0], lp, figs[0])
     if qtet[1].duration() < lp:
-        qtet[1] = sync(qtet[1], lp, v2fig)
+        qtet[1] = sync(qtet[1], lp, figs[1])
     if qtet[2].duration() < lp:
-        qtet[2] = sync(qtet[2], lp, vafig)
+        qtet[2] = sync(qtet[2], lp, figs[2])
     if qtet[3].duration() < lp:
-        qtet[3] = sync(qtet[3], lp, vcfig)
+        qtet[3] = sync(qtet[3], lp, figs[3])
 
     # save all parts then write out
     for q in range(qtet_len):
@@ -155,8 +156,8 @@ def writeline(m, scale, total, create, asyn=False):
     total will be overwritten! still working on that
     quirk...
     
-    returns a modified Melody() object'''
-
+    returns a modified Melody() object
+    '''
     if asyn:
         # NOTE: this will redefine supplied total if asyn is True
         total = randint(12, 30)

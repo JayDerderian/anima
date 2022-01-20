@@ -2,7 +2,6 @@
 This module handles all generative methods. 
 '''
 
-# IMPORTS
 import math
 import urllib.request
 from names import get_full_name
@@ -28,7 +27,11 @@ from core.constants import(
 from utils.mapping import map_data
 from utils.txtfile import save_info
 from utils.midi import save
-from utils.tools import getpcs, tostr, transpose, oe, scaletotempo, scale_limit
+
+from utils.tools import(
+    getpcs, tostr, transpose, 
+    oe, scaletotempo, scale_limit
+)
 
 from containers.chord import Chord
 from containers.melody import Melody

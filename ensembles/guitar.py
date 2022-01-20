@@ -64,7 +64,7 @@ def sologuitar(tempo=None):
             else:
                 m = Melody(tempo=comp.tempo, instrument=gtr)
                 notes, m.info, m.source_scale = create.new_notes()
-                m.notes = checkrange(notes, ran)            # make sure final notes are within the guitar's range
+                m.notes = checkrange(notes, ran)              # make sure final notes are within the guitar's range
                 m.rhythms = scaletotempo(tempo=comp.tempo, 
                                          rhythms=[rhy[randint(0,3)] for r in range(len(m.notes))])
                 m.dynamics = [DYNAMICS[randint(9,17)] for d in range(len(m.notes))]
@@ -100,7 +100,7 @@ def sologuitar(tempo=None):
     print("duration:", comp.duration_str())
     print("midi file:", comp.midi_file_name, "\n")
 
-    comp.melodichords = piece                        # save and export MIDI file
+    comp.melodichords = piece                                 # save and export MIDI file
     save(comp)
 
 

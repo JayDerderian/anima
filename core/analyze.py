@@ -3,13 +3,25 @@ this module handles the importing and analysis of MIDI files.
 this uses pretty_midi as the importing tool and mingus to help
 analyze the note content.
 
+this module also handles pitch class set analysis using recently-
+generated Composition() objects. 
+
+comp object analysis:
+    - get all PC's from each part
+    - find most common pitch classes
+    - list source data
+
+
 '''
 import math
 import mingus
 import pretty_midi as pm
+import utils.tools as tools
 
 
-#Retrieve MIDI note number
+#------------------------------------MIDI ANALYSIS----------------------__--------#
+
+# Retrieve MIDI note number
 def get_note_number(tune):
     return tune.instrument.note.pitch        
 
@@ -23,7 +35,7 @@ def get_notes(tune):
             theNotes.append(note.pitch)
     return theNotes
 
-#Collects all data about each note (Note: velocity, pitch, start/end)
+# Collects all data about each note (Note: velocity, pitch, start/end)
 def get_note_data(tune):
     noteData = []
     print("\nCollecting note data...")
@@ -31,7 +43,7 @@ def get_note_data(tune):
         noteData.append(instrument.notes)
     return noteData
 
-#Get total number of notes in the MIDI file
+# Get total number of notes in the MIDI file
 def get_total_notes(tune):
     noteCount = 0
     print("\nCounting notes...")
@@ -40,7 +52,7 @@ def get_total_notes(tune):
             noteCount += 1
     return noteCount
 
-#Check for duplicate pitch classes in a tone row.
+# Check for duplicate pitch classes in a tone row.
 def duplicates(row):
     if(not row):
         print("...No row recieved!")
@@ -50,7 +62,7 @@ def duplicates(row):
             result.append(i)
     return result
     
-#Get total number of tracks/instruments
+# Get total number of tracks/instruments
 def get_total_instruments(tune):
     totalInstruments = 0
     print("\nCounting instruments/tracks...")
@@ -58,26 +70,26 @@ def get_total_instruments(tune):
         totalInstruments += 1
     return totalInstruments
 
-#Determines difference between given tempo and standard second 
+# Determines difference between given tempo and standard second 
 def tempo_difference(tune):
     second = 60
     tempo = tune.estimate_tempo()
     difference = second/tempo
     return difference
 
-#Get pretty_midi's estimated global tempo in bpm
+# Get pretty_midi's estimated global tempo in bpm
 def get_tempo(thisTune):
     return thisTune.estimate_tempo()
 
-#Get pretty_midi's note start times
+# Get pretty_midi's note start times
 def get_beats(tune):
     return tune.get_beats(start_time = 0.0)
 
-#Get pretty_midi's downbeat locations (tempo/time-sig changes)
+# Get pretty_midi's downbeat locations (tempo/time-sig changes)
 def get_down_beats(tune):
     return tune.get_downbeats()
 
-#Displays piano roll of MIDI data
+# Displays piano roll of MIDI data
 def display_MIDI_terminal():
     roll = pm.PrettyMIDI.get_piano_roll()
     print(roll)
@@ -85,7 +97,7 @@ def display_MIDI_terminal():
 #-----------------------------Composition analysis--------------------------------#    
 
 # Generates a 12-tone matrix from a given row
-def newMatrix(self, row, intrvls):
+def new_matrix(self, row, intrvls):
     '''
     NOTE: NOT READY
 
@@ -139,7 +151,7 @@ def newMatrix(self, row, intrvls):
     return m
 
 # display 12-tone matrix
-def printMatrix(self, matrix):
+def print_matrix(self, matrix):
     '''
     Display a twelve-tone matrix (2D list)
     '''
@@ -157,7 +169,7 @@ Note:
     3. Count each value in the interval array; how many 1's, 2's, 3's, etc thru 6.  
 '''
 '''
-def getVector(self, scale):
+def get_vector(self, scale):
     print("\nRetrieving interval vector...")
     if(not scale):
         print("...No scale inputted!")
