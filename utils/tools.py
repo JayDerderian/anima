@@ -16,6 +16,12 @@ from core.constants import NOTES, PITCH_CLASSES
 from containers.melody import Melody
 
 
+def allsame(l):
+    '''
+    returns true if all elements in the list are the same'''
+    return True if all(e == l[0] for e in l) else False
+
+
 def tostr(pcs, octave=None, octeq=True):
     '''
     Converts a list of pitch class integers to note name strings, with or without 

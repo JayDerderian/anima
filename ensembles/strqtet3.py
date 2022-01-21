@@ -18,8 +18,6 @@ need to figure out how to make a rest... will a 'None' value in
 lieu of a note string?
 '''
     
-
-from distutils.command.build import build
 from tqdm import trange
 from random import randint
 
@@ -61,7 +59,9 @@ def strqtet3(tempo=None):
         comp.instruments.append(qtet[inst])
     comp.ensemble = 'quartet'
 
-    # pick notes. use only one scale! 
+    print("\nwriting new string quartet...")
+
+    # pick initial notes. 
     mode, pcs, notes = create.pick_scale(t=True)
     source = create.new_source_scale(notes)
     print("...using", notes[0], mode)
@@ -70,10 +70,10 @@ def strqtet3(tempo=None):
 
     # save source info to each Melody() object
     for q in range(qtet_len):
-        qtet[q].pcs = pcs
-        qtet[q].source_data = source
+        qtet[q].pcs.append(pcs)
+        qtet[q].source_scale = source
 
-    print("\nwriting choral...")
+    print("\nwriting opening...")
 
     # write individual *choral* lines
     total = randint(12, 30)
@@ -93,25 +93,33 @@ def strqtet3(tempo=None):
         qtet[q].rhythms.extend(rhy)
         qtet[q].dynamics.extend(dyn)
 
-    # save original values in temp objects
+    # save original values in temp list
     qtet_orig = qtet
 
     print("\nwriting asynchronous lines...")
 
-    for q in trange((qtet_len), desc= "progress:"):
+    mode, pcs, notes = create.pick_scale(t=True)
+    source = create.new_source_scale(notes)
+    print("...using", notes[0], mode)
+    print("...notes:", notes)
+    print("...pcs:", pcs, "\n")
+
+    for q in trange((qtet_len), desc= "progress"):
         qtet[q] = writeline(qtet[q], source, total, create, asyn=True)
+        qtet[q].source_scale.extend(source)
+        qtet[q].pcs.append(pcs)
 
-    print("\nrecapitulating choral at displaced end points...")
+    print("\nrecapitulating choral opening at displaced end points...")
 
-    for q in trange((qtet_len), desc= "progress:"):
+    for q in trange((qtet_len), desc= "progress"):
         qtet[q].notes.extend(qtet_orig[q].notes)
         qtet[q].rhythms.extend(qtet_orig[q].rhythms)
         qtet[q].dynamics.extend(qtet_orig[q].dynamics)
 
     print("\ngenerating ending figure and repeating until closure...")
-    
+
     figs = []
-    for q in trange((qtet_len), desc="progress:"):
+    for q in trange((qtet_len), desc="progress"):
         qtet[q], f = buildending(qtet[q])
         figs.append(f)
 

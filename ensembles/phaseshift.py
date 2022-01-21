@@ -3,107 +3,74 @@ this module contains a duet that undergoes a phase shift. a simple loop is repea
 unison before the second part gets a single additional rhythm introduced, making it
 "out of sync" with part 1. eventually the parts re-align, hopefully'''
 
-# Imports
-from containers.melody import Melody
-from random import randint, choice
-from datetime import datetime as date
 
-from utils.tools import scaletotempo
+from sqlalchemy import desc
+from tqdm import trange
+from random import randint, seed
+
+from utils.tools import getpcs
 from utils.midi import save
 
 from core.generate import Generate
-from core.constants import TEMPOS, RHYTHMS, DYNAMICS
-
-from containers.composition import Composition
+from containers.melody import Melody
 
 
 def phaseshift(tempo=None):
     '''
-    this method generates a duet that undergoes a phase shift process.'''
+    this method generates a duet that undergoes a phase shift process.
+    rather than be at two different tempos, the second part is given an extra
+    note/rhythm/dynamic, and the two parts cycle against each other until
+    they line up again.'''
+
+    seed()                                                                 # seed randint() and initialize
+    create = Generate()
+    if tempo==None:
+        comp = create.init_comp(tempo=72.0)
+    else:
+        comp = create.init_comp(tempo=tempo)
+                                          
+    duet = [Melody(tempo=comp.tempo, instrument='Acoustic Grand Piano'),   # create the duet
+            Melody(tempo=comp.tempo, instrument='Electric Piano 1')]
+    duet_len = len(duet)
 
     print("\nwriting phase shift duet...")
-    # initialize
-    create = Generate()
-    comp = Composition()
-    comp.title = create.new_title()
-    comp.composer = create.new_composer()
-    comp.date = date.now().strftime("%d-%b-%y %H:%M:%S")
-    title_full = comp.title + " (phase shift), for piano duet"
-    if tempo==None:
-        # using med tempos (60-88bpm)
-        comp.tempo = TEMPOS[randint(9,17)]
-    elif tempo > 40.0 or tempo < 208.0:
-        comp.tempo = tempo
-    else:
-        comp.tempo = 60.0
-    comp.ensemble = 'duet'
 
-    # create our instruments
-    m1 = Melody(tempo=comp.tempo, 
-                instrument='Acoustic Grand Piano')
-    m2 = Melody(tempo=comp.tempo, 
-                instrument='Electric Piano 2')
+    notes, data, source = create.new_notes(t=randint(7,13))                # pick notes, rhythms, and dynamics, and assign to duet
+    rhy = create.new_rhythms(total = len(notes), tempo=comp.tempo)         # add subsequent meta-data and self-analysis
+    dyn = create.new_dynamics(total=len(notes), rests=False)
+    for inst in trange((duet_len), desc='progress'):
+        duet[inst].notes = notes
+        duet[inst].rhythms = rhy
+        duet[inst].dynamics = dyn
+        duet[inst].pcs = getpcs(notes)
+        duet[inst].source_data = data
+        duet[inst].source_scale = source
+    
+    print("\nimplementing phase shift...")
 
-    print("\nwriting melody...")
-    scale = create.pick_scale()
-    source = create.new_source_scale(scale[2])
-    total = randint(2, 10)
-    print("...picking", total, "notes from", scale[2][0], scale[0])
-    for stuff in range(total):
-        m1.notes.append(choice(source))
-        # using only dotted 8ths, 8ths, dotted 16ths, or 16ths
-        m1.rhythms.append(RHYTHMS[randint(5,8)])
-        # using medium dynamics
-        m1.dynamics.append(DYNAMICS[randint(9,17)])
-    # copy over
-    m2.notes = m1.notes
-    m2.rhythms = m1.rhythms
-    m2.dynamics = m1.dynamics
+    # add additional note, rhythm, and dynamic to second instrument, then figure out how many times to loop
+    # the two parts against each other until they line up again. extend each set of notes/rhythms/dynamics
+    # to this total before finishing.
+    '''
+    NOTE:
+        since one part will only be one note longer, then the two parts will need to iterate
+        n times where n is the length of the longer part
+    '''
+    duet[1].notes.append(duet[1].notes[-1:][0])                           # repeat the last note, rhythm and dynamic
+    duet[1].rhythms.append(duet[1].rhythms[-1:][0])
+    duet[1].dynamics.append(duet[1].dynamics[-1:][0])
 
-    # repeat figure 2 times in unison (played 3 times total)
-    print("\nlooping melody...")
-    m1.notes.extend(m1.notes)
-    m1.rhythms.extend(m1.rhythms)
-    m1.dynamics.extend(m1.dynamics)
-    # m2.notes.extend(m2.notes)
-    # m2.rhythms.extend(m2.rhythms)
-    # m2.dynamics.extend(m2.dynamics)
+    total = max(len(duet[0]), len(duet[1]))                               # repeat parts until cycle is complete
+    for inst in trange((total), desc='progress'):
+        duet[0].notes.extend(duet[0].notes)
+        duet[0].rhythms.extend(duet[0].rhythms)
+        duet[0].dynamics.extend(duet[0].dynamics)
+        duet[1].notes.extend(duet[1].notes)
+        duet[1].rhythms.extend(duet[1].rhythms)
+        duet[1].dynamics.extend(duet[1].dynamics)
 
-    # print("\noffsetting second instrument...")
-    # # add a single 16th note to m2 to create the offset
-    # m2.notes.append(create.newNote())
-    # m2.rhythms.append(scaletotempo(tempo=comp.tempo, rhythms=0.25))
-    # m2.dynamics.append(create.newDynamic())
-
-    # print("\nlooping with offset...")
-    # # repeat figure 4 times in unison
-    # for repeat in range(4):
-    #     m1.notes.extend(m1.notes)
-    #     m1.rhythms.extend(m1.rhythms)
-    #     m1.dynamics.extend(m1.dynamics)
-    #     m2.notes.extend(m2.notes)
-    #     m2.rhythms.extend(m2.rhythms)
-    #     m2.dynamics.extend(m2.dynamics)
-
-    # generate file name and write out
-    comp.melodies.append(m1)
-    comp.melodies.append(m2)
-    print("\ngenerating MIDI file...")
-    comp.midi_file_name = comp.title + '.mid'
-    print("...midi file:", comp.midi_file_name)
-
-    # save to MIDI file
+    for i in range(duet_len):                                             # save and write out
+        comp.melodies.append(duet[i])
     save(comp)
 
-    # display results
-    print("\n\nnew duet:", title_full)
-    print("composer:", comp.composer)
-    print("date:", comp.date)
-    print("tempo:", comp.tempo)
-    duration = comp.duration()
-    if duration > 60.0:
-        duration /=60.0
-        print("duration", duration, "minutes\n")
-    else:
-        print("duration:", duration, "seconds\n")
     return comp
