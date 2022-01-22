@@ -125,20 +125,20 @@ def getintervals(notes):
     generates a list of intervals from a given melody.
     total intervals will be len(m.notes)-1.
     
-    difference between index values corresponds to distance
+    difference between index values with NOTES corresponds to distance
     in semi-tones!
     '''
-    intr = []
+    intrvls = []
     ind = getindex(notes)
-    l = len(ind)
-    for n in range(l):
+    index_len = len(ind)
+    for n in range(index_len):
         try:
-            intr.append(ind[n+1]-ind[n])
+            intrvls.append(ind[n+1]-ind[n])
         # if this is the last element, then subtract randint(1,3)
         # from it??? i dont think this modifies the last element.
         except IndexError:
             break
-    return intr
+    return intrvls
 
 
 def ispos(num):
@@ -150,26 +150,23 @@ def ispos(num):
     return True if num >= 0 else False
 
 
-def transpose_m(notes, dist):
+def transpose_m(notes:list[int], dist:int):
     '''
     wrapper to use with melody() objects.
     returns a new note list[str]
     '''
-    if type(dist)!= int or dist > 11 or dist < 1:
+    if dist > 11 or dist < 1:
         raise ValueError("distance must be an int: 1<=n<=11")
     pcs = transpose(getindex(notes), t=dist, octeq=False)
     return tostr(pcs, octeq=False)
 
 
-def transpose_c(chords, dist):
+def transpose_c(chords:list, dist:int):
     '''
     wrapper to use with chord() lists
     '''
-    if type(chords)!=list or type(dist)!=int:
-        raise TypeError("list must be chord object list, and distance must be an int")
-    if type(dist)==int:
-        if dist > 11 or dist < 1:
-            raise ValueError("distance must be an int: 1<=n<=11")
+    if dist > 11 or dist < 1:
+        raise ValueError("distance must be an int: 1<=n<=11")
     cl = len(chords)
     for c in range(cl):
         pcs = transpose(getindex(chords[c].notes), t=dist, octeq=False)
@@ -179,17 +176,21 @@ def transpose_c(chords, dist):
 
 def transpose(pcs, t, octeq=True):
     '''
-    Transpose a pitch class (int) or list of pitch classes (list[int]) 
+    transpose a pitch class (int) or list of pitch classes (list[int]) 
     using a supplied interval t (int), or list of intervals t (list[int]). 
 
-    If octeq is set to False, then resulting values may be greater than
+    if octeq is set to False, then resulting values may be greater than
     11. This may work when working with a source scale (since it goes
     from octaves 2-5) as long as the resulting value n is n <= len(source)-1.
-    
-    Returns a modified pcs (list[int]) or modified pitch class (int).
+
+    use getindex() prior to calling transpose() when working with various 
+    composition objects. indices in NOTES function as int representations
+    of notes, provided they're within the range of NOTES.
+
+    returns a modified pcs (list[int]) or modified pitch class (int).
     '''
     if type(pcs)!=list:
-        raise TypeError("pcs must be a list[int]")
+        raise TypeError("pcs must be a list[int]! pcs was type:", type(pcs))
     pcsl = len(pcs)
     # modify with a single interval across all pitch-class integers
     if type(t)==int:
@@ -433,16 +434,18 @@ def scale_limit(total:int):
     '''
     TODO: look at proportional scaling methods...
     '''
-    if 1 <= total <= 100:                        
-        total = randint(1, floor(total * 0.1))   
+    if 1 <= total <= 10:
+        total = randint(1, 3)
+    elif 11 <= total <= 100:                        
+        total = randint(1, int(total * 0.2))   
     elif 101 <= total <= 300:
-        total = randint(1, floor(total * 0.075)) 
+        total = randint(1, int(total * 0.075)) 
     elif 301 <= total <= 500:
-        total = randint(1, floor(total * 0.05)) 
+        total = randint(1, int(total * 0.05)) 
     elif 501 <= total <= 700:
-        total = randint(1, floor(total * 0.035)) 
+        total = randint(1, int(total * 0.035)) 
     elif 701 <= total <= 1000:
-        total = randint(1, floor(total * 0.02))
+        total = randint(1, int(total * 0.02))
     elif total > 1000:
-        total = randint(1, floor(total * 0.001)) 
+        total = randint(1, int(total * 0.001)) 
     return total

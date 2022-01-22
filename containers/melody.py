@@ -6,6 +6,9 @@ class Melody():
     '''
     A class/container for managing all data relevant to melodies. 
 
+    Does not adhere to any strict time signature. Use Bar() if using a 
+    time signature is preferred.
+
     Stores: original Forte number, inputted source data, original source scale, 
     tempo, instrument, notes, rhythms, and dynamics.
     '''
@@ -53,4 +56,4 @@ class Melody():
         return a list[int] of all pitch classes in this melody. may need to use tools.getpcs() prior
         to calling this
         '''
-        return self.pcs
+        return self.pcs if len(self.pcs) != 0 else 0

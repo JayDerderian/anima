@@ -19,7 +19,7 @@ lieu of a note string?
 '''
     
 from tqdm import trange
-from random import randint
+from random import randint, seed
 
 from utils.midi import save
 from utils.tools import scaletotempo
@@ -33,12 +33,14 @@ from containers.melody import Melody
 
 def strqtet3(tempo=None):
     '''
-    creates a choral for string quartet using a randomly chosen mode'''
+    creates a choral for string quartet using a randomly chosen mode
+    '''
 
     # initialize
+    seed()
     create = Generate()
     if tempo==None:
-        comp = create.init_comp(TEMPOS[randint(9,27)]) # 60 - 126bpm
+        comp = create.init_comp(TEMPOS[randint(20,27)]) # 100-126bpm
     else:
         comp = create.init_comp(tempo)
     title_full = comp.title + " for string quartet"
@@ -160,7 +162,7 @@ def writeline(m, scale, total, create, asyn=False):
     '''
     writes each individual melodic line for each part. 
     **doesn't add rhythm or dynamics** if asyn==False,
-    which it is by default. if asyn== true, then supplied
+    which it is by default. if asyn==true, then any supplied
     total will be overwritten! still working on that
     quirk...
     
@@ -200,10 +202,11 @@ def writeline(m, scale, total, create, asyn=False):
 
 def buildending(m):
     '''
-    NOTE: this is SUPER long! figure out a way to shorten it a bit...
-    
-    builds an arpeggio based off the last 3-7 notes and slowly shortens the rhythms
-    until they're 16th's, while increasing the volume of each note.
+    builds a closing figure based off the last 3-7 notes and slowly 
+    shortens the rhythms until they're 16th's, while increasing the 
+    volume of each note.
+
+    NOTE: dynamics don't seem to be changing. gotta fix that...
     
     returns a modified Melody() object
     '''
@@ -212,9 +215,9 @@ def buildending(m):
 
     # build initial figure
     fig = {"notes": [], "rhythms": [], "dynamics": []}
-    fig["notes"] = m.notes[-n:]
-    fig["rhythms"] = scaletotempo(m.tempo, [2.0] * n)
-    fig["dynamics"] = [100] * n
+    fig["notes"] = m.notes[-n:]                        # last n notes
+    fig["rhythms"] = scaletotempo(m.tempo, [2.0] * n)  # start using half-notes
+    fig["dynamics"] = [100] * n                        # medium dynamic
 
     # add initial figure 2 times
     for add in range(2):
@@ -222,10 +225,10 @@ def buildending(m):
         m.rhythms.extend(fig["rhythms"])
         m.dynamics.extend(fig["dynamics"])
     # change each rhythm list to next quickest value, 
-    # and increase number of reps by 2 with each change.
+    # and increase number of reps by 1 with each change.
     # volume increases with each iteration.
     cur = 2
-    rep = 4
+    rep = 2
     dyn = 9 
     while cur < 9:
         fig["rhythms"] = scaletotempo(m.tempo, [RHYTHMS[cur]] * n)
@@ -235,12 +238,16 @@ def buildending(m):
             m.rhythms.extend(fig["rhythms"])
             m.dynamics.extend(fig["dynamics"])
         cur+=1
-        rep+=2
+        rep+=1
         dyn+=1
     return m, fig
 
 
 def sync(m, lp, fig):
+    '''
+    repeat closing figure n times to sync up
+    with the longest part in the ensemble
+    '''
     while m.duration() < lp:
         m.notes.extend(fig["notes"])
         m.rhythms.extend(fig["rhythms"])

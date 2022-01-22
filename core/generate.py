@@ -213,6 +213,10 @@ class Generate:
         if root==None:
             root, info = self.pick_root(t=True, o=None)
             meta_data.append(info)
+        if t == None:
+            gentotal = randint(2, 29)
+        else:
+            gentotal = t
         # Pick total: 3 - 30 if we're generating random notes
         if data==None:
             # Note that the main loop uses total + 1!
@@ -288,10 +292,10 @@ class Generate:
         if randint(1, 2) == 1:
             if t:
                 mode, pcs, scale = self.pick_scale(t=True)
-                info = '{}{}'.format(scale[0], mode)
+                info = '{} {}'.format(scale[0], mode)
             else:
                 mode, pcs, scale = self.pick_scale(t=False)
-                info = '{}{}'.format(scale[0], mode)
+                info = '{} {}'.format(scale[0], mode)
         else:
             if t:
                 fn, pcs, scale = self.pick_set(t=True)
