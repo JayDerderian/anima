@@ -1,186 +1,195 @@
 '''
-this module handles another string quartet. this one is a simple choral
-each part will have the same rhythm and dynamics. notes are separate and
-independent
+this module handles the generation of a string quartet who is using fast, 
+repetitive strings of rhythms (i.e. 16th notes) with either repeated or
+non-repeated notes.
 
-NOTE: add looped arpeggios to each part based off the first four notes of 
-their part from the opening choral. '''
+should be more like a scherzo. tempo will be between 120-152 by default,
+unless one is supplied by the user.
+'''
 
-# Imports
-from random import randint
-from datetime import datetime as date
+from tqdm import trange
+from random import randint, seed, choice
 
 from utils.midi import save
+from utils.tools import scaletotempo, checkrange, getpcs
 from utils.txtfile import save_info
 
 from core.generate import Generate
-from core.constants import RHYTHMS, TEMPOS
+from core.constants import DYNAMICS, NOTES, REST, TEMPOS, RANGE
 
 from containers.melody import Melody
-from containers.composition import Composition
+
+rhy = [0.125, 0.25]                                # 16th and 8th notes only!
+rests_dur = [0.5, 1, 2]                            # rest durations. pair with notes that will be SILENT!
+ranges = [RANGE["Violin"], RANGE["Violin"],        # list of ranges. violin is listed twice because this 
+          RANGE["Viola"], RANGE["Cello"]]          # list needs to iterate with qtet[]
 
 def strqtet2(tempo=None):
     '''
-    creates a choral for string quartet using a randomly chosen mode'''
+    generates a 'scherzo' type quartet
+    
+    quartet is in rhythmic UNISON the whole piece! alternate between bursts of notes
+    and rests. 
+    '''
 
-    # initialize
+    print("\nwriting new string quartet...")
+
+    seed()                                           # initialize randint, comp, and Generate()
     create = Generate()
     if tempo==None:
-        comp = create.init_comp(TEMPOS[randint(0,8)])
+        comp = create.init_comp(TEMPOS[randint(26,31)]) 
     else:
         comp = create.init_comp(tempo)
-    title_full = comp.title + "for string quartet"
+    title_full = comp.title + " for string quartet"
+    
+    qtet = [Melody(tempo=comp.tempo,                 # create our quartet
+                   instrument='Violin'),
+            Melody(tempo=comp.tempo,
+                   instrument='Violin'),
+            Melody(tempo=comp.tempo,
+                   instrument='Viola'),
+            Melody(tempo=comp.tempo,
+                   instrument='Cello')]
+    qtet_len = len(qtet)
+    qtet_empty = qtet                               # used to reset qtet for each subsequent section
 
-    # create our quartet
-    v1 = Melody(tempo=comp.tempo,
-                instrument='Violin')
-    v2 = Melody(tempo=comp.tempo,
-                instrument='Violin')
-    va = Melody(tempo=comp.tempo,
-                instrument='Viola')
-    vc = Melody(tempo=comp.tempo,
-                instrument='Cello')
-    comp.instruments.append(v1.instrument)
-    comp.instruments.append(v2.instrument)
-    comp.instruments.append(va.instrument)
-    comp.instruments.append(vc.instrument)
+    for inst in range(qtet_len):                    # add instruments to comp object
+        comp.instruments.append(qtet[inst])
     comp.ensemble = 'quartet'
 
-    print("\nwriting choral...")
+    sections = {}                                   # dictionary of different sections from the composition. 
+                                                    # can be used to mix and match material!
 
-    # pick notes. use only one scale! 
-    mode, pcs, notes = create.pick_scale(t=True)
+    print("\nwriting opening...")
+
+    mode, pcs, notes = create.pick_scale(t=True)    # pick initial notes. 
     source = create.new_source_scale(notes)
     print("...using", notes[0], mode)
+    print("...notes:", notes)
     print("...pcs:", pcs)
 
-    print("\nwriting choral...")
-
-    # write individual lines
-    total = randint(12, 30)
-    v1 = writeline(v1, source, total, create)
-    v2 = writeline(v2, source, total, create)
-    va = writeline(va, source, total, create)
-    vc = writeline(vc, source, total, create)
-
-    # create rhythms
-    rhy = []
-    for rhythm in range(total):
-        # use slower rhythms
-        rhy.append(RHYTHMS[randint(1,4)])
-    # create dynamics
-    dyn = create.new_dynamics(total=total)
-
-    # add to each part 
-    v1.rhythms.extend(rhy)
-    v1.dynamics.extend(dyn)
-    v2.rhythms.extend(rhy)
-    v2.dynamics.extend(dyn)
-    va.rhythms.extend(rhy)
-    va.dynamics.extend(dyn)
-    vc.rhythms.extend(rhy)
-    vc.dynamics.extend(dyn)
-
-    # save original values in temp objects
-    v1_orig = v1
-    v2_orig = v2
-    va_orig = va
-    vc_orig = vc
-
-    print("\nwriting asynchronous lines...")
-
-    v1 = writeline(v1, source, total, create, asyn=True)
-    v2 = writeline(v2, source, total, create, asyn=True)
-    va = writeline(va, source, total, create, asyn=True)
-    vc = writeline(vc, source, total, create, asyn=True)
-
-    '''
-    NOTE: generate a "rhythm" that is the difference between a current
-    part and the longest part in the piece. append this difference to the
-    *end* of a rhythm list, then attempt to add original choral at end of an 
-    asynchronous section that will have each part in rhythmic unison again. 
+    for q in range(qtet_len):                       # save meta-data
+        qtet[q].pcs.append(pcs)
+        qtet[q].source_scale.extend(source)
     
-    THIS WILL MAKE RHTYHMS LONGER THAN THE OTHER TWO LISTS. 
+    us_bursts = randint(5, 11)                      # total SOFT 16th UNISON BURSTS
+    for b in trange((us_bursts), desc='progress'):
+        total = randint(5, 11)                      # total notes in this burst
+        for q in range(qtet_len):                   # write each part
+            '''NOTE: maybe find a way to find a short range of notes to pick
+                     from for each part. current approach might be kinda wonky'''
+            qtet[q] = writeline(qtet[q], source, total, create)
+        r = [0.125] * total                         # add rhy & dyn to each part
+        d = [DYNAMICS[randint(9,17)]] * total
+        for q in range(qtet_len):
+            qtet[q].rhythms.extend(r)
+            qtet[q].dynamics.extend(d)
+
+    durs = []                                       # end of this section is current longest part
+    for q in range(qtet_len):
+        durs.append(qtet[q].duration())
+    us_end = max(durs)
+
+    sections["Opening Unision 16ths"] = qtet        # save section. section is the list of Melody()
+                                                    # objects in their current state                                      
+
+    print("\n...adding disjointed lines...")
+
+    qtet_disjoint = qtet_empty                      # create a temp ensemble to encapsulate this section,
+                                                    # then append to end of qtet
+
+    mode, pcs, notes = create.pick_scale(t=True)    # pick new source notes. 
+    source = create.new_source_scale(notes)
+    print("...using", notes[0], mode)
+    print("...notes:", notes)
+    print("...pcs:", pcs)
+
+    for q in range(qtet_len):                       # save meta-data
+        qtet_disjoint[q].pcs = pcs
+        qtet_disjoint[q].source_scale = source
+
+    # each part has strings of the same note and rhythm of n length
+    # happening independint of each other, all with a very soft dynamic
+    dis_bursts = randint(5,11)
+    for add in trange((dis_bursts), desc='progress'):
+        note = choice(checkrange(source, ranges[add]))  # pick note
+        r = choice(rhy)                                 # pick rhythm
+        d = DYNAMICS[randint(9,17)]                     # pick dynamic
+        reps = randint(4, 10)                           # how many times should this note be played?
+        for thing in range(reps):
+            qtet_disjoint[add].append(note)
+            qtet_disjoint[add].append(r)
+            qtet_disjoint[add].dynamics.append(d)
+           
+    for q in range(qtet_len):                           # append all new data to qtet, then use qtet_disjoint to save with sections
+        qtet[q].notes.extend(qtet_disjoint[q].notes)
+        qtet[q].rhythms.extend(qtet_disjoint[q].rhythms)
+        qtet[q].dynamics.extend(qtet_disjoint[q].dynamics)
+        qtet[q].pcs.extend(qtet_disjoint[q].pcs)
+        qtet[q].source_scale(qtet_disjoint[q].source_scale)
+        
+    durs = []                                           # end of this section is current longest part
+    for q in range(qtet_len):
+        durs.append(qtet[q].duration())
+    dis_end = max(durs)
+
+    sections["Disjointed Notes"] = qtet_disjoint        # save section (list of Melody() object states) to dictionary                                     
+
+    # eventually re-align parts to do unison rhythmic bursts of equal length,
+    # but each part has their own set of notes (same lengths though!)
     
-    need to figure out how to make a rest... will a 'None' value in
-    lieu of a note string?'''
+    print("\n...realigning and writing slow, quiet choral...")
 
-    print("\nrecapitulating choral at displaced end points...")
+    mode, pcs, notes = create.pick_scale(t=True)        # pick new source notes. 
+    source = create.new_source_scale(notes)
+    print("...using", notes[0], mode)
+    print("...notes:", notes)
+    print("...pcs:", pcs)
 
-    v1.notes.extend(v1_orig.notes)
-    v1.rhythms.extend(v1_orig.rhythms)
-    v1.dynamics.extend(v1_orig.dynamics)
+    qtet_choral = qtet_empty                            # new empty ensemble for this section
 
-    v2.notes.extend(v2_orig.notes)
-    v2.rhythms.extend(v2_orig.rhythms)
-    v2.dynamics.extend(v2_orig.dynamics)
-
-    va.notes.extend(va_orig.notes)
-    va.rhythms.extend(va_orig.rhythms)
-    va.dynamics.extend(va_orig.dynamics)
-
-    vc.notes.extend(vc_orig.notes)
-    vc.rhythms.extend(vc_orig.rhythms)
-    vc.dynamics.extend(vc_orig.dynamics)
-
-    # save all parts
-    comp.melodies.append(v1)
-    comp.melodies.append(v2)
-    comp.melodies.append(va)
-    comp.melodies.append(vc)
-
-    # generate MIDI & .txt file names
-    print("\ngenerating file names...")
-    comp.midi_file_name = "{}{}".format(comp.title, ".mid")
-    print("...midi file:", comp.midi_file_name)
-    # comp.txt_file_name = "{}{}".format(comp.title, '.txt')
-    # print("...text file:", comp.txt_file_name)
-    title_full = "{}{}".format(comp.title, ' for string quartet')
-
-    # write to MIDI file & .txt file
-    save(comp)
-    # saveInfo(name=comp.title, fileName=comp.txtFileName, newMusic=comp)
-
-    # display results
-    print("\n\nnew quartet:", title_full)
-    print("composer:", comp.composer)
-    print("date:", comp.date)
-    print("tempo:", comp.tempo)
-    duration = comp.duration()
-    if duration > 60.0:
-        duration /=60.0
-        print("duration", duration, "minutes\n")
-    else:
-        print("duration:", duration, "seconds\n")
-    return comp
+    # find longest part, add a half-note duration, then subtract all other 
+    # durations from this to get the difference, then assign a silent note, 
+    # rhythm, and dynamic to this duration value.
 
 
-#--------------------------------------------------------------------------#
+
+    # end with long, quiet chord, then one sudden loud, different chord       
+
+
+    
 
 
 def writeline(m, scale, total, create, asyn=False):
     '''
     writes each individual melodic line for each part. 
-    **doesn't add rhythm or dynamics** only notes!!
-    only picks notes from a given source scale
+    **doesn't add rhythm or dynamics** if asyn==False,
+    which it is by default. if asyn==true, then any supplied
+    total will be overwritten! still working on that
+    quirk...
     
-    returns a modified melody() object'''
+    returns a modified Melody() object
+    '''
     if asyn:
-        # NOTE: this will redefine supplied total if asyn is True
-        total = randint(12, 30)
+        total = randint(12, 30) # NOTE: this will redefine supplied total Iif supplied)
     for things in range(total):
-        # limited to octaves 4 and 5 for violins
         if m.instrument == 'Violin':
-            m.notes.append(scale[randint(13, len(scale)-1)])
-        # limit to octaves 3 and 4 for viola
+            note = scale[randint(13, len(scale)-1)]
+            while note not in RANGE["Violin"]:
+                note = scale[randint(13, len(scale)-1)]
+            m.notes.append(note)
         elif m.instrument == 'Viola':
-            m.notes.append(scale[randint(7, len(scale)-8)])
-        # limit to octaves 2 and 3 for cello
+            note = scale[randint(7, len(scale)-8)]
+            while note not in RANGE["Viola"]:
+                note = scale[randint(7, len(scale)-8)]
+            m.notes.append(note)
         elif m.instrument == 'Cello':
-            m.notes.append(scale[randint(0, len(scale)-16)])
+            note = scale[randint(0, len(scale)-16)]
+            while note not in RANGE["Cello"]:
+                note = scale[randint(0, len(scale)-16)]
+            m.notes.append(note)
     
-    if asyn==True:
-        # add rhythms and dynamics, plus save source scale
+    if asyn:
         m.rhythms.extend(create.new_rhythms(total=len(m.notes), tempo=m.tempo))
         m.dynamics.extend(create.new_dynamics(total=len(m.notes)))
 

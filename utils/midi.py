@@ -11,7 +11,6 @@ representation very messy.
 
 import pretty_midi as pm
 
-from tqdm import trange
 from containers.melody import Melody
 from containers.chord import Chord
 

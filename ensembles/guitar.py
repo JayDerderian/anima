@@ -96,6 +96,7 @@ def sologuitar(tempo=None):
     print("\n...success!")                                    # display results
     print("\ntitle:", title_full)
     print("composer:", comp.composer)
+    print("tempo:", comp.tempo)
     print("date:", comp.date)
     print("duration:", comp.duration_str())
     print("midi file:", comp.midi_file_name, "\n")
@@ -128,10 +129,13 @@ def solo_guitar_simple(tempo=None):
     m.pcs = getpcs(m.notes)                                                    # get pcs of new melody              
     comp.melodies.append(m) 
     
-    print("...success!")                                                       # display results and write out
-    print("\ntitle:", title_full)                             
+    print("...success!")                                                       
+    
+    print("\ntitle:", title_full)                                              # display results and write out                           
     print("composer:", comp.composer)
+    print("tempo:", comp.tempo)
     print("date:", comp.date)
     print("duration:", comp.duration_str())
+    print("midi file:", comp.midi_file_name, "\n")
                                  
     save(comp)
