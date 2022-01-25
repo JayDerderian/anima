@@ -39,7 +39,7 @@ def tostr(pcs, octave=None, octeq=True):
                 scale.append(PITCH_CLASSES[pcs[i]])     
         elif type(octave)==int and octave > 1 and octave < 6:
             for i in range(len(pcs)):
-                note = "{}{}".format(PITCH_CLASSES[pcs[i]], octave)
+                note = f"{PITCH_CLASSES[pcs[i]]}{octave}"
                 scale.append(note)
         else:
             raise ValueError("octave must be within 2-5!")
@@ -63,11 +63,9 @@ def removeoct(anote):
     # either name + oct or name + acc + oct. 
     n = [char for char in anote]
     if len(n)==3:
-        note = "{}{}".format(n[0], n[1])
-        return note
+        return f"{n[0]}{n[1]}"
     elif len(n)==2 and n[1]=="b" or n[1]=="#":
-        note = "{}{}".format(n[0], n[1])
-        return note     
+        return f"{n[0]}{n[1]}"     
     else:
         return n[0]
 
@@ -82,7 +80,7 @@ def getpcs(notes):
     pcs = []
     if type(notes)==str:
         # check if there's an octave int present
-        if notes.isalpha()==False:
+        if notes.isalpha()==False:                
             note = removeoct(notes)
             pcs.append(PITCH_CLASSES.index(note))
         else:
@@ -130,14 +128,9 @@ def getintervals(notes):
     '''
     intrvls = []
     ind = getindex(notes)
-    index_len = len(ind)
-    for n in range(index_len):
-        try:
-            intrvls.append(ind[n+1]-ind[n])
-        # if this is the last element, then subtract randint(1,3)
-        # from it??? i dont think this modifies the last element.
-        except IndexError:
-            break
+    ind_len = len(ind)
+    for n in range(1, ind_len):
+        intrvls.append(ind[n]-ind[n-1])
     return intrvls
 
 
@@ -247,22 +240,18 @@ def invert(notes: list[str]):
     '''
     inverts a melody. returns a new note list[str]
     '''
-    inverted = []               # list of inverted intervals
-    intr = getintervals(notes)  # get list of intervals and invert values
+    inverted = []                       # list of inverted intervals
+    intr = getintervals(notes)          # get list of intervals and invert values
     il = len(intr)
     for i in range(il):
         if ispos(intr[i]):
             inverted.append(-abs(intr[i]))
         else:
             inverted.append(abs(intr[i]))
-    # get index of first note. we don't need them all.
-    # add first note index to new melody note list
-    mel = []
-    mel.append(getindex(notes))
-    # build new melody note list off this inverted interval list 
-    for i in range(il):
+    mel = []                            # get index of first note. we don't need them all.
+    mel.append(getindex(notes))         # add first note index to new melody note list
+    for i in range(il):                 # build new melody note list off this inverted interval list 
         mel.append(mel[i]+inverted[i])
-    # translate to note name strings and return
     return tostr(mel, octeq=False)
 
 
