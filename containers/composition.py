@@ -69,6 +69,17 @@ class Composition():
                 "Instruments": self.instruments, "Duration": self.duration(), 
                 "MIDI file": self.midi_file_name, "Text File": self.txt_file_name}
 
+    # display info
+    def display(self):
+        '''
+        display composition info
+        '''
+        print("\ntitle:", self.title)
+        print("composer:", self.composer)
+        print("date:", self.date)
+        print("duration:", self.duration_str())
+        print("midi file:", self.midi_file_name)
+
     # Get duration of composition
     def duration(self):
         '''

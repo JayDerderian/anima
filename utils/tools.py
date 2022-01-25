@@ -388,9 +388,6 @@ def checkrange(notes:list[str], ran:list[str]):
     not within the range of a given instrument.
 
     returns a modified note list[str]
-
-    see for more:
-    https://stackoverflow.com/questions/3428536/python-list-subtraction-operation
     '''
     diff = [note for note in ran if note not in ran]
     if len(diff) > 0:

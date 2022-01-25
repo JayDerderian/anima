@@ -18,8 +18,8 @@ class Melody():
         # Meta data
         self.info = 'None'
         self.pcs = []
-        self.source_data = 'None'
-        self.source_scale = 'None'
+        self.source_data = []
+        self.source_scale = []
 
         # Data
         if tempo==None and instrument==None:

@@ -209,27 +209,22 @@ class Generate:
             original source scale (list[str])
         '''           
 
-        meta_data = []              # Generate seed scale & save forte numbers and/or pitch class sets
+        meta_data = []                    # Generate seed scale & save forte numbers and/or pitch class sets
         octave = randint(2, 3)     
         if root==None:              
             root, info = self.pick_root(t=True, o=None)
             meta_data.append(info)
-        if t==None:
-            gentotal = randint(2, 29)
-        else:
-            gentotal = t
-        if data==None:             # Pick total: 3 - 30 if we're generating random notes
+        if data==None:                    # Pick total: 3 - 30 if we're generating random notes
             if t==None:
                 gentotal = randint(2, 29)
             else:
                 gentotal = t
-        else:                      # Or the largest value of the supplied data set
+        else:                             # Or the largest value of the supplied data set
             gentotal = max(data)
-        # Generate source scale 
-        '''NOTE: this only uses the supplied root scale once!'''
+        '''NOTE: this only uses a supplied root scale once!'''
         n = 0
         scale = []
-        for i in range(gentotal+1):
+        for i in range(gentotal+1):       # Generate source scale 
             note = f"{root[n]}{octave}" 
             scale.append(note)
             n += 1   

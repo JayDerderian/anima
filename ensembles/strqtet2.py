@@ -21,8 +21,9 @@ from containers.melody import Melody
 
 rhy = [0.125, 0.25]                                # 16th and 8th notes only!
 rests_dur = [0.5, 1, 2]                            # rest durations. pair with notes that will be SILENT!
-ranges = [RANGE["Violin"], RANGE["Violin"],        # list of ranges. violin is listed twice because this 
-          RANGE["Viola"], RANGE["Cello"]]          # list needs to iterate with qtet[]
+ranges = {"Violin": RANGE["Violin"],               # dictionary of ranges for instruments in this ensemble  
+          "Viola":  RANGE["Viola"], 
+          "Cello":  RANGE["Cello"]}          
 
 def strqtet2(tempo=None):
     '''
@@ -75,25 +76,31 @@ def strqtet2(tempo=None):
     us_bursts = randint(5, 11)                      # total SOFT 16th UNISON BURSTS
     for b in trange((us_bursts), desc='progress'):
         total = randint(5, 11)                      # total notes in this burst
+        '''
+        NOTE: 
+        produces a note repeated n times with an arbitrarily
+        chosen rest duration. ensemble should be in rhythmic *unison*'''
         for q in range(qtet_len):                   # write each part
-            '''NOTE: maybe find a way to find a short range of notes to pick
-                     from for each part. current approach might be kinda wonky'''
-            qtet[q] = writeline(qtet[q], source, total, create)
-        r = [0.125] * total                         # add rhy & dyn to each part
-        d = [DYNAMICS[randint(9,17)]] * total
-        for q in range(qtet_len):
-            qtet[q].rhythms.extend(r)
-            qtet[q].dynamics.extend(d)
+            s = checkrange(source, ranges[qtet[q].instrument])  
+            n = [choice(s)] * total
+            r = [0.125] * total                                  
+            d = [DYNAMICS[randint(9,17)]] * total
+            rst = choice(rhy)                       # add a rest at the end of the note string
+            n.append("C4")                          # "silent" note since MIDI doesn't actually have rests
+            d.append(REST)
+            r.append(rst)
+            for add in range(qtet_len):
+                qtet[q].notes.extend(n)
+                qtet[q].rhythms.extend(r)
+                qtet[q].dynamics.extend(d)
 
     durs = []                                       # end of this section is current longest part
     for q in range(qtet_len):
         durs.append(qtet[q].duration())
     us_end = max(durs)
-
     sections["Opening Unision 16ths"] = qtet        # save section. section is the list of Melody()
                                                     # objects in their current state                                      
-
-    print("\n...adding disjointed lines...")
+    print("\nadding disjointed lines...")
 
     qtet_disjoint = qtet_empty                      # create a temp ensemble to encapsulate this section,
                                                     # then append to end of qtet
@@ -111,42 +118,48 @@ def strqtet2(tempo=None):
     # each part has strings of the same note and rhythm of n length
     # happening independint of each other, all with a very soft dynamic
     dis_bursts = randint(5,11)
-    for add in trange((dis_bursts), desc='progress'):
-        note = choice(checkrange(source, ranges[add]))  # pick note
-        r = choice(rhy)                                 # pick rhythm
-        d = DYNAMICS[randint(9,17)]                     # pick dynamic
-        reps = randint(4, 10)                           # how many times should this note be played?
-        for thing in range(reps):
-            qtet_disjoint[add].append(note)
-            qtet_disjoint[add].append(r)
-            qtet_disjoint[add].dynamics.append(d)
+    for db in trange((dis_bursts), desc='progress'):
+        total = randint(5,13)
+        for q in range(qtet_len):
+            s = checkrange(source, ranges[qtet_disjoint[q].instrument])  
+            n = [choice(s)] * total
+            r = [choice(rhy)] * total                                  
+            d = [DYNAMICS[randint(9,17)]] * total
+            rst = choice(rhy)                       # add a rest at the end of the note string
+            n.append("C4")                          # "silent" note since MIDI doesn't actually have rests
+            d.append(REST)
+            r.append(rst)
+            reps = randint(5, 13)
+            for thing in range(reps):
+                qtet_disjoint[q].notes.extend(n)
+                qtet_disjoint[q].rhythms.extend(r)
+                qtet_disjoint[q].dynamics.extend(d)
            
     for q in range(qtet_len):                           # append all new data to qtet, then use qtet_disjoint to save with sections
         qtet[q].notes.extend(qtet_disjoint[q].notes)
         qtet[q].rhythms.extend(qtet_disjoint[q].rhythms)
         qtet[q].dynamics.extend(qtet_disjoint[q].dynamics)
         qtet[q].pcs.extend(qtet_disjoint[q].pcs)
-        qtet[q].source_scale(qtet_disjoint[q].source_scale)
+        qtet[q].source_scale.extend(qtet_disjoint[q].source_scale)
         
-    durs = []                                           # end of this section is current longest part
+    durs = []                                      # end of this section is current longest part
     for q in range(qtet_len):
         durs.append(qtet[q].duration())
     dis_end = max(durs)
-
-    sections["Disjointed Notes"] = qtet_disjoint        # save section (list of Melody() object states) to dictionary                                     
+    sections["Disjointed Notes"] = qtet_disjoint   # save section (list of Melody() object states) to dictionary                                     
 
     # eventually re-align parts to do unison rhythmic bursts of equal length,
     # but each part has their own set of notes (same lengths though!)
     
-    print("\n...realigning and writing slow, quiet choral...")
+    # print("\n...realigning and writing slow, quiet choral...")
 
-    mode, pcs, notes = create.pick_scale(t=True)        # pick new source notes. 
-    source = create.new_source_scale(notes)
-    print("...using", notes[0], mode)
-    print("...notes:", notes)
-    print("...pcs:", pcs)
+    # mode, pcs, notes = create.pick_scale(t=True)        # pick new source notes. 
+    # source = create.new_source_scale(notes)
+    # print("...using", notes[0], mode)
+    # print("...notes:", notes)
+    # print("...pcs:", pcs)
 
-    qtet_choral = qtet_empty                            # new empty ensemble for this section
+    # qtet_choral = qtet_empty                            # new empty ensemble for this section
 
     # find longest part, add a half-note duration, then subtract all other 
     # durations from this to get the difference, then assign a silent note, 
@@ -154,9 +167,16 @@ def strqtet2(tempo=None):
 
 
 
-    # end with long, quiet chord, then one sudden loud, different chord       
+    # end with long, quiet chord, then one sudden loud, different chord
 
 
+    print("\n...success!")
+    comp.display()
+
+    # save and write out
+    for q in range(qtet_len):
+        comp.melodies.append(qtet[q])
+    save(comp)       
     
 
 
