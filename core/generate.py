@@ -99,6 +99,10 @@ class Generate:
         (date, midi and txt file names)
 
         tempo and composer name could also be provided.
+
+        NOTE: create a way for this method to create a 
+        new file folder for the new composition in the
+        programs directory
         '''
         comp = Composition()
         comp.title = self.new_title()
@@ -178,7 +182,7 @@ class Generate:
             raise TypeError("wrong type or value for i! i type is:", type(i))
         if octave==None:
             octave = randint(2, 5)
-        note = "{}{}".format(note, octave)
+        note = f"{note}{octave}"
         return note    
 
 
@@ -221,13 +225,12 @@ class Generate:
                 gentotal = t
         else:                      # Or the largest value of the supplied data set
             gentotal = max(data)
-    
         # Generate source scale 
         '''NOTE: this only uses the supplied root scale once!'''
         n = 0
         scale = []
         for i in range(gentotal+1):
-            note = "{}{}".format(root[n], octave) 
+            note = f"{root[n]}{octave}" 
             scale.append(note)
             n += 1   
             if n == len(root):                     
@@ -237,9 +240,6 @@ class Generate:
                     root, info = self.pick_root(t=True, o=None) 
                     meta_data.append(info)
                 n = 0
-
-        # scale = [self.new_source_scale(root = self.pick_root()[0]) for i in range(gentotal+1)]
-
         # Randomly pick notes from the generated source scale to 
         # create an arhythmic melody. 
         notes = []
@@ -249,14 +249,12 @@ class Generate:
             else:                                           # otherwise, pick between 50-100 % of given total t.
                 pick_total = randint(math.floor(t*0.5), t)   
             notes = [choice(scale) for n in range(pick_total)]
-
         # ...Or pick notes according to integers in data array
         else:       
             dl = len(data)                                 # Total number of notes is equivalent to the 
             for i in range(dl):                            # number of elements in the data set. Any supplied
                 notes.append(scale[data[i]])               # t doesn't matter since we're going of len(data)
-                                                           # for our total because reasons.
-        return notes, meta_data, scale
+        return notes, meta_data, scale                     # for our total because reasons.
 
 
     # Picks either a prime form pitch-class set, or a major or minor scale.
@@ -273,17 +271,17 @@ class Generate:
         if randint(1, 2) == 1:
             if t:
                 mode, pcs, scale = self.pick_scale(t=True)
-                info = '{} {}'.format(scale[0], mode)
+                info = f"{scale[0]} {mode}"
             else:
                 mode, pcs, scale = self.pick_scale(t=False)
-                info = '{} {}'.format(scale[0], mode)
+                info = f"{scale[0]} {mode}"
         else:
             if t:
                 fn, pcs, scale = self.pick_set(t=True)
-                info = '{} transposed to new root: {}'.format(fn, scale[0])
+                info = f"{fn} transposed to new root: {scale[0]}"
             else:
                 fn, pcs, scale = self.pick_set(t=False)
-                info = '{} untransposed, root: {}'.format(fn, scale[0])
+                info = f"{fn} untransposed, root: {scale[0]}"
         scale = tostr(pcs, octave=o)
         return scale, info     
 
@@ -373,8 +371,7 @@ class Generate:
         o = 2
         scale = []
         for i in range(28):
-            note = "{}{}".format(root[n], o)
-            scale.append(note)
+            scale.append(f"{root[n]}{o}")
             n += 1
             if n == len(root):
                 o += 1
@@ -690,14 +687,12 @@ class Generate:
               tones to give progressions more variance and color. 
         '''
         chords = []
-        # Has a scale, tempo, and total been provided?
         if total==None:
             total = randint(5, 11)
         if tempo==None:
             tempo = self.new_tempo()
         if scale==None:
             scale, data, source = self.new_notes()
-        # Pick chords
         while len(chords) < total:
             newchord = self.new_chord(tempo, scale)
             newchord.source_data = data
@@ -734,7 +729,7 @@ class Generate:
             triad.rhythm = 2.0
             triad.dynamic = 100
             triads.append(triad)
-            if type(t) == int and len(triads) == t:
+            if len(triads) == t:
                 break
         return triads
 
@@ -804,23 +799,15 @@ class Generate:
 
         NOTE: Instrument is *NOT* picked! Needs to be supplied externally.
         '''
-
-        # Melody container object
         m = Melody()
-
-        # Process any incoming data
         if dt != None and data != None:
-            data, m = map_data(m, data, dt)
+            data, m = map_data(m, data, dt)  # Process any incoming data
         else:
-            # Otherwise just add single string to list
             m.source_data ='None Inputted'
-
-        # Pick tempo if none is supplied
         if tempo==None:
             m.tempo = self.new_tempo()
         else:
             m.tempo = tempo
-
         # Pick notes from scratch  
         if data==None:
             if t==None:
@@ -833,24 +820,18 @@ class Generate:
                     m.notes, m.info, m.source_scale = self.new_notes(t=t)
                 else:
                     m.notes, m.info, m.source_scale = self.new_notes(t=t, r=r)
-
         # Or use supplied data ( supplied total(t),
         # just does its thing)
         else:
             m.notes, m.info, m.source_scale = self.new_notes(data=data)
-            if r != None:
-                # find and remove any note not in the range 
-                # of this instrument if we care about this
-                ml = len(m.notes)
-                for note in range(ml):
-                    if m.notes[note] not in r:
-                        m.notes.remove[m.notes[note]]
-
-        # Pick rhythms
-        m.rhythms = self.new_rhythms(len(m.notes), m.tempo)
-        # Pick dynamics
-        m.dynamics = self.new_dynamics(len(m.notes))
-
+        # remove any notes not within a supplied range
+        if r != None:
+            ml = len(m.notes)
+            for note in range(ml):
+                if m.notes[note] not in r:
+                    m.notes.remove[m.notes[note]]
+        m.rhythms = self.new_rhythms(len(m.notes), m.tempo) # Pick rhythms
+        m.dynamics = self.new_dynamics(len(m.notes))        # Pick dynamics
         return m
 
 
@@ -882,13 +863,10 @@ class Generate:
         # Generate a melody
         if data != None and dt != None:
             m = self.new_melody(tempo=comp.tempo, data=data, dt=dt)
-            # pick instrument for melody
             m.instrument = self.new_instrument()
             comp.instruments.append(m.instrument)
-
         else:
             m = self.new_melody(tempo=comp.tempo)
-            # pick instrument for melody
             m.instrument = self.new_instrument()
             comp.instruments.append(m.instrument)
 
@@ -898,20 +876,14 @@ class Generate:
         # Generate harmonies from this melody. Total is between half the number of notes
         # in the melody and total num of notes.
         ch = self.new_chords(total=randint(len(m.notes)/2, len(m.notes)), tempo=comp.tempo, scale=m.notes)
-        # pick keyboard instrument and apply to all chord objects
-        instr = INSTRUMENTS[randint(0, 8)]
+        instr = INSTRUMENTS[randint(0, 8)]    # pick keyboard instrument and apply to all chord objects
         for i in range(len(ch)):
             ch[i].instrument = instr
-        # save instrument to comp instr list
-        comp.instruments.append(instr)
-        # Save keyboard part part to chord dictionary
-        comp.chords[0] = ch
+        comp.instruments.append(instr)        # save instrument to comp instr list
+        comp.chords[0] = ch                   # Save keyboard part part to chord dictionary
 
-        # Full title
-        title_full = "{}{}{}{}".format(comp.title, ' for ', 
-            m.instrument, ' and various keyboards')
+        title_full = f"{comp.totle} for {m.instrument} and various keyboards"
 
-        # Export MIDI & text file, then display results
         if save(comp)!=-1 and save_info(name=comp.title, 
             fileName=comp.txt_file_name, newMusic=comp)==0:
             print("\ntitle:", title_full)
