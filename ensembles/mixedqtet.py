@@ -31,39 +31,21 @@ def mixedqtet(ensemble=None):
     pull against the constant pulse
     '''
     print("\n\nwriting new mixed quartet...")
-    # objects, title, midi file name, composer, and date
     create = Generate()
-    comp = Composition()
-    comp.title = create.new_title()
-    comp.composer = create.new_composer()
-    comp.date = date.now().strftime("%d-%b-%y %H:%M:%S")
-    title_full = '{}{}'.format(comp.title, ' for mixed quartet')
-    comp.midi_file_name = '{}{}'.format(comp.title, '.mid')
+    comp = create.init_comp()
+    title_full = f"{comp.title} for mixed quartet"
 
     print("\npicking instruments...")
-    # create the ensemble, if none is supplied
     if ensemble==None:
         e = create.new_instruments(4)
     else:
         e = ensemble
-    # save list
     comp.instruments = e
     comp.ensemble = 'quartet'
 
-    print("\ngenerating source material...")
-    # tempo
-    comp.tempo = choice(TEMPOS)
-    print("\ntempo:", comp.tempo)
-    print("\npicking source notes...")
-    # total chords
-    t = randint(5, 9)
-    # pick starting mode
-    mode, mode_pcs, mode_notes = create.pick_scale(t=True)
-    print("...using", mode_notes[0], mode)
-    print("...scale:", mode_notes)
-    print("...pcs:", mode_pcs)
-    # generate source scale from mode
-    source = create.new_source_scale(mode_notes)
+    t = randint(5, 9)                                       # total chords
+    mode, mode_pcs, mode_notes = create.pick_scale(t=True)  # pick starting mode
+    source = create.new_source_scale(mode_notes)            # generate source scale from mode
 
     print("\ngenerating", t, "chords...")
     # generate chords from source scale. each chord will be repeated either

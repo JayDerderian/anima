@@ -260,14 +260,14 @@ class Generate:
     # Picks either a prime form pitch-class set, or a major or minor scale.
     def pick_root(self, t=True, o=None):
         '''
-        Picks either a randomly chosen and transposed chuch mode or a 5 to 9 
+        Picks either a randomly chosen and transposed scale or a 5 to 9 
         note Forte pitch class prime form, randomly transposed as well. Set t
         to false if untransposed root is preferred.
 
         Returns tuple with a list[str] of note name strings, with or without an 
         assigned octave, plus info (str) about the chosen scale.
         '''
-        # use mode? (1), or prime form (2)?
+        # use scale? (1), or prime form (2)?
         if randint(1, 2) == 1:
             if t:
                 mode, pcs, scale = self.pick_scale(t=True)
@@ -357,7 +357,7 @@ class Generate:
 
 
     # Generates a long source scale off a given root scale 
-    def new_source_scale(self, root, o=None):
+    def new_source_scale(self, root):
         '''
         Generates a list[str] "source scale" based off a 
         supplied root (list[str]). 
@@ -365,7 +365,7 @@ class Generate:
         Does not pick additional roots! Mostly used by other methods.
         Don't call directly.
 
-        Returns a list[str] with appended octaves (2-5)
+        Returns a list[str] with appended octaves (2-6)
         '''
         n = 0
         o = 2
@@ -379,6 +379,25 @@ class Generate:
                     o = 2
                 n = 0
         return scale
+
+    # generate a dictionary of source scales
+    def new_source_scales(self, t=None):
+        '''
+        generates a dictionary of source scales to choose from.
+        
+        returns a tuple:
+            sources (dict[int, list[str]]) 
+            scale_info (list[str])
+        '''
+        if t==None:
+            t = randint(3, 8) # pick 3-8 scales if no total is provided
+        sources = {}   
+        scale_info = []
+        for scale in range(t):
+            root, info = self.pick_root()
+            scale_info.append(info)
+            sources[scale] = self.new_source_scale(root)
+        return sources, scale_info
 
 
     # Generate derivative scales based on each note in a given scale.
@@ -474,7 +493,7 @@ class Generate:
     # Pick a rhythm
     def new_rhythm(self):
         '''
-        Generates a single new rhythm. Not scaled to current tempo!
+        Generates a single new rhythm. Not scaled to tempo!
         '''
         return choice(RHYTHMS)
 
@@ -500,7 +519,6 @@ class Generate:
         while len(rhythms) < total:
             rhythm = choice(RHYTHMS)           # Pick rhythm and add to list
             if randint(1, 2) == 1:             # Repeat this rhythm or not? 1 = yes, 2 = no
-                # limit = math.floor(total * 0.333333333333)
                 limit = scale_limit(total)
                 if limit == 0:
                     limit += 2
@@ -551,15 +569,11 @@ class Generate:
         dynamics = []
         if total==None:
             total = randint(3, 30)
-        if rests:
+        if rests:                               # using rests
             while len(dynamics) < total:
-                # Pick dynamic OR a rest
-                if randint(0,1) == 1:
+                if randint(0,1) == 1:           # Pick dynamic OR a rest
                     dynamic = choice(DYNAMICS)
-                    # repeat?
-                    if randint(1,2) == 1:
-                        # Limit reps to no more than roughly 1/3 of the supplied total
-                        # limit = math.floor(total * 0.333333333333)
+                    if randint(1,2) == 1:       # repeat?
                         limit = scale_limit(total)
                         if limit == 0:
                             limit += 2
@@ -572,22 +586,18 @@ class Generate:
                         dynamics.append(dynamic)
                 else:
                     dynamic = REST
-                    # repeat?
-                    if randint(1,2) == 1:
-                        # only repeat rests 1-2 times for now...
-                        reps = randint(1, 2)
+                    if randint(1,2) == 1:     # repeat?
+                        reps = randint(1, 2)  # only repeat rests 1-2 times for now...
                         for i in range(reps):
                             dynamics.append(dynamic)
                             if len(dynamics) == total:
                                 break
                     else:
                         dynamics.append(dynamic)
-        else:
+        else:                                 # NOT using rests
             while len(dynamics) < total:
                 dynamic = choice(DYNAMICS)
-                # repeat?
-                if randint(1,2) == 1:
-                    # limit = math.floor(total * 0.333333333333)
+                if randint(1,2) == 1:         # repeat?
                     limit = scale_limit(total)
                     if limit == 0:
                         limit += 2

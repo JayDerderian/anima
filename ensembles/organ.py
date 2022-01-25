@@ -28,15 +28,13 @@ def organ(t=None):
     exports a new midi file with name of the composition.'''
     print("\nwriting organ piece...")
     create = Generate()
-    if t == None:
+    if t==None:
         tempo = TEMPOS[randint(7,12)]
     comp = create.init_comp(tempo=tempo)
     comp.instruments.append('Reed Organ')
     title_full = comp.title + "for solo organ"
-
     # generate 2-5 chords based off 2-4 
-    # randomly chosen and built scales between octaves
-    # 2 - 3
+    # randomly chosen and built scales between octaves 2 - 3
     source = new_source(create, scale_total=3, oct_total=2)
     for scale in range(len(source)):
         chords = create.new_chords(total=randint(2,5), tempo=comp.tempo, scale=source[scale])
@@ -58,24 +56,24 @@ def organ(t=None):
 
 
 def new_source(create, scale_total, oct_total):
-    '''generates a dictionary of source scales each limited
-       to the same octave range. 
+    '''
+    generates a dictionary of source scales each limited
+    to the same octave range. 
 
-       oct_total must be between 1-5
-       scale_total should ideally between 2-5
-       
-       each dict key is an integer starting on 0'''
-
-    mode, mode_pcs, notes = create.pick_scale(t=True)
-    print("\nroot:", notes[0], mode)
+    oct_total must be between 1-5
+    scale_total should ideally between 2-5
+    
+    each dict key is an integer starting on 0
+    '''
     scales = {}
     oct_total *= 7
+    mode, mode_pcs, notes = create.pick_scale(t=True)
     for i in range(scale_total):
         n = 0
         scale = []
         octave = 2
         while len(scale) < oct_total:
-            note = "{}{}".format(notes[n], octave)
+            note = f"{notes[n]}{octave}"
             scale.append(note)
             n += 1
             if n == len(notes):
