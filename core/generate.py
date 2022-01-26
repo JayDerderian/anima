@@ -214,9 +214,9 @@ class Generate:
         if root==None:              
             root, info = self.pick_root(t=True, o=None)
             meta_data.append(info)
-        if data==None:                    # Pick total: 3 - 30 if we're generating random notes
+        if data==None:                    # Pick total: 10 - 50 if we're generating random notes
             if t==None:
-                gentotal = randint(2, 29)
+                gentotal = randint(9, 49)
             else:
                 gentotal = t
         else:                             # Or the largest value of the supplied data set
@@ -256,11 +256,13 @@ class Generate:
     def pick_root(self, t=True, o=None):
         '''
         Picks either a randomly chosen and transposed scale or a 5 to 9 
-        note Forte pitch class prime form, randomly transposed as well. Set t
-        to false if untransposed root is preferred.
+        note Forte pitch class prime form, randomly transposed as well. 
+        
+        Set t to false if untransposed root is preferred.
 
-        Returns tuple with a list[str] of note name strings, with or without an 
-        assigned octave, plus info (str) about the chosen scale.
+        Returns tuple: 
+            list[str] of note name strings (with or without an assigned octave)
+            info (str) about the chosen scale.
         '''
         # use scale? (1), or prime form (2)?
         if randint(1, 2) == 1:
@@ -273,10 +275,10 @@ class Generate:
         else:
             if t:
                 fn, pcs, scale = self.pick_set(t=True)
-                info = f"{fn} transposed to new root: {scale[0]}"
+                info = f"{fn} transposed to: {scale[0]}"
             else:
                 fn, pcs, scale = self.pick_set(t=False)
-                info = f"{fn} untransposed, root: {scale[0]}"
+                info = f"{fn} untransposed: {scale[0]}"
         scale = tostr(pcs, octave=o)
         return scale, info     
 
@@ -287,8 +289,12 @@ class Generate:
         Picks a scale, randomly transposes it (if indicated),
         and appends a specified octave (if needed). 
         
-        Returns a tuple: the scale name (str), untransposed scale pcs 
-        (list[int]), and note list (list[str]) *without assigned octave by default.* 
+        Returns a tuple: 
+            the scale name (str), 
+            untransposed scale pcs (list[int]), 
+            note list (list[str]) *without assigned octave by default.* 
+
+        Supply a value for o if a specified octave is needed.
         '''
         scale = choice(SCALE_KEYS)
         pcs = SCALES[scale]
@@ -306,8 +312,12 @@ class Generate:
         '''
         Selects prime form and transposes a random distance (or not)
         
-        Returns a tuple: forte number/fn (str), untransposed prime form pcs (list[int]), 
-        note list (list[str]) *without an assigned octave*
+        Returns a tuple: 
+            forte number/fn (str), 
+            untransposed prime form pcs (list[int]), 
+            note list (list[str]) *without an assigned octave* by default. 
+
+        Supply a value for o if a specified octave is needed.
         '''
         fn = choice(FORTE_NUMBERS)
         '''NOTE: for some reason 7-z38A8-1 keeps getting selected

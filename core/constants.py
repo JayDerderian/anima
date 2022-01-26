@@ -10,17 +10,19 @@ ALPHABET = ['a', 'b', 'c', 'd', 'e', 'f', 'g',
 
 
 # Tempos
-TEMPOS = [40.0, 42.0, 44.0, 46.0, 50.0, 52.0, 54.0, 56.0, 58.0,  # 1-9 (0-8)
-          60.0, 63.0, 66.0, 69.0, 72.0, 76.0, 80.0, 84.0, 88.0, # 10-18 (9-17)
-          92.0, 96.0, 100.0, 104.0, 108.0, 112.0, 116.0, 120.0, # 19-27 (18-26)
-          126.0, 132.0, 128.0, 144.0, 152.0, 160.0, 168.0, 176.0, # 28-36 (27-35)
-          184.0, 200.0, 208.0]  # 37-39 (36-38)
+'''
+standard metronome tempos
+'''
+TEMPOS = [40.0, 42.0, 44.0, 46.0, 50.0, 52.0, 54.0, 56.0, 58.0,   # 0 - 8
+          60.0, 63.0, 66.0, 69.0, 72.0, 76.0, 80.0, 84.0, 88.0,   # 9 - 17
+          92.0, 96.0, 100.0, 104.0, 108.0, 112.0, 116.0, 120.0,   # 18 - 25
+          126.0, 132.0, 138.0, 144.0, 152.0, 160.0, 168.0, 176.0, # 26 - 33 
+          184.0, 200.0, 208.0]                                    # 34 - 36
 
 
 # Dynamics (MIDI velocities: 0 - 127)
 '''NOTE: use indicies 0-8 for soft dynamics only. 
-         9-17 for med, and
-         18-26 for loud dynamics'''
+         9-17 for med, and 18-26 for loud dynamics'''
 DYNAMICS = [20, 24, 28, 32, 36, 40, 44, 48, 52,
             56, 60, 64, 68, 72, 76, 80, 84, 88,
             92, 96, 100, 104, 108, 112, 116, 120, 
@@ -28,7 +30,7 @@ DYNAMICS = [20, 24, 28, 32, 36, 40, 44, 48, 52,
 
 
 # Base rhythms in seconds at 60bpm (or q = 60). 
-# Convert to currect tempo using tempoConvert() when necessary.
+# Convert to currect tempo using scaletotempo() when necessary.
 '''
 Durations in seconds (1 sec = quarter note @ 60bpm)
 
@@ -53,7 +55,9 @@ RHYTHMS = [4.0, 3.0, 2.0, 1.5, 1.0,
 MIDI doesn't actually have rests. Instead a "rest" is just a 
 completely silent note in a MIDI file, so rests need to be notated
 in the sheet music accordingly and be able to recognize the constant
-REST in a given composition object
+REST in a given composition object.
+
+REST is actually a MIDI velocity of 0
 '''
 REST = 0
 

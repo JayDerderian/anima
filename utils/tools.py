@@ -31,14 +31,14 @@ def tostr(pcs, octave=None, octeq=True):
     '''
     scale = []
     if octeq:
-        # ensure oe is enforced in case octeq flag isn't 
-        # set to False by mistake
         pcs = oe(pcs)
         if octave==None:
-            for i in range(len(pcs)):
+            pcsl = len(pcs)
+            for i in range(pcsl):
                 scale.append(PITCH_CLASSES[pcs[i]])     
         elif type(octave)==int and octave > 1 and octave < 6:
-            for i in range(len(pcs)):
+            pcsl = len(pcs)
+            for i in range(pcsl):
                 note = f"{PITCH_CLASSES[pcs[i]]}{octave}"
                 scale.append(note)
         else:
@@ -86,7 +86,8 @@ def getpcs(notes):
         else:
             pcs.append(PITCH_CLASSES.index(notes))
     elif type(notes)==list:
-        for n in range(len(notes)):
+        nl = len(notes)
+        for n in range(nl):
             if notes[n].isalpha()==False:
                 note = removeoct(notes[n])
                 pcs.append(PITCH_CLASSES.index(note))
@@ -389,13 +390,16 @@ def checkrange(notes:list[str], ran:list[str]):
 
     returns a modified note list[str]
     '''
-    diff = [note for note in ran if note not in ran]
+    diff = get_diff(notes, ran)
     if len(diff) > 0:
         difflen = len(diff)
         for note in range(difflen):
             notes.remove(diff[note])
     return notes
 
+def get_diff(notes, ran):
+    '''removes notes not in range of a given instrument with a provided range'''
+    return [notes for notes in notes + ran if notes not in notes or notes not in ran]
 
 def getrange(notes:list[str]):
     '''
