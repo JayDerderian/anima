@@ -132,7 +132,6 @@ def strqtet(tempo=None):
 
     print("\nsyncing...")
 
-
     for q in trange((qtet_len), desc="progress"):
         if qtet[q].duration() < lp:
             qtet[q] = sync(qtet[q], lp, figs[q])
@@ -145,11 +144,8 @@ def strqtet(tempo=None):
     print("\n...success!")
 
     # display results
-    print("\nnew quartet:", title_full)
-    print("composer:", comp.composer)
-    print("date:", comp.date)
-    print("tempo:", comp.tempo)
-    print("duration:", comp.duration())
+    comp.display()
+
     return comp
 
 

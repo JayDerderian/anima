@@ -40,16 +40,10 @@ def save(comp):
                     velocity=comp.melodies[i].dynamics[j], pitch=note, start=strt, end=end)
                 mel.notes.append(anote)                                             # add to instrument object
                 strt += comp.melodies[i].rhythms[j]                                 # increment strt/end times
-                # try:
-                #     end += comp.melodies[i].rhythms[j+1]
-                # except IndexError:
-                #     break
-                '''NOTE: for some reason the above try/catch block isn't working...'''
-                j+=1
-                if j == len(comp.melodies[i].notes):
+                try:
+                    end += comp.melodies[i].rhythms[j+1]
+                except IndexError:
                     break
-                else:
-                    end += comp.melodies[i].rhythms[j]
             mid.instruments.append(mel)                                             # add melody to instrument list
 
     # add chords
@@ -105,12 +99,6 @@ def save(comp):
                         end += comp.melodichords[i].rhythms[j+1]
                     except (ValueError, IndexError):
                         break
-                    '''NOTE: for some reason the above try/catch block isn't working...'''
-                    # j+=1
-                    # if j == len(comp.melodichords[item].notes):
-                    #     break
-                    # else:
-                    #     end += comp.melodichords[item].rhythms[j]
                 mid.instruments.append(mel)                                                     # add melody to instrument list
             elif isinstance(comp.melodichords[item], Chord):                                    # or a chord object?
                 # strt = 0
