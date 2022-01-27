@@ -151,7 +151,7 @@ def strqtet(tempo=None):
     print("composer:", comp.composer)
     print("date:", comp.date)
     print("tempo:", comp.tempo)
-    print("duration:", comp.duration_str())
+    print("duration:", comp.duration())
     return comp
 
 

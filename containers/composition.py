@@ -26,7 +26,7 @@ class Composition():
             
         self.date = ""                      # date
 
-        self.midi_file_name= ""             # midi file name
+        self.midi_file_name = ""            # midi file name
         self.txt_file_name = ""             # text file name
 
         if tempo != None:                   # global tempo
@@ -77,58 +77,51 @@ class Composition():
         print("\ntitle:", self.title)
         print("composer:", self.composer)
         print("date:", self.date)
-        print("duration:", self.duration_str())
+        print("duration:", self.duration())
         print("midi file:", self.midi_file_name)
+        print("txt file:", self.txt_file_name)
 
     # Get duration of composition
-    def duration(self):
+    def _duration(self):
         '''
-        Returns the duration of a composition in seconds.
+        Returns the duration of a composition in seconds
+        as a float, which should ideally be passed to duration_str(). 
 
         Finds the longest melody duration, the longest chord 
         progression duration, and the longest melodichord duration,
         compares them then returns the largest of the three. 
         '''
-        mlong = 0.0
-        clong = 0.0
         ml = 0.0
         cl = 0.0
+        mlcl = 0.0
+        longest = 0.0
         if len(self.melodies) > 0:
-            for m in range(len(self.melodies)):
+            mlen = len(self.melodies)
+            for m in range(mlen):
                 ml = self.melodies[m].duration()
-                if ml > mlong:
-                    mlong = ml
-        # get chord totals
+                if ml > longest:
+                    longest = ml
         if len(self.chords) > 0:
-            for prog in range(len(self.chords)):
-                c = self.chords[prog]
-                # entries might be a list of chord() objects or
-                # a single chord!
-                if type(c) == list:
-                    for chord in len(c):
-                        cl = chord.rhythm
-                    if cl > clong:
-                        clong = cl
-                else:
-                    cl = c.rhythm
-                    if cl > clong:
-                        clong = cl
-        # get melodichord totals
+            clen = len(self.chords)
+            for prog in range(clen):
+                cds = self.chords[prog]
+                cdslen = len(cds)
+                for chord in range(cdslen):
+                    cl += cds[chord].rhythm
+                if cl > longest:
+                    longest = cl
         if len(self.melodichords) > 0:
             mclen = len(self.melodichords)
             for item in range(mclen):
                 if isinstance(self.melodichords[item], Melody):
-                    ml = self.melodichords[item].duration()
-                    if ml > mlong:
-                        mlong = ml
+                    mlcl += self.melodichords[item].duration()
                 elif isinstance(self.melodichords[item], Chord):
-                    cl = self.melodichords[item].duration()
-                    if cl > clong:
-                        clong = cl
-
-        return mlong if mlong > clong else clong
+                    mlcl += self.melodichords[item].rhythm
+                if mlcl > longest:
+                    longest = mlcl
+        return longest
     
-    def duration_str(self):
+    def duration(self):
         '''
         returns the compositions duration as a formatted string
         '''

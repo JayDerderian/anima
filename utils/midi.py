@@ -32,22 +32,17 @@ def save(comp):
         for i in range(ml):
             strt = 0
             end = comp.melodies[i].rhythms[0]
-            # create melody instrument
-            instrument = pm.instrument_name_to_program(comp.melodies[i].instrument)
+            instrument = pm.instrument_name_to_program(comp.melodies[i].instrument) # create melody instrument
             mel = pm.Instrument(program=instrument)
-            # add *this* melody's notes
-            for j in range(len(comp.melodies[i].notes)):
-                # translate note to MIDI note
-                note = pm.note_name_to_number(comp.melodies[i].notes[j])
+            for j in range(len(comp.melodies[i].notes)):                            # add *this* melody's notes
+                note = pm.note_name_to_number(comp.melodies[i].notes[j])            # translate note to MIDI note
                 anote = pm.Note(
                     velocity=comp.melodies[i].dynamics[j], pitch=note, start=strt, end=end)
-                # add to instrument object
-                mel.notes.append(anote)
-                # increment strt/end times
-                strt += comp.melodies[i].rhythms[j]
+                mel.notes.append(anote)                                             # add to instrument object
+                strt += comp.melodies[i].rhythms[j]                                 # increment strt/end times
                 # try:
                 #     end += comp.melodies[i].rhythms[j+1]
-                # except (ValueError, IndexError):
+                # except IndexError:
                 #     break
                 '''NOTE: for some reason the above try/catch block isn't working...'''
                 j+=1
@@ -55,18 +50,14 @@ def save(comp):
                     break
                 else:
                     end += comp.melodies[i].rhythms[j]
-                
-            # add melody to instrument list
-            mid.instruments.append(mel)
+            mid.instruments.append(mel)                                             # add melody to instrument list
 
     # add chords
-    if len(comp.chords) > 0:
-        # iterate through a dictionary of chord() object lists.
-        key = 0
+    if len(comp.chords) > 0:   
+        key = 0                                                                     # iterate through a dictionary of chord() object lists.
         cl = len(comp.chords)
         for i in range(cl):
-            # retrieve current chord object list
-            chrds = comp.chords[key]
+            chrds = comp.chords[key]                                                # retrieve current chord object list
             if type(chrds) == list:
                 strt = 0
                 end = chrds[key].rhythm
@@ -76,24 +67,18 @@ def save(comp):
                 end = chrds.rhythm
                 instrument = pm.instrument_name_to_program(chrds.instrument)
             chord = pm.Instrument(program=instrument)
-            # iterate through current chord list
-            for j in range(len(chrds)):
-                # this list of chord objects notes
-                for k in range(len(chrds[j].notes)):
-                    # translate note to MIDI note
-                    note = pm.note_name_to_number(chrds[j].notes[k])
+            for j in range(len(chrds)):                                             # iterate through current chord list
+                for k in range(len(chrds[j].notes)):                                # add this list of chord objects notes
+                    note = pm.note_name_to_number(chrds[j].notes[k])                # translate note to MIDI note
                     anote = pm.Note(
                         velocity=chrds[j].dynamic, pitch=note, start=strt, end=end)
-                    # add to instrument object
-                    chord.notes.append(anote)
-                # increment strt/end times
+                    chord.notes.append(anote)                                       # add to instrument object
                 strt += chrds[j].rhythm
                 try:
-                    end += chrds[j+1].rhythm
+                    end += chrds[j+1].rhythm                                        # increment strt/end times
                 except IndexError:
                     break
-            # add chord progression to instrument list
-            mid.instruments.append(chord)
+            mid.instruments.append(chord)                                           # add chord progression to instrument list
             key+=1
 
     # add melodichords
@@ -105,59 +90,39 @@ def save(comp):
         strt = 0
         l = len(comp.melodichords)
         for item in range(l):
-
-            # is this a melody object?
-            if isinstance(comp.melodichords[item], Melody):
-
-                print("saving melody...")
-
+            if isinstance(comp.melodichords[item], Melody):                                     # is this a melody object?
                 # strt = 0
-                end = comp.melodichords[item].rhythms[0]
-                # create melody instrument
-                instrument = pm.instrument_name_to_program(comp.melodichords[item].instrument)
-                mel = pm.Instrument(program=instrument)
-
-                # add *this* melody's notes
-                for j in range(len(comp.melodichords[item].notes)):
-                    # translate note to MIDI note
-                    note = pm.note_name_to_number(comp.melodichords[item].notes[j])
+                end = comp.melodichords[item].rhythms[0]    
+                instrument = pm.instrument_name_to_program(comp.melodichords[item].instrument)  # create melody instrument
+                mel = pm.Instrument(program=instrument)        
+                for j in range(len(comp.melodichords[item].notes)):                             # add *this* melody's notes
+                    note = pm.note_name_to_number(comp.melodichords[item].notes[j])             # translate note to MIDI note
                     anote = pm.Note(
-                        velocity=comp.melodichords[item].dynamics[j], pitch=note, start=strt, end=end)
-                    # add to instrument object
-                    mel.notes.append(anote)
-                    # try:
-                    #     end += comp.melodichords[i].rhythms[j+1]
-                    # except (ValueError, IndexError):
-                    #     break
-                    '''NOTE: for some reason the above try/catch block isn't working...'''
-                    j+=1
-                    if j == len(comp.melodichords[item].notes):
+                        velocity=comp.melodichords[item].dynamics[j], pitch=note, start=strt, end=end)   
+                    mel.notes.append(anote)                                                     # add to instrument object
+                    strt += comp.melodichords[item].rhythms[j]
+                    try:
+                        end += comp.melodichords[i].rhythms[j+1]
+                    except (ValueError, IndexError):
                         break
-                    else:
-                        end += comp.melodichords[item].rhythms[j]
-
-                # add melody to instrument list
-                mid.instruments.append(mel)
-
-            # or a chord object?
-            elif isinstance(comp.melodichords[item], Chord):
-                
-                print("saving chord...")
-
+                    '''NOTE: for some reason the above try/catch block isn't working...'''
+                    # j+=1
+                    # if j == len(comp.melodichords[item].notes):
+                    #     break
+                    # else:
+                    #     end += comp.melodichords[item].rhythms[j]
+                mid.instruments.append(mel)                                                     # add melody to instrument list
+            elif isinstance(comp.melodichords[item], Chord):                                    # or a chord object?
                 # strt = 0
                 end = comp.melodichords[item].rhythm
                 instrument = pm.instrument_name_to_program(comp.melodichords[item].instrument)
                 ci = pm.Instrument(program=instrument)
-
                 for k in range(len(comp.melodichords[item].notes)):
-                    # translate note to MIDI note
-                    note = pm.note_name_to_number(comp.melodichords[item].notes[k])
+                    note = pm.note_name_to_number(comp.melodichords[item].notes[k])            # translate note to MIDI note
                     anote = pm.Note(
                         velocity=comp.melodichords[item].dynamic, pitch=note, start=strt, end=end)
-                    # add to instrument object
-                    ci.notes.append(anote)
-                try:
-                    # increment strt/end times
+                    ci.notes.append(anote)                                                     # add to instrument object
+                try:                                                                           # increment strt/end times
                     strt += comp.melodichords[item].rhythm
                     if isinstance(comp.melodichords[item+1], Chord):
                         end += comp.melodichords[item+1].rhythm

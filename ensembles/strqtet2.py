@@ -79,13 +79,11 @@ def strqtet2(tempo=None):
         '''
         NOTE: produces a note repeated n times with an arbitrarily
         chosen rest duration. ensemble should be in rhythmic *unison*
-        
-        NOTE: rests don't seem to be showing up in the final MIDI file???
         '''
         for q in range(qtet_len):                   # write each part
-            mod_source = checkrange(source, ranges[qtet[q].instrument])  
-            qtet[q].notes.extend([choice(mod_source)] * total)                 
-            qtet[q].rhythms.extend([scaletotempo(comp.tempo, 0.125)] * total) 
+            mod_source = checkrange(source, ranges[qtet[q].instrument])   # make sure to pick notes withiin this instrument's range
+            qtet[q].notes.extend([choice(mod_source)] * total)
+            qtet[q].rhythms.extend([scaletotempo(comp.tempo, 0.125)] * total)  # NOTE: something is wonky with the rhythms...
             qtet[q].dynamics.extend([DYNAMICS[randint(9,17)]] * total)
             qtet[q].notes.append("C4")              # "silent" note since MIDI doesn't actually have real rests
             qtet[q].rhythms.append(scaletotempo(comp.tempo, choice(rhy)))
