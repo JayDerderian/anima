@@ -7,7 +7,7 @@ simple rhythms (16th, 8th notes, quarter notes, half notes), tempo 55-63
 """
 
 from tqdm import trange
-from random import seed, randint
+from random import seed, randint, choice
 
 from utils.data import new_ints
 from utils.midi import save
@@ -57,7 +57,7 @@ def sologuitar(tempo=None):
                 notes, m.info, m.source_scale = create.new_notes(data=ints)
                 m.notes = checkrange(notes, ran)
                 m.rhythms = scaletotempo(tempo=comp.tempo, 
-                                         rhythms=[rhy[randint(0,3)] for r in range(len(m.notes))])
+                                         rhythms=[choice(rhy) for r in range(len(m.notes))])
                 m.dynamics = [DYNAMICS[randint(9,17)] for d in range(len(m.notes))]
                 m.source_data = ints
                 m.pcs = getpcs(m.notes)
@@ -66,7 +66,7 @@ def sologuitar(tempo=None):
                 notes, m.info, m.source_scale = create.new_notes()
                 m.notes = checkrange(notes, ran)              # make sure final notes are within the guitar's range
                 m.rhythms = scaletotempo(tempo=comp.tempo, 
-                                         rhythms=[rhy[randint(0,3)] for r in range(len(m.notes))])
+                                         rhythms=[choice(rhy) for r in range(len(m.notes))])
                 m.dynamics = [DYNAMICS[randint(9,17)] for d in range(len(m.notes))]
                 m.pcs = getpcs(m.notes)
             piece.append(m)                                   # add to temp list
@@ -77,32 +77,28 @@ def sologuitar(tempo=None):
             for chord in range(c_total):
                 if randint(0,1) == 0:                         # use random source material?
                     ints = new_ints(t=randint(2,6))
-                    notes = create.new_notes(data=ints)
-                    c = create.new_chord(tempo=comp.tempo, scale=checkrange(notes[0], ran))
+                    notes, data, source = create.new_notes(data=ints)
+                    c = create.new_chord(tempo=comp.tempo, scale=checkrange(notes, ran))
                     c.source_data = ints
                 else:
-                    notes = create.new_notes(t=randint(2,6))
-                    c = create.new_chord(tempo=comp.tempo, scale=checkrange(notes[0], ran))
-                    c.source_data = notes[1]
-                c.source_notes = notes[2]
+                    notes, data, source = create.new_notes(t=randint(2,6))
+                    c = create.new_chord(tempo=comp.tempo, scale=checkrange(notes, ran))
+                    c.source_data = data
+                c.source_notes = source
                 c.pcs = getpcs(c.notes)
                 c.instrument = gtr
-                c.rhythm = scaletotempo(tempo=comp.tempo, rhythms=rhy[randint(0,3)])
+                c.rhythm = scaletotempo(tempo=comp.tempo, rhythms=choice(rhy))
                 c.dynamic = DYNAMICS[randint(9,17)]
                 piece.append(c)                               # add to temp list
                 if len(piece) == total:     
                     break
-    
-    print("\n...success!")                                    # display results
-    print("\ntitle:", title_full)
-    print("composer:", comp.composer)
-    print("tempo:", comp.tempo)
-    print("date:", comp.date)
-    print("duration:", comp.duration_str())
-    print("midi file:", comp.midi_file_name, "\n")
 
-    comp.melodichords = piece                                 # save and export MIDI file
+    comp.melodichords[0] = piece                              # save and export MIDI file
     save(comp)
+
+    print("\n...success!")                                    # display results
+    comp.display()
+    return comp
 
 
 def solo_guitar_simple(tempo=None):
@@ -124,7 +120,7 @@ def solo_guitar_simple(tempo=None):
     notes, m.info, m.source_scale = create.new_notes(t=randint(5,21))          # pick some notes
     m.notes = checkrange(notes, ran)                                           # make sure final notes are within the guitar's range
     m.rhythms = scaletotempo(tempo=comp.tempo,                                 # pick rhythms & dynamics  
-                             rhythms=[rhy[randint(0,3)] for r in range(len(m.notes))])
+                             rhythms=[choice(rhy) for r in range(len(m.notes))])
     m.dynamics = [DYNAMICS[randint(9,17)] for d in range(len(m.notes))] 
     m.pcs = getpcs(m.notes)                                                    # get pcs of new melody              
     comp.melodies.append(m) 

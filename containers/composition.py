@@ -40,8 +40,8 @@ class Composition():
         self.bars = []                      # list of Bar() objects
         self.melodies = []                  # list of Melody() objects
         self.chords = {}                    # dictionary of Chord() objects or lists of Chord() objects
-        self.melodichords = []              # list of alternating Melody() and Chord() objects for instruments
-                                            # that can play both (like a piano, guitar, etc...)
+        self.melodichords = {}              # dictionary of alternating Melody() and Chord() object lists 
+                                            # for instruments that can play both (like a piano, guitar, etc...)
         self.percussion = []                # list of percussion instruments
 
     # Has this instrument been picked?
@@ -75,10 +75,11 @@ class Composition():
         display composition info
         '''
         print("\ntitle:", self.title)
+        print("tempo:", self.tempo)
         print("composer:", self.composer)
         print("date:", self.date)
         print("duration:", self.duration())
-        print("midi file:", self.midi_file_name)
+        print("\nmidi file:", self.midi_file_name)
         print("txt file:", self.txt_file_name)
 
     # Get duration of composition
