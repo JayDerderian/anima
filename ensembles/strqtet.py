@@ -130,14 +130,20 @@ def strqtet(tempo=None):
         durations.append(qtet[q].duration())
     lp = max(durations)
 
-    if qtet[0].duration() < lp:
-        qtet[0] = sync(qtet[0], lp, figs[0])
-    if qtet[1].duration() < lp:
-        qtet[1] = sync(qtet[1], lp, figs[1])
-    if qtet[2].duration() < lp:
-        qtet[2] = sync(qtet[2], lp, figs[2])
-    if qtet[3].duration() < lp:
-        qtet[3] = sync(qtet[3], lp, figs[3])
+    print("\nsyncing...")
+
+    for q in trange((qtet_len), desc="progress"):
+        if qtet[q].duration() < lp:
+            qtet[q] = sync(qtet[q], lp, figs[q])
+
+    # if qtet[0].duration() < lp:
+    #     qtet[0] = sync(qtet[0], lp, figs[0])
+    # if qtet[1].duration() < lp:
+    #     qtet[1] = sync(qtet[1], lp, figs[1])
+    # if qtet[2].duration() < lp:
+    #     qtet[2] = sync(qtet[2], lp, figs[2])
+    # if qtet[3].duration() < lp:
+    #     qtet[3] = sync(qtet[3], lp, figs[3])
 
     # save all parts then write out
     for q in range(qtet_len):

@@ -125,5 +125,5 @@ class Composition():
         '''
         returns the compositions duration as a formatted string
         '''
-        min, sec = divmod(self.duration(), 60)
+        min, sec = divmod(self._duration(), 60)
         return str(int(min)) + " min " + str(sec) + " sec "
