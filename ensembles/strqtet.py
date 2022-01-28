@@ -1,11 +1,10 @@
 '''
-this module handles another string quartet. this one is a simple choral
-each part will have the same rhythm and dynamics. After this a free counter-
-point section ensues, then each part has a repeated 3-7 note figure that
-gets faster and faster, and louder and louder before ending. 
+this module generates a string quartet. 
 
-NOTE: add looped arpeggios to each part based off the first four notes of 
-their part from the opening choral. 
+the piece opens with a series of chords, followed by a section of free counterpoint.
+at some point each performer plays their part of the opening chords, asynchronously of each other,
+then play a repeated series of notes whos rhythms get faster and faster untill all parts are
+playing 16th notes, then the piece ends.
 
 NOTE: generate a "rhythm" that is the difference between a current
 part and the longest part in the piece. append this difference to the
@@ -13,9 +12,6 @@ part and the longest part in the piece. append this difference to the
 asynchronous section that will have each part in rhythmic unison again. 
 
 THIS WILL MAKE RHTYHMS LONGER THAN THE OTHER TWO LISTS. 
-
-need to figure out how to make a rest... will a 'None' value in
-lieu of a note string?
 '''
     
 from tqdm import trange

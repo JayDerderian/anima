@@ -252,11 +252,12 @@ class Generate:
         return notes, meta_data, scale                     # for our total because reasons.
 
 
-    # Picks either a prime form pitch-class set, or a major or minor scale.
+    # Picks a transposed scale, pitch class set, or creates a new scale
     def pick_root(self, t=True, o=None):
         '''
-        Picks either a randomly chosen and transposed scale or a 5 to 9 
-        note Forte pitch class prime form, randomly transposed as well. 
+        Picks a randomly chosen and transposed scale, a 5 to 9 
+        note Forte pitch class prime form, or randomly generated scale,
+        each randomly transposed as well. 
         
         Set t to false if untransposed root is preferred.
 
@@ -264,21 +265,29 @@ class Generate:
             list[str] of note name strings (with or without an assigned octave)
             info (str) about the chosen scale.
         '''
-        # use scale? (1), or prime form (2)?
-        if randint(1, 2) == 1:
+        # use scale? (1), pcs prime form (2), or invented scale(3)?
+        choice = randint(1,3)
+        if choice==1:
             if t:
                 mode, pcs, scale = self.pick_scale(t=True)
                 info = f"{scale[0]} {mode}"
             else:
                 mode, pcs, scale = self.pick_scale(t=False)
                 info = f"{scale[0]} {mode}"
-        else:
+        elif choice==2:
             if t:
                 fn, pcs, scale = self.pick_set(t=True)
-                info = f"{fn} transposed to: {scale[0]}"
+                info = f"set {fn} transposed to {scale[0]}"
             else:
                 fn, pcs, scale = self.pick_set(t=False)
-                info = f"{fn} untransposed: {scale[0]}"
+                info = f"set {fn} untransposed {scale[0]}"
+        else:
+            if t:
+                scale, pcs = self.new_scale(t=True)
+                info = f"invented scale: {scale} pcs: {pcs}"
+            else:
+                scale, pcs = self.new_scale(t=False)
+                info = f"invented scale: {scale} pcs: {pcs}"
         scale = tostr(pcs, octave=o)
         return scale, info     
 
@@ -336,9 +345,9 @@ class Generate:
         
 
     # Generate a new scale
-    def new_scale(self, o=None):
+    def new_scale(self, t=True, o=None):
         '''
-        Returns a randomly generated 5 to 9 note scale with or without an octave 
+        Returns a randomly generated 5 to 8 note scale with or without an octave 
         to be used as a 'root'. Can take an int as a starting octave 
         (between 2 and 5), or not. 
         
@@ -348,16 +357,18 @@ class Generate:
         Returns a tuple: notes (list[str]) and the original pitch class set, (list[int]).
         '''
         pcs = []
-        total = randint(5, 9)
+        total = randint(5,8)
         '''Current method. Outputs are quite interesting, though I think this
            is the least efficient way to go about this...'''
         while len(pcs) < total:
-            n = randint(0, 11)
+            n = randint(0,11)
             if n not in pcs:
                 pcs.append(n)
         # pcs = [randint(0,11) for x in range(total) if x not in pcs]
-        pcs.sort()            # sort in ascending order
-        scale = tostr(pcs, o) # convert to strings (with or without supplied octave)
+        pcs.sort() 
+        if t:
+            pcs = transpose(pcs, t=randint(1,11), octeq=False)
+        scale = tostr(pcs, o)
         return scale, pcs   
 
 

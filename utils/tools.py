@@ -53,6 +53,12 @@ def tostr(pcs, octave=None, octeq=True):
             scale.append(NOTES[pcs[i]])  
     return scale
 
+def normalize_str(name):
+    '''
+    removes all non-alphanumeric characters from a string and converts
+    it to lowercase.
+    '''
+    return ''.join(ch for ch in name if ch.isalnum()).lower()
 
 def removeoct(anote):
     '''

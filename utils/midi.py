@@ -9,8 +9,13 @@ representation very messy.
   
 '''
 
-import pretty_midi as pm
+from pretty_midi import PrettyMIDI, Instrument
 
+from mido import MidiFile, MidiTrack, Message
+
+from utils.tools import normalize_str
+from core.constants import INSTRUMENTS, NOTES
+from containers.note import Note
 from containers.melody import Melody
 from containers.chord import Chord
 
@@ -24,7 +29,7 @@ def save(comp):
     Requires a composition() object.
     '''
     # create PM object. PM object is used to just write out the file.
-    mid = pm.PrettyMIDI(initial_tempo=comp.tempo)
+    mid = PrettyMIDI(initial_tempo=comp.tempo)
     
     # add melodies
     if len(comp.melodies) > 0:
@@ -32,11 +37,11 @@ def save(comp):
         for i in range(ml):
             strt = 0
             end = comp.melodies[i].rhythms[0]
-            instrument = pm.instrument_name_to_program(comp.melodies[i].instrument) # create melody instrument
-            mel = pm.Instrument(program=instrument)
+            instrument = instrument_to_program(comp.melodies[i].instrument)                   # create melody instrument
+            mel = Instrument(program=instrument)
             for j in range(len(comp.melodies[i].notes)):                            # add *this* melody's notes
-                note = pm.note_name_to_number(comp.melodies[i].notes[j])            # translate note to MIDI note
-                anote = pm.Note(
+                note = note_name_to_MIDI_num(comp.melodies[i].notes[j])            # translate note to MIDI note
+                anote = Note(
                     velocity=comp.melodies[i].dynamics[j], pitch=note, start=strt, end=end)
                 mel.notes.append(anote)                                             # add to instrument object
                 strt += comp.melodies[i].rhythms[j]                                 # increment strt/end times
@@ -55,16 +60,16 @@ def save(comp):
             if type(chrds) == list:
                 strt = 0
                 end = chrds[key].rhythm
-                instrument = pm.instrument_name_to_program(chrds[i].instrument)
+                instrument = instrument_to_program(chrds[i].instrument)
             else:
                 strt = 0
                 end = chrds.rhythm
-                instrument = pm.instrument_name_to_program(chrds.instrument)
-            chord = pm.Instrument(program=instrument)
+                instrument = instrument_to_program(chrds.instrument)
+            chord = Instrument(program=instrument)
             for j in range(len(chrds)):                                             # iterate through current chord list
                 for k in range(len(chrds[j].notes)):                                # add this list of chord objects notes
-                    note = pm.note_name_to_number(chrds[j].notes[k])                # translate note to MIDI note
-                    anote = pm.Note(
+                    note = note_name_to_MIDI_num(chrds[j].notes[k])                # translate note to MIDI note
+                    anote = Note(
                         velocity=chrds[j].dynamic, pitch=note, start=strt, end=end)
                     chord.notes.append(anote)                                       # add to instrument object
                 strt += chrds[j].rhythm
@@ -88,11 +93,11 @@ def save(comp):
             if isinstance(melodichords[item], Melody):                                     # is this a melody object?
                 # strt = 0
                 end = melodichords[item].rhythms[0]    
-                instrument = pm.instrument_name_to_program(melodichords[item].instrument)  # create melody instrument
-                mel = pm.Instrument(program=instrument)        
+                instrument = instrument_to_program(melodichords[item].instrument)  # create melody instrument
+                mel = Instrument(program=instrument)        
                 for j in range(len(melodichords[item].notes)):                             # add *this* melody's notes
-                    note = pm.note_name_to_number(melodichords[item].notes[j])             # translate note to MIDI note
-                    anote = pm.Note(
+                    note = note_name_to_MIDI_num(melodichords[item].notes[j])             # translate note to MIDI note
+                    anote = Note(
                         velocity=melodichords[item].dynamics[j], pitch=note, start=strt, end=end)   
                     mel.notes.append(anote)                                                # add to instrument object
                     strt += melodichords[item].rhythms[j]
@@ -107,11 +112,11 @@ def save(comp):
             elif isinstance(melodichords[item], Chord):                                    # or a chord object?
                 # strt = 0
                 end = melodichords[item].rhythm
-                instrument = pm.instrument_name_to_program(melodichords[item].instrument)
-                ci = pm.Instrument(program=instrument)
+                instrument = instrument_to_program(melodichords[item].instrument)
+                ci = Instrument(program=instrument)
                 for k in range(len(melodichords[item].notes)):
-                    note = pm.note_name_to_number(melodichords[item].notes[k])             # translate note to MIDI note
-                    anote = pm.Note(
+                    note = note_name_to_MIDI_num(melodichords[item].notes[k])             # translate note to MIDI note
+                    anote = Note(
                         velocity=melodichords[item].dynamic, pitch=note, start=strt, end=end)
                     ci.notes.append(anote)                                                 # add to instrument object
                 try:                                                                       # increment strt/end times
@@ -127,3 +132,24 @@ def save(comp):
     # write to MIDI file
     print("\nsaving", comp.midi_file_name, "...")
     mid.write(f'./midi/{comp.midi_file_name}')
+
+
+# convert a note name string to MIDI number
+def note_name_to_MIDI_num(note):
+    '''
+    returns the corresponding MIDI note for a 
+    given note name string. apparently MIDI note numbers
+    are the given index of a note in NOTES plus 21
+    '''
+    return NOTES.index(note) + 21
+
+
+# convert instrument name to MIDI instrument number
+def instrument_to_program(instr):
+    '''
+    returns an instrument program number using INSTRUMENTS, which
+    maps names to numbers via their index values.
+    '''
+    inst_name = normalize_str(instr)
+    inst_list = [normalize_str(name) for name in INSTRUMENTS]
+    return inst_list.index(inst_name)

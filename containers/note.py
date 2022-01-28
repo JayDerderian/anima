@@ -7,42 +7,22 @@ from utils.tools import scaletotempo
 
 class Note():
     '''
-    A class/container for managing all data relevant to individual notes:
-    name (string, i.e. "C#2"), duration (float: seconds), and dynamics (int: MIDI velocity)
+    container for working with Instrument() objects, as well as Mido's
+    MidiFile, and Track() objects
     '''
 
-    def __init__(self):
+    def __init__(self, v, p, s, e):
 
         # data
-        self.instrument = ""
-        self.tempo = 0.0
-        self.name = ""
-        self.rhythm = 0.0
-        self.dynamic = 0
+        self.name = ''       # note name string ("C#4")
+        self.velocity = v    # MIDI velocity 
+        self.pitch = p       # MIDI pitch number
+        self.start = s       # start time (float)
+        self.end = e         # end time(float)
     
-    # setters n' getters
-    def get_info(self):
-        '''returns a dictionary containing all info about this note'''
-        return {"Instrument": self.instrument, "Tempo": self.tempo, 
-                "Name": self.name, "Rhythm": self.rhythm, "Dynamic": self.dynamic}
-
-    def change_note_name(self, note:str):
-        '''change the name of the note'''
-        if note in NOTES:
-            self.note = note
-        else:
-            raise ValueError("not a valid note!")
-
-    def change_dynamic(self, dyn:int):
-        '''change the dynamic of this note'''
-        if dyn in DYNAMICS:
-            self.dynamic = dyn
-        else:
-            raise ValueError("not a valid dynamic!")
     
-    def change_rhythm(self, rhy:float):
-        '''change the rhythm of this note'''
-        if scaletotempo(self.tempo, rhy, revert=True) in RHYTHMS:
-            self.rhythm = rhy
-        else:
-            raise ValueError("rhythm not found in constants!")
+    def __repr__(self):
+        return f'Note (pitch = {self.pitch}, start={self.start}), end={self.end}, velocity={self.velocity})'
+        
+    def duration(self):
+        return self.end - self.start
