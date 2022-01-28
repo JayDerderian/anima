@@ -11,14 +11,14 @@ class Note():
     MidiFile, and Track() objects
     '''
 
-    def __init__(self, v, p, s, e):
+    def __init__(self, velocity, pitch, start, end):
 
         # data
-        self.name = ''       # note name string ("C#4")
-        self.velocity = v    # MIDI velocity 
-        self.pitch = p       # MIDI pitch number
-        self.start = s       # start time (float)
-        self.end = e         # end time(float)
+        self.name = ''              # note name string ("C#4")
+        self.velocity = velocity    # MIDI velocity 
+        self.pitch = pitch          # MIDI pitch number
+        self.start = start          # start time (float)
+        self.end = end              # end time(float)
     
     
     def __repr__(self):
