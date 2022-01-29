@@ -1,16 +1,8 @@
 ''' 
 Utility functions for working with MIDI I/O
-
-
-NOTE: Double check the math for how strt and end are incremented according to
-the supplied durations. Either Finale is doing something weird or the compounding
-values are creating highly precice floating point numbers that might make sheet music
-representation very messy. 
-  
 '''
 
 from pretty_midi import PrettyMIDI, Instrument
-
 from mido import MidiFile, MidiTrack, Message
 
 from utils.tools import normalize_str
@@ -18,6 +10,15 @@ from core.constants import INSTRUMENTS, NOTES
 from containers.note import Note
 from containers.melody import Melody
 from containers.chord import Chord
+
+
+# loads a MIDI file from a filename
+def load(file_name):
+    '''
+    loads a MIDI file using a supplied file name and returns a MidiFile()
+    object
+    '''
+    return MidiFile(filename=file_name, type=1)
 
 
 # exports a MIDI file for any sized composition (1 solo melody to ensemble sized n)
@@ -37,10 +38,10 @@ def save(comp):
         for i in range(ml):
             strt = 0
             end = comp.melodies[i].rhythms[0]
-            instrument = instrument_to_program(comp.melodies[i].instrument)                   # create melody instrument
+            instrument = instrument_to_program(comp.melodies[i].instrument)         # create melody instrument
             mel = Instrument(program=instrument)
             for j in range(len(comp.melodies[i].notes)):                            # add *this* melody's notes
-                note = note_name_to_MIDI_num(comp.melodies[i].notes[j])            # translate note to MIDI note
+                note = note_name_to_MIDI_num(comp.melodies[i].notes[j])             # translate note to MIDI note
                 anote = Note(
                     velocity=comp.melodies[i].dynamics[j], pitch=note, start=strt, end=end)
                 mel.notes.append(anote)                                             # add to instrument object
@@ -82,21 +83,19 @@ def save(comp):
 
     # add melodichords
     if len(comp.melodichords) > 0:
-
         '''NOTE: currently creating a separate track every time a chord 
         or melody is inputted. this was a similar problem from before...'''
-        
         strt = 0
         l = len(comp.melodichords)
         for item in range(l):
-            melodichords = comp.melodichords[item]                                          # get THIS list of melody()/chord() objects
+            melodichords = comp.melodichords[item]                                         # get THIS list of melody()/chord() objects
             if isinstance(melodichords[item], Melody):                                     # is this a melody object?
                 # strt = 0
                 end = melodichords[item].rhythms[0]    
                 instrument = instrument_to_program(melodichords[item].instrument)  # create melody instrument
                 mel = Instrument(program=instrument)        
                 for j in range(len(melodichords[item].notes)):                             # add *this* melody's notes
-                    note = note_name_to_MIDI_num(melodichords[item].notes[j])             # translate note to MIDI note
+                    note = note_name_to_MIDI_num(melodichords[item].notes[j])              # translate note to MIDI note
                     anote = Note(
                         velocity=melodichords[item].dynamics[j], pitch=note, start=strt, end=end)   
                     mel.notes.append(anote)                                                # add to instrument object
@@ -115,7 +114,7 @@ def save(comp):
                 instrument = instrument_to_program(melodichords[item].instrument)
                 ci = Instrument(program=instrument)
                 for k in range(len(melodichords[item].notes)):
-                    note = note_name_to_MIDI_num(melodichords[item].notes[k])             # translate note to MIDI note
+                    note = note_name_to_MIDI_num(melodichords[item].notes[k])              # translate note to MIDI note
                     anote = Note(
                         velocity=melodichords[item].dynamic, pitch=note, start=strt, end=end)
                     ci.notes.append(anote)                                                 # add to instrument object
