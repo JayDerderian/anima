@@ -1,9 +1,7 @@
-#**********************************************************************************************#
-#---------------------------This class handles individual note data----------------------------#
-#**********************************************************************************************#
-
-from core.constants import DYNAMICS, NOTES, RHYTHMS
-from utils.tools import scaletotempo
+'''
+a class/container for note information. this is mostly intended to work within
+the midi.py module
+'''
 
 class Note():
     '''
