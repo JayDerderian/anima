@@ -19,6 +19,11 @@ TEMPOS = [40.0, 42.0, 44.0, 46.0, 50.0, 52.0, 54.0, 56.0, 58.0,   # 0 - 8
           126.0, 132.0, 138.0, 144.0, 152.0, 160.0, 168.0, 176.0, # 26 - 33 
           184.0, 200.0, 208.0]                                    # 34 - 36
 
+# The default tempo is 120 BPM for MIDI miessages
+# (500000 microseconds per beat (quarter note).)
+DEFAULT_TEMPO = 500000
+DEFAULT_TICKS_PER_BEAT = 480
+
 
 # Dynamics (MIDI velocities: 0 - 127)
 '''NOTE: use indicies 0-8 for soft dynamics only. 

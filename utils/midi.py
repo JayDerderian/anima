@@ -29,7 +29,7 @@ def save(comp):
     
     Requires a composition() object.
     '''
-    # create PM object. PM object is used to just write out the file.
+    # PM object is just used to just write out the file.
     mid = PrettyMIDI(initial_tempo=comp.tempo)
     
     # add melodies

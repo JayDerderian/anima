@@ -51,7 +51,7 @@ Other TODO's:
 '''
 
 from random import randint, shuffle
-from analyze import Analyze
+from core.analyze import Analyze
 from utils.tools import tostr, ispos, oe
 from containers.melody import Melody
 from core.constants import NOTES, PITCH_CLASSES

@@ -1,22 +1,24 @@
 '''
-this module handles the importing and analysis of MIDI files. 
-this uses pretty_midi as the importing tool and mingus to help
-analyze the note content.
-
-this module also handles pitch class set analysis using recently-
-generated Composition() objects. 
+this module handles the analysis of composition() objects and
+MIDI files. 
 
 comp object analysis:
     - get all PC's from each part
+    - count all PCS
     - find most common pitch classes
-    - list source data
+    - match PCS against sets and scales
 
+    - convert given rhythms to base rhythms (RHYTHMS),
+    - and create a rhythm analysis
+
+    - list source data
 
 '''
 
-from utils.midi import load
+
 from utils.tools import removeoct
-from core.constants import NOTES, PITCH_CLASSES
+from core.constants import NOTES, PITCH_CLASSES, RHYTHMS
+
 
 class Analyze:
     '''
@@ -26,7 +28,29 @@ class Analyze:
     def __init__(self) -> None:
         pass
 
-    def getpcs(notes):
+    def getpcs(self, comp):
+        '''
+        gets all pitch classes from each part in a composition() object
+        '''
+        pcs = []
+        if len(comp.melodies) > 0:
+            ml = len(comp.melodies)
+            for m in range(ml):
+                pcs.append(self.getpcs(comp.melodies[m].notes))
+            return pcs
+        elif len(comp.chords) > 0:
+            pcs = []
+            cl = len(comp.chords)
+            for c in range(cl):
+                chords = comp.chords[c]
+                chrdlen = len(chords)
+                for chrd in range(chrdlen):
+                    pcs.append(self.getpcs(chords[chrd].notes))
+            return pcs
+        elif len(comp.melodichords) > 0:
+
+
+    def _getpcs(self, notes):
         '''
         matches pitch strings to pitch class integers.
         
@@ -61,13 +85,13 @@ class Analyze:
         in semi-tones!
         '''
         intrvls = []
-        ind = self.getindex(notes)
+        ind = self._getindex(notes)
         ind_len = len(ind)
         for n in range(1, ind_len):
             intrvls.append(ind[n]-ind[n-1])
         return intrvls
 
-    def getindex(self, notes):
+    def _getindex(self, notes):
         '''
         gets the index or list of indicies of a given note or 
         list of notes in NOTES. 
@@ -90,6 +114,26 @@ class Analyze:
             raise TypeError("notes must be a single str or list[str]! type is:", type(notes))
     
 
+    def checkrange(self, notes:list[str], ran:list[str]):
+        '''
+        checks for and removes and removes any notes
+        not within the range of a given instrument.
+
+        returns a modified note list[str]
+        '''
+        diff = get_diff(notes, ran)
+        if len(diff) > 0:
+            difflen = len(diff)
+            for note in range(difflen):
+                notes.remove(diff[note])
+        return notes
+
+
+    def get_diff(self, notes, ran):
+        '''removes notes not in range of a given instrument with a provided range'''
+        return [notes for notes in notes + ran if notes not in notes or notes not in ran]
+
+
     def getrange(self, notes:list[str]):
         '''
         returns the lowest and highest note in a given set of notes
@@ -106,7 +150,7 @@ class Analyze:
 
     
     # Generates a 12-tone matrix from a given row
-    def new_matrix(self, row, intrvls):
+    def new_12tone_matrix(self, row, intrvls):
         '''
         NOTE: NOT READY
 
@@ -168,40 +212,6 @@ class Analyze:
             for y in x:
                 print(y, end = " ")
             print()
-       
-
-    # Returns a list of MIDI pitch numbers. 
-    # Each index number functions as a tag to reference specific pitches in the file
-    def get_notes(tune):
-        '''
-        gets notes from a given PrettyMidi() object
-        '''
-        notes = []  
-        for instrument in tune.instruments:
-            for note in instrument.notes:
-                notes.append(note.pitch)
-        return notes
-        
-
-    # Determines difference between given tempo and standard second 
-    def tempo_difference(tune):
-        second = 60
-        tempo = tune.estimate_tempo()
-        difference = second/tempo
-        return difference
-
-    # Get pretty_midi's estimated global tempo in bpm
-    def get_tempo(thisTune):
-        return thisTune.estimate_tempo()
-
-    # Get pretty_midi's note start times
-    def get_beats(tune):
-        return tune.get_beats(start_time = 0.0)
-
-    # Get pretty_midi's downbeat locations (tempo/time-sig changes)
-    def get_down_beats(tune):
-        return tune.get_downbeats()
-
         
     # Retrieves the interval vector for a given pitch class set
     '''
@@ -235,3 +245,18 @@ class Analyze:
             i += 1
         return vector
     '''
+    def MIDI_num_to_note_name(self, midi_notes):
+        '''
+        returns the corresponding MIDI note for a 
+        given note name string. apparently MIDI note numbers
+        are the given index of a note in NOTES plus 21
+        '''
+        if type(midi_notes) == list:
+            notes = []
+            for n in range(midi_notes):
+                notes.append(NOTES.index(midi_notes[n])-21)
+            return notes
+        elif type(midi_notes) == int:
+            return NOTES.index(midi_notes)-21
+        else:
+            raise TypeError("midi_notes must be a list or single int! type is:", type(midi_notes))
