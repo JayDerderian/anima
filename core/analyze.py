@@ -15,10 +15,8 @@ comp object analysis:
 
 '''
 
-
 from utils.tools import removeoct
 from core.constants import NOTES, PITCH_CLASSES, RHYTHMS
-
 
 class Analyze:
     '''
@@ -36,7 +34,7 @@ class Analyze:
         if len(comp.melodies) > 0:
             ml = len(comp.melodies)
             for m in range(ml):
-                pcs.append(self.getpcs(comp.melodies[m].notes))
+                pcs.extend(self._getpcs(comp.melodies[m].notes))
             return pcs
         elif len(comp.chords) > 0:
             pcs = []
@@ -45,9 +43,13 @@ class Analyze:
                 chords = comp.chords[c]
                 chrdlen = len(chords)
                 for chrd in range(chrdlen):
-                    pcs.append(self.getpcs(chords[chrd].notes))
+                    pcs.extend(self._getpcs(chords[chrd].notes))
             return pcs
         elif len(comp.melodichords) > 0:
+            ml_len = len(comp.melodichords)
+            for m in range(ml_len):
+                pcs.extend(self._getpcs(comp.melodichords[m].notes))
+        return pcs
 
 
     def _getpcs(self, notes):
@@ -91,6 +93,7 @@ class Analyze:
             intrvls.append(ind[n]-ind[n-1])
         return intrvls
 
+
     def _getindex(self, notes):
         '''
         gets the index or list of indicies of a given note or 
@@ -121,7 +124,7 @@ class Analyze:
 
         returns a modified note list[str]
         '''
-        diff = get_diff(notes, ran)
+        diff = self.get_diff(notes, ran)
         if len(diff) > 0:
             difflen = len(diff)
             for note in range(difflen):
