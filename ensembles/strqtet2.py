@@ -11,11 +11,12 @@ from tqdm import trange
 from random import randint, seed, choice
 
 from utils.midi import save
-from utils.tools import scaletotempo, checkrange, getpcs
+from utils.tools import scaletotempo
 from utils.txtfile import save_info
 
 from core.generate import Generate
-from core.constants import DYNAMICS, NOTES, REST, TEMPOS, RANGE
+from core.analyze import Analyze
+from core.constants import DYNAMICS, REST, TEMPOS, RANGE
 
 from containers.melody import Melody
 
@@ -81,7 +82,7 @@ def strqtet2(tempo=None):
         chosen rest duration. ensemble should be in rhythmic *unison*
         '''
         for q in range(qtet_len):                   # write each part
-            mod_source = checkrange(source, ranges[qtet[q].instrument])   # make sure to pick notes withiin this instrument's range
+            mod_source = Analyze.checkrange(source, ranges[qtet[q].instrument])   # make sure to pick notes withiin this instrument's range
             qtet[q].notes.extend([choice(mod_source)] * total)
             qtet[q].rhythms.extend([scaletotempo(comp.tempo, 0.125)] * total)  # NOTE: something is wonky with the rhythms...
             qtet[q].dynamics.extend([DYNAMICS[randint(9,17)]] * total)

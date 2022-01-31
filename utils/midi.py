@@ -1,5 +1,10 @@
 ''' 
 Utility functions for working with MIDI I/O
+
+NOTE: Replace PrettyMid with MidiFile or MidiTrack, and Instrument with Message?
+      Look at how PrettyMidi uses Instruments when writing out MIDI files.
+
+      Look at midi.MidiFile().py in the resources file!
 '''
 
 from pretty_midi import PrettyMIDI, Instrument
@@ -7,21 +12,24 @@ from mido import MidiFile, MidiTrack, Message
 
 from utils.tools import normalize_str
 from core.constants import INSTRUMENTS, NOTES
+
 from containers.note import Note
 from containers.melody import Melody
 from containers.chord import Chord
 
 
-# loads a MIDI file from a filename
 def load(file_name):
     '''
-    loads a MIDI file using a supplied file name and returns a MidiFile()
-    object
+    loads a MIDI file using a supplied file name ("song.mid") 
+    and returns a MidiFile() object
     '''
-    return MidiFile(filename=file_name, type=1)
+    if type(file_name) != str:
+        raise TypeError("filename must be a string!")
+    elif file_name[-4:] != ".mid":
+        raise TypeError("string must end with .mid!")
+    return MidiFile(filename=file_name)
 
 
-# exports a MIDI file for any sized composition (1 solo melody to ensemble sized n)
 def save(comp):
     '''
     General save function for compositions. *All instruments start at the same time!*
@@ -69,7 +77,7 @@ def save(comp):
             chord = Instrument(program=instrument)
             for j in range(len(chrds)):                                             # iterate through current chord list
                 for k in range(len(chrds[j].notes)):                                # add this list of chord objects notes
-                    note = note_name_to_MIDI_num(chrds[j].notes[k])                # translate note to MIDI note
+                    note = note_name_to_MIDI_num(chrds[j].notes[k])                 # translate note to MIDI note
                     anote = Note(
                         velocity=chrds[j].dynamic, pitch=note, start=strt, end=end)
                     chord.notes.append(anote)                                       # add to instrument object
@@ -92,7 +100,7 @@ def save(comp):
             if isinstance(melodichords[item], Melody):                                     # is this a melody object?
                 # strt = 0
                 end = melodichords[item].rhythms[0]    
-                instrument = instrument_to_program(melodichords[item].instrument)  # create melody instrument
+                instrument = instrument_to_program(melodichords[item].instrument)          # create melody instrument
                 mel = Instrument(program=instrument)        
                 for j in range(len(melodichords[item].notes)):                             # add *this* melody's notes
                     note = note_name_to_MIDI_num(melodichords[item].notes[j])              # translate note to MIDI note
@@ -133,7 +141,6 @@ def save(comp):
     mid.write(f'./midi/{comp.midi_file_name}')
 
 
-# convert a note name string to MIDI number
 def note_name_to_MIDI_num(note):
     '''
     returns the corresponding MIDI note for a 
@@ -143,7 +150,6 @@ def note_name_to_MIDI_num(note):
     return NOTES.index(note) + 21
 
 
-# convert instrument name to MIDI instrument number
 def instrument_to_program(instr):
     '''
     returns an instrument program number using INSTRUMENTS, which

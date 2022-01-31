@@ -1,5 +1,8 @@
 '''
 Module for the Melody() class/container. Used for individual melody data in compositions.
+
+TODO: create a method to break generated Melody() data into a list of Bar() objects, with 
+      or without a common time signature. Tempo should be global.
 '''
 
 class Melody():
@@ -22,11 +25,13 @@ class Melody():
         self.source_scale = []
 
         # Data
-        if tempo==None and instrument==None:
+        if tempo==None:
             self.tempo = 0.0
-            self.instrument = 'None'
         else:
             self.tempo = tempo
+        if instrument==None:
+            self.instrument = 'None'
+        else:
             self.instrument = instrument
         self.notes = []
         self.rhythms = []
@@ -56,4 +61,4 @@ class Melody():
         return a list[int] of all pitch classes in this melody. may need to use tools.getpcs() prior
         to calling this
         '''
-        return self.pcs if len(self.pcs) != 0 else 0
+        return self.pcs if len(self.pcs) != 0 else [0]

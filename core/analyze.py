@@ -2,21 +2,46 @@
 this module handles the analysis of composition() objects and
 MIDI files. 
 
+TODO:
+
+convert MIDI file data to composition() object, as best as possible.
+mainly need to retrieve MIDI note numbers, velocities, and start/end times
+possibly parse other parts of MIDI file as I learn more about them...
+
 comp object analysis:
+
+    - list source data
+    
     - get all PC's from each part
     - count all PCS
     - find most common pitch classes
-    - match PCS against sets and scales
+    - match PCS against sets, scales, intervals
 
     - convert given rhythms to base rhythms (RHYTHMS),
-    - and create a rhythm analysis
-
-    - list source data
+      and create a rhythm analysis.
+    - count most common base rhythms (rhythm classes?)
 
 '''
 
-from utils.tools import removeoct
-from core.constants import NOTES, PITCH_CLASSES, RHYTHMS
+from mido import MidiFile
+
+from utils.tools import (
+    removeoct, 
+    oe, 
+    scaletotempo,
+    allsame
+)
+
+from core.constants import (
+    NOTES, 
+    PITCH_CLASSES, 
+    RHYTHMS,
+    BEATS, 
+    RANGE, 
+    SCALES, 
+    SETS
+)
+
 
 class Analyze:
     '''
@@ -26,33 +51,38 @@ class Analyze:
     def __init__(self) -> None:
         pass
 
-    def getpcs(self, comp):
+    def getpcs_from_comp(self, comp):
         '''
         gets all pitch classes from each part in a composition() object
+
+        param: Composition()
+        return: list[int]
+
+        NOTE: this doesn't account if there's more than one of the same instrument!
+            the dictionary key is the current melody object instrument, for now...
         '''
-        pcs = []
+        pcs = {}
         if len(comp.melodies) > 0:
             ml = len(comp.melodies)
             for m in range(ml):
-                pcs.extend(self._getpcs(comp.melodies[m].notes))
+                pcs[comp.melodies[m].instrument] = self.getpcs(comp.melodies[m].notes)
             return pcs
         elif len(comp.chords) > 0:
-            pcs = []
             cl = len(comp.chords)
             for c in range(cl):
                 chords = comp.chords[c]
                 chrdlen = len(chords)
                 for chrd in range(chrdlen):
-                    pcs.extend(self._getpcs(chords[chrd].notes))
+                    pcs[chords[chrd].instrument] =  self.getpcs(chords[chrd].notes)
             return pcs
         elif len(comp.melodichords) > 0:
             ml_len = len(comp.melodichords)
             for m in range(ml_len):
-                pcs.extend(self._getpcs(comp.melodichords[m].notes))
+                pcs[comp.melodichords[m].instrument] = self.getpcs(comp.melodichords[m].notes)
         return pcs
 
 
-    def _getpcs(self, notes):
+    def getpcs(self, notes):
         '''
         matches pitch strings to pitch class integers.
         
@@ -87,14 +117,14 @@ class Analyze:
         in semi-tones!
         '''
         intrvls = []
-        ind = self._getindex(notes)
+        ind = self.getindex(notes)
         ind_len = len(ind)
         for n in range(1, ind_len):
             intrvls.append(ind[n]-ind[n-1])
         return intrvls
 
 
-    def _getindex(self, notes):
+    def getindex(self, notes):
         '''
         gets the index or list of indicies of a given note or 
         list of notes in NOTES. 
@@ -152,7 +182,6 @@ class Analyze:
         return (min, max)
 
     
-    # Generates a 12-tone matrix from a given row
     def new_12tone_matrix(self, row, intrvls):
         '''
         NOTE: NOT READY
@@ -206,7 +235,7 @@ class Analyze:
             m.insert(i, r)
         return m
 
-    # display 12-tone matrix
+
     def print_matrix(self, matrix):
         '''
         Display a twelve-tone matrix (2D list)
@@ -253,6 +282,9 @@ class Analyze:
         returns the corresponding MIDI note for a 
         given note name string. apparently MIDI note numbers
         are the given index of a note in NOTES plus 21
+
+        param: midi_notes (list[int]) or single midi_note (int)
+        returns: notes (list[str])
         '''
         if type(midi_notes) == list:
             notes = []
@@ -263,3 +295,26 @@ class Analyze:
             return NOTES.index(midi_notes)-21
         else:
             raise TypeError("midi_notes must be a list or single int! type is:", type(midi_notes))
+
+
+'''
+some additional methods for handling meter. these are mainly used 
+sporadically and didn't really warrent being part of the larger analyze method class,
+at least for now...
+'''
+
+def is_simple(meter):
+    '''returns True if meter is a simple meter'''
+    return is_valid(meter)
+
+def is_compound(meter):
+    '''returns True if meter is a compound meter'''
+    return is_valid(meter) and meter[0] % 3 == 0 and 6 <= meter[0]
+
+def is_valid(meter):
+    '''returns True if meter is valid (rational)'''
+    return meter[0] > 0 and valid_beat_duration(meter)
+
+def valid_beat_duration(meter):
+    '''returns True if meter denominator is a valid beat duration'''
+    return True if meter[1] in BEATS else False

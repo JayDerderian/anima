@@ -7,9 +7,7 @@ the generate file.
 
 This should also handle all large-scale decision making with regards to some "higher" level
 compositon "modes" (i.e. styles - "minimalise" mode, "tonal" mode, "12-tone mode", etc...)
-'''
 
-'''
 TODO:
     implement a way to pick elements from a randomly generated set (like a melody or chord progression) and 
     assign a "preference" to them. once this is done use these preferred subsets and develop them alongside 
@@ -18,24 +16,15 @@ TODO:
     also, look into weighted decisions. 
 '''
 
-
-# IMPORTS
 from math import floor
-from random import randint
+from random import randint, choice, choices
 
-# Decision functions
-class Decide():
-    '''
-    These are the RNG functions that make "decisions" about a variety of creative questions.  
-    Basically you roll some dice and see what happens.
+class Decide:
 
-    This is the BASE CLASS for all generative functions.
-    '''
-
-    # Constructor
     def __init__(self):
 
-        # Session info. Initialize empty dictionaries to contain current choices for each instance
+        # Session info.
+        self.compositions = []
         self.min_choices = {}
         self.modal_choices = {}
         self.atonal_choices = {}
@@ -52,7 +41,7 @@ class Decide():
     '''
     
     # Minimalist mode choices
-    def min_choices(self):
+    def minchoices(self):
         '''
         Decides generation parameters for minimalist mode
         '''
@@ -62,7 +51,7 @@ class Decide():
         return choices
 
     # Tonal/modal mode choices
-    def modal_choices(self):
+    def modalchoices(self):
         '''
         Decides generation parameters for tonal/modal mode
         '''
@@ -73,7 +62,6 @@ class Decide():
 
     # Atonal mode choices
 
-    # 
 
 
 
@@ -85,13 +73,10 @@ class Decide():
         
         - These functions are intended to work off a given MIDI file. The variations.py file has more info.
         - Update variations.py with updated choices in mainChoice().
-    
-    TODO: Create a single wrapper method - decisions() - for executing all choices and returning them 
-          as a single dictionary.
 
     '''    
 
-    # What do we want to do? modify notes (1), modify rhythms (2), both (3)
+
     def var_main_choice(self):
         '''
         What do we want to do?
@@ -103,26 +88,9 @@ class Decide():
         6 - Modify 2 and 3
         7 - Modify ALL
         '''
-        print("\nDeciding what to do...")
-        choice = randint(1, 7)
-        if(choice == 1):
-            print("...Modifying NOTES only!")
-        elif(choice == 2):
-            print("...Modifying RHYTHMS only!")
-        elif(choice == 3):
-            print("...Modifying DYNAMICS only!")
-        elif(choice == 4):
-            print("...Modifying NOTES & RHYTHMS!")
-        elif(choice == 5):
-            print("...Modifying NOTES & DYNAMICS!")
-        elif(choice == 6):
-            print("...Modifying RHYTHMS & DYNAMICS!")
-        elif(choice == 7):
-            print("...Modifying NOTES & RHYTHMS & DYNAMICS!")
-        return choice
+        return randint(1, 7)
 
-    # Choices (notes): Transpose Up (1), down (2), transpose up AND down (3), 
-    # add note (4), remove note (5), both add AND remove(6)
+
     def what_to_do_notes(self):
         '''
         Choices: 
@@ -131,54 +99,28 @@ class Decide():
             2. Transpose Up (1), down (2), transpose up AND down (3), 
                add note (4), remove note (5), both add AND remove(6)
         '''
-        print("\nDeciding what to do with the notes...")
-        choice = randint(1, 5)
-        # Test outputs
-        if(choice == 1):
-            print("...Transposing UP only!")
-        elif(choice == 2):
-            print("...Transposing DOWN only!")
-        elif(choice == 3):
-            print("...Transposing UP & DOWN!")
-        elif(choice == 4):
-            print("...ADDING notes!")
-        elif(choice == 5):
-            print("...REMOVING notes!")
-        elif(choice == 6):
-            print("...ADDING & REMOVING notes!")
-        return choice
+        return randint(1, 6)
     
-    # Choices (rythms): Augment (1), diminish(2), augment AND diminish (3)
+ 
     def what_to_do_rhythms(self):
         '''
         Choices (rhythms): Augment (1), diminish(2), augment AND diminish (3)
         '''
-        print("\nDeciding what to do with the rhythms...")
-        choice = randint(1, 3)
-        if(choice == 1):
-            print("...Augmenting rhythms!")
-        elif(choice == 2):
-            print("...Diminishing rhythms!")
-        elif(choice == 3):
-            print("...Augment & diminish rhythms!")
-        return choice
+        return randint(1, 3)
 
-    # Determines how many notes to modify of a given total.
+ 
     def how_many_to_modify(self, total):
         '''
         Determines how many notes to modify of a given total.
         '''
         print("\nDeciding how many notes or rhythms to modify...")
-        # Scale to file size/note count
-        total_mod = self.scale_how_many(total)
-        # Decide how many to modify given this new total
-        total_mod = randint(1, total_mod)
+        total_mod = self.scale_how_many(total)    # Scale to file size/note count
+        total_mod = randint(1, total_mod)         # Decide how many to modify given this new total
         if(total_mod <= 0):
             print("...Unable to decide!")
-        # print("Total:", totalModify)
         return total_mod
 
-    # How many times should we repeat this note?
+
     def how_many_reps(self, notes):
         '''
         Determines how many times to repeat a note, scaled to
@@ -191,14 +133,11 @@ class Decide():
             return 1
         reps = 0
         if(len(notes) > 10):
-            # Limit to max 1/5
-            reps = randint(1, floor(len(notes) / 5))
+            reps = randint(1, floor(len(notes) / 5))  # Limit to max 1/5
         elif(len(notes) > 8):
-            # Limit to max 1/4
-            reps = randint(1, floor(len(notes) / 4))
+            reps = randint(1, floor(len(notes) / 4))  # Limit to max 1/4
         elif(len(notes) > 6):
-            # Limit to max 1/3
-            reps = randint(1, floor(len(notes) / 3))
+            reps = randint(1, floor(len(notes) / 3))  # Limit to max 1/3
         return reps
 
     # Scales howMany to different MIDI note file sizes
@@ -233,11 +172,8 @@ class Decide():
         '''   
         notes_to_modify = []
         print("\nDeciding which notes to modify...") 
-        # Generate raw, un-sorted index choice list within given range (totalNotes)
-        while(len(notes_to_modify) < total):
+        while(len(notes_to_modify) < total):            # Generate raw, un-sorted index choice list within given range (total)
             notes_to_modify.append(randint(0, total))
-        # Remove any duplicates
-        notes_to_modify = list(set(notes_to_modify))
-        # Sort resulting list by ascending value 
-        notes_to_modify.sort()
+        notes_to_modify = list(set(notes_to_modify))    # Remove any duplicates
+        notes_to_modify.sort()                           # Sort resulting list by ascending value
         return notes_to_modify

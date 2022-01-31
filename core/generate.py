@@ -8,6 +8,13 @@ from names import get_full_name
 from datetime import datetime as date
 from random import randint, sample, choice
 
+from utils.mapping import map_data
+from utils.txtfile import save_info
+from utils.midi import save
+from utils.tools import(
+    tostr, oe, scaletotempo, scale_limit
+)
+
 from core.constants import(
     NOTES,
     PITCH_CLASSES, 
@@ -23,16 +30,10 @@ from core.constants import(
     FORTE_NUMBERS,
     INTERVALS
 )
+from core.modify import Modify
+from core.analyze import Analyze
 
-from utils.mapping import map_data
-from utils.txtfile import save_info
-from utils.midi import save
-
-from utils.tools import(
-    getpcs, tostr, transpose, 
-    oe, scaletotempo, scale_limit
-)
-
+from containers.bar import Bar
 from containers.chord import Chord
 from containers.melody import Melody
 from containers.composition import Composition
@@ -305,10 +306,11 @@ class Generate:
 
         Supply a value for o if a specified octave is needed.
         '''
+        mod = Modify()
         scale = choice(SCALE_KEYS)
         pcs = SCALES[scale]
         if t:
-            pcs_t = transpose(pcs, randint(1, 11), octeq=False)
+            pcs_t = mod.transpose(pcs, randint(1, 11), octeq=False)
             notes = tostr(pcs_t, octave=o)
         else:
             notes = tostr(pcs, octave=o)
@@ -328,6 +330,7 @@ class Generate:
 
         Supply a value for o if a specified octave is needed.
         '''
+        mod = Modify()
         fn = choice(FORTE_NUMBERS)
         '''NOTE: for some reason 7-z38A8-1 keeps getting selected
                  even though it's not in FORTE_NUMBERS, so this brute-force
@@ -337,7 +340,7 @@ class Generate:
             fn = choice(FORTE_NUMBERS)
         pcs = SETS[fn]
         if t:
-            pcs_t = transpose(pcs, randint(1, 11), octeq=False)
+            pcs_t = mod.transpose(pcs=pcs, t=randint(1, 11), octeq=False)
             scale = tostr(pcs_t, octave=o)
         else:
             scale = tostr(pcs, octave=o)
@@ -358,6 +361,7 @@ class Generate:
         '''
         pcs = []
         total = randint(5,8)
+        mod = Modify()
         '''Current method. Outputs are quite interesting, though I think this
            is the least efficient way to go about this...'''
         while len(pcs) < total:
@@ -367,7 +371,7 @@ class Generate:
         # pcs = [randint(0,11) for x in range(total) if x not in pcs]
         pcs.sort() 
         if t:
-            pcs = transpose(pcs, t=randint(1,11), octeq=False)
+            pcs = mod.transpose(pcs, t=randint(1,11), octeq=False)
         scale = tostr(pcs, o)
         return scale, pcs   
 
@@ -672,7 +676,7 @@ class Generate:
         
         Returns a chord() object. Does not assign an instrument!
         '''
-        
+        a = Analyze()
         newchord = Chord() 
         if tempo==None:
             newchord.tempo = 60.0
@@ -682,7 +686,7 @@ class Generate:
             # pick an existing scale/set or make a new one?
             if randint(1, 2) == 1: 
                 scale, newchord.info = self.pick_root(o=randint(2,5))
-                newchord.pcs = getpcs(scale)
+                newchord.pcs = a.getpcs(scale)
             else:
                 scale, newchord.pcs = self.new_scale(o=randint(2,5))
                 newchord.info = "Invented Scale"
