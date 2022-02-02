@@ -3,7 +3,7 @@ class/container for dealing with individual measures.
 '''
 
 from containers.melody import Melody
-from utils.meter import is_valid
+from core.analyze import Analyze
 from utils.tools import scaletotempo
 
 
@@ -94,7 +94,7 @@ class Bar():
         '''
         if type(meter) != tuple:
             raise TypeError("supplied meter was not a tuple! instead was:", type(meter))
-        if is_valid(meter):
+        if Analyze.is_valid(meter):
             self.meter = (meter[0], meter[1])
         else:
             raise ValueError("invalid meter!")

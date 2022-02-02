@@ -25,6 +25,7 @@ comp object analysis:
 
 from mido import MidiFile
 
+from utils.midi import load, save
 from utils.tools import (
     removeoct, 
     oe, 

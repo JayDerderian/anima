@@ -54,11 +54,16 @@ from random import(
     choices
 )
 
-from mido import MidiFile, MidiTrack
-from utils.tools import tostr, ispos, oe
+import utils.midi as mid
+
+from utils.tools import (
+    tostr, 
+    ispos, 
+    oe, 
+    scaletotempo
+)
 
 from containers.melody import Melody
-from core.generate import Generate
 from core.constants import(
     NOTES, 
     RHYTHMS, 
@@ -76,7 +81,7 @@ class Modify:
         pass
 
 
-    def transpose(self, pcs, t, octeq=True):
+    def transpose(self, pcs, dist, octeq=True):
         '''
         transpose a pitch class (int) or list of pitch classes (list[int]) 
         using a supplied interval t (int), or list of intervals t (list[int]). 
@@ -95,17 +100,17 @@ class Modify:
             raise TypeError("pcs must be a list[int]! pcs was type:", type(pcs))
         pcsl = len(pcs)
         # modify with a single interval across all pitch-class integers
-        if type(t)==int:
+        if type(dist)==int:
             for note in range(pcsl):
-                pcs[note] += t
+                pcs[note] += dist
         # modify with a list of intervals across all pitch-class integers. 
         # this allows for each pitch-class to be transposed by a unique
         # distance, allowing for rapid variation generation. 
         # it could also be a list of the same repeated value but that 
         # might be less efficient.
-        elif type(t)==list:
+        elif type(dist)==list:
             for note in range(pcsl):
-                pcs[note] += t[note]
+                pcs[note] += dist[note]
         else:
             raise TypeError("incorrect input type. must be single int or list of ints!")
         # keep resulting pcs values between 0 and 11 by default.
@@ -169,8 +174,8 @@ class Modify:
             return NOTES.index(notes)
         elif type(notes)==list:
             indicies = []
-            l = len(notes)
-            for n in range(l):
+            notelen = len(notes)
+            for n in range(notelen):
                 indicies.append(NOTES.index(notes[n]))
             return indicies
         else:
@@ -223,10 +228,11 @@ class Modify:
         '''
         randomly picks a subset of notes, rhythms, and dynamics (all
         from the same position in the melody) from a given melody and 
-        returns this subset as a melodic fragment in a new melody() object'''
+        returns this subset as a melodic fragment in a new melody() object
+        '''
         frag = Melody()
-        # copy other info from supplied melody object to not miss anything 
-        # important
+        # copy other info from supplied melody object 
+        # to not miss anything important
         data = m.get_meta_data()
         frag.info = data[0]
         frag.pcs = data[1]

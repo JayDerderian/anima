@@ -8,20 +8,49 @@ NOTE: Replace PrettyMid with MidiFile or MidiTrack, and Instrument with Message?
 '''
 
 from pretty_midi import PrettyMIDI, Instrument
-from mido import MidiFile, MidiTrack, Message
+from mido import MidiFile, MidiTrack, Message, MetaMessage
 
 from utils.tools import normalize_str
 from core.constants import INSTRUMENTS, NOTES
 
 from containers.note import Note
 from containers.melody import Melody
+from containers.composition import Composition
 from containers.chord import Chord
+
+
+
+def note_name_to_MIDI_num(note):
+    '''
+    returns the corresponding MIDI note for a 
+    given note name string. apparently MIDI note numbers
+    are the given index of a note in NOTES plus 21
+    '''
+    return NOTES.index(note)+21
+
+
+def MIDI_num_to_note_name(num):
+    '''
+    returns the corresponding note name string from a 
+    given MIDI note number
+    '''
+    return NOTES.index(num-21)
+
+
+def instrument_to_program(instr):
+    '''
+    returns an instrument program number using INSTRUMENTS, which
+    maps names to numbers via their index values.
+    '''
+    inst_name = normalize_str(instr)
+    inst_list = [normalize_str(name) for name in INSTRUMENTS]
+    return inst_list.index(inst_name)
 
 
 def load(file_name):
     '''
-    loads a MIDI file using a supplied file name ("song.mid") 
-    and returns a MidiFile() object
+    loads a MIDI file using a supplied file name (i.e "song.mid") 
+    and returns a MidiFile() object 
     '''
     if type(file_name) != str:
         raise TypeError("filename must be a string!")
@@ -32,10 +61,8 @@ def load(file_name):
 
 def save(comp):
     '''
-    General save function for compositions. *All instruments start at the same time!*
-    Exports a MIDI file for any sized composition (1 solo melody to ensemble sized n). 
-    
-    Requires a composition() object.
+    general save function for compositions. *All instruments start at the same time!*
+    exports a MIDI file for any sized composition (1 solo melody to ensemble sized n). 
     '''
     # PM object is just used to just write out the file.
     mid = PrettyMIDI(initial_tempo=comp.tempo)
@@ -50,14 +77,18 @@ def save(comp):
             mel = Instrument(program=instrument)
             for j in range(len(comp.melodies[i].notes)):                            # add *this* melody's notes
                 note = note_name_to_MIDI_num(comp.melodies[i].notes[j])             # translate note to MIDI note
-                anote = Note(
-                    velocity=comp.melodies[i].dynamics[j], pitch=note, start=strt, end=end)
-                mel.notes.append(anote)                                             # add to instrument object
+                mel.notes.append(Note(velocity=comp.melodies[i].dynamics[j], 
+                                 pitch=note, 
+                                 start=strt, 
+                                 end=end))                                            
                 strt += comp.melodies[i].rhythms[j]                                 # increment strt/end times
-                try:
-                    end += comp.melodies[i].rhythms[j+1]
-                except IndexError:
+                j+=1
+                if j == len(comp.melodies[i].rhythms):
                     break
+                # try:
+                #     end += comp.melodies[i].rhythms[j+1]
+                # except IndexError:
+                #     break
             mid.instruments.append(mel)                                             # add melody to instrument list
 
     # add chords
@@ -78,9 +109,10 @@ def save(comp):
             for j in range(len(chrds)):                                             # iterate through current chord list
                 for k in range(len(chrds[j].notes)):                                # add this list of chord objects notes
                     note = note_name_to_MIDI_num(chrds[j].notes[k])                 # translate note to MIDI note
-                    anote = Note(
-                        velocity=chrds[j].dynamic, pitch=note, start=strt, end=end)
-                    chord.notes.append(anote)                                       # add to instrument object
+                    chord.notes.append(Note(velocity=chrds[j].dynamic, 
+                                            pitch=note, 
+                                            start=strt, 
+                                            end=end))  
                 strt += chrds[j].rhythm
                 try:
                     end += chrds[j+1].rhythm                                        # increment strt/end times
@@ -141,20 +173,36 @@ def save(comp):
     mid.write(f'./midi/{comp.midi_file_name}')
 
 
-def note_name_to_MIDI_num(note):
+def parse(file_name):
     '''
-    returns the corresponding MIDI note for a 
-    given note name string. apparently MIDI note numbers
-    are the given index of a note in NOTES plus 21
-    '''
-    return NOTES.index(note) + 21
+    NOTE: NOT READY! Still working on it...
 
+    TODO: filter out messages who has a velocity of 0 (those are "rests")
 
-def instrument_to_program(instr):
+    opens and parses a MIDI file, retrieves MIDI note numbers, velocities,
+    time signature, tempo (in ticks per beat), 
+
+    returns a dict
     '''
-    returns an instrument program number using INSTRUMENTS, which
-    maps names to numbers via their index values.
-    '''
-    inst_name = normalize_str(instr)
-    inst_list = [normalize_str(name) for name in INSTRUMENTS]
-    return inst_list.index(inst_name)
+    if file_name[-4:] != ".mid":
+        raise ValueError("file_name must end with .mid!")
+    print("\nloading...")
+    file = MidiFile(filename=file_name) # open the file. NOTE: only searches current working directory           
+    res = {}                            # store extracted note/rhythm/dynamics info. 
+                                        # each key is a different track with notes/rhythms/dynamics. nexted dicts.
+    tracks = []                         # tracks. 
+    msgs = []                           # individual MIDI messages. 
+                                        # to be used for detailed analysis 
+
+    print("\nretrieving individual tracks...\n") 
+    for i, track in enumerate(file.tracks):
+        res["track " + str(i)] = file.tracks[i]
+        tracks.append(file.tracks[i])
+        for msg in track:
+            msgs.append(msg)
+
+    # test output. maybe filter out metamessages
+    for i in range(len(tracks)):
+        print("track", i, " : ", tracks[i])
+
+    # iterate through each track and revert data to in-house formats
