@@ -76,16 +76,15 @@ def save(comp):
             instrument = instrument_to_program(comp.melodies[i].instrument)         # create melody instrument
             mel = Instrument(program=instrument)
             for j in range(len(comp.melodies[i].notes)):                            # add *this* melody's notes
-                note = note_name_to_MIDI_num(comp.melodies[i].notes[j])             # translate note to MIDI note
                 mel.notes.append(Note(velocity=comp.melodies[i].dynamics[j], 
-                                 pitch=note, 
-                                 start=strt, 
-                                 end=end))                                            
+                                      pitch=note_name_to_MIDI_num(comp.melodies[i].notes[j]), 
+                                      start=strt, 
+                                      end=end))                                            
                 strt += comp.melodies[i].rhythms[j]                                 # increment strt/end times
-                j+=1
-                if j == len(comp.melodies[i].rhythms):
+                j+=1                                                                
+                if j==len(comp.melodies[i].rhythms):
                     break
-                # try:
+                # try:                                                              # NOTE for some reason this try/except block isn't working...
                 #     end += comp.melodies[i].rhythms[j+1]
                 # except IndexError:
                 #     break
@@ -108,9 +107,8 @@ def save(comp):
             chord = Instrument(program=instrument)
             for j in range(len(chrds)):                                             # iterate through current chord list
                 for k in range(len(chrds[j].notes)):                                # add this list of chord objects notes
-                    note = note_name_to_MIDI_num(chrds[j].notes[k])                 # translate note to MIDI note
                     chord.notes.append(Note(velocity=chrds[j].dynamic, 
-                                            pitch=note, 
+                                            pitch=note_name_to_MIDI_num(chrds[j].notes[k]), 
                                             start=strt, 
                                             end=end))  
                 strt += chrds[j].rhythm
@@ -175,34 +173,31 @@ def save(comp):
 
 def parse(file_name):
     '''
-    NOTE: NOT READY! Still working on it...
-
-    TODO: filter out messages who has a velocity of 0 (those are "rests")
+    TODO: filter out messages who has a velocity of 0 
 
     opens and parses a MIDI file, retrieves MIDI note numbers, velocities,
-    time signature, tempo (in ticks per beat), 
+    time signature, tempo (in ticks per beat), and rhythms
 
-    returns a dict
+    returns:
+        - a dict with each key being a string representing 
+          the track number, i.e. "track 1"
+        - a list[Messages()] of messages
     '''
-    if file_name[-4:] != ".mid":
+    if file_name[-4:] != '.mid':
         raise ValueError("file_name must end with .mid!")
-    print("\nloading...")
-    file = MidiFile(filename=file_name) # open the file. NOTE: only searches current working directory           
-    res = {}                            # store extracted note/rhythm/dynamics info. 
-                                        # each key is a different track with notes/rhythms/dynamics. nexted dicts.
-    tracks = []                         # tracks. 
-    msgs = []                           # individual MIDI messages. 
-                                        # to be used for detailed analysis 
-
-    print("\nretrieving individual tracks...\n") 
+    file = MidiFile(filename=file_name)         # open the file. NOTE: only searches current working directory           
+    res = {}                                    # store extracted note/rhythm/dynamics info. 
+                                                # each key is a different track with notes/rhythms/dynamics.
+    msgs = []                                   # individual MIDI messages.
     for i, track in enumerate(file.tracks):
-        res["track " + str(i)] = file.tracks[i]
-        tracks.append(file.tracks[i])
+        trk = file.tracks[i]
+        for j in range(len(trk)):
+            if isinstance(trk[j], MetaMessage): # skip metamessages
+                continue
+            if hasattr(trk[j], 'velocity'):     # filter out any messages with vel==0. don't need silent notes!
+                if trk[j].velocity==0:
+                    trk.pop(j)
+        res['track ' + str(i)] = trk
         for msg in track:
             msgs.append(msg)
-
-    # test output. maybe filter out metamessages
-    for i in range(len(tracks)):
-        print("track", i, " : ", tracks[i])
-
-    # iterate through each track and revert data to in-house formats
+    return res, msgs

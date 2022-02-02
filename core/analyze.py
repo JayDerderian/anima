@@ -23,16 +23,17 @@ comp object analysis:
 
 '''
 
-from mido import MidiFile
-
-from utils.midi import load, save
+from utils.midi import (
+    load, 
+    save, 
+    parse
+)
 from utils.tools import (
     removeoct, 
     oe, 
     scaletotempo,
     allsame
 )
-
 from core.constants import (
     NOTES, 
     PITCH_CLASSES, 
@@ -296,6 +297,30 @@ class Analyze:
             return NOTES.index(midi_notes)-21
         else:
             raise TypeError("midi_notes must be a list or single int! type is:", type(midi_notes))
+    
+    def parse_MIDI(file_name:str):
+        '''
+        analyzes a given MIDI file with a given file_name (str)
+
+        res = {
+            "Tempo": float from MetaMessage 0 in t_dict[0]
+            "Pitch Classes": {
+                "track 0": [each note from each message],
+                "track 1": [...],
+                etc...
+            }
+            "Velocities":{
+                "track 0": [each vel from each message],
+                "track 1": [...],
+                etc...
+            }
+        }
+
+        '''
+        res = {}
+
+        t_dict, msgs = parse(file_name)
+        keys = t_dict.keys()
 
 
 '''
