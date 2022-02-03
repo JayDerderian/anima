@@ -324,10 +324,10 @@ class Analyze:
                     note = MIDI_num_to_note_name(msg.note)
                     pcs.append(self.getpcs(note))
                     vel.append(msg.velocity)
-            pcints["track " + str(1)] = pcs
-            vels["track " + str(i)] = vel
-            res["Pitch Classes"].extend(pcints)
-            res["Velocities"].extend(vels)
+                pcints["track " + str(1)] = pcs
+                vels["track " + str(i)] = vel
+            res["Pitch Classes"] = pcints
+            res["Velocities"] = vels
 
         return res
 
