@@ -188,7 +188,7 @@ def parse(file_name):
     '''
     if file_name[-4:] != '.mid':
         raise ValueError("file_name must end with .mid!")
-    file = MidiFile(filename=file_name)         # open the file. NOTE: only searches current working directory           
+    file = MidiFile(filename=file_name)         # open the file.         
     res = {}                                    # store extracted note/rhythm/dynamics info. analyze each track separately!
     msgs = []                                   # individual MIDI messages.
     for i, track in enumerate(file.tracks):

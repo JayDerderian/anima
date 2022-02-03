@@ -143,18 +143,6 @@ def scaletotempo(tempo, rhythms, revert=False):
     return rhythms
 
 
-def tempo2bpm(tempo):
-    '''
-    converts a MIDI file tempo to tempo in BPM. 
-    can also take a BPM and return a MIDI file tempo
-
-    - 250000 => 240
-    - 500000 => 120
-    - 1000000 => 60
-    '''
-    return int(round((60 * 1000000) / tempo))
-
-
 def scale_limit(total:int):
     '''
     scales repetition limits according to total notes

@@ -290,15 +290,18 @@ class Analyze:
         - returns a dictionary with nested dictionaries containing
           information about pitch class content, tempo, and velocities.
 
-        NOTE: skip any messages with velocity 0 when iterating through and gathering information.
-
-        will need to figure out rhythms too
+        NOTE: still need to figure out rhythms...
 
         ex:
             res = {
                 "Tempo": float from MetaMessage 0 in t_dict[0]
                 "Pitch Classes": {
                     "track 0": [each note from each message],
+                    "track 1": [...],
+                    etc...
+                }
+                "Rhythms"{
+                    "track 0": [...],
                     "track 1": [...],
                     etc...
                 }
@@ -324,8 +327,8 @@ class Analyze:
                     note = MIDI_num_to_note_name(msg.note)
                     pcs.append(self.getpcs(note))
                     vel.append(msg.velocity)
-                pcints["track " + str(1)] = pcs
-                vels["track " + str(i)] = vel
+            pcints["track " + str(1)] = pcs
+            vels["track " + str(i)] = vel
             res["Pitch Classes"] = pcints
             res["Velocities"] = vels
 
