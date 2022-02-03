@@ -143,17 +143,16 @@ def scaletotempo(tempo, rhythms, revert=False):
     return rhythms
 
 
-def bpm2tempo(bpm):
+def tempo2bpm(tempo):
     '''
-    Convert beats per minute to MIDI file tempo.
-    Returns microseconds per beat as an integer::
+    converts a MIDI file tempo to tempo in BPM. 
+    can also take a BPM and return a MIDI file tempo
 
-        240 => 250000 
-        120 => 500000
-        60 => 1000000
+    - 250000 => 240
+    - 500000 => 120
+    - 1000000 => 60
     '''
-    # One minute is 60 million microseconds.
-    return int(round((60 * 1000000) / bpm))
+    return int(round((60 * 1000000) / tempo))
 
 
 def scale_limit(total:int):

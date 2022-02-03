@@ -12,10 +12,8 @@ from mido import MidiFile, MidiTrack, Message, MetaMessage
 
 from utils.tools import normalize_str
 from core.constants import INSTRUMENTS, NOTES
-
 from containers.note import Note
 from containers.melody import Melody
-from containers.composition import Composition
 from containers.chord import Chord
 
 
@@ -45,6 +43,18 @@ def instrument_to_program(instr):
     inst_name = normalize_str(instr)
     inst_list = [normalize_str(name) for name in INSTRUMENTS]
     return inst_list.index(inst_name)
+
+
+def tempo2bpm(tempo):
+    '''
+    converts a MIDI file tempo to tempo in BPM. 
+    can also take a BPM and return a MIDI file tempo
+
+    - 250000 => 240
+    - 500000 => 120
+    - 1000000 => 60
+    '''
+    return int(round((60 * 1000000) / tempo))
 
 
 def load(file_name):
@@ -96,14 +106,9 @@ def save(comp):
         cl = len(comp.chords)
         for i in range(cl):
             chrds = comp.chords[key]                                                # retrieve current chord object list
-            if type(chrds) == list:
-                strt = 0
-                end = chrds[key].rhythm
-                instrument = instrument_to_program(chrds[i].instrument)
-            else:
-                strt = 0
-                end = chrds.rhythm
-                instrument = instrument_to_program(chrds.instrument)
+            strt = 0
+            end = chrds[key].rhythm
+            instrument = instrument_to_program(chrds[i].instrument)
             chord = Instrument(program=instrument)
             for j in range(len(chrds)):                                             # iterate through current chord list
                 for k in range(len(chrds[j].notes)):                                # add this list of chord objects notes
@@ -173,10 +178,8 @@ def save(comp):
 
 def parse(file_name):
     '''
-    TODO: filter out messages who has a velocity of 0 
-
-    opens and parses a MIDI file, retrieves MIDI note numbers, velocities,
-    time signature, tempo (in ticks per beat), and rhythms
+    retrieves a midi file from current working directory
+    with a supplied file_name string.
 
     returns:
         - a dict with each key being a string representing 
@@ -186,18 +189,10 @@ def parse(file_name):
     if file_name[-4:] != '.mid':
         raise ValueError("file_name must end with .mid!")
     file = MidiFile(filename=file_name)         # open the file. NOTE: only searches current working directory           
-    res = {}                                    # store extracted note/rhythm/dynamics info. 
-                                                # each key is a different track with notes/rhythms/dynamics.
+    res = {}                                    # store extracted note/rhythm/dynamics info. analyze each track separately!
     msgs = []                                   # individual MIDI messages.
     for i, track in enumerate(file.tracks):
-        trk = file.tracks[i]
-        for j in range(len(trk)):
-            if isinstance(trk[j], MetaMessage): # skip metamessages
-                continue
-            if hasattr(trk[j], 'velocity'):     # filter out any messages with vel==0. don't need silent notes!
-                if trk[j].velocity==0:
-                    trk.pop(j)
-        res['track ' + str(i)] = trk
-        for msg in track:
+        res["track " + str(i)] = track          # save track to dictionary     
+        for msg in track:                       # save individual messages
             msgs.append(msg)
     return res, msgs

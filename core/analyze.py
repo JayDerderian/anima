@@ -26,13 +26,16 @@ comp object analysis:
 from utils.midi import (
     load, 
     save, 
-    parse
+    parse,
+    tempo2bpm,
+    MIDI_num_to_note_name
 )
 from utils.tools import (
     removeoct, 
     oe, 
     scaletotempo,
-    allsame
+    allsame,
+    tostr
 )
 from core.constants import (
     NOTES, 
@@ -184,7 +187,7 @@ class Analyze:
         return (min, max)
 
     
-    def new_12tone_matrix(self, row, intrvls):
+    def get_12tone_matrix(self, row, intrvls):
         '''
         NOTE: NOT READY
 
@@ -279,48 +282,54 @@ class Analyze:
             i += 1
         return vector
     '''
-    def MIDI_num_to_note_name(self, midi_notes):
-        '''
-        returns the corresponding MIDI note for a 
-        given note name string. apparently MIDI note numbers
-        are the given index of a note in NOTES plus 21
 
-        param: midi_notes (list[int]) or single midi_note (int)
-        returns: notes (list[str])
-        '''
-        if type(midi_notes) == list:
-            notes = []
-            for n in range(midi_notes):
-                notes.append(NOTES.index(midi_notes[n])-21)
-            return notes
-        elif type(midi_notes) == int:
-            return NOTES.index(midi_notes)-21
-        else:
-            raise TypeError("midi_notes must be a list or single int! type is:", type(midi_notes))
-    
-    def parse_MIDI(file_name:str):
+    def parse_MIDI(self, file_name:str):
         '''
         analyzes a given MIDI file with a given file_name (str)
 
-        res = {
-            "Tempo": float from MetaMessage 0 in t_dict[0]
-            "Pitch Classes": {
-                "track 0": [each note from each message],
-                "track 1": [...],
-                etc...
-            }
-            "Velocities":{
-                "track 0": [each vel from each message],
-                "track 1": [...],
-                etc...
-            }
-        }
+        - returns a dictionary with nested dictionaries containing
+          information about pitch class content, tempo, and velocities.
 
+        NOTE: skip any messages with velocity 0 when iterating through and gathering information.
+
+        will need to figure out rhythms too
+
+        ex:
+            res = {
+                "Tempo": float from MetaMessage 0 in t_dict[0]
+                "Pitch Classes": {
+                    "track 0": [each note from each message],
+                    "track 1": [...],
+                    etc...
+                }
+                "Velocities":{
+                    "track 0": [each vel from each message],
+                    "track 1": [...],
+                    etc...
+                }
+            }
         '''
-        res = {}
+        res = {"Tempo": 0, "Pitch Classes": {}, "Velocities": {}}
+        pcints = {}
+        vels = {}
 
-        t_dict, msgs = parse(file_name)
-        keys = t_dict.keys()
+        tracks, msgs = parse(file_name)           # get MidiTrack() and Messages() object lists
+        res["Tempo"] = tempo2bpm(msgs[0].tempo)   # get global tempo
+
+        for i, track in enumerate(tracks):        # get pitch class integers and velocities from each track 
+            pcs = []
+            vel = []
+            for msg in track:
+                if msg.velocity > 0:              # make sure we don't accidentally count rests
+                    note = MIDI_num_to_note_name(msg.note)
+                    pcs.append(self.getpcs(note))
+                    vel.append(msg.velocity)
+            pcints["track " + str(1)] = pcs
+            vels["track " + str(i)] = vel
+            res["Pitch Classes"].extend(pcints)
+            res["Velocities"].extend(vels)
+
+        return res
 
 
 '''
