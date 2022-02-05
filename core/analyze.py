@@ -289,30 +289,11 @@ class Analyze:
         '''
         analyzes a given MIDI file with a given file_name (str)
 
-        - returns a dictionary with nested dictionaries containing
-          information about pitch class content, tempo, and velocities.
+        returns a dictionary with nested dictionaries containing
+        information about pitch class content, tempo, and velocities 
+        for each track
 
         NOTE: still need to figure out rhythms...
-
-        ex:
-            res = {
-                "Tempo": float from MetaMessage 0 in t_dict[0]
-                "Pitch Classes": {
-                    "track 0": [each note from each message],
-                    "track 1": [...],
-                    etc...
-                }
-                "Rhythms"{
-                    "track 0": [...],
-                    "track 1": [...],
-                    etc...
-                }
-                "Velocities":{
-                    "track 0": [each vel from each message],
-                    "track 1": [...],
-                    etc...
-                }
-            }
         '''
         res = {"Tempo": 0, "Pitch Classes": {}, "Velocities": {}}
         pcints = {}
