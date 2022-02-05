@@ -32,7 +32,7 @@ def MIDI_num_to_note_name(num):
     returns the corresponding note name string from a 
     given MIDI note number
     '''
-    return NOTES.index(num-21)
+    return NOTES[num-21]
 
 
 def instrument_to_program(instr):
@@ -63,10 +63,32 @@ def load(file_name):
     and returns a MidiFile() object 
     '''
     if type(file_name) != str:
-        raise TypeError("filename must be a string!")
-    elif file_name[-4:] != ".mid":
-        raise TypeError("string must end with .mid!")
+        raise TypeError('filename must be a string!')
+    elif file_name[-4:] != '.mid':
+        raise TypeError('string must end with .mid!')
     return MidiFile(filename=file_name)
+
+
+def parse(file_name):
+    '''
+    retrieves a midi file from current working directory
+    with a supplied file_name string.
+
+    returns:
+        - a dict with each key being a string representing 
+          the track number, i.e. "track 1"
+        - a list[Messages()] of messages
+    '''
+    if file_name[-4:] != '.mid':
+        raise ValueError('file_name must end with .mid!')
+    file = MidiFile(filename=file_name)         # open the file.         
+    res = {}                                    # store extracted note/rhythm/dynamics info. analyze each track separately!
+    msgs = []                                   # individual MIDI messages.
+    for i, track in enumerate(file.tracks):
+        res["track " + str(i)] = track          # save track to dictionary     
+        for msg in track:                       # save individual messages
+            msgs.append(msg)
+    return res, msgs
 
 
 def save(comp):
@@ -98,6 +120,7 @@ def save(comp):
                 #     end += comp.melodies[i].rhythms[j+1]
                 # except IndexError:
                 #     break
+                end += comp.melodies[j]
             mid.instruments.append(mel)                                             # add melody to instrument list
 
     # add chords
@@ -172,27 +195,5 @@ def save(comp):
                 mid.instruments.append(ci)
 
     # write to MIDI file
-    print("\nsaving", comp.midi_file_name, "...")
+    print('\nsaving', comp.midi_file_name, '...')
     mid.write(f'./midi/{comp.midi_file_name}')
-
-
-def parse(file_name):
-    '''
-    retrieves a midi file from current working directory
-    with a supplied file_name string.
-
-    returns:
-        - a dict with each key being a string representing 
-          the track number, i.e. "track 1"
-        - a list[Messages()] of messages
-    '''
-    if file_name[-4:] != '.mid':
-        raise ValueError("file_name must end with .mid!")
-    file = MidiFile(filename=file_name)         # open the file.         
-    res = {}                                    # store extracted note/rhythm/dynamics info. analyze each track separately!
-    msgs = []                                   # individual MIDI messages.
-    for i, track in enumerate(file.tracks):
-        res["track " + str(i)] = track          # save track to dictionary     
-        for msg in track:                       # save individual messages
-            msgs.append(msg)
-    return res, msgs

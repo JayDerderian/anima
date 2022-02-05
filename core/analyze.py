@@ -94,15 +94,15 @@ class Analyze:
         returns the corresponding pcs list[int]. list is unsorted, that is,
         it's in the original order of the elements in the submitted notes list
         '''
-        pcs = []
         if type(notes)==str:
-            # check if there's an octave int present
-            if notes.isalpha()==False:                
+            # check if there's an octave int present 
+            if notes.isalpha()==False:                            
                 note = removeoct(notes)
-                pcs.append(PITCH_CLASSES.index(note))
+                pcs = PITCH_CLASSES.index(note)
             else:
-                pcs.append(PITCH_CLASSES.index(notes))
+                pcs = PITCH_CLASSES.index(notes)
         elif type(notes)==list:
+            pcs = []
             nl = len(notes)
             for n in range(nl):
                 if notes[n].isalpha()==False:
@@ -110,6 +110,8 @@ class Analyze:
                     pcs.append(PITCH_CLASSES.index(note))
                 else:
                     pcs.append(PITCH_CLASSES.index(notes[n]))
+        else:
+            raise TypeError("notes must be a list[int] or single int! type is", type(notes))
         return pcs
 
 
@@ -319,18 +321,21 @@ class Analyze:
         tracks, msgs = parse(file_name)           # get MidiTrack() and Messages() object lists
         res["Tempo"] = tempo2bpm(msgs[0].tempo)   # get global tempo
 
-        for i, track in enumerate(tracks):        # get pitch class integers and velocities from each track 
+        for t in range(len(tracks)):              # get pitch class integers and velocities from each track 
             pcs = []
             vel = []
-            for msg in track:
-                if msg.velocity > 0:              # make sure we don't accidentally count rests
-                    note = MIDI_num_to_note_name(msg.note)
+            track = tracks["track " + str(t)]
+            for i in range(len(track)):
+                if hasattr(track[i], "velocity"):
+                    if track[i].velocity == 0:    # skip any silent notes(rests)
+                        continue
+                    note = MIDI_num_to_note_name(track[i].note)
                     pcs.append(self.getpcs(note))
-                    vel.append(msg.velocity)
-            pcints["track " + str(1)] = pcs
-            vels["track " + str(i)] = vel
-            res["Pitch Classes"] = pcints
-            res["Velocities"] = vels
+                    vel.append(track[i].velocity)
+            pcints["track " + str(t)] = pcs
+            vels["track " + str(t)] = vel
+        res["Pitch Classes"].update(pcints)
+        res["Velocities"].update(vels)
 
         return res
 

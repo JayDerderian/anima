@@ -12,7 +12,10 @@ from utils.mapping import map_data
 from utils.txtfile import save_info
 from utils.midi import save
 from utils.tools import(
-    tostr, oe, scaletotempo, scale_limit
+    tostr, 
+    oe, 
+    scaletotempo, 
+    scale_limit
 )
 
 from core.constants import(
@@ -63,20 +66,15 @@ class Generate:
         '''
         Generate a composition title from 1-4 random words.
 
-        Random word generation technique from:
-        https://stackoverflow.com/questions/18834636/random-word-generator-python
+            Random word generation technique from:
+            https://stackoverflow.com/questions/18834636/random-word-generator-python
         '''
         try:
-            # get word list
-            url = "https://www.mit.edu/~ecprice/wordlist.10000"
-            # response = requests.get(url)
+            url = "https://www.mit.edu/~ecprice/wordlist.10000" # get word list
             response = urllib.request.urlopen(url)
-            # decode data to text string
-            text = response.read().decode()
-            # separate words into list
-            words = text.splitlines()
-            # pick 1 to 4 random words
-            t = 0
+            text = response.read().decode()                     # decode data to text string         
+            words = text.splitlines()                           # separate words into list
+            t = 0                                               # pick 1 to 4 random words
             total = randint(1, 3)
             name = choice(words)
             while(t < total):
@@ -210,8 +208,8 @@ class Generate:
             original source scale (list[str])
         '''           
 
-        meta_data = []                    # Generate seed scale & save forte numbers and/or pitch class sets
-        octave = randint(2, 3)     
+        meta_data = []                    # Save forte numbers and/or pitch class sets
+        octave = randint(2, 3)            # initial starting octave 
         if root==None:              
             root, info = self.pick_root(t=True, o=None)
             meta_data.append(info)
@@ -798,11 +796,12 @@ class Generate:
     # Display newMelody() object data
     def display_melody(self, m):
         '''
-        Displays newMelody() object data
+        Displays melody() object data
         '''
         print("\n-----------MELODY Data:------------")
         print("\nTempo:", m.tempo, "bpm")
         print("\nInstrument:", m.instrument)
+        print("\nPitch Classes:", m.pcs)
         print("\nSource data:", m.source_data)
         print("\nInfo:", m.info)
         print("\nTotal Notes:", len(m.notes))
@@ -821,11 +820,12 @@ class Generate:
         (dt == 1), floats(2), single char strings/letters(3), 
         or a hex number, represented as a single string(4)
 
-        t = total notes, only works when data and dt == None! 
+        if data is supplied, then adding a value for t will be redundant
+        since this just goes off the total elements in the data list.
 
         If no data is supplied, then it will generate a melody anyways. 
 
-        Returns a melody() object if successfull, -1 on failure.
+        Returns a melody() object
 
         NOTE: Instrument is *NOT* picked! Needs to be supplied externally.
         '''
@@ -841,17 +841,11 @@ class Generate:
         # Pick notes from scratch  
         if data==None:
             if t==None:
-                if r==None:
-                    m.notes, m.info, m.source_scale = self.new_notes()
-                else:
-                    m.notes, m.info, m.source_scale = self.new_notes(r=r)
+                m.notes, m.info, m.source_scale = self.new_notes()
             else:
-                if r==None:
-                    m.notes, m.info, m.source_scale = self.new_notes(t=t)
-                else:
-                    m.notes, m.info, m.source_scale = self.new_notes(t=t, r=r)
-        # Or use supplied data ( supplied total(t),
-        # just does its thing)
+                m.notes, m.info, m.source_scale = self.new_notes(t=t)
+        # Or use supplied data (supplied total (t) isn't applicable with
+        # a data set of n size, since n will just become the total we work with.
         else:
             m.notes, m.info, m.source_scale = self.new_notes(data=data)
         # remove any notes not within a supplied range
@@ -860,8 +854,9 @@ class Generate:
             for note in range(ml):
                 if m.notes[note] not in r:
                     m.notes.remove[m.notes[note]]
-        m.rhythms = self.new_rhythms(len(m.notes), m.tempo) # Pick rhythms
-        m.dynamics = self.new_dynamics(len(m.notes))        # Pick dynamics
+        # add rhythms and dynamics
+        m.rhythms = self.new_rhythms(len(m.notes), m.tempo) 
+        m.dynamics = self.new_dynamics(len(m.notes))        
         return m
 
 
