@@ -62,7 +62,9 @@ def tempo2bpm(tempo):
 def load(file_name):
     '''
     loads a MIDI file using a supplied file name (i.e "song.mid") 
-    and returns a MidiFile() object 
+    
+    returns:
+        - MidiFile() object 
     '''
     if type(file_name) != str:
         raise TypeError('filename must be a string!')
@@ -82,7 +84,6 @@ def parse(file_name):
           of message() objects.
         - a list[Messages()] of individual messages, separated
           from their original tracks.
-        - MidiFile() instance of the given file
     '''
     if file_name[-4:] != '.mid':
         raise ValueError('file_name must end with .mid!')
