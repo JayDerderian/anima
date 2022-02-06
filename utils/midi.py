@@ -137,7 +137,7 @@ def save(comp):
             strt = 0
             end = chrds[key].rhythm
             instrument = instrument_to_program(chrds[i].instrument)
-            chord = Instrument(program=instrument)
+            chord = Instrument(program = instrument)
             for j in range(len(chrds)):                                             # iterate through current chord list
                 for k in range(len(chrds[j].notes)):                                # add this list of chord objects notes
                     chord.notes.append(Note(velocity = chrds[j].dynamic, 

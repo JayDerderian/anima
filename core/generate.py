@@ -105,12 +105,12 @@ class Generate:
         '''
         comp = Composition()
         comp.title = self.new_title()
-        if composer==None:
+        if composer == None:
             comp.composer = self.new_composer()
         else:
             comp.composer = composer
         comp.date = date.now().strftime("%d-%b-%y %H:%M:%S")
-        if tempo==None:
+        if tempo == None:
             comp.tempo = self.new_tempo()
         elif tempo > 40.0 or tempo < 208.0:
             comp.tempo = tempo
@@ -173,13 +173,13 @@ class Generate:
         NOTE: use randint(0, 11) and randint(2, 5) for num/octave args to get a 
               randomly chosen note, or leave arg fields empty 
         '''
-        if i==None:
+        if i == None:
             note = choice(PITCH_CLASSES)
-        elif type(i)==int and i > -1 and i < len(PITCH_CLASSES):
+        elif type(i) == int and i > -1 and i < len(PITCH_CLASSES):
             note = PITCH_CLASSES[i]
         else:
             raise TypeError("wrong type or value for i! i type is:", type(i))
-        if octave==None:
+        if octave == None:
             octave = randint(2, 5)
         note = f"{note}{octave}"
         return note    
@@ -210,10 +210,10 @@ class Generate:
 
         meta_data = []                    # Save forte numbers and/or pitch class sets
         octave = randint(2, 3)            # initial starting octave 
-        if root==None:              
+        if root == None:              
             root, info = self.pick_root(t=True, o=None)
             meta_data.append(info)
-        if data==None:                    # Pick total: 10 - 50 if we're generating random notes
+        if data == None:                    # Pick total: 10 - 50 if we're generating random notes
             if t==None:
                 gentotal = randint(9, 49)
             else:
@@ -237,8 +237,8 @@ class Generate:
         # Randomly pick notes from the generated source scale to 
         # create an arhythmic melody. 
         notes = []
-        if data==None:
-            if t==None:                                     # Total notes in melody will be between 3 and 
+        if data == None:
+            if t == None:                                     # Total notes in melody will be between 3 and 
                 pick_total = randint(3, len(scale))         # however many notes are in the source scale
             else:                                           # otherwise, pick between 50-100 % of given total t.
                 pick_total = randint(math.floor(t*0.5), t)   
@@ -266,7 +266,7 @@ class Generate:
         '''
         # use scale? (1), pcs prime form (2), or invented scale(3)?
         choice = randint(1,3)
-        if choice==1:
+        if choice == 1:
             if t:
                 mode, pcs, scale = self.pick_scale(t=True)
                 info = f"{scale[0]} {mode}"
@@ -532,7 +532,7 @@ class Generate:
               be hard-coded.
         '''
         rhythms = []
-        if total==None:
+        if total == None:
             total = randint(3, 30)
         while len(rhythms) < total:
             rhythm = choice(RHYTHMS)           # Pick rhythm and add to list
@@ -547,7 +547,7 @@ class Generate:
                         break
             else:
                 rhythms.append(rhythm)
-        if tempo!=None and tempo!=60.0:        # scale to given tempo, if provided and necessary.
+        if tempo != None and tempo != 60.0:    # scale to given tempo, if provided and necessary.
             rhythms = scaletotempo(tempo, rhythms)
         return rhythms
 
@@ -676,11 +676,11 @@ class Generate:
         '''
         a = Analyze()
         newchord = Chord() 
-        if tempo==None:
+        if tempo == None:
             newchord.tempo = 60.0
         else:
             newchord.tempo = tempo
-        if scale==None:
+        if scale == None:
             # pick an existing scale/set or make a new one?
             if randint(1, 2) == 1: 
                 scale, newchord.info = self.pick_root(o=randint(2,5))
@@ -715,11 +715,11 @@ class Generate:
               tones to give progressions more variance and color. 
         '''
         chords = []
-        if total==None:
+        if total == None:
             total = randint(5, 11)
-        if tempo==None:
+        if tempo == None:
             tempo = self.new_tempo()
-        if scale==None:
+        if scale == None:
             scale = self.new_notes()[0]
         while len(chords) < total:
             newchord = self.new_chord(tempo, scale)
@@ -832,13 +832,13 @@ class Generate:
             data, m = map_data(m, data, dt)  # Process any incoming data
         else:
             m.source_data ='None Inputted'
-        if tempo==None:
+        if tempo == None:
             m.tempo = self.new_tempo()
         else:
             m.tempo = tempo
         # Pick notes from scratch  
-        if data==None:
-            if t==None:
+        if data == None:
+            if t == None:
                 m.notes, m.info, m.source_scale = self.new_notes()
             else:
                 m.notes, m.info, m.source_scale = self.new_notes(t=t)
@@ -851,7 +851,7 @@ class Generate:
             ml = len(m.notes)
             for note in range(ml):
                 if m.notes[note] not in r:
-                    m.notes.remove[m.notes[note]]
+                    m.notes.remove(m.notes[note])
         # add rhythms and dynamics
         m.rhythms = self.new_rhythms(len(m.notes), m.tempo) 
         m.dynamics = self.new_dynamics(len(m.notes))        
@@ -905,17 +905,9 @@ class Generate:
         comp.instruments.append(instr)        # save instrument to comp instr list
         comp.chords[0] = ch                   # Save keyboard part part to chord dictionary
 
-        title_full = f"{comp.totle} for {m.instrument} and various keyboards"
+        comp.title = f"{comp.title} for {m.instrument} and various keyboards"
 
-        if save(comp)!=-1 and save_info(name=comp.title, 
-            fileName=comp.txt_file_name, newMusic=comp)==0:
-            print("\ntitle:", title_full)
-            print("composer:", comp.composer)
-            print("date:", comp.date)
-            print("duration:", comp.duration())
-            print("midi file:", comp.midi_file_name)
-            print("text file:", comp.txt_file_name)
-            return comp
-        else:
-            print("\nnoooooooooooooooooooooo!!!!")
-            return -1
+        save(comp)                            # write out
+        comp.display()                        # display results
+
+        return comp
