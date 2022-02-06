@@ -645,7 +645,7 @@ class Generate:
 
     # Display a list of chords
     def display_chords(self, chords):
-        print("\n----------------HARMONY DATA:-------------------")
+        print("\n----------------HARMONY INFO:-------------------")
         cl = len(chords)
         for i in range(cl):
             print('\n', i + 1, ': ', 'Notes:', chords[i].notes)
@@ -720,11 +720,9 @@ class Generate:
         if tempo==None:
             tempo = self.new_tempo()
         if scale==None:
-            scale, data, source = self.new_notes()
+            scale = self.new_notes()[0]
         while len(chords) < total:
             newchord = self.new_chord(tempo, scale)
-            newchord.source_data = data
-            newchord.source_notes = source
             chords.append(newchord)
         return chords
 

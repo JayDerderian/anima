@@ -30,6 +30,7 @@ from utils.midi import (
     tempo2bpm,
     MIDI_num_to_note_name
 )
+
 from utils.tools import (
     removeoct, 
     oe, 
@@ -37,6 +38,7 @@ from utils.tools import (
     allsame,
     tostr
 )
+
 from core.constants import (
     NOTES, 
     PITCH_CLASSES, 
@@ -55,6 +57,10 @@ class Analyze:
     '''
     def __init__(self) -> None:
         pass
+
+
+    #---------------------------------Pitch class retrieval-------------------------------#
+
 
     def getpcs_from_comp(self, comp):
         '''
@@ -115,6 +121,52 @@ class Analyze:
         return pcs
 
 
+    def getindex(self, notes):
+            '''
+            gets the index or list of indicies of a given note or 
+            list of notes in NOTES. 
+            
+            note name str must have an assigned octave between 0-8. 
+            
+            the returned list[int] should be used by transpose() with 
+            octeq set to False. those resulting values should be mapped 
+            back against NOTES to get octave-accurate transposed notes
+            '''
+            if type(notes)==str:
+                return NOTES.index(notes)
+            elif type(notes)==list:
+                indicies = []
+                l = len(notes)
+                for n in range(l):
+                    indicies.append(NOTES.index(notes[n]))
+                return indicies
+            else:
+                raise TypeError("notes must be a single str or list[str]! type is:", type(notes))
+
+
+    def find_normal_order(self, notes):
+        '''
+        NOTE: Not ready! maybe match against SETS to see if it's actually 
+              in normal order
+
+        takes a list of note name strings, converts them to pitch class integers,
+        and finds an ordering "most packed to the left"
+
+        returns pcs (list[int]) in normal order.
+        '''
+        pcs = self.getpcs(notes) # get pcs from a given set
+        pcs.sort()               # sort in ascending order              
+        # rotate until smallest interval in the set is 
+        # at the left, and range of set is smallest possible
+        while pcs[1] - pcs[0] >= 2:
+            pc = pcs.pop(0)
+            pcs.append(pc)
+        return pcs
+
+
+    #----------------------------------Intervals------------------------------------#
+
+
     def getintervals(self, notes):
         '''
         generates a list of intervals from a given melody.
@@ -129,30 +181,18 @@ class Analyze:
         for n in range(1, ind_len):
             intrvls.append(ind[n]-ind[n-1])
         return intrvls
-
-
-    def getindex(self, notes):
-        '''
-        gets the index or list of indicies of a given note or 
-        list of notes in NOTES. 
-        
-        note name str must have an assigned octave between 0-8. 
-        
-        the returned list[int] should be used by transpose() with 
-        octeq set to False. those resulting values should be mapped 
-        back against NOTES to get octave-accurate transposed notes
-        '''
-        if type(notes)==str:
-            return NOTES.index(notes)
-        elif type(notes)==list:
-            indicies = []
-            l = len(notes)
-            for n in range(l):
-                indicies.append(NOTES.index(notes[n]))
-            return indicies
-        else:
-            raise TypeError("notes must be a single str or list[str]! type is:", type(notes))
     
+    '''
+    Note:
+        1. Input scale (array of integers of n length)
+        2. Loop: subtract a[1] from a[n], a[2] - a[n],
+            Store each result as a separate element in an interval list/array
+        3. Count each value in the interval array; how many 1's, 2's, 3's, etc thru 6.  
+    '''
+    '''
+    def get_interval_vector(self, notes):
+
+    '''
 
     def checkrange(self, notes:list[str], ran:list[str]):
         '''
@@ -188,7 +228,10 @@ class Analyze:
                 max = n
         return (min, max)
 
-    
+
+    #---------------------------------------12 tone-------------------------------------#
+
+
     def get_12tone_matrix(self, row, intrvls):
         '''
         NOTE: NOT READY
@@ -251,39 +294,10 @@ class Analyze:
             for y in x:
                 print(y, end = " ")
             print()
-        
-    # Retrieves the interval vector for a given pitch class set
-    '''
-    Note:
-        1. Input scale (array of integers of n length)
-        2. Loop: subtract a[1] from a[n], a[2] - a[n],
-            Store each result as a separate element in an interval list/array
-        3. Count each value in the interval array; how many 1's, 2's, 3's, etc thru 6.  
-    '''
-    '''
-    def get_vector(self, scale):
-        print("\nRetrieving interval vector...")
-        if(not scale):
-            print("...No scale inputted!")
-        i = 0
-        vector = [6]
-        intervals = self.countIntervals(scale)
-        while(i < len(intervals)):
-            if(intervals[i] == 1):
-                vector[0] += 1 
-            elif(intervals[i] == 2):
-                vector[1] += 1
-            elif(intervals[i] == 3): 
-                vector[2] += 1
-            elif(intervals[i] == 4):
-                vector[3] += 1
-            elif(intervals[i] == 5):
-                vector[4] += 1
-            elif(intervals[i] == 6):
-                vector[5] += 1
-            i += 1
-        return vector
-    '''
+
+
+    #-----------------------------------MIDI analysis--------------------------------------#    
+
 
     def parse_MIDI(self, file_name:str):
         '''
@@ -295,20 +309,20 @@ class Analyze:
 
         NOTE: still need to figure out rhythms...
         '''
-        res = {"Tempo": 0, "Pitch Classes": {}, "Velocities": {}}
-        pcints = {}
         vels = {}
+        pcints = {}
+        res = {"Tempo": 0, "Pitch Classes": {}, "Rhythms": {}, "Dynamics": {}}
 
-        tracks, msgs = parse(file_name)           # get MidiTrack() and Messages() object lists
+        tracks, msgs = parse(file_name)           # get MidiTrack() dict and Messages() list
         res["Tempo"] = tempo2bpm(msgs[0].tempo)   # get global tempo
 
         for t in range(len(tracks)):              # get pitch class integers and velocities from each track 
             pcs = []
             vel = []
-            track = tracks["track " + str(t)]
+            track = tracks["track " + str(t)]     # get current track
             for i in range(len(track)):
                 if hasattr(track[i], "velocity"):
-                    if track[i].velocity == 0:    # skip any silent notes(rests)
+                    if track[i].velocity == 0:    # skip any silent notes (rests)
                         continue
                     note = MIDI_num_to_note_name(track[i].note)
                     pcs.append(self.getpcs(note))
@@ -316,7 +330,7 @@ class Analyze:
             pcints["track " + str(t)] = pcs
             vels["track " + str(t)] = vel
         res["Pitch Classes"].update(pcints)
-        res["Velocities"].update(vels)
+        res["Dynamics"].update(vels)
 
         return res
 
