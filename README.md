@@ -5,8 +5,6 @@
 New compositions are exported as a MIDI file, sheet music in a PDF, anda .txt file containing data about how that piece was composed and the raw
 elements used during creation (for example, a pitch-class set that was selected as a 'seed' to build material off of). 
 
-I wrote an essay on the underlying methods and techniques behind the generative methods, which can be found here[instert hyperlink here...]
-
 ## Installation
 
 This package requires `python` (3.6+) in order to run and install all dependencies.
