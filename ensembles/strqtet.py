@@ -5,13 +5,6 @@ the piece opens with a series of chords, followed by a section of free counterpo
 at some point each performer plays their part of the opening chords, asynchronously of each other,
 then play a repeated series of notes whos rhythms get faster and faster untill all parts are
 playing 16th notes, then the piece ends.
-
-NOTE: generate a "rhythm" that is the difference between a current
-part and the longest part in the piece. append this difference to the
-*end* of a rhythm list, then attempt to add original choral at end of an 
-asynchronous section that will have each part in rhythmic unison again. 
-
-THIS WILL MAKE RHTYHMS LONGER THAN THE OTHER TWO LISTS. 
 '''
     
 from tqdm import trange

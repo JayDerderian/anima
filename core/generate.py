@@ -1,8 +1,42 @@
 '''
-This module handles all generative methods. 
+This module handles all generative methods.
+
+TODO:
+
+    basic scale or pitch class set(s) (can also accept arrays, i.e. groups of notes, which can be used as chords)
+
+    order the notes will be played (allows free selection of any order of those notes, sequential or otherwise)
+
+    basic rate at which this order is assessed, again, a list of values which define a 
+    rhythm which itself can be further manipulated
+
+    a separate rhythmically defined period of rests
+
+    variable transposition, which can be defined rhythmically
+
+    periodic permutation of things like note order (above), rest order, order of other functions in the program
+
+    rhythmically defined retrograde/inversion functions of note order and other functions in the program
+
+    rhythmic scaling of certain rhythmic functions (i.e. changing the rhythmic values in another function 
+    by a certain factor, which can be constant or variably defined rhythmically)
+
+    variable states of expansion (i.e. moving notes further apart from one another, pitch-wise)
+
+    automatically generated chords based on defined pitch scale
+
+    rhythmically defined variable selection of tension for chords in a progression
+
+    ability to transpose a part to a new mode of a defined pitch scale
+
+    variably defined root cycles for chords
+
+    rhythmically controlled assignment of whatever note is being played to any number of instruments 
+    (meaning if you want note 1 to be played by instrument 1 and note 2 and 3 to be played by 
+    instrument 2 and so forth in that pattern)
+
 '''
 
-import math
 import urllib.request
 from names import get_full_name
 from datetime import datetime as date
@@ -51,10 +85,7 @@ class Generate:
     # Constructor
     def __init__(self):
         self.alive = True
-        '''
-        NOTE: Develop a way to store session info here? Need a way to justify all these
-              methods as a class. 
-        '''
+
 
     #------------------------------------------------------------------------------------------#
     #-----------------------------------TITLE AND COMPOSER-------------------------------------#
@@ -91,7 +122,7 @@ class Generate:
         return get_full_name()
 
     # Intialize a new composition object/form
-    def init_comp(self, tempo=None, composer=None):
+    def init_comp(self, tempo=None, title=None, composer=None):
         '''
         Initializes a Composition() object by creating
         the title, composer name, tempo, and file names:
@@ -104,20 +135,21 @@ class Generate:
         programs directory
         '''
         comp = Composition()
-        comp.title = self.new_title()
-        if composer == None:
-            comp.composer = self.new_composer()
-        else:
-            comp.composer = composer
-        comp.date = date.now().strftime("%d-%b-%y %H:%M:%S")
+        
         if tempo == None:
             comp.tempo = self.new_tempo()
         elif tempo > 40.0 or tempo < 208.0:
             comp.tempo = tempo
         else:
             comp.tempo = 60.0
-        comp.midi_file_name = comp.title + ".mid"
-        comp.txt_file_name = comp.title + ".txt"
+        if title == None:
+            comp.title = self.new_title()
+        if composer == None:
+            comp.composer = self.new_composer()
+
+        comp.date = date.now().strftime("%d-%b-%y %H:%M:%S")
+        comp.midi_file_name = f'{comp.title}.mid'
+        comp.txt_file_name = f'{comp.title}.txt'
         return comp
 
 
@@ -186,7 +218,7 @@ class Generate:
 
 
     # Generate a series of notes for a melody
-    def new_notes(self, data=None, root=None, t=None):
+    def new_notes(self, data=None, root=None, tot=None):
         '''
         Generates a set of notes to be used as a melody. Can also
         use a specified root scale, and a specified note total.
@@ -213,18 +245,18 @@ class Generate:
         if root == None:              
             root, info = self.pick_root(t=True, o=None)
             meta_data.append(info)
-        if data == None:                    # Pick total: 10 - 50 if we're generating random notes
-            if t==None:
+        if data == None:                  # Pick total: 10 - 50 if we're generating random notes
+            if tot==None:
                 gentotal = randint(9, 49)
             else:
-                gentotal = t
+                gentotal = tot
         else:                             # Or the largest value of the supplied data set
             gentotal = max(data)
         '''NOTE: this only uses a supplied root scale once!'''
         n = 0
         scale = []
         for i in range(gentotal+1):       # Generate source scale 
-            note = f"{root[n]}{octave}" 
+            note = f'{root[n]}{octave}' 
             scale.append(note)
             n += 1   
             if n == len(root):                     
@@ -234,14 +266,13 @@ class Generate:
                     root, info = self.pick_root(t=True, o=None) 
                     meta_data.append(info)
                 n = 0
-        # Randomly pick notes from the generated source scale to 
-        # create an arhythmic melody. 
+        # Randomly pick notes from the generated source scale to create an arhythmic melody. 
         notes = []
         if data == None:
-            if t == None:                                     # Total notes in melody will be between 3 and 
-                pick_total = randint(3, len(scale))         # however many notes are in the source scale
-            else:                                           # otherwise, pick between 50-100 % of given total t.
-                pick_total = randint(math.floor(t*0.5), t)   
+            if tot == None:                                # Total notes in melody will be between 3 and 
+                pick_total = randint(3, len(scale))        # however many notes are in the source scale
+            else:
+                pick_total = tot
             notes = [choice(scale) for n in range(pick_total)]
         # ...Or pick notes according to integers in data array
         else:       
@@ -304,10 +335,10 @@ class Generate:
 
         Supply a value for o if a specified octave is needed.
         '''
-        mod = Modify()
         scale = choice(SCALE_KEYS)
         pcs = SCALES[scale]
         if t:
+            mod = Modify()
             pcs_t = mod.transpose(pcs, randint(1, 11), octeq=False)
             notes = tostr(pcs_t, octave=o)
         else:
@@ -316,7 +347,6 @@ class Generate:
 
 
     # Picks a prime form pitch class set and transposes it
-    # n semi-tones
     def pick_set(self, t=True, o=None):
         '''
         Selects prime form and transposes a random distance (or not)
@@ -328,7 +358,6 @@ class Generate:
 
         Supply a value for o if a specified octave is needed.
         '''
-        mod = Modify()
         fn = choice(FORTE_NUMBERS)
         '''NOTE: for some reason 7-z38A8-1 keeps getting selected
                  even though it's not in FORTE_NUMBERS, so this brute-force
@@ -338,7 +367,8 @@ class Generate:
             fn = choice(FORTE_NUMBERS)
         pcs = SETS[fn]
         if t:
-            pcs_t = mod.transpose(pcs=pcs, t=randint(1, 11), octeq=False)
+            mod = Modify()
+            pcs_t = mod.transpose(pcs, randint(1, 11), octeq=False)
             scale = tostr(pcs_t, octave=o)
         else:
             scale = tostr(pcs, octave=o)
@@ -359,7 +389,6 @@ class Generate:
         '''
         pcs = []
         total = randint(5,8)
-        mod = Modify()
         '''Current method. Outputs are quite interesting, though I think this
            is the least efficient way to go about this...'''
         while len(pcs) < total:
@@ -369,7 +398,8 @@ class Generate:
         # pcs = [randint(0,11) for x in range(total) if x not in pcs]
         pcs.sort() 
         if t:
-            pcs = mod.transpose(pcs, t=randint(1,11), octeq=False)
+            mod = Modify()
+            pcs = mod.transpose(pcs, randint(1,11), octeq=False)
         scale = tostr(pcs, o)
         return scale, pcs   
 

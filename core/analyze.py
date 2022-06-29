@@ -3,24 +3,24 @@ this module handles the analysis of composition() objects and
 MIDI files. 
 
 TODO:
+    convert MIDI file data to composition() object, as best as possible.
+    mainly need to retrieve MIDI note numbers, velocities, and start/end times
+    possibly parse other parts of MIDI file as I learn more about them...
 
-convert MIDI file data to composition() object, as best as possible.
-mainly need to retrieve MIDI note numbers, velocities, and start/end times
-possibly parse other parts of MIDI file as I learn more about them...
+    comp object analysis:
 
-comp object analysis:
+        - list source data
+        
+        - get all PC's from each part
+        - count all PCS
+        - find most common pitch classes
+        - match PCS against sets, scales, intervals
 
-    - list source data
-    
-    - get all PC's from each part
-    - count all PCS
-    - find most common pitch classes
-    - match PCS against sets, scales, intervals
+        - convert given rhythms to base rhythms (RHYTHMS),
+        and create a rhythm analysis.
+        - count most common base rhythms (rhythm classes?)
 
-    - convert given rhythms to base rhythms (RHYTHMS),
-      and create a rhythm analysis.
-    - count most common base rhythms (rhythm classes?)
-
+TODO: generate spectrogram of a given audio file??? could be a fun exercise!
 '''
 
 from utils.midi import (
@@ -70,7 +70,7 @@ class Analyze:
         return: list[int]
 
         NOTE: this doesn't account if there's more than one of the same instrument!
-            the dictionary key is the current melody object instrument, for now...
+              the dictionary key is the current melody object instrument, for now...
         '''
         pcs = {}
         if len(comp.melodies) > 0:
@@ -78,7 +78,7 @@ class Analyze:
             for m in range(ml):
                 pcs[comp.melodies[m].instrument] = self.getpcs(comp.melodies[m].notes)
             return pcs
-        elif len(comp.chords) > 0:
+        if len(comp.chords) > 0:
             cl = len(comp.chords)
             for c in range(cl):
                 chords = comp.chords[c]
@@ -86,7 +86,7 @@ class Analyze:
                 for chrd in range(chrdlen):
                     pcs[chords[chrd].instrument] =  self.getpcs(chords[chrd].notes)
             return pcs
-        elif len(comp.melodichords) > 0:
+        if len(comp.melodichords) > 0:
             ml_len = len(comp.melodichords)
             for m in range(ml_len):
                 pcs[comp.melodichords[m].instrument] = self.getpcs(comp.melodichords[m].notes)
@@ -120,28 +120,49 @@ class Analyze:
             raise TypeError("notes must be a list[int] or single int! type is", type(notes))
         return pcs
 
+    # TODO: TEST THIS
+    def count_pcs(self, tracks):
+        '''
+        takes a list tracks (ideally parsed with midi.parse()), then
+        counts the number of instances of each pitch class in each track
+        
+        returns:
+            dict(key = pitch class integer, value = total appearances)
+        '''
+        pc_totals = {0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 
+                     6: 0, 7: 0, 8: 0, 9: 0, 10: 0, 11: 0}
+        for track in tracks:
+            # convert all MIDI note numbers to 
+            # note name strings, then pitch classes (obvs not ideal)
+            notes = [] 
+            for n in range(len(tracks.notes)): 
+                notes.append(self.getpcs(MIDI_num_to_note_name(track.notes[n])))
+            for key in pc_totals:
+                pc_totals[key] += notes.count(key)
+        return pc_totals
+
 
     def getindex(self, notes):
-            '''
-            gets the index or list of indicies of a given note or 
-            list of notes in NOTES. 
-            
-            note name str must have an assigned octave between 0-8. 
-            
-            the returned list[int] should be used by transpose() with 
-            octeq set to False. those resulting values should be mapped 
-            back against NOTES to get octave-accurate transposed notes
-            '''
-            if type(notes)==str:
-                return NOTES.index(notes)
-            elif type(notes)==list:
-                indicies = []
-                l = len(notes)
-                for n in range(l):
-                    indicies.append(NOTES.index(notes[n]))
-                return indicies
-            else:
-                raise TypeError("notes must be a single str or list[str]! type is:", type(notes))
+        '''
+        gets the index or list of indicies of a given note or 
+        list of notes in NOTES. 
+        
+        note name str must have an assigned octave between 0-8. 
+        
+        the returned list[int] should be used by transpose() with 
+        octeq set to False. those resulting values should be mapped 
+        back against NOTES to get octave-accurate transposed notes
+        '''
+        if type(notes)==str:
+            return NOTES.index(notes)
+        elif type(notes)==list:
+            indicies = []
+            l = len(notes)
+            for n in range(l):
+                indicies.append(NOTES.index(notes[n]))
+            return indicies
+        else:
+            raise TypeError("notes must be a single str or list[str]! type is:", type(notes))
 
 
     def find_normal_order(self, notes):
@@ -163,6 +184,36 @@ class Analyze:
             pcs.append(pc)
         return pcs
 
+    # TODO:
+    def find_set(self, notes):
+        '''
+        Given a set of notes, find an associated Forte set
+
+            Reduce all notes (removing duplicates in any octave)
+            in a given melody to a an unordered set.
+                
+                Iterate through list, keeping track of each note
+                it comes across. 
+                
+                If we haven't seen this before, add to 
+                list, otherwise skip
+            
+            for note in notes:
+                # remove the octave and see if we've seen this note before
+                if note in found_notes:
+                    continue
+                else:
+                    found_notes.append(note)
+
+            Convert to pitch class integers, then sort in ascending order
+
+            Convert to normal order, then compare against SETS
+
+            NOTE: will need to expand SETS to include all sets in the Forte collection,
+                  not just 5-9 note sets
+        '''
+        ...
+
 
     #----------------------------------Intervals------------------------------------#
 
@@ -182,17 +233,16 @@ class Analyze:
             intrvls.append(ind[n]-ind[n-1])
         return intrvls
     
-    '''
-    Note:
-        1. Input scale (array of integers of n length)
-        2. Loop: subtract a[1] from a[n], a[2] - a[n],
-            Store each result as a separate element in an interval list/array
-        3. Count each value in the interval array; how many 1's, 2's, 3's, etc thru 6.  
-    '''
-    '''
+    # TODO: 
     def get_interval_vector(self, notes):
+        '''
+        gets the inverval vector of a given set of
+        notes. 
 
-    '''
+        returns a dict[interval : frequency]
+        '''
+        ...
+
 
     def checkrange(self, notes:list[str], ran:list[str]):
         '''
@@ -231,7 +281,7 @@ class Analyze:
 
     #---------------------------------------12 tone-------------------------------------#
 
-
+    # TODO:
     def get_12tone_matrix(self, row, intrvls):
         '''
         NOTE: NOT READY
@@ -285,7 +335,6 @@ class Analyze:
             m.insert(i, r)
         return m
 
-
     def print_matrix(self, matrix):
         '''
         Display a twelve-tone matrix (2D list)
@@ -307,7 +356,9 @@ class Analyze:
         information about pitch class content, tempo, and velocities 
         for each track
 
-        NOTE: still need to figure out rhythms...
+        TODO: still need to figure out rhythms...
+              extract start/end times for each note, subtract end
+              from start, then store?
         '''
         vels = {}
         pcints = {}
@@ -319,16 +370,16 @@ class Analyze:
         for t in range(len(tracks)):              # get pitch class integers and velocities from each track 
             pcs = []
             vel = []
-            track = tracks["track " + str(t)]     # get current track
+            track = tracks[f"track {str(t)}"]     # get current track
             for i in range(len(track)):
                 if hasattr(track[i], "velocity"):
                     if track[i].velocity == 0:    # skip any silent notes (rests)
                         continue
-                    note = MIDI_num_to_note_name(track[i].note)
-                    pcs.append(self.getpcs(note))
+                    note = MIDI_num_to_note_name(track[i].note)  # translate to note name...
+                    pcs.append(self.getpcs(note))                # ...then to PC integer because reasons
                     vel.append(track[i].velocity)
-            pcints["track " + str(t)] = pcs
-            vels["track " + str(t)] = vel
+            pcints[f"track {str(t)}"] = pcs
+            vels[f"track {str(t)}"] = vel
         res["Pitch Classes"].update(pcints)
         res["Dynamics"].update(vels)
 
@@ -340,7 +391,6 @@ some additional methods for handling meter. these are mainly used
 sporadically and didn't really warrent being part of the larger analyze method class,
 at least for now...
 '''
-
 def is_simple(meter):
     '''returns True if meter is a simple meter'''
     return is_valid(meter)

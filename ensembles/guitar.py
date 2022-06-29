@@ -127,7 +127,7 @@ def solo_guitar_simple(tempo=None):
     notes = a.checkrange(notes_, RANGE["Guitar"])                              # make sure final notes are within the guitar's range
     m.notes = choices(population=notes, k=randint(3,total))
     m.rhythms = scaletotempo(tempo=comp.tempo,                                 # pick rhythms & dynamics  
-                            rhythms=choices(population=rhy, k=len(m.notes)))
+                             rhythms=choices(population=rhy, k=len(m.notes)))
     m.dynamics = [DYNAMICS[randint(9,17)] for d in range(len(m.notes))] 
     m.pcs = a.getpcs(m.notes)                                                  # get pcs of new melody              
     comp.melodies.append(m)                                                    # save and write out
@@ -139,39 +139,71 @@ def solo_guitar_simple(tempo=None):
     return comp
 
 
-def solo_guitar_8ths(tempo=None):
+# Today we go home and rest, for solo guitar
+def rest():
     '''
-    generates a short solo using only 8th notes
+    Today We Go Home And Rest, for solo guitar
+
+    Form: A|B|A|C|D|C|A|B|A
     '''
-    print("\nwriting short guitar solo...")
+    # initilize stuff
+    print("\ninitializing...")
+    seed()
+    analyze = Analyze()
+    create = Generate()
+    comp = create.init_comp(tempo = 73.0,
+                            title = 'Today We Go Home And Rest',
+                            composer = 'Jay Derderian')
+    gtr = Melody(tempo = comp.tempo, instrument = 'Electric Guitar (clean)')
 
-    a = Analyze()
-    g = Generate()                                                        
-    if tempo==None:
-        comp = g.init_comp(TEMPOS[randint(7,11)])
-    else:
-        comp = g.init_comp(tempo)
-    gtr = choice(guitars)                                                                          
-    m = Melody(tempo=comp.tempo, instrument=gtr)
-    comp.title = comp.title + " for solo " + gtr    
+    # base material + containers for each generated section
+    form = ['A', 'B', 'A', 'C', 'D', 'C', 'A', 'B', 'A']
+    dyn = 54
+    rhy = [0.5, 1.0, 2.0]
+    root = ['F3', 'G3', 'A3', 'Bb3', 'C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4', 'C5', 'D5', 'E5', 'F5', 'G5', 'A5']
+    A = {'Name': 'A',
+         'Notes': ['F3', 'F4', 'D4', 'E4', 
+                   'F3', 'F4', 'D4', 'E4', 'C4',
+                   'F3', 'F4', 'D4', 'E4', 
+                   'F3', 'F4', 'D4', 'E4', 'Bb3', 'G4', 
+                   'F3', 'F4', 'D4', 'E4', 'C4', 'G4', 'A4'], 
+         'Rhythms': [1.0, 0.5, 0.5, 2.0, 
+                     1.0, 0.5, 0.5, 2.0, 2.0,
+                     1.0, 0.5, 0.5, 2.0,
+                     1.0, 0.5, 0.5, 1.0, 1.0, 1.0,
+                     1.0, 0.5, 0.5, 1.0, 1.0, 0.5, 0.5], 
+         'Dynamics': [52] * 26
+    }
+    B = {'Name': 'B', 'Notes': [], 'Rhythms': [], 'Dynamics': []}
+    C = {'Name': 'C', 'Notes': [], 'Rhythms': [], 'Dynamics': []}
+    D = {'Name': 'D', 'Notes': [], 'Rhythms': [], 'Dynamics': []}
+    sects = [A, B, C, D]
 
-    notes, m.info, m.source_scale = g.new_notes(t=randint(5,21))
-    print("\nusing:")
-    for i in range(len(m.info)):
-        print(m.info[i])
-    m.pcs = a.getpcs(notes)
+    # generate B, C, and D sections
+    print("\ngenerating...")
+    for s in trange((len(sects)), desc='progress'):
+        if sects[s]['Name'] == 'A':
+            continue
+        total = randint(13, 27)
+        sects[s]['Notes'] = [choice(root) for n in range(total)]
+        sects[s]['Rhythms'] = [choice(rhy) for r in range(total)]
+        sects[s]['Dynamics'] = [dyn] * total
 
-    total = randint(8,32)                              # NOTE may pick up duplicates because it'll be greater than 
-                                                       # t in g.new_notes() above?
-    notes = a.checkrange(notes, ran=RANGE["Guitar"])
-    m.notes = choices(population=notes, k=total)
-    r = scaletotempo(tempo=comp.tempo, rhythms=0.5)
-    m.rhythms = [r] * len(m.notes)
-    m.dynamics = [100] * len(m.notes)
-    comp.melodies.append(m)
+    # assemble
+    print("\nassembling...")
+    for f in trange((len(form)), desc='progress'):
+        for s in range(len(sects)):
+            if form[f] == sects[s]['Name']:
+                gtr.notes.extend(sects[s]['Notes'])
+                gtr.rhythms.extend(scaletotempo(tempo = comp.tempo, rhythms = sects[s]['Rhythms']))
+                gtr.dynamics.extend(sects[s]['Dynamics'])
+
+    # analyze and write out
+    print("\nwriting out...")
+    gtr.pcs = analyze.getpcs(gtr.notes)
+    gtr.source_scale = root
+    gtr.source_data = 'None'
+    comp.melodies.append(gtr)
+    comp.midi_file_name = f'{comp.title}.mid'
+    comp.instruments.extend('Electric Guitar (clean)')
     save(comp)
-
-    print("\n...success!")
-
-    comp.display()
-    return comp

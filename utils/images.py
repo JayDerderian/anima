@@ -18,7 +18,8 @@ def convert_to_list(file_name):
     parameters
     -----------
     file_name (str). this should be something like "image.jpg".
-    it will retrieve the image from the current working director
+    it will retrieve the image from the current working directory and
+    convert it to an array of integers. 
 
     returns
     --------

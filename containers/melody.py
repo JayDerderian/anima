@@ -3,6 +3,11 @@ Module for the Melody() class/container. Used for individual melody data in comp
 
 TODO: create a method to break generated Melody() data into a list of Bar() objects, with 
       or without a common time signature. Tempo should be global.
+
+NOTE: one possible way to use melody objects would be to make sure that whatever length you want
+      is adherent to a consistent meter by checking whether the total length is a modulo of a given beat division
+
+      if we want a piece to be in all 4/4, then the length of the melody should me mel.duration() % 4 == 0. 
 '''
 
 class Melody():
@@ -48,6 +53,15 @@ class Melody():
             dur += self.rhythms[i]
         return dur
 
+    # is this container empty?
+    def is_empty(self):
+        '''
+        Returns true if the container is empty, otherwise false
+        '''
+        if len(self.notes) > 0 and len(self.rhythms) > 0 and len(self.dynamics) > 0:
+            return True
+        return False
+
     # Get meta-data
     def get_meta_data(self):
         '''
@@ -58,7 +72,8 @@ class Melody():
     # get pitch classes
     def get_pcs(self):
         '''
-        return a list[int] of all pitch classes in this melody. may need to use tools.getpcs() prior
-        to calling this
+        return a list[int] of all pitch classes in this melody. 
+
+        NOTE: may need to use tools.getpcs() prior to calling this
         '''
         return self.pcs if len(self.pcs) != 0 else [0]

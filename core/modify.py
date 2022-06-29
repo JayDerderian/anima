@@ -10,41 +10,6 @@ TODO:
     with specified user input)
 
     Implement a method to add notes and rhythms to the end of the file. 
-
-Other TODO's:
-
-    basic scale or pitch class set(s) (can also accept arrays, i.e. groups of notes, which can be used as chords)
-
-    order the notes will be played (allows free selection of any order of those notes, sequential or otherwise)
-
-    basic rate at which this order is assessed, again, a list of values which define a 
-    rhythm which itself can be further manipulated
-
-    a separate rhythmically defined period of rests
-
-    variable transposition, which can be defined rhythmically
-
-    periodic permutation of things like note order (above), rest order, order of other functions in the program
-
-    rhythmically defined retrograde/inversion functions of note order and other functions in the program
-
-    rhythmic scaling of certain rhythmic functions (i.e. changing the rhythmic values in another function 
-    by a certain factor, which can be constant or variably defined rhythmically)
-
-    variable states of expansion (i.e. moving notes further apart from one another, pitch-wise)
-
-    automatically generated chords based on defined pitch scale
-
-    rhythmically defined variable selection of tension for chords in a progression
-
-    ability to transpose a part to a new mode of a defined pitch scale
-
-    variably defined root cycles for chords
-
-    rhythmically controlled assignment of whatever note is being played to any number of instruments 
-    (meaning if you want note 1 to be played by instrument 1 and note 2 and 3 to be played by 
-    instrument 2 and so forth in that pattern)
-
 '''
 
 from random import(
@@ -83,21 +48,19 @@ class Modify:
 
     def transpose(self, pcs, dist, octeq=True):
         '''
-        transpose a pitch class (int) or list of pitch classes (list[int]) 
-        using a supplied interval t (int), or list of intervals t (list[int]). 
+        transpose a list of pitch classes (list[int]) using a supplied interval t (int), 
+        or list of intervals t (list[int]). 
 
         if octeq is set to False, then resulting values may be greater than
         11. This may work when working with a source scale (since it goes
         from octaves 2-5) as long as the resulting value n is n <= len(source)-1.
 
-        use getindex() prior to calling transpose() when working with various 
+        use Modify.get_index() prior to calling Modify.transpose() when working with various 
         composition objects. indices in NOTES function as int representations
-        of notes, provided they're within the range of NOTES.
+        of notes.
 
         returns a modified pcs (list[int]) or modified pitch class (int).
         '''
-        if type(pcs)!=list:
-            raise TypeError("pcs must be a list[int]! pcs was type:", type(pcs))
         pcsl = len(pcs)
         # modify with a single interval across all pitch-class integers
         if type(dist)==int:
@@ -126,7 +89,7 @@ class Modify:
         '''
         if dist > 11 or dist < 1:
             raise ValueError("distance must be an int: 1<=n<=11")
-        pcs = self.transpose(self.getindex(notes), t=dist, octeq=False)
+        pcs = self.transpose(self.get_index(notes), t=dist, octeq=False)
         return tostr(pcs, octeq=False)
 
 
@@ -138,12 +101,12 @@ class Modify:
             raise ValueError("distance must be an int: 1<=n<=11")
         cl = len(chords)
         for c in range(cl):
-            pcs = self.transpose(self.getindex(chords[c].notes), t=dist, octeq=False)
+            pcs = self.transpose(self.get_index(chords[c].notes), t=dist, octeq=False)
             chords[c].notes = tostr(pcs, octeq=False)
         return chords
 
 
-    def getintervals(self, notes:list[str]):
+    def get_intervals(self, notes:list[str]):
         '''
         generates a list of intervals from a given melody.
         total intervals will be len(m.notes)-1.
@@ -152,14 +115,14 @@ class Modify:
         in semi-tones!
         '''
         intrvls = []
-        ind = self.getindex(notes)
+        ind = self.get_index(notes)
         ind_len = len(ind)
         for n in range(1, ind_len):
             intrvls.append(ind[n]-ind[n-1])
         return intrvls
 
 
-    def getindex(self, notes):
+    def get_index(self, notes):
         '''
         gets the index or list of indicies of a given note or 
         list of notes in NOTES. 
@@ -199,7 +162,7 @@ class Modify:
         inverts a melody. returns a new note list[str]
         '''
         inverted = []                            # list of inverted intervals
-        intr = self.getintervals(notes)          # get list of intervals and invert values
+        intr = self.get_intervals(notes)          # get list of intervals and invert values
         il = len(intr)
         for i in range(il):
             if ispos(intr[i]):
@@ -207,7 +170,7 @@ class Modify:
             else:
                 inverted.append(abs(intr[i]))
         mel = []                                 # get index of first note. we don't need them all.
-        mel.append(self.getindex(notes))         # add first note index to new melody note list
+        mel.append(self.get_index(notes))         # add first note index to new melody note list
         for i in range(il):                      # build new melody note list off this inverted interval list 
             mel.append(mel[i]+inverted[i])
         return tostr(mel, octeq=False)
@@ -283,7 +246,7 @@ class Modify:
         return notes
 
 
-    def changedynamics(self, dyn, diff):
+    def change_dynamics(self, dyn, diff):
         '''
         makes a single or list of dynamics louder or softer 
         by a specified amount. returns a modified dynamics list[int]

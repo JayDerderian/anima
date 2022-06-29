@@ -326,6 +326,38 @@ ARP_KEYS = [
     "quartal",
 ]
 
+'''
+A dictionary of common chord progressions notated in roman numerals
+'''
+PROGRESSIONS = {
+    'Pop1': ['I', 'V', 'vi', 'IV'],
+    'Pop2': ['I', 'IV', 'V', 'IV'],
+    'Pop3': ['ii', 'V', 'I'],
+    'DooWop1': ['I', 'vi', 'IV', 'V'],
+    'DooWop2': ['I', 'vi', 'iv', 'V'],
+    'Canon': ['I', 'V', 'vi', 'iii', 'IV', 'I', 'IV', 'V'],
+    '12BarBlues': ['I','I','I','I','IV','IV', 'I', 'I', 'V', 'IV', 'I', 'I']
+}
+
+'''
+maps roman numeral notation to scale degree. 
+'''
+PROG_DEGRESS = {
+    'i': 1,
+    'I': 1,
+    'ii': 2,
+    'II': 2,
+    'iii': 3,
+    'III': 3,
+    'iv': 4,
+    'IV': 4,
+    'v': 5,
+    'V': 5,
+    'vi': 6,
+    'VI': 6,
+    'vii': 7,
+    'VII': 7
+}
 
 '''
 A rather large dictionary containing all of Allen Forte's 5 to 9 
@@ -347,6 +379,8 @@ generate a scale represented by a list of strings (i.e. ["C#4", "D5"... etc]).
 
 Info taken from here: 
 https://en.wikipedia.org/wiki/List_of_pitch-class_sets'''
+
+# TODO: expand to unclude 1-4 note and 10-12 note sets
 
 SETS = {    
     # 5-note sets
@@ -630,8 +664,7 @@ SETS = {
 }
 
 
-# List of Forte numbers. Use randint() to select
-# the string/key value to be used with SCALES. 
+# List of Forte numbers. 
 FORTE_NUMBERS = [
     "5-1",
     "5-2A",

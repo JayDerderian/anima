@@ -4,18 +4,38 @@ Utility functions for working with MIDI I/O
 NOTE: Replace PrettyMid with MidiFile or MidiTrack, and Instrument with Message?
       Look at how PrettyMidi uses Instruments when writing out MIDI files.
 
-      Look at midi.MidiFile().py in the resources file!
+      Look at midi.MidiFile() in the resources file!
+
+TODO: little MIDI player window? could be a fun exercise!
+
+      could have a window showing the waveform of the piece, and a
+      scrolling bar going across it with a timeline at the bottom. 
+
+      user could have start, pause, rewind, fast-forward buttons,
+      as well as using the space bar to start/stop the piece.
+
+      option to generate a piano roll? maybe EDIT MIDI??????
 '''
 
+import visual_midi
+'''https://alexandredubreuil.com/publications/2020-09-13-introducing-visual-midi-for-pianoroll-visualization/'''
+'''https://github.com/dubreuia/visual_midi'''
+
+
 from pretty_midi import PrettyMIDI, Instrument
-from mido import MidiFile, MidiTrack, Message, MetaMessage
+from mido import (
+    MidiFile, 
+    MidiTrack, 
+    Message, 
+    MetaMessage
+) 
 
 from utils.tools import normalize_str
 from core.constants import INSTRUMENTS, NOTES
+
 from containers.note import Note
 from containers.melody import Melody
 from containers.chord import Chord
-
 
 
 def note_name_to_MIDI_num(note):
@@ -65,9 +85,11 @@ def load(file_name):
     
     returns:
         - MidiFile() object 
+
+    TODO: modify to use a given file path
     '''
     if type(file_name) != str:
-        raise TypeError('filename must be a string!')
+        raise TypeError(f'filename must be a string! type is: {type(str)}')
     elif file_name[-4:] != '.mid':
         raise TypeError('string must end with .mid!')
     return MidiFile(filename=file_name)
@@ -78,23 +100,25 @@ def parse(file_name):
     retrieves a midi file from current working directory
     with a supplied file_name string.
 
-    returns:
+    returns a tuple:
         - a dict with each key being a string representing 
-          the track number, i.e. "track 1", which is a list
-          of message() objects.
-        - a list[Messages()] of individual messages, separated
+          the track number, i.e. "track 1", with the value being
+          an individual track (list of Message() objects) 
+        - a list[Message()] of individual messages, separated
           from their original tracks.
+
+    TODO: modify to use a given file path
     '''
     if file_name[-4:] != '.mid':
         raise ValueError('file_name must end with .mid!')
     file = MidiFile(filename=file_name)         # open the file.         
-    res = {}                                    # store extracted note/rhythm/dynamics info. analyze each track separately!
-    msgs = []                                   # individual MIDI messages.
+    msgs = []                                   # list of Message() objects
+    tracks = {}                                 # store tracks (list of Message() objects)
     for i, track in enumerate(file.tracks):
-        res["track " + str(i)] = track          # save track to dictionary     
+        tracks[f'track {str(i)}'] = track       # save track to dictionary     
         for msg in track:                       # save individual messages
             msgs.append(msg)
-    return res, msgs
+    return tracks, msgs
 
 
 def save(comp):
@@ -119,14 +143,10 @@ def save(comp):
                                       start = strt, 
                                       end = end))                                            
                 strt += comp.melodies[i].rhythms[j]                                 # increment strt/end times
-                j+=1                                                                
-                if j==len(comp.melodies[i].rhythms):
+                try:                                                              
+                    end += comp.melodies[i].rhythms[j+1]
+                except IndexError:
                     break
-                # try:                                                              # NOTE for some reason this try/except block isn't working...
-                #     end += comp.melodies[i].rhythms[j+1]
-                # except IndexError:
-                #     break
-                end += comp.melodies[j]
             mid.instruments.append(mel)                                             # add melody to instrument list
 
     # add chords
