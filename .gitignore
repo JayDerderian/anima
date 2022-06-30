@@ -11,4 +11,5 @@ gui/
 old files/
 raw midi/
 resources/
+inprog/
 .env
