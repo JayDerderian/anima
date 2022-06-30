@@ -1,5 +1,5 @@
 mido==1.2.10
 pretty-midi==0.2.9
-numpy==1.20.3
+numpy==1.22
 colorama==0.4.4
 tqdm=4.62.3 
