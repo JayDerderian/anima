@@ -1,16 +1,10 @@
 '''
 This module handles text file generation for new compositions. 
 
-NOTE: Figure out a way for this method to generate a folder called "midi" if it doesn't already
-exist. If not, create it and write .txt file there, otherwise just write it to there.
-
 Also see if we can reduce the number of times f.write() is called. It seems like... a lot, in 
 it's current state.
 '''
 
-# Import
-import os
-import sys
 from datetime import datetime as date
 
 # Generates a new .txt file to save a new composition's meta-data to

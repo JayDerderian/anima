@@ -1,40 +1,5 @@
 '''
 This module handles all generative methods.
-
-TODO:
-
-    basic scale or pitch class set(s) (can also accept arrays, i.e. groups of notes, which can be used as chords)
-
-    order the notes will be played (allows free selection of any order of those notes, sequential or otherwise)
-
-    basic rate at which this order is assessed, again, a list of values which define a 
-    rhythm which itself can be further manipulated
-
-    a separate rhythmically defined period of rests
-
-    variable transposition, which can be defined rhythmically
-
-    periodic permutation of things like note order (above), rest order, order of other functions in the program
-
-    rhythmically defined retrograde/inversion functions of note order and other functions in the program
-
-    rhythmic scaling of certain rhythmic functions (i.e. changing the rhythmic values in another function 
-    by a certain factor, which can be constant or variably defined rhythmically)
-
-    variable states of expansion (i.e. moving notes further apart from one another, pitch-wise)
-
-    automatically generated chords based on defined pitch scale
-
-    rhythmically defined variable selection of tension for chords in a progression
-
-    ability to transpose a part to a new mode of a defined pitch scale
-
-    variably defined root cycles for chords
-
-    rhythmically controlled assignment of whatever note is being played to any number of instruments 
-    (meaning if you want note 1 to be played by instrument 1 and note 2 and 3 to be played by 
-    instrument 2 and so forth in that pattern)
-
 '''
 
 import urllib.request
@@ -129,10 +94,6 @@ class Generate:
         (date, midi and txt file names)
 
         tempo and composer name could also be provided.
-
-        NOTE: create a way for this method to create a 
-        new file folder for the new composition in the
-        programs directory
         '''
         comp = Composition()
         

@@ -1,26 +1,6 @@
 ''' 
 Utility functions for working with MIDI I/O
-
-NOTE: Replace PrettyMid with MidiFile or MidiTrack, and Instrument with Message?
-      Look at how PrettyMidi uses Instruments when writing out MIDI files.
-
-      Look at midi.MidiFile() in the resources file!
-
-TODO: little MIDI player window? could be a fun exercise!
-
-      could have a window showing the waveform of the piece, and a
-      scrolling bar going across it with a timeline at the bottom. 
-
-      user could have start, pause, rewind, fast-forward buttons,
-      as well as using the space bar to start/stop the piece.
-
-      option to generate a piano roll? maybe EDIT MIDI??????
 '''
-
-import visual_midi
-'''https://alexandredubreuil.com/publications/2020-09-13-introducing-visual-midi-for-pianoroll-visualization/'''
-'''https://github.com/dubreuia/visual_midi'''
-
 
 from pretty_midi import PrettyMIDI, Instrument
 from mido import (
