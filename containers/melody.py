@@ -74,6 +74,6 @@ class Melody():
         '''
         return a list[int] of all pitch classes in this melody. 
 
-        NOTE: may need to use tools.getpcs() prior to calling this
+        NOTE: may need to use tools.get_pcs() prior to calling this
         '''
         return self.pcs if len(self.pcs) != 0 else [0]
