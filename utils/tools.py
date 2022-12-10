@@ -1,40 +1,39 @@
-'''
-a module containing a variety of tools to analyze and manipulate melody() 
+"""
+a module containing a variety of tools to analyze and manipulate melody()
 objects and chord() lists. these methods will likely be used in other large
 classes in the analyze.py and modify.py files.
 
 TODO: scale_limit()
       copy() should be used to copy melody() or chord() objects
 
-      should also loot into __eq__ dunder method for classes. might 
+      should also loot into __eq__ dunder method for classes. might
       not need to make my own copy() method, but we'll see...
 
-'''
+"""
 from random import randint
 from core.constants import NOTES, PITCH_CLASSES
 
 
-def allsame(l):
-    '''
-    returns true if all elements in the list are the same'''
-    return True if all(e == l[0] for e in l) else False
+def all_same(a_list: list) -> bool:
+    """returns true if all elements in the list are the same"""
+    return True if all(e == a_list[0] for e in a_list) else False
 
 
-def tostr(pcs, octave=None, octeq=True):
-    '''
-    Converts a list of pitch class integers to note name strings, with or without 
-    a supplied octave. Works within one octave or beyond one octave. 
-    
+def to_str(pcs, octave=None, octeq=True):
+    """
+    Converts a list of pitch class integers to note name strings, with or without
+    a supplied octave. Works within one octave or beyond one octave.
+
     Returns a list of strings representing pitches, i.e. C#, Gb or D5, Ab6, etc.
-    '''
+    """
     scale = []
     if octeq:
         pcs = oe(pcs)
-        if octave==None:
+        if octave is None:
             pcsl = len(pcs)
             for i in range(pcsl):
                 scale.append(PITCH_CLASSES[pcs[i]])     
-        elif type(octave)==int and octave > 1 and octave < 6:
+        elif type(octave) == int and 1 < octave < 6:
             pcsl = len(pcs)
             for i in range(pcsl):
                 note = f"{PITCH_CLASSES[pcs[i]]}{octave}"

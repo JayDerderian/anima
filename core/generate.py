@@ -12,7 +12,7 @@ from utils.mapping import map_data
 from utils.txtfile import save_info
 from utils.midi import save
 from utils.tools import (
-    tostr,
+    to_str,
     oe,
     scaletotempo,
     scale_limit
@@ -250,7 +250,7 @@ class Generate:
             else:
                 scale, pcs = self.new_scale(t=False)
                 info = f"invented scale: {scale} pcs: {pcs}"
-        scale = tostr(pcs, octave=o)
+        scale = to_str(pcs, octave=o)
         return scale, info
 
     @staticmethod
@@ -271,9 +271,9 @@ class Generate:
         if t:
             mod = Modify()
             pcs_t = mod.transpose(pcs, randint(1, 11), octeq=False)
-            notes = tostr(pcs_t, octave=o)
+            notes = to_str(pcs_t, octave=o)
         else:
-            notes = tostr(pcs, octave=o)
+            notes = to_str(pcs, octave=o)
         return scale, pcs, notes
 
     @staticmethod
@@ -293,9 +293,9 @@ class Generate:
         if t:
             mod = Modify()
             pcs_t = mod.transpose(pcs, randint(1, 11), octeq=False)
-            scale = tostr(pcs_t, octave=o)
+            scale = to_str(pcs_t, octave=o)
         else:
-            scale = tostr(pcs, octave=o)
+            scale = to_str(pcs, octave=o)
         return fn, pcs, scale
 
     @staticmethod
@@ -323,7 +323,7 @@ class Generate:
         if t:
             mod = Modify()
             pcs = mod.transpose(pcs, randint(1, 11), octeq=False)
-        scale = tostr(pcs, o)
+        scale = to_str(pcs, o)
         return scale, pcs
 
     @staticmethod
@@ -397,7 +397,7 @@ class Generate:
                 sv.append(note)
             variants[i] = sv
         for scale in variants:
-            variants[scale] = tostr(variants[scale], octave=o, octeq=False)
+            variants[scale] = to_str(variants[scale], octave=o, octeq=False)
         return variants
 
     @staticmethod

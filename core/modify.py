@@ -22,7 +22,7 @@ from random import (
 import utils.midi as mid
 
 from utils.tools import (
-    tostr,
+    to_str,
     ispos,
     oe,
     scaletotempo
@@ -91,7 +91,7 @@ class Modify:
         if dist > 11 or dist < 1:
             raise ValueError("distance must be an int: 1<=n<=11")
         pcs = self.transpose(self.get_index(notes), t=dist, octeq=False)
-        return tostr(pcs, octeq=False)
+        return to_str(pcs, octeq=False)
 
     def transpose_c(self, chords: list, dist: int):
         """
@@ -102,7 +102,7 @@ class Modify:
         cl = len(chords)
         for c in range(cl):
             pcs = self.transpose(self.get_index(chords[c].notes), t=dist, octeq=False)
-            chords[c].notes = tostr(pcs, octeq=False)
+            chords[c].notes = to_str(pcs, octeq=False)
         return chords
 
     def get_intervals(self, notes: list[str]):
@@ -171,7 +171,7 @@ class Modify:
         mel.append(self.get_index(notes))  # add first note index to new melody note list
         for i in range(il):  # build new melody note list off this inverted interval list
             mel.append(mel[i] + inverted[i])
-        return tostr(mel, octeq=False)
+        return to_str(mel, octeq=False)
 
     def retro_invert(self, m: Melody):
         """

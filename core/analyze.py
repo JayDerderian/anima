@@ -5,7 +5,7 @@ MIDI files.
 TODO:
     convert MIDI file data to composition() object, as best as possible.
     mainly need to retrieve MIDI note numbers, velocities, and start/end times
-    possibly parse other parts of MIDI file as I learn more about them...
+    possibly parse_midi other parts of MIDI file as I learn more about them...
 
     comp object analysis:
 
@@ -24,9 +24,9 @@ TODO: generate spectrogram of a given audio file
 """
 
 from utils.midi import (
-    load,
+    load_midi_file,
     save,
-    parse,
+    parse_midi,
     tempo2bpm,
     MIDI_num_to_note_name
 )
@@ -35,8 +35,8 @@ from utils.tools import (
     removeoct,
     oe,
     scaletotempo,
-    allsame,
-    tostr
+    all_same,
+    to_str
 )
 
 from core.constants import (
@@ -86,10 +86,10 @@ class Analyze:
                 for chrd in range(chrdlen):
                     pcs[chords[chrd].instrument] = self.get_pcs(chords[chrd].notes)
             return pcs
-        if len(comp.melodichords) > 0:
-            ml_len = len(comp.melodichords)
+        if len(comp.melodi_chords) > 0:
+            ml_len = len(comp.melodi_chords)
             for m in range(ml_len):
-                pcs[comp.melodichords[m].instrument] = self.get_pcs(comp.melodichords[m].notes)
+                pcs[comp.melodi_chords[m].instrument] = self.get_pcs(comp.melodi_chords[m].notes)
         return pcs
 
     @staticmethod
@@ -123,7 +123,7 @@ class Analyze:
     # TODO: TEST THIS
     def count_pcs(self, tracks):
         """
-        takes a list tracks (ideally parsed with midi.parse()), then
+        takes a list tracks (ideally parsed with midi.parse_midi()), then
         counts the number of instances of each pitch class in each track
 
         returns:
@@ -366,7 +366,7 @@ class Analyze:
             "Rhythms": {},
             "Dynamics": {}
         }
-        tracks, msgs = parse(file_name)  # get MidiTrack() dict and Messages() list
+        tracks, msgs = parse_midi(file_name)  # get MidiTrack() dict and Messages() list
         res["Tempo"] = tempo2bpm(msgs[0].tempo)  # get global tempo
 
         for t in range(len(tracks)):  # get pitch class integers and velocities from each track

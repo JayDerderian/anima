@@ -1,6 +1,6 @@
-'''
-A module for managing all constants used throughout the program. 
-'''
+"""
+A module for managing all constants used throughout the program.
+"""
 
 # The alphabet. 
 ALPHABET = ['a', 'b', 'c', 'd', 'e', 'f', 'g',
@@ -8,25 +8,22 @@ ALPHABET = ['a', 'b', 'c', 'd', 'e', 'f', 'g',
             'o', 'p', 'q', 'r', 's', 't', 'u',
             'v', 'w', 'x', 'y', 'z']
 
-
 # Tempos
-'''
-standard metronome tempos
-'''
-TEMPOS = [40.0, 42.0, 44.0, 46.0, 50.0, 52.0, 54.0, 56.0, 58.0,   # 0 - 8
-          60.0, 63.0, 66.0, 69.0, 72.0, 76.0, 80.0, 84.0, 88.0,   # 9 - 17
-          92.0, 96.0, 100.0, 104.0, 108.0, 112.0, 116.0, 120.0,   # 18 - 25
-          126.0, 132.0, 138.0, 144.0, 152.0, 160.0, 168.0, 176.0, # 26 - 33 
-          184.0, 200.0, 208.0]                                    # 34 - 36
+TEMPOS = [40.0, 42.0, 44.0, 46.0, 50.0, 52.0, 54.0, 56.0, 58.0,    # 0 - 8
+          60.0, 63.0, 66.0, 69.0, 72.0, 76.0, 80.0, 84.0, 88.0,    # 9 - 17
+          92.0, 96.0, 100.0, 104.0, 108.0, 112.0, 116.0, 120.0,    # 18 - 25
+          126.0, 132.0, 138.0, 144.0, 152.0, 160.0, 168.0, 176.0,  # 26 - 33
+          184.0, 200.0, 208.0]                                     # 34 - 36
 
-# The default tempo is 120 BPM for MIDI miessages
+
+# The default tempo is 120 BPM for MIDI messages
 # (500000 microseconds per beat (quarter note).)
 DEFAULT_TEMPO = 500000
 DEFAULT_TICKS_PER_BEAT = 480
 
 
 # Dynamics (MIDI velocities: 0 - 127)
-'''NOTE: use indicies 0-8 for soft dynamics only. 
+'''NOTE: use indices 0-8 for soft dynamics only. 
          9-17 for med, and 18-26 for loud dynamics'''
 DYNAMICS = [20, 24, 28, 32, 36, 40, 44, 48, 52,
             56, 60, 64, 68, 72, 76, 80, 84, 88,
@@ -35,7 +32,7 @@ DYNAMICS = [20, 24, 28, 32, 36, 40, 44, 48, 52,
 
 
 # Base rhythms in seconds at 60bpm (or q = 60). 
-# Convert to currect tempo using scaletotempo() when necessary.
+# Convert to current tempo using scaletotempo() when necessary.
 '''
 Durations in seconds (1 sec = quarter note @ 60bpm)
 
@@ -87,7 +84,7 @@ TUPLETS = {
 
 # List of pitch classes
 '''
-NOTE: the indicies of each pitch class correspond to 
+NOTE: the indices of each pitch class correspond to 
       its representation in integer notation!
 '''
 PITCH_CLASSES = ["C", "C#", "D", "Eb", "E", "F", 
@@ -202,8 +199,8 @@ SCALES = {
 }
 
 
-# Interval list/dictonary
-'''
+# Interval list/dictionary
+"""
 NOTE: Develop interval sets that begin with 2 and end with 2,
       making the next cycle of intervals begin on a tone a half
       step higher than originally.
@@ -214,7 +211,7 @@ NOTE: Develop interval sets that begin with 2 and end with 2,
         c, d, e, f#, g, a, bb, c,
         db, eb, f, g, ab, bB, cb, db,
         d, e, f#, g#, a, b, c, d ...ect.  
-'''
+"""
 
 # intervals between notes in semi-tones
 INTERVALS = {
@@ -230,7 +227,6 @@ INTERVALS = {
     "Dim Triad":        [3, 3],  
     "Aug Triad":        [4, 4] 
 }
-
 
 
 # NOTE: figure out to account of octaves if pcs below are transposed!
@@ -261,7 +257,7 @@ PROGRESSIONS = {
 '''
 maps roman numeral notation to scale degree. 
 '''
-PROG_DEGRESS = {
+SCALE_DEGREE_MAPPING = {
     'i': 1,
     'I': 1,
     'ii': 2,
@@ -299,7 +295,6 @@ generate a scale represented by a list of strings (i.e. ["C#4", "D5"... etc]).
 Info taken from here: 
 https://en.wikipedia.org/wiki/List_of_pitch-class_sets'''
 
-# TODO: expand to unclude 1-4 note and 10-12 note sets
 
 SETS = {    
     # 5-note sets
@@ -605,7 +600,8 @@ A dictionary of some template ensembles.
 
 NOTE: obviously not complete or comprehensive. 
       just some standards that could use usefull when quick 
-      templates are needed.'''
+      templates are needed.
+'''
 
 
 ENSEMBLES = {
@@ -756,7 +752,7 @@ RANGE = {
 
 
 # MIDI instruments list (standard) 
-# NOTE: indicies 0 - 110 are MELODIC/HARMONIC instruments!
+# NOTE: indices 0 - 110 are MELODIC/HARMONIC instruments!
 INSTRUMENTS = [
     # 0-8: keyboards
     'Acoustic Grand Piano', 
@@ -782,7 +778,7 @@ INSTRUMENTS = [
     'Rock Organ', 
     'Church Organ', 
     'Reed Organ', 
-    # 21-23: accordians/harmonica
+    # 21-23: accordions/harmonica
     'Accordion',
     'Harmonica', 
     'Tango Accordion', 
