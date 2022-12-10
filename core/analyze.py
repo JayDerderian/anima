@@ -24,28 +24,28 @@ TODO: generate spectrogram of a given audio file??? could be a fun exercise!
 """
 
 from utils.midi import (
-    load, 
-    save, 
+    load,
+    save,
     parse,
     tempo2bpm,
     MIDI_num_to_note_name
 )
 
 from utils.tools import (
-    removeoct, 
-    oe, 
+    removeoct,
+    oe,
     scaletotempo,
     allsame,
     tostr
 )
 
 from core.constants import (
-    NOTES, 
-    PITCH_CLASSES, 
+    NOTES,
+    PITCH_CLASSES,
     RHYTHMS,
-    BEATS, 
-    RANGE, 
-    SCALES, 
+    BEATS,
+    RANGE,
+    SCALES,
     SETS
 )
 
@@ -55,12 +55,11 @@ class Analyze:
     class of analysis functions to be used with composition() and MidiFile()
     objects.
     """
+
     def __init__(self) -> None:
-        pass
+        self.going = True
 
-
-    #---------------------------------Pitch class retrieval-------------------------------#
-
+    # ---------------------------------Pitch class retrieval-------------------------------#
 
     def getpcs_from_comp(self, comp):
         """
@@ -84,14 +83,13 @@ class Analyze:
                 chords = comp.chords[c]
                 chrdlen = len(chords)
                 for chrd in range(chrdlen):
-                    pcs[chords[chrd].instrument] =  self.getpcs(chords[chrd].notes)
+                    pcs[chords[chrd].instrument] = self.getpcs(chords[chrd].notes)
             return pcs
         if len(comp.melodichords) > 0:
             ml_len = len(comp.melodichords)
             for m in range(ml_len):
                 pcs[comp.melodichords[m].instrument] = self.getpcs(comp.melodichords[m].notes)
         return pcs
-
 
     def getpcs(self, notes):
         """
@@ -100,18 +98,18 @@ class Analyze:
         returns the corresponding pcs list[int]. list is unsorted, that is,
         it's in the original order of the elements in the submitted notes list
         """
-        if type(notes)==str:
+        if type(notes) == str:
             # check if there's an octave int present 
-            if notes.isalpha()==False:                            
+            if not notes.isalpha():
                 note = removeoct(notes)
                 pcs = PITCH_CLASSES.index(note)
             else:
                 pcs = PITCH_CLASSES.index(notes)
-        elif type(notes)==list:
+        elif type(notes) == list:
             pcs = []
             nl = len(notes)
             for n in range(nl):
-                if notes[n].isalpha()==False:
+                if not notes[n].isalpha():
                     note = removeoct(notes[n])
                     pcs.append(PITCH_CLASSES.index(note))
                 else:
@@ -129,18 +127,17 @@ class Analyze:
         returns:
             dict(key = pitch class integer, value = total appearances)
         """
-        pc_totals = {0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 
+        pc_totals = {0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0,
                      6: 0, 7: 0, 8: 0, 9: 0, 10: 0, 11: 0}
         for track in tracks:
             # convert all MIDI note numbers to 
             # note name strings, then pitch classes (obvs not ideal)
-            notes = [] 
-            for n in range(len(tracks.notes)): 
+            notes = []
+            for n in range(len(tracks.notes)):
                 notes.append(self.getpcs(MIDI_num_to_note_name(track.notes[n])))
             for key in pc_totals:
                 pc_totals[key] += notes.count(key)
         return pc_totals
-
 
     def getindex(self, notes):
         """
@@ -153,9 +150,9 @@ class Analyze:
         octeq set to False. those resulting values should be mapped
         back against NOTES to get octave-accurate transposed notes
         """
-        if type(notes)==str:
+        if type(notes) == str:
             return NOTES.index(notes)
-        elif type(notes)==list:
+        elif type(notes) == list:
             indicies = []
             l = len(notes)
             for n in range(l):
@@ -165,7 +162,6 @@ class Analyze:
             return indicies
         else:
             raise TypeError("notes must be a single str or list[str]! type is:", type(notes))
-
 
     def find_normal_order(self, notes):
         """
@@ -177,10 +173,10 @@ class Analyze:
 
         returns pcs (list[int]) in normal order.
         """
-        pcs = self.getpcs(notes) # get pcs from a given set
-        pcs.sort()               # sort in ascending order              
+        pcs = self.getpcs(notes)  # get pcs from a given set
+        pcs.sort()  # sort in ascending order
         # rotate until smallest interval in the set is 
-        # at the left, and range of set is smallest possible
+        # at the left, and range of set is the smallest possible
         while pcs[1] - pcs[0] >= 2:
             pc = pcs.pop(0)
             pcs.append(pc)
@@ -192,7 +188,7 @@ class Analyze:
         Given a set of notes, find an associated Forte set
 
             Reduce all notes (removing duplicates in any octave)
-            in a given melody to a an unordered set.
+            in a given melody to an unordered set.
 
                 Iterate through list, keeping track of each note
                 it comes across.
@@ -216,9 +212,7 @@ class Analyze:
         """
         ...
 
-
-    #----------------------------------Intervals------------------------------------#
-
+    # ----------------------------------Intervals------------------------------------#
 
     def getintervals(self, notes):
         """
@@ -232,9 +226,9 @@ class Analyze:
         ind = self.getindex(notes)
         ind_len = len(ind)
         for n in range(1, ind_len):
-            intrvls.append(ind[n]-ind[n-1])
+            intrvls.append(ind[n] - ind[n - 1])
         return intrvls
-    
+
     # TODO: 
     def get_interval_vector(self, notes):
         """
@@ -245,8 +239,7 @@ class Analyze:
         """
         ...
 
-
-    def checkrange(self, notes:list[str], ran:list[str]):
+    def checkrange(self, notes: list[str], ran: list[str]):
         """
         checks for and removes and removes any notes
         not within the range of a given instrument.
@@ -260,28 +253,28 @@ class Analyze:
                 notes.remove(diff[note])
         return notes
 
-
-    def get_diff(self, notes, ran):
+    @staticmethod
+    def get_diff(notes, ran):
         """removes notes not in range of a given instrument with a provided range"""
         return [notes for notes in notes + ran if notes not in notes or notes not in ran]
 
-
-    def getrange(self, notes:list[str]):
+    @staticmethod
+    def getrange(notes: list[str]):
         """
         returns the lowest and highest note in a given set of notes
         in a tuple: (min, max)
         """
+        min, max = 0, 0
         for note in notes:
             (min, max) = (10000, -1)
             n = NOTES.index(note)
-            if n <  int(min):
+            if n < int(min):
                 min = n
             elif n > int(max):
                 max = n
-        return (min, max)
+        return min, max
 
-
-    #---------------------------------------12 tone-------------------------------------#
+    # ---------------------------------------12 tone-------------------------------------#
 
     # TODO:
     def get_12tone_matrix(self, row, intrvls):
@@ -294,7 +287,7 @@ class Analyze:
         The matrix is generating by appending a transposition
         of the original row to each subsequent index.
         All other information, such as retrogressions, inversions, and
-        retrogressions + inversions can found using some print tricks.
+        retrogressions + inversions can be found using some print tricks.
 
         Returns a 2-D matrix - 'm'
 
@@ -328,9 +321,8 @@ class Analyze:
         rows and cols are declared as a tuple (rows, cols = (n, n)
         where n is some int)
         """
-        m = [[]]
+        m = [[], row]
         # add original row to first matrix row
-        m.append(row)
         for i in range(len(intrvls)):
             r = self.transpose(row, intrvls[i])
             print("\nadding P", intrvls[i], ":", r)
@@ -343,14 +335,12 @@ class Analyze:
         """
         for x in matrix:
             for y in x:
-                print(y, end = " ")
+                print(y, end=" ")
             print()
 
+    # -----------------------------------MIDI analysis--------------------------------------#
 
-    #-----------------------------------MIDI analysis--------------------------------------#    
-
-
-    def parse_MIDI(self, file_name:str):
+    def parse_MIDI(self, file_name: str):
         """
         analyzes a given MIDI file with a given file_name (str)
 
@@ -365,24 +355,24 @@ class Analyze:
         vels = {}
         pcints = {}
         res = {
-               "Tempo": 0, 
-               "Pitch Classes": {}, 
-               "Rhythms": {}, 
-               "Dynamics": {}
+            "Tempo": 0,
+            "Pitch Classes": {},
+            "Rhythms": {},
+            "Dynamics": {}
         }
-        tracks, msgs = parse(file_name)           # get MidiTrack() dict and Messages() list
-        res["Tempo"] = tempo2bpm(msgs[0].tempo)   # get global tempo
+        tracks, msgs = parse(file_name)  # get MidiTrack() dict and Messages() list
+        res["Tempo"] = tempo2bpm(msgs[0].tempo)  # get global tempo
 
-        for t in range(len(tracks)):              # get pitch class integers and velocities from each track 
+        for t in range(len(tracks)):  # get pitch class integers and velocities from each track
             pcs = []
             vel = []
-            track = tracks[f"track {str(t)}"]     # get current track
+            track = tracks[f"track {str(t)}"]  # get current track
             for i in range(len(track)):
                 if hasattr(track[i], "velocity"):
-                    if track[i].velocity == 0:    # skip any silent notes (rests)
+                    if track[i].velocity == 0:  # skip any silent notes (rests)
                         continue
                     note = MIDI_num_to_note_name(track[i].note)  # translate to note name...
-                    pcs.append(self.getpcs(note))                # ...then to PC integer because reasons
+                    pcs.append(self.getpcs(note))  # ...then to PC integer because reasons
                     vel.append(track[i].velocity)
             pcints[f"track {str(t)}"] = pcs
             vels[f"track {str(t)}"] = vel
@@ -397,17 +387,22 @@ some additional methods for handling meter. these are mainly used
 sporadically and didn't really warrant being part of the larger analyze method class,
 at least for now...
 """
+
+
 def is_simple(meter):
     """returns True if meter is a simple meter"""
     return is_valid(meter)
+
 
 def is_compound(meter):
     """returns True if meter is a compound meter"""
     return is_valid(meter) and meter[0] % 3 == 0 and 6 <= meter[0]
 
+
 def is_valid(meter):
     """returns True if meter is valid (rational)"""
     return meter[0] > 0 and valid_beat_duration(meter)
+
 
 def valid_beat_duration(meter):
     """returns True if meter denominator is a valid beat duration"""
