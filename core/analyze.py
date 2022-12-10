@@ -159,7 +159,9 @@ class Analyze:
             indicies = []
             l = len(notes)
             for n in range(l):
-                indicies.append(NOTES.index(notes[n]))
+                indicies.append(
+                    NOTES.index(notes[n])
+                )
             return indicies
         else:
             raise TypeError("notes must be a single str or list[str]! type is:", type(notes))
@@ -362,8 +364,12 @@ class Analyze:
         '''
         vels = {}
         pcints = {}
-        res = {"Tempo": 0, "Pitch Classes": {}, "Rhythms": {}, "Dynamics": {}}
-
+        res = {
+               "Tempo": 0, 
+               "Pitch Classes": {}, 
+               "Rhythms": {}, 
+               "Dynamics": {}
+        }
         tracks, msgs = parse(file_name)           # get MidiTrack() dict and Messages() list
         res["Tempo"] = tempo2bpm(msgs[0].tempo)   # get global tempo
 

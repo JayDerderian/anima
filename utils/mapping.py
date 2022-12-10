@@ -5,7 +5,7 @@ which will be used to map against newNotes()'s generated source scale in newMelo
 
 from core.constants import ALPHABET
 
-# Converts an array of floats to an array of ints
+
 def float_to_int(data):
     '''
     Converts an array of floats to an array of ints
@@ -16,9 +16,10 @@ def float_to_int(data):
     return result
 
 
-# Scale individual data set integers such that i = i < len(dataSet) - 1
 def scale_the_scale(data):
     '''
+    Scales individual data set integers such that data[i] <= len(data)-1
+
     Returns inputted list[int] with any ints i > len(data) 1 altered to 
     adhere to this limit. This will keep the newly inputted data array's 
     values within the bounds of the scale array. These values function 
@@ -32,7 +33,6 @@ def scale_the_scale(data):
     return data
 
 
-# Maps letters to index numbers
 def letters_to_numbers(letters):
     '''
     Takes a string of any length as an argument, 
@@ -60,19 +60,15 @@ def letters_to_numbers(letters):
     return numbers
 
 
-# Convert a hex number representing a color to an array of integers
 def hex_to_int_list(hex):
     '''
     Converts a prefixed hex number to an array of integers.
     '''
     # convert to int
     hexint = int(hex, 0)
-    # then convert to list of ints (ie. 132 -> [1, 3, 2])
-    # hexlist = [int(x) for x in str(hexint)]
     return [int(x) for x in str(hexint)]
 
 
-# Call appropriate mapping method and return modified data
 def map_data(mel, data, dt):
     '''
     Wrapper method to map data used by newMelody()
