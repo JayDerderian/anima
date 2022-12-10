@@ -7,7 +7,7 @@ it's current state.
 
 from datetime import datetime as date
 
-# Generates a new .txt file to save a new composition's meta-data to
+
 def save_info(name, data=None, fileName=None, newMelody=None, newChords=None, newMusic=None):
     '''
     Generates a new .txt file to save a new composition's data and meta-data to. 
@@ -187,4 +187,3 @@ def save_info(name, data=None, fileName=None, newMelody=None, newChords=None, ne
 
     # Close instance
     f.close()
-    return 0
