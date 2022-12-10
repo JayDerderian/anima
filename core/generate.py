@@ -611,7 +611,7 @@ class Generate:
             # pick an existing scale/set or make a new one?
             if randint(1, 2) == 1:
                 scale, newchord.info = self.pick_root(o=randint(2, 5))
-                newchord.pcs = a.getpcs(scale)
+                newchord.pcs = a.get_pcs(scale)
             else:
                 scale, newchord.pcs = self.new_scale(o=randint(2, 5))
                 newchord.info = "Invented Scale"

@@ -20,7 +20,7 @@ TODO:
         and create a rhythm analysis.
         - count most common base rhythms (rhythm classes?)
 
-TODO: generate spectrogram of a given audio file??? could be a fun exercise!
+TODO: generate spectrogram of a given audio file
 """
 
 from utils.midi import (
@@ -48,6 +48,7 @@ from core.constants import (
     SCALES,
     SETS
 )
+from core.modify import Modify
 
 
 class Analyze:
@@ -61,7 +62,7 @@ class Analyze:
 
     # ---------------------------------Pitch class retrieval-------------------------------#
 
-    def getpcs_from_comp(self, comp):
+    def get_pcs_from_comp(self, comp):
         """
         gets all pitch classes from each part in a composition() object
 
@@ -75,7 +76,7 @@ class Analyze:
         if len(comp.melodies) > 0:
             ml = len(comp.melodies)
             for m in range(ml):
-                pcs[comp.melodies[m].instrument] = self.getpcs(comp.melodies[m].notes)
+                pcs[comp.melodies[m].instrument] = self.get_pcs(comp.melodies[m].notes)
             return pcs
         if len(comp.chords) > 0:
             cl = len(comp.chords)
@@ -83,15 +84,16 @@ class Analyze:
                 chords = comp.chords[c]
                 chrdlen = len(chords)
                 for chrd in range(chrdlen):
-                    pcs[chords[chrd].instrument] = self.getpcs(chords[chrd].notes)
+                    pcs[chords[chrd].instrument] = self.get_pcs(chords[chrd].notes)
             return pcs
         if len(comp.melodichords) > 0:
             ml_len = len(comp.melodichords)
             for m in range(ml_len):
-                pcs[comp.melodichords[m].instrument] = self.getpcs(comp.melodichords[m].notes)
+                pcs[comp.melodichords[m].instrument] = self.get_pcs(comp.melodichords[m].notes)
         return pcs
 
-    def getpcs(self, notes):
+    @staticmethod
+    def get_pcs(notes):
         """
         matches pitch strings to pitch class integers.
 
@@ -134,14 +136,15 @@ class Analyze:
             # note name strings, then pitch classes (obvs not ideal)
             notes = []
             for n in range(len(tracks.notes)):
-                notes.append(self.getpcs(MIDI_num_to_note_name(track.notes[n])))
+                notes.append(self.get_pcs(MIDI_num_to_note_name(track.notes[n])))
             for key in pc_totals:
                 pc_totals[key] += notes.count(key)
         return pc_totals
 
-    def getindex(self, notes):
+    @staticmethod
+    def get_index(notes):
         """
-        gets the index or list of indicies of a given note or
+        gets the index or list of indices of a given note or
         list of notes in NOTES.
 
         note name str must have an assigned octave between 0-8.
@@ -153,15 +156,16 @@ class Analyze:
         if type(notes) == str:
             return NOTES.index(notes)
         elif type(notes) == list:
-            indicies = []
-            l = len(notes)
-            for n in range(l):
-                indicies.append(
+            indices = []
+            notes_len = len(notes)
+            for n in range(notes_len):
+                indices.append(
                     NOTES.index(notes[n])
                 )
-            return indicies
+            return indices
         else:
-            raise TypeError("notes must be a single str or list[str]! type is:", type(notes))
+            raise TypeError("notes must be a single str or list[str]! "
+                            "\ntype is:", type(notes))
 
     def find_normal_order(self, notes):
         """
@@ -173,7 +177,7 @@ class Analyze:
 
         returns pcs (list[int]) in normal order.
         """
-        pcs = self.getpcs(notes)  # get pcs from a given set
+        pcs = self.get_pcs(notes)  # get pcs from a given set
         pcs.sort()  # sort in ascending order
         # rotate until smallest interval in the set is 
         # at the left, and range of set is the smallest possible
@@ -214,7 +218,7 @@ class Analyze:
 
     # ----------------------------------Intervals------------------------------------#
 
-    def getintervals(self, notes):
+    def get_intervals(self, notes):
         """
         generates a list of intervals from a given melody.
         total intervals will be len(m.notes)-1.
@@ -223,7 +227,7 @@ class Analyze:
         in semi-tones!
         """
         intrvls = []
-        ind = self.getindex(notes)
+        ind = self.get_index(notes)
         ind_len = len(ind)
         for n in range(1, ind_len):
             intrvls.append(ind[n] - ind[n - 1])
@@ -239,7 +243,7 @@ class Analyze:
         """
         ...
 
-    def checkrange(self, notes: list[str], ran: list[str]):
+    def check_range(self, notes: list[str], ran: list[str]):
         """
         checks for and removes and removes any notes
         not within the range of a given instrument.
@@ -259,7 +263,7 @@ class Analyze:
         return [notes for notes in notes + ran if notes not in notes or notes not in ran]
 
     @staticmethod
-    def getrange(notes: list[str]):
+    def get_range(notes: list[str]):
         """
         returns the lowest and highest note in a given set of notes
         in a tuple: (min, max)
@@ -321,15 +325,17 @@ class Analyze:
         rows and cols are declared as a tuple (rows, cols = (n, n)
         where n is some int)
         """
-        m = [[], row]
+        m = [[]]
+        mod = Modify()
         # add original row to first matrix row
         for i in range(len(intrvls)):
-            r = self.transpose(row, intrvls[i])
+            r = mod.transpose(row, intrvls[i])
             print("\nadding P", intrvls[i], ":", r)
             m.insert(i, r)
         return m
 
-    def print_matrix(self, matrix):
+    @staticmethod
+    def print_matrix(matrix):
         """
         Display a twelve-tone matrix (2D list)
         """
@@ -372,7 +378,7 @@ class Analyze:
                     if track[i].velocity == 0:  # skip any silent notes (rests)
                         continue
                     note = MIDI_num_to_note_name(track[i].note)  # translate to note name...
-                    pcs.append(self.getpcs(note))  # ...then to PC integer because reasons
+                    pcs.append(self.get_pcs(note))  # ...then to PC integer because reasons
                     vel.append(track[i].velocity)
             pcints[f"track {str(t)}"] = pcs
             vels[f"track {str(t)}"] = vel
