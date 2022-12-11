@@ -38,8 +38,9 @@ def to_str(pcs, octave=None, oct_eq=True):
         # NOTES has note strings with assigned octaves. 
         # assigning an octave value as an arg is redundant 
         # here since a list of any ints such that 
-        # i < len(NOTES) will do.
-        for i in range(len(pcs)):
+        # int < len(NOTES) will do.
+        pcs_len = len(pcs)
+        for i in range(pcs_len):
             scale.append(NOTES[pcs[i]])
     return scale
 

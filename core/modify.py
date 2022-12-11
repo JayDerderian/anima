@@ -48,12 +48,12 @@ class Modify:
         pass
 
     @staticmethod
-    def transpose(pcs, dist, octeq=True):
+    def transpose(pcs, dist, oct_eq=True):
         """
         transpose a list of pitch classes (list[int]) using a supplied interval t (int),
         or list of intervals t (list[int]).
 
-        if octeq is set to False, then resulting values may be greater than
+        if oct_eq is set to False, then resulting values may be greater than
         11. This may work when working with a source scale (since it goes
         from octaves 2-5) as long as the resulting value n is n <= len(source)-1.
 
@@ -79,7 +79,7 @@ class Modify:
         else:
             raise TypeError("incorrect input type. must be single int or list of ints!")
         # keep resulting pcs values between 0 and 11 by default.
-        if octeq:
+        if oct_eq:
             pcs = oct_equiv(pcs)
         return pcs
 
@@ -90,7 +90,8 @@ class Modify:
         """
         if dist > 11 or dist < 1:
             raise ValueError("distance must be an int: 1<=n<=11")
-        pcs = self.transpose(self.get_index(notes), t=dist, octeq=False)
+        pcs = self.transpose(self.get_index(notes),
+                             dist=dist, oct_eq=False)
         return to_str(pcs, oct_eq=False)
 
     def transpose_c(self, chords: list, dist: int) -> list:
@@ -101,7 +102,8 @@ class Modify:
             raise ValueError("distance must be an int: 1<=n<=11")
         cl = len(chords)
         for c in range(cl):
-            pcs = self.transpose(self.get_index(chords[c].notes), t=dist, octeq=False)
+            pcs = self.transpose(self.get_index(chords[c].notes),
+                                 dist=dist, oct_eq=False)
             chords[c].notes = to_str(pcs, oct_eq=False)
         return chords
 
@@ -113,12 +115,12 @@ class Modify:
         difference between index values with NOTES corresponds to distance
         in semi-tones!
         """
-        intrvls = []
+        intervals = []
         ind = self.get_index(notes)
         ind_len = len(ind)
         for n in range(1, ind_len):
-            intrvls.append(ind[n] - ind[n - 1])
-        return intrvls
+            intervals.append(ind[n] - ind[n-1])
+        return intervals
 
     @staticmethod
     def get_index(notes):
@@ -162,18 +164,18 @@ class Modify:
         # list of inverted intervals
         inverted = []
         # get list of intervals and invert values
-        intr = self.get_intervals(notes)
-        il = len(intr)
-        for i in range(il):
-            if is_pos(intr[i]):
-                inverted.append(-abs(intr[i]))
+        intervals = self.get_intervals(notes)
+        interval_len = len(intervals)
+        for i in range(interval_len):
+            if is_pos(intervals[i]):
+                inverted.append(-abs(intervals[i]))
             else:
-                inverted.append(abs(intr[i]))
+                inverted.append(abs(intervals[i]))
         # get index of first note. we don't need them all.
         mel = []
         mel.append(self.get_index(notes))
         # build new melody note list off this inverted interval list
-        for i in range(il):
+        for i in range(interval_len):
             mel.append(mel[i] + inverted[i])
         return to_str(mel, oct_eq=False)
 

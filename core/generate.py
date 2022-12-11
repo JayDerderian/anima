@@ -277,7 +277,7 @@ class Generate:
         pcs = SCALES[scale]
         if transpose:
             mod = Modify()
-            pcs_t = mod.transpose(pcs, randint(1, 11), octeq=False)
+            pcs_t = mod.transpose(pcs, randint(1, 11), oct_eq=False)
             notes = to_str(pcs_t, octave=octave)
         else:
             notes = to_str(pcs, octave=octave)
@@ -299,7 +299,7 @@ class Generate:
         pcs = SETS[fn]
         if transpose:
             mod = Modify()
-            pcs_t = mod.transpose(pcs, randint(1, 11), octeq=False)
+            pcs_t = mod.transpose(pcs, randint(1, 11), oct_eq=False)
             scale = to_str(pcs_t, octave=octave)
         else:
             scale = to_str(pcs, octave=octave)
@@ -331,7 +331,7 @@ class Generate:
         pcs.sort()
         if transpose:
             mod = Modify()
-            pcs = mod.transpose(pcs, randint(1, 11), octeq=False)
+            pcs = mod.transpose(pcs, randint(1, 11), oct_eq=False)
         scale = to_str(pcs, octave)
         return scale, pcs
 
