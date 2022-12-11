@@ -23,12 +23,12 @@ def to_str(pcs, octave=None, oct_eq=True):
     if oct_eq:
         pcs = oct_equiv(pcs)
         if octave is None:
-            pcsl = len(pcs)
-            for i in range(pcsl):
+            pcs_len = len(pcs)
+            for i in range(pcs_len):
                 scale.append(PITCH_CLASSES[pcs[i]])
         elif type(octave) == int and 1 < octave < 6:
-            pcsl = len(pcs)
-            for i in range(pcsl):
+            pcs_len = len(pcs)
+            for i in range(pcs_len):
                 note = f"{PITCH_CLASSES[pcs[i]]}{octave}"
                 scale.append(note)
         else:

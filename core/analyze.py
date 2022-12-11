@@ -82,8 +82,8 @@ class Analyze:
             cl = len(comp.chords)
             for c in range(cl):
                 chords = comp.chords[c]
-                chrdlen = len(chords)
-                for chrd in range(chrdlen):
+                chrd_len = len(chords)
+                for chrd in range(chrd_len):
                     pcs[chords[chrd].instrument] = self.get_pcs(chords[chrd].notes)
             return pcs
         if len(comp.melodi_chords) > 0:
@@ -136,7 +136,9 @@ class Analyze:
             # note name strings, then pitch classes (obvs not ideal)
             notes = []
             for n in range(len(tracks.notes)):
-                notes.append(self.get_pcs(MIDI_num_to_note_name(track.notes[n])))
+                notes.append(self.get_pcs(
+                    MIDI_num_to_note_name(track.notes[n])
+                ))
             for key in pc_totals:
                 pc_totals[key] += notes.count(key)
         return pc_totals
@@ -318,7 +320,7 @@ class Analyze:
                 print(ret_inv)
 
         --------
-        NOTE: maybe there's a way to poplulate the matrix using synxtax like this:
+        NOTE: maybe there's a way to populate the matrix using syntax like this:
         arr = [[r]*cols]*rows, where r is a modified version (transposition) of the
         original row.
 
@@ -366,22 +368,28 @@ class Analyze:
             "Rhythms": {},
             "Dynamics": {}
         }
-        tracks, msgs = parse_midi(file_name)  # get MidiTrack() dict and Messages() list
-        res["Tempo"] = tempo2bpm(msgs[0].tempo)  # get global tempo
-
-        for t in range(len(tracks)):  # get pitch class integers and velocities from each track
+        # get MidiTrack() dict and Messages() list
+        tracks, msgs = parse_midi(file_name)
+        # get global tempo
+        res["Tempo"] = tempo2bpm(msgs[0].tempo)
+        # get pitch class integers and velocities from each track
+        for t in range(len(tracks)):
             pcs = []
             vel = []
-            track = tracks[f"track {str(t)}"]  # get current track
+            track = tracks[f"track {str(t)}"]
             for i in range(len(track)):
                 if hasattr(track[i], "velocity"):
-                    if track[i].velocity == 0:  # skip any silent notes (rests)
+                    # skip any silent notes (rests)
+                    if track[i].velocity == 0:
                         continue
-                    note = MIDI_num_to_note_name(track[i].note)  # translate to note name...
-                    pcs.append(self.get_pcs(note))  # ...then to PC integer because reasons
+                    # translate to note name...
+                    note = MIDI_num_to_note_name(track[i].note)
+                    # ...then to PC integer because reasons
+                    pcs.append(self.get_pcs(note))
                     vel.append(track[i].velocity)
             pcints[f"track {str(t)}"] = pcs
             vels[f"track {str(t)}"] = vel
+
         res["Pitch Classes"].update(pcints)
         res["Dynamics"].update(vels)
 

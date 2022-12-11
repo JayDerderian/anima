@@ -52,7 +52,7 @@ def str_qtet(tempo=None):
     print("\nwriting new string quartet...")
 
     # pick initial notes. 
-    mode, pcs, notes = create.pick_scale(t=True)
+    mode, pcs, notes = create.pick_scale(transpose=True)
     source = create._new_source_scale(notes)
     print("...using", notes[0], mode)
     print("...notes:", notes)
@@ -88,7 +88,7 @@ def str_qtet(tempo=None):
 
     print("\nwriting asynchronous lines...")
 
-    mode, pcs, notes = create.pick_scale(t=True)
+    mode, pcs, notes = create.pick_scale(transpose=True)
     source = create._new_source_scale(notes)
     print("...using", notes[0], mode)
     print("...notes:", notes)

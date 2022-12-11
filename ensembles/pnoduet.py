@@ -92,7 +92,7 @@ def pnoduet(instrument=None, tempo=None):
 
     # pick initial starting key/mode
     print("\npicking source notes...")
-    notes = create.pick_scale(t=True)
+    notes = create.pick_scale(transpose=True)
     # append octaves 2 - 5 to have a starting source scale. 
     """if things progress well then i'll attempt to transpose figures 
     mid additive/subtractive process to give harmonic variety,

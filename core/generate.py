@@ -181,15 +181,15 @@ class Generate:
             meta_data.append(info)
         if data is None:  # Pick total: 10 - 50 if we're generating random notes
             if tot is None:
-                gentotal = randint(9, 49)
+                gen_total = randint(9, 49)
             else:
-                gentotal = tot
+                gen_total = tot
         else:  # Or the largest value of the supplied data set
-            gentotal = max(data)
+            gen_total = max(data)
         # this only uses a supplied root scale once!
         n = 0
         scale = []
-        for i in range(gentotal + 1):  # Generate source scale
+        for i in range(gen_total + 1):  # Generate source scale
             note = f'{root[n]}{octave}'
             scale.append(note)
             n += 1
@@ -200,20 +200,27 @@ class Generate:
                     root, info = self.pick_root(t=True, o=None)
                     meta_data.append(info)
                 n = 0
-        # Randomly pick notes from the generated source scale to create an arhythmic melody. 
+        # Randomly pick notes from the generated source
+        # scale to create an arhythmic melody.
         notes = []
         if data is None:
-            if tot is None:  # Total notes in melody will be between 3 and
-                pick_total = randint(3, len(scale))  # however many notes are in the source scale
+            # Total notes in melody will be between 3 and
+            # however many notes are in the source scale
+            if tot is None:
+                pick_total = randint(3, len(scale))
             else:
                 pick_total = tot
             notes = [choice(scale) for n in range(pick_total)]
         # ...Or pick notes according to integers in data array
         else:
-            dl = len(data)  # Total number of notes is equivalent to the
-            for i in range(dl):  # number of elements in the data set. Any supplied
-                notes.append(scale[data[i]])  # t doesn't matter since we're going of len(data)
-        return notes, meta_data, scale  # for our total because reasons.
+            # Total number of notes is equivalent to the
+            # number of elements in the data set. Any supplied
+            # t value doesn't matter here since we're going of len(data)
+            # for our total because reasons.
+            dl = len(data)
+            for i in range(dl):
+                notes.append(scale[data[i]])
+        return notes, meta_data, scale
 
     def pick_root(self, t=True, o=None):
         """
@@ -231,30 +238,30 @@ class Generate:
         choice = randint(1, 3)
         if choice == 1:
             if t:
-                mode, pcs, scale = self.pick_scale(t=True)
+                mode, pcs, scale = self.pick_scale(transpose=True)
                 info = f"{scale[0]} {mode}"
             else:
-                mode, pcs, scale = self.pick_scale(t=False)
+                mode, pcs, scale = self.pick_scale(transpose=False)
                 info = f"{scale[0]} {mode}"
         elif choice == 2:
             if t:
-                fn, pcs, scale = self.pick_set(t=True)
+                fn, pcs, scale = self.pick_set(transpose=True)
                 info = f"set {fn} transposed to {scale[0]}"
             else:
-                fn, pcs, scale = self.pick_set(t=False)
+                fn, pcs, scale = self.pick_set(transpose=False)
                 info = f"set {fn} un-transposed {scale[0]}"
         else:
             if t:
-                scale, pcs = self.new_scale(t=True)
+                scale, pcs = self.new_scale(transpose=True)
                 info = f"invented scale: {scale} pcs: {pcs}"
             else:
-                scale, pcs = self.new_scale(t=False)
+                scale, pcs = self.new_scale(transpose=False)
                 info = f"invented scale: {scale} pcs: {pcs}"
-        scale = to_str(pcs, octave=o)
+        scale = to_str(pcs=pcs, octave=o)
         return scale, info
 
     @staticmethod
-    def pick_scale(t=True, o=None):
+    def pick_scale(transpose=True, octave=None):
         """
         Picks a scale, randomly transposes it (if indicated),
         and appends a specified octave (if needed).
@@ -268,16 +275,16 @@ class Generate:
         """
         scale = str(choice(SCALES.keys()))
         pcs = SCALES[scale]
-        if t:
+        if transpose:
             mod = Modify()
             pcs_t = mod.transpose(pcs, randint(1, 11), octeq=False)
-            notes = to_str(pcs_t, octave=o)
+            notes = to_str(pcs_t, octave=octave)
         else:
-            notes = to_str(pcs, octave=o)
+            notes = to_str(pcs, octave=octave)
         return scale, pcs, notes
 
     @staticmethod
-    def pick_set(t=True, o=None):
+    def pick_set(transpose=True, octave=None):
         """
         Selects prime form and transposes a random distance (or not)
 
@@ -290,16 +297,16 @@ class Generate:
         """
         fn = str(choice(SETS.keys()))
         pcs = SETS[fn]
-        if t:
+        if transpose:
             mod = Modify()
             pcs_t = mod.transpose(pcs, randint(1, 11), octeq=False)
-            scale = to_str(pcs_t, octave=o)
+            scale = to_str(pcs_t, octave=octave)
         else:
-            scale = to_str(pcs, octave=o)
+            scale = to_str(pcs, octave=octave)
         return fn, pcs, scale
 
     @staticmethod
-    def new_scale(self, t=True, o=None):
+    def new_scale(transpose=True, octave=None):
         """
         Returns a randomly generated 5 to 8 note scale with or without an octave
         to be used as a 'root'. Can take an int as a starting octave
@@ -312,22 +319,24 @@ class Generate:
         """
         pcs = []
         total = randint(5, 8)
-        """Current method. Outputs are quite interesting, though I think this
-           is the least efficient way to go about this..."""
+        """
+        Current approach. Outputs are quite interesting, though I think this
+        is the least efficient way to go about this...
+        """
         while len(pcs) < total:
             n = randint(0, 11)
             if n not in pcs:
                 pcs.append(n)
         # pcs = [randint(0,11) for x in range(total) if x not in pcs]
         pcs.sort()
-        if t:
+        if transpose:
             mod = Modify()
             pcs = mod.transpose(pcs, randint(1, 11), octeq=False)
-        scale = to_str(pcs, o)
+        scale = to_str(pcs, octave)
         return scale, pcs
 
     @staticmethod
-    def _new_source_scale(root):
+    def _new_source_scale(root: list) -> list[str]:
         """
         Generates a list[str] "source scale" based off a
         supplied root (list[str]).
@@ -350,7 +359,7 @@ class Generate:
                 n = 0
         return scale
 
-    def new_source_scales(self, t=None):
+    def new_source_scales(self, total=None):
         """
         generates a dictionary of source scales to choose from.
 
@@ -358,11 +367,11 @@ class Generate:
             sources (dict[int, list[str]])
             scale_info (list[str])
         """
-        if t is None:
-            t = randint(3, 8)  # pick 3-8 scales if no total is provided
+        if total is None:
+            total = randint(3, 8)  # pick 3-8 scales if no total is provided
         sources = {}
         scale_info = []
-        for scale in range(t):
+        for scale in range(total):
             root, info = self.pick_root()
             scale_info.append(info)
             sources[scale] = self._new_source_scale(root)
@@ -406,10 +415,14 @@ class Generate:
         Returns a list[int] of pitch classes outlining a one-octave
         arpeggio.
         """
-        return ARPEGGIOS[key]
+        if key in ARPEGGIOS.keys():
+            return ARPEGGIOS[key]
+        else:
+            raise ValueError(f"{key} is not a valid parameter. "
+                             f"available parameters: {list(ARPEGGIOS.keys())}")
 
     @staticmethod
-    def new_12tone_row():
+    def new_12tone_row() -> list[str]:
         """
         Generates a 12-tone row. Returns a note list[str].
         Notes don't have an assigned octave.
@@ -417,7 +430,7 @@ class Generate:
         return sample(PITCH_CLASSES, len(PITCH_CLASSES))
 
     @staticmethod
-    def new_12tone_intervals():
+    def new_12tone_intervals() -> list:
         """
         Returns a list of 11 non-repeating intervals to generate 12-tone row
         transpositions.
@@ -461,7 +474,7 @@ class Generate:
         Generates a series of rhythms of n length, where n is supplied
         from elsewhere. Can also decide to pick 3 and 30 rhythms
         if no desired total is supplied. Will convert raw rhythm values
-        to a given tempo, if provided. Otherwise it'll just return an
+        to a given tempo, if provided. Otherwise, it'll just return an
         unaltered float list.
 
         Uses infrequent repetition.
@@ -474,8 +487,10 @@ class Generate:
         if total == None:
             total = randint(3, 30)
         while len(rhythms) < total:
-            rhythm = choice(RHYTHMS)  # Pick rhythm and add to list
-            if randint(1, 2) == 1:  # Repeat this rhythm or not?
+            # Pick rhythm and add to list
+            rhythm = choice(RHYTHMS)
+            # Repeat this rhythm or not?
+            if randint(1, 2) == 1:
                 limit = scale_limit(total)
                 if limit == 0:
                     limit += 2
@@ -486,7 +501,8 @@ class Generate:
                         break
             else:
                 rhythms.append(rhythm)
-        if tempo != None and tempo != 60.0:  # scale to given tempo, if provided and necessary.
+        # scale to given tempo, if provided and necessary.
+        if tempo is not None and tempo != 60.0:
             rhythms = scale_to_tempo(tempo, rhythms)
         return rhythms
 
@@ -614,7 +630,7 @@ class Generate:
                 scale, new_chord.info = self.pick_root(o=randint(2, 5))
                 new_chord.pcs = a.get_pcs(scale)
             else:
-                scale, new_chord.pcs = self.new_scale(o=randint(2, 5))
+                scale, new_chord.pcs = self.new_scale(octave=randint(2, 5))
                 new_chord.info = "Invented Scale"
         new_chord.source_notes = scale
 
