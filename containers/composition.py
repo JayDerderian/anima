@@ -115,9 +115,16 @@ class Composition:
         """
         Add a part to this composition
         """
+        # single melody() or chord() object
         if isinstance(part, Melody) or isinstance(part, Chord):
             # add the part number if there's more than one of this instrument
             total_occurrences = self.how_many(part.instrument)
+            self.parts.update({
+                f"{part.instrument} {total_occurrences + 1}": part
+            })
+        # list of chord() objects
+        elif type(part) is list:
+            total_occurrences = self.how_many(part[0].instrument)
             self.parts.update({
                 f"{part.instrument} {total_occurrences + 1}": part
             })

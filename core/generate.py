@@ -836,9 +836,7 @@ class Generate:
             comp.instruments.append(m.instrument)
 
         # Save melody info
-        comp.parts.update({
-            f"{m.instrument}": m
-        })
+        comp.add_part(m)
 
         # Generate harmonies from this melody.
         # Total is between half the number of notes
@@ -851,10 +849,10 @@ class Generate:
         for i in range(len(ch)):
             ch[i].instrument = instr
         comp.instruments.append(instr)
+
         # save chord object list
-        comp.parts.update({
-            f"{instr}": ch
-        })
+        comp.add_part(ch)
+
         # add title, write out to MIDI file, and display results
         comp.title = f"{comp.title} for various instruments"
         save(comp)
