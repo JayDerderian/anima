@@ -8,7 +8,7 @@ from random import randint
 from datetime import datetime as date
 
 from utils.midi import save
-from utils.tools import scaletotempo
+from utils.tools import scale_to_tempo
 from utils.txtfile import save_info
 
 from core.generate import Generate

@@ -22,7 +22,7 @@ class Melody:
     """
 
     def __init__(self, tempo=None, instrument=None):
-            
+
         # Meta data
         self.info = 'None'
         self.pcs = []

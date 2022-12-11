@@ -112,3 +112,12 @@ class Composition:
         """
         minutes, seconds = divmod(self._duration(), 60)
         return str(int(minutes)) + " min " + str(seconds) + " sec "
+
+
+    def add_track(self, obj):
+        if not isinstance(obj, Melody) or not isinstance(obj, Chord):
+            raise ValueError("Unsupported object type! "
+                             "Should be Chord() or Melody()")
+        self.tracks.update({
+            f"{obj.instrument}": obj
+        })

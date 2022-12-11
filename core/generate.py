@@ -13,8 +13,8 @@ from utils.txtfile import save_info
 from utils.midi import save
 from utils.tools import (
     to_str,
-    oe,
-    scaletotempo,
+    oct_equiv,
+    scale_to_tempo,
     scale_limit
 )
 
@@ -66,7 +66,7 @@ class Generate:
             t = 0  # pick 1 to 4 random words
             total = randint(1, 3)
             name = choice(words)
-            while (t < total):
+            while t < total:
                 name = name + ' ' + choice(words)
                 t += 1
         except urllib.error.URLError:
@@ -242,7 +242,7 @@ class Generate:
                 info = f"set {fn} transposed to {scale[0]}"
             else:
                 fn, pcs, scale = self.pick_set(t=False)
-                info = f"set {fn} untransposed {scale[0]}"
+                info = f"set {fn} un-transposed {scale[0]}"
         else:
             if t:
                 scale, pcs = self.new_scale(t=True)
@@ -327,7 +327,7 @@ class Generate:
         return scale, pcs
 
     @staticmethod
-    def new_source_scale(root):
+    def _new_source_scale(root):
         """
         Generates a list[str] "source scale" based off a
         supplied root (list[str]).
@@ -365,7 +365,7 @@ class Generate:
         for scale in range(t):
             root, info = self.pick_root()
             scale_info.append(info)
-            sources[scale] = self.new_source_scale(root)
+            sources[scale] = self._new_source_scale(root)
         return sources, scale_info
 
     @staticmethod
@@ -397,7 +397,7 @@ class Generate:
                 sv.append(note)
             variants[i] = sv
         for scale in variants:
-            variants[scale] = to_str(variants[scale], octave=o, octeq=False)
+            variants[scale] = to_str(variants[scale], octave=o, oct_eq=False)
         return variants
 
     @staticmethod
@@ -487,7 +487,7 @@ class Generate:
             else:
                 rhythms.append(rhythm)
         if tempo != None and tempo != 60.0:  # scale to given tempo, if provided and necessary.
-            rhythms = scaletotempo(tempo, rhythms)
+            rhythms = scale_to_tempo(tempo, rhythms)
         return rhythms
 
     ### DYNAMICS ###
@@ -567,23 +567,23 @@ class Generate:
     ### CHORDS ###
 
     @staticmethod
-    def display_chord(chord):
-        print("\n------------Chord:-------------")
-        print("\nnotes:", chord.notes)
-        print("rhythm:", chord.rhythm)
-        print("dynamic:", chord.dynamic)
+    def display_chord(chord: Chord) -> None:
+        output = f"\n------------Chord:-------------" \
+                 f"\nnotes: {chord.notes}" \
+                 f"rhythm: {chord.rhythm}" \
+                 f"dynamic: {chord.dynamic}"
+        print(output)
 
-    @staticmethod
-    def display_chords(chords):
+    def display_chords(self, chords: list) -> None:
         print("\n----------------HARMONY INFO:-------------------")
         cl = len(chords)
         for i in range(cl):
             print('\n', i + 1, ': ', 'Notes:', chords[i].notes)
-            print('      Rhythm:', chords[i].rhythm)
-            print('      Dynamics:', chords[i].dynamic)
+            self.display_chord(chords[i])
+
 
     @staticmethod
-    def chord_durations(chords):
+    def chord_durations(chords: list) -> float:
         """
         Returns the total length  in seconds (float) of a series
         of chord() objects (chord progression).
@@ -594,7 +594,8 @@ class Generate:
             d += chords[chord].rhythm
         return d
 
-    def new_chord(self, tempo=None, scale=None):
+
+    def new_chord(self, tempo=None, scale=None) -> Chord:
         """
         Generates a 2-9 note chord with randomly chosen notes, rhythm, and dynamic
         from either a supplied scale or self-selected or generated one.
@@ -602,31 +603,34 @@ class Generate:
         Returns a chord() object. Does not assign an instrument!
         """
         a = Analyze()
-        newchord = Chord()
+        new_chord = Chord()
         if tempo is None:
-            newchord.tempo = 60.0
+            new_chord.tempo = 60.0
         else:
-            newchord.tempo = tempo
+            new_chord.tempo = tempo
         if scale is None:
             # pick an existing scale/set or make a new one?
             if randint(1, 2) == 1:
-                scale, newchord.info = self.pick_root(o=randint(2, 5))
-                newchord.pcs = a.get_pcs(scale)
+                scale, new_chord.info = self.pick_root(o=randint(2, 5))
+                new_chord.pcs = a.get_pcs(scale)
             else:
-                scale, newchord.pcs = self.new_scale(o=randint(2, 5))
-                newchord.info = "Invented Scale"
-        newchord.source_notes = scale
+                scale, new_chord.pcs = self.new_scale(o=randint(2, 5))
+                new_chord.info = "Invented Scale"
+        new_chord.source_notes = scale
+
         # notes, rhythms, dynamics...
         total = randint(2, 9)
-        newchord.notes = [choice(scale) for c in range(total)]
+        new_chord.notes = [choice(scale) for c in range(total)]
         rhythm = self.new_rhythm()
-        if newchord.tempo != 60:
-            rhythm = scaletotempo(newchord.tempo, rhythm)
-        newchord.rhythm = rhythm
-        newchord.dynamic = self.new_dynamics(total=1, rests=False)
-        return newchord
+        if new_chord.tempo != 60:
+            rhythm = scale_to_tempo(new_chord.tempo, rhythm)
+        new_chord.rhythm = rhythm
+        new_chord.dynamic = self.new_dynamics(total=1, rests=False)
 
-    def new_chords(self, total=None, tempo=None, scale=None):
+        return new_chord
+
+
+    def new_chords(self, total=None, tempo=None, scale=None) -> list[Chord]:
         """
         Generates a progression from the notes of a given scale.
         Returns a list of chord() objects (5-11 if no total is
@@ -647,12 +651,12 @@ class Generate:
         if scale is None:
             scale = self.new_notes()[0]
         while len(chords) < total:
-            newchord = self.new_chord(tempo, scale)
-            chords.append(newchord)
+            new_chord = self.new_chord(tempo, scale)
+            chords.append(new_chord)
         return chords
 
     @staticmethod
-    def new_triads(scale, t=None):
+    def new_triads(scale, t=None) -> list[Chord]:
         """
         generates a list of triads of t length from a given multi-octave
         source scale. a single octave scale will only yield 3 triads since
@@ -698,37 +702,39 @@ class Generate:
         if n < 0:
             return -1
         if r > 11 or r < 0:
-            r = oe(r)
+            r = oct_equiv(r)
         chord = []
         while len(chord) < n:
             chord.append(r)
             r += i
             if r > 11:
-                r = oe(r)
+                r = oct_equiv(r)
         return chord
 
     ### MELODIES ###
 
     @staticmethod
-    def display_melody(m):
+    def display_melody(m: Melody) -> None:
         """
         Displays melody() object data
         """
-        print("\n-----------MELODY Data:------------")
-        print("\nTempo:", m.tempo, "bpm")
-        print("\nInstrument:", m.instrument)
-        print("\nPitch Classes:", m.pcs)
-        print("\nSource data:", m.source_data)
-        print("\nInfo:", m.info)
-        print("\nTotal Notes:", len(m.notes))
-        print("Notes:", m.notes)
-        print("\nTotal rhythms:", len(m.rhythms))
-        print("Rhythms:", m.rhythms)
-        print("\nTotal dynamics:", len(m.dynamics))
-        print("Dynamics:", m.dynamics)
+        output = f"\n-----------MELODY Data:------------" \
+                 f"\nTempo: {m.tempo} bpm" \
+                 f"\nInstrument: {m.instrument}" \
+                 f"\nPitch Classes: {m.pcs}" \
+                 f"\nSource Data: {m.source_data}" \
+                 f"\nInfo: {m.info}" \
+                 f"\nTotal Notes: {len(m.notes)}" \
+                 f"Notes: {m.notes}" \
+                 f"\nTotal rhythms: {len(m.rhythms)}" \
+                 f"Rhythms: {m.rhythms}" \
+                 f"\nTotal Dynamics: {len(m.dynamics)}" \
+                 f"Dynamics: {m.dynamics}\n"
+        print(output)
 
 
-    def new_melody(self, tempo=None, data=None, dt=None, t=None, r=None):
+    def new_melody(self, tempo=None, data=None,
+                   dt=None, t=None, r=None) -> Melody:
         """
         Picks tempo, notes, rhythms, and dynamics, with or without a
         supplied list from the user. It can process a list of ints
@@ -781,7 +787,7 @@ class Generate:
         Generates 1 melody and set of harmonies with our without
         inputted data.
 
-        Takes an 0x-xxxxxx hex humber representing a color, or
+        Takes a 0x-xxxxxx hex humber representing a color, or
         an array of ints, floats or chars of any length as arguments,
         plus the data type represented by a int
         (int (1), float (2), char (3), or hex number (4)).
@@ -791,7 +797,6 @@ class Generate:
 
         Returns a composition() object on success, or -1 on failure.
         """
-        # Initialize
         comp = self.init_comp()
         comp.ensemble = 'duet'
 
@@ -806,22 +811,28 @@ class Generate:
             comp.instruments.append(m.instrument)
 
         # Save melody info
-        comp.melodies.append(m)
+        comp.tracks.update({
+            f"{m.instrument}": m
+        })
 
-        # Generate harmonies from this melody. Total is between half the number of notes
+        # Generate harmonies from this melody.
+        # Total is between half the number of notes
         # in the melody and total num of notes.
         ch = self.new_chords(total=randint(floor(len(m.notes) / 2), len(m.notes)),
                              tempo=comp.tempo,
                              scale=m.notes)
-        instr = INSTRUMENTS[randint(0, 8)]  # pick keyboard instrument and apply to all chord objects
+        # pick keyboard instrument and apply to all chord objects
+        instr = INSTRUMENTS[randint(0, 8)]
         for i in range(len(ch)):
             ch[i].instrument = instr
-        comp.instruments.append(instr)  # save instrument to comp instr list
-        comp.chords[0] = ch  # Save keyboard part to chord dictionary
-
-        comp.title = f"{comp.title} for {m.instrument} and various keyboards"
-
-        save(comp)  # write out
-        comp.display()  # display results
+        comp.instruments.append(instr)
+        # save chord object list
+        comp.tracks.update({
+            f"{instr}": ch
+        })
+        # add title, write out to MIDI file, and display results
+        comp.title = f"{comp.title} for various instruments"
+        save(comp)
+        comp.display()
 
         return comp

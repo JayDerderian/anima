@@ -12,7 +12,7 @@ from random import randint, choice
 from datetime import datetime as date
 
 from utils.midi import save
-from utils.tools import scaletotempo
+from utils.tools import scale_to_tempo
 
 from core.constants import TEMPOS, DYNAMICS
 from core.generate import Generate
@@ -45,7 +45,7 @@ def mixedqtet(ensemble=None):
 
     t = randint(5, 9)                                       # total chords
     mode, mode_pcs, mode_notes = create.pick_scale(t=True)  # pick starting mode
-    source = create.new_source_scale(mode_notes)            # generate source scale from mode
+    source = create._new_source_scale(mode_notes)            # generate source scale from mode
 
     print("\ngenerating", t, "chords...")
     # generate chords from source scale. each chord will be repeated either
@@ -80,7 +80,7 @@ def mixedqtet(ensemble=None):
         # get current chord
         chord = chords[chrd]
         # add tempo adherent 16th note
-        chord.rhythm = scaletotempo(tempo=comp.tempo, rhythms=0.25)
+        chord.rhythm = scale_to_tempo(tempo=comp.tempo, rhythms=0.25)
         # repeat each dynamic for the swell/receed 8x and append to prog list
         # repeat these 4 dyanmics 8 times each...
         dyn = 4

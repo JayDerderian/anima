@@ -96,7 +96,7 @@ def parse_midi(file_name):
 def save(comp: Composition) -> None:
     """
     Takes a composition object and constructs
-    data to be written out to a MIDI
+    data to be written out to a MIDI file
     """
 
     # nothing to write out
@@ -156,5 +156,3 @@ def save(comp: Composition) -> None:
     # write to MIDI file
     print('\nsaving', comp.midi_file_name, '...')
     midi_writer.write(f'./midi/{comp.midi_file_name}')
-
-

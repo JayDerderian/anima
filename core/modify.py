@@ -23,9 +23,9 @@ import utils.midi as mid
 
 from utils.tools import (
     to_str,
-    ispos,
-    oe,
-    scaletotempo
+    is_pos,
+    oct_equiv,
+    scale_to_tempo
 )
 
 from containers.melody import Melody
@@ -80,7 +80,7 @@ class Modify:
             raise TypeError("incorrect input type. must be single int or list of ints!")
         # keep resulting pcs values between 0 and 11 by default.
         if octeq:
-            pcs = oe(pcs)
+            pcs = oct_equiv(pcs)
         return pcs
 
     def transpose_m(self, notes: list[int], dist: int):
@@ -91,7 +91,7 @@ class Modify:
         if dist > 11 or dist < 1:
             raise ValueError("distance must be an int: 1<=n<=11")
         pcs = self.transpose(self.get_index(notes), t=dist, octeq=False)
-        return to_str(pcs, octeq=False)
+        return to_str(pcs, oct_eq=False)
 
     def transpose_c(self, chords: list, dist: int):
         """
@@ -102,7 +102,7 @@ class Modify:
         cl = len(chords)
         for c in range(cl):
             pcs = self.transpose(self.get_index(chords[c].notes), t=dist, octeq=False)
-            chords[c].notes = to_str(pcs, octeq=False)
+            chords[c].notes = to_str(pcs, oct_eq=False)
         return chords
 
     def get_intervals(self, notes: list[str]):
@@ -163,7 +163,7 @@ class Modify:
         intr = self.get_intervals(notes)  # get list of intervals and invert values
         il = len(intr)
         for i in range(il):
-            if ispos(intr[i]):
+            if is_pos(intr[i]):
                 inverted.append(-abs(intr[i]))
             else:
                 inverted.append(abs(intr[i]))
@@ -171,7 +171,7 @@ class Modify:
         mel.append(self.get_index(notes))  # add first note index to new melody note list
         for i in range(il):  # build new melody note list off this inverted interval list
             mel.append(mel[i] + inverted[i])
-        return to_str(mel, octeq=False)
+        return to_str(mel, oct_eq=False)
 
     def retro_invert(self, m: Melody):
         """

@@ -32,9 +32,9 @@ from utils.midi import (
 )
 
 from utils.tools import (
-    removeoct,
-    oe,
-    scaletotempo,
+    remove_oct,
+    oct_equiv,
+    scale_to_tempo,
     all_same,
     to_str
 )
@@ -103,7 +103,7 @@ class Analyze:
         if type(notes) == str:
             # check if there's an octave int present 
             if not notes.isalpha():
-                note = removeoct(notes)
+                note = remove_oct(notes)
                 pcs = PITCH_CLASSES.index(note)
             else:
                 pcs = PITCH_CLASSES.index(notes)
@@ -112,7 +112,7 @@ class Analyze:
             nl = len(notes)
             for n in range(nl):
                 if not notes[n].isalpha():
-                    note = removeoct(notes[n])
+                    note = remove_oct(notes[n])
                     pcs.append(PITCH_CLASSES.index(note))
                 else:
                     pcs.append(PITCH_CLASSES.index(notes[n]))

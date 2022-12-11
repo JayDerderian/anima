@@ -7,7 +7,7 @@ from containers.melody import Melody
 from core.analyze import Analyze
 from core.constants import INSTRUMENTS
 
-from utils.tools import scaletotempo
+from utils.tools import scale_to_tempo
 
 
 class Bar():
@@ -44,7 +44,7 @@ class Bar():
                 raise TypeError(f"tempo must be a float, or is out of range! tempo supplied: {tempo}")
         
         # length (in seconds) = number of beats designated * counting rhythm (converted to seconds). 
-        self.length = self.meter[0] * scaletotempo(self.tempo, self.meter[1])
+        self.length = self.meter[0] * scale_to_tempo(self.tempo, self.meter[1])
         
         if instrument==None:
             self.instrument = 'Acoustic Grand Piano'

@@ -32,7 +32,7 @@ DYNAMICS = [20, 24, 28, 32, 36, 40, 44, 48, 52,
 
 
 # Base rhythms in seconds at 60bpm (or q = 60). 
-# Convert to current tempo using scaletotempo() when necessary.
+# Convert to current tempo using scale_to_tempo() when necessary.
 '''
 Durations in seconds (1 sec = quarter note @ 60bpm)
 

@@ -11,7 +11,7 @@ from tqdm import trange
 from random import randint, seed
 
 from utils.midi import save
-from utils.tools import scaletotempo
+from utils.tools import scale_to_tempo
 from utils.txtfile import save_info
 
 from core.generate import Generate
@@ -53,7 +53,7 @@ def str_qtet(tempo=None):
 
     # pick initial notes. 
     mode, pcs, notes = create.pick_scale(t=True)
-    source = create.new_source_scale(notes)
+    source = create._new_source_scale(notes)
     print("...using", notes[0], mode)
     print("...notes:", notes)
     print("...pcs:", pcs)
@@ -89,7 +89,7 @@ def str_qtet(tempo=None):
     print("\nwriting asynchronous lines...")
 
     mode, pcs, notes = create.pick_scale(t=True)
-    source = create.new_source_scale(notes)
+    source = create._new_source_scale(notes)
     print("...using", notes[0], mode)
     print("...notes:", notes)
     print("...pcs:", pcs, "\n")
@@ -202,7 +202,7 @@ def build_ending(m):
         "dynamics": []
     }
     fig["notes"] = m.notes[-n:]  # last n notes
-    fig["rhythms"] = scaletotempo(m.tempo, [2.0] * n)  # start using half-notes
+    fig["rhythms"] = scale_to_tempo(m.tempo, [2.0] * n)  # start using half-notes
     fig["dynamics"] = [100] * n  # medium dynamic
 
     # add initial figure 2 times
@@ -217,7 +217,7 @@ def build_ending(m):
     rep = 2
     dyn = 9
     while cur < 9:
-        fig["rhythms"] = scaletotempo(m.tempo, [RHYTHMS[cur]] * n)
+        fig["rhythms"] = scale_to_tempo(m.tempo, [RHYTHMS[cur]] * n)
         fig["dynamics"] = [DYNAMICS[dyn]] * n
         for i in range(rep):
             m.notes.extend(fig["notes"])

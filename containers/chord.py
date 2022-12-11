@@ -1,7 +1,7 @@
 """
 This module contains the Chord() class, used to contain information unique to Chord() objects.
 """
-from utils.tools import scaletotempo
+from utils.tools import scale_to_tempo
 from core.constants import INSTRUMENTS
 
 
@@ -43,7 +43,7 @@ class Chord:
 
     def duration(self):
         """returns the assigned rhythm, which is in seconds adjusted for tempo (hopefully)"""
-        return scaletotempo(self.tempo, self.rhythm)
+        return scale_to_tempo(self.tempo, self.rhythm)
 
     def get_meta_data(self):
         """ returns meta-data as a dictionary"""
