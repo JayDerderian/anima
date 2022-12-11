@@ -53,7 +53,23 @@ class Composition:
             return f"{self.title} for {len(self.instruments)} instruments"
 
     def _get_instrument_list(self) -> list:
-        return list(self.parts.keys())
+        return self.instruments
+
+    def _duration(self) -> float:
+        """
+        Finds the longest individual part in the piece.
+        This will be the duration (in seconds)
+        """
+        longest = 0.0
+        for track in self.parts:
+            dur = 0.0
+            for obj in self.parts[track]:
+                dur += obj.duration()
+            if dur > longest:
+                longest = dur
+        return longest
+
+    ### Public methods ###
 
     def is_picked(self, instr: str) -> bool:
         """
@@ -69,7 +85,9 @@ class Composition:
         return True if instruments == self.instruments else False
 
     def how_many(self, instr: str) -> int:
-        """Determines how many occurrences of this instrument are in this piece"""
+        """
+        Determines how many occurrences of this instrument are in this piece
+        """
         return list(self.parts.keys()).count(instr)
 
     def add_instrument(self, instrument: str) -> None:
@@ -88,21 +106,8 @@ class Composition:
                  f"composer: {self.composer}" \
                  f"duration: {self.duration()}" \
                  f"\nmidi file: {self.midi_file_name}" \
-                 f"text file: {self.txt_file_name}"
+                 f"text file: {self.txt_file_name}\n"
         print(output)
-
-    def _duration(self) -> float:
-        """
-        gets the max duration from the dictionary of tracks
-        """
-        longest = 0.0
-        for track in self.parts:
-            dur = 0.0
-            for obj in self.parts[track]:
-                dur += obj.duration()
-            if dur > longest:
-                longest = dur
-        return longest
 
     def duration(self) -> str:
         """
@@ -122,12 +127,14 @@ class Composition:
             self.parts.update({
                 f"{part.instrument} {total_occurrences + 1}": part
             })
+            self.instruments.append(part.instrument)
         # list of chord() objects
         elif type(part) is list:
             total_occurrences = self.how_many(part[0].instrument)
             self.parts.update({
                 f"{part.instrument} {total_occurrences + 1}": part
             })
+            self.instruments.append(part[0].instrument)
         else:
             raise TypeError("Unsupported object type! "
                             "Should be Chord() or Melody() instance"

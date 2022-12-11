@@ -107,7 +107,6 @@ def _build_melody(start: float, end:float,
                               end=end))
         start += cur_part.rhythms[j - 1]
         end += cur_part.rhythms[j]
-
     # add mel: Instrument() to instrument list
     midi_writer.instruments.append(mel)
     return start, end, midi_writer
@@ -148,7 +147,6 @@ def save(comp: Composition) -> None:
     for track in comp.parts:
         # reset start and end markers for each track
         strt, end = 0.0, 0.0
-        # list of either (or both!) Melody() or Chord() objects
         cur_part = comp.parts[track]
 
         # handle Melody() object
@@ -166,7 +164,8 @@ def save(comp: Composition) -> None:
                 elif isinstance(item, Chord):
                     strt, end, midi_writer = _build_chord(strt, end, item, midi_writer)
                 else:
-                    raise TypeError(f"Unsupported type! Cur_part is {type(item)}")
+                    raise TypeError(f"Unsupported type! Cur_part is type: {type(cur_part)} "
+                                    "Should be a Melody or Chord object, or list of either(or both)")
 
         else:
             raise TypeError(f"Unsupported type! Cur_part is type: {type(cur_part)} "

@@ -152,7 +152,7 @@ class Generate:
         note = f"{note}{octave}"
         return note
 
-    def new_notes(self, data=None, root=None, tot=None):
+    def new_notes(self, data=None, root=None, total=None):
         """
         Generates a set of notes to be used as a melody. Can also
         use a specified root scale, and a specified note total.
@@ -177,13 +177,13 @@ class Generate:
         meta_data = []  # Save forte numbers and/or pitch class sets
         octave = randint(2, 3)  # initial starting octave
         if root is None:
-            root, info = self.pick_root(t=True, o=None)
+            root, info = self.pick_root(transpose=True, octave=None)
             meta_data.append(info)
         if data is None:  # Pick total: 10 - 50 if we're generating random notes
-            if tot is None:
+            if total is None:
                 gen_total = randint(9, 49)
             else:
-                gen_total = tot
+                gen_total = total
         else:  # Or the largest value of the supplied data set
             gen_total = max(data)
         # this only uses a supplied root scale once!
@@ -197,7 +197,7 @@ class Generate:
                 octave += 1
                 if octave > 5:
                     octave = randint(2, 3)
-                    root, info = self.pick_root(t=True, o=None)
+                    root, info = self.pick_root(transpose=True, octave=None)
                     meta_data.append(info)
                 n = 0
         # Randomly pick notes from the generated source
@@ -206,10 +206,10 @@ class Generate:
         if data is None:
             # Total notes in melody will be between 3 and
             # however many notes are in the source scale
-            if tot is None:
+            if total is None:
                 pick_total = randint(3, len(scale))
             else:
-                pick_total = tot
+                pick_total = total
             notes = [choice(scale) for n in range(pick_total)]
         # ...Or pick notes according to integers in data array
         else:
@@ -222,7 +222,7 @@ class Generate:
                 notes.append(scale[data[i]])
         return notes, meta_data, scale
 
-    def pick_root(self, t=True, o=None):
+    def pick_root(self, transpose=True, octave=None):
         """
         Picks a randomly chosen and transposed scale, a 5 to 9
         note Forte pitch class prime form, or randomly generated scale,
@@ -237,27 +237,27 @@ class Generate:
         # use scale? (1), pcs prime form (2), or invented scale(3)?
         choice = randint(1, 3)
         if choice == 1:
-            if t:
+            if transpose:
                 mode, pcs, scale = self.pick_scale(transpose=True)
                 info = f"{scale[0]} {mode}"
             else:
                 mode, pcs, scale = self.pick_scale(transpose=False)
                 info = f"{scale[0]} {mode}"
         elif choice == 2:
-            if t:
+            if transpose:
                 fn, pcs, scale = self.pick_set(transpose=True)
                 info = f"set {fn} transposed to {scale[0]}"
             else:
                 fn, pcs, scale = self.pick_set(transpose=False)
                 info = f"set {fn} un-transposed {scale[0]}"
         else:
-            if t:
+            if transpose:
                 scale, pcs = self.new_scale(transpose=True)
                 info = f"invented scale: {scale} pcs: {pcs}"
             else:
                 scale, pcs = self.new_scale(transpose=False)
                 info = f"invented scale: {scale} pcs: {pcs}"
-        scale = to_str(pcs=pcs, octave=o)
+        scale = to_str(pcs=pcs, octave=octave)
         return scale, info
 
     @staticmethod
@@ -406,7 +406,8 @@ class Generate:
                 sv.append(note)
             variants[i] = sv
         for scale in variants:
-            variants[scale] = to_str(variants[scale], octave=octave, oct_eq=False)
+            variants[scale] = to_str(variants[scale],
+                                     octave=octave, oct_eq=False)
         return variants
 
     @staticmethod
@@ -630,7 +631,7 @@ class Generate:
         if scale is None:
             # pick an existing scale/set or make a new one?
             if randint(1, 2) == 1:
-                scale, new_chord.info = self.pick_root(o=randint(2, 5))
+                scale, new_chord.info = self.pick_root(octave=randint(2, 5))
                 new_chord.pcs = a.get_pcs(scale)
             else:
                 scale, new_chord.pcs = self.new_scale(octave=randint(2, 5))
@@ -785,8 +786,8 @@ class Generate:
             if total is None:
                 m.notes, m.info, m.source_scale = self.new_notes()
             else:
-                m.notes, m.info, m.source_scale = self.new_notes(tot=total)
-        # Or use supplied data (supplied total isn't applicable with
+                m.notes, m.info, m.source_scale = self.new_notes(total=total)
+        # Or use supplied data. Supplied total isn't applicable with
         # a data set of n size, since n will just become the total we work with.
         else:
             m.notes, m.info, m.source_scale = self.new_notes(data=data)
