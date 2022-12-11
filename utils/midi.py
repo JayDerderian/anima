@@ -1,14 +1,14 @@
-''' 
-Utility functions for working with MIDI I/O
-'''
+"""
+Utility functions for working with MIDI data and I/O
+"""
 
 from pretty_midi import PrettyMIDI, Instrument
 from mido import (
-    MidiFile, 
-    MidiTrack, 
-    Message, 
+    MidiFile,
+    MidiTrack,
+    Message,
     MetaMessage
-) 
+)
 
 from utils.tools import normalize_str
 from core.constants import INSTRUMENTS, NOTES
@@ -16,38 +16,39 @@ from core.constants import INSTRUMENTS, NOTES
 from containers.note import Note
 from containers.melody import Melody
 from containers.chord import Chord
+from containers.composition import Composition
 
 
 def note_name_to_MIDI_num(note):
-    '''
-    returns the corresponding MIDI note for a 
+    """
+    returns the corresponding MIDI note for a
     given note name string. apparently MIDI note numbers
     are the given index of a note in NOTES plus 21
-    '''
-    return NOTES.index(note)+21
+    """
+    return NOTES.index(note) + 21
 
 
 def MIDI_num_to_note_name(num):
-    '''
-    returns the corresponding note name string from a 
+    """
+    returns the corresponding note name string from a
     given MIDI note number
-    '''
-    return NOTES[num-21]
+    """
+    return NOTES[num - 21]
 
 
 def instrument_to_program(instr):
-    '''
+    """
     returns an instrument program number using INSTRUMENTS, which
-    maps names to numbers via their index values.
-    '''
+    maps names to number via their index values.
+    """
     inst_name = normalize_str(instr)
     inst_list = [normalize_str(name) for name in INSTRUMENTS]
     return inst_list.index(inst_name)
 
 
 def tempo2bpm(tempo):
-    '''
-    converts a MIDI file tempo to tempo in BPM. 
+    """
+    converts a MIDI file tempo to tempo in BPM.
     can also take a BPM and return a MIDI file tempo
 
     - 250000 => 240
@@ -55,153 +56,99 @@ def tempo2bpm(tempo):
     - 1000000 => 60
 
     1 minute is 60,000,000 microseconds
-    '''
+    """
     return int(round((60 * 1000000) / tempo))
 
 
-def load(file_name):
-    '''
-    loads a MIDI file using a supplied file name (i.e "song.mid") 
-    
-    returns:
-        - MidiFile() object 
-
-    TODO: modify to use a given file path
-    '''
-    if type(file_name) != str:
-        raise TypeError(f'filename must be a string! type is: {type(str)}')
-    elif file_name[-4:] != '.mid':
-        raise TypeError('string must end with .mid!')
+def load_midi_file(file_name: str) -> MidiFile:
+    """
+    loads a MIDI file using a supplied file name (i.e "song.mid")
+    """
+    if file_name[-4:] != '.mid':
+        raise ValueError('must be a midi file name!')
     return MidiFile(filename=file_name)
 
 
-def parse(file_name):
-    '''
+def parse_midi(file_name):
+    """
     retrieves a midi file from current working directory
     with a supplied file_name string.
 
     returns a tuple:
-        - a dict with each key being a string representing 
+        - a dict with each key being a string representing
           the track number, i.e. "track 1", with the value being
-          an individual track (list of Message() objects) 
-        - a list[Message()] of individual messages, separated
-          from their original tracks.
-
-    TODO: modify to use a given file path
-    '''
-    if file_name[-4:] != '.mid':
-        raise ValueError('file_name must end with .mid!')
-    file = MidiFile(filename=file_name)         # open the file.         
-    msgs = []                                   # list of Message() objects
-    tracks = {}                                 # store tracks (list of Message() objects)
+          an individual track (list of Message() objects)
+        - a list[Message()] of individual messages,
+          ***that are separated from their original tracks! ***
+    """
+    msgs = []
+    tracks = {}
+    file = load_midi_file(file_name)
     for i, track in enumerate(file.tracks):
-        tracks[f'track {str(i)}'] = track       # save track to dictionary     
-        for msg in track:                       # save individual messages
+        tracks.update({
+            f'track {str(i)}': track,
+        })
+        for msg in track:
             msgs.append(msg)
     return tracks, msgs
 
 
-def save(comp):
-    '''
-    general save function for compositions. *All instruments start at the same time!*
-    exports a MIDI file for any sized composition (1 solo melody to ensemble sized n). 
-    '''
-    # PM object is just used to just write out the file.
-    mid = PrettyMIDI(initial_tempo = comp.tempo)
-    
-    # add melodies
-    if len(comp.melodies) > 0:
-        ml = len(comp.melodies)
-        for i in range(ml):
-            strt = 0
-            end = comp.melodies[i].rhythms[0]
-            instrument = instrument_to_program(comp.melodies[i].instrument)         # create melody instrument
+def save(comp: Composition) -> None:
+    """
+    Takes a composition object and constructs
+    data to be written out to a MIDI file
+    """
+
+    # nothing to write out
+    if len(comp.parts) == 0:
+        print("No tracks! Exiting...")
+        return
+
+    midi_writer = PrettyMIDI(initial_tempo=comp.tempo)
+
+    # iterate over comp.tracks dictionary
+    for track in comp.parts:
+        # reset start and end markers for each track
+        strt, end = 0.0, 0.0
+        # list of either (or both!) Melody() or Chord() objects
+        cur_part = comp.parts[track]
+
+        # handle Melody() object
+        if isinstance(cur_part, Melody):
+            end += cur_part.rhythms[0]
+            instrument = instrument_to_program(cur_part.instrument)
             mel = Instrument(program=instrument)
-            for j in range(len(comp.melodies[i].notes)):                            # add *this* melody's notes
-                mel.notes.append(Note(velocity = comp.melodies[i].dynamics[j], 
-                                      pitch = note_name_to_MIDI_num(comp.melodies[i].notes[j]), 
-                                      start = strt, 
-                                      end = end))                                            
-                strt += comp.melodies[i].rhythms[j]                                 # increment strt/end times
-                try:                                                              
-                    end += comp.melodies[i].rhythms[j+1]
-                except IndexError:
-                    break
-            mid.instruments.append(mel)                                             # add melody to instrument list
 
-    # add chords
-    if len(comp.chords) > 0:   
-        key = 0                                                                     # iterate through a dictionary of chord() object lists.
-        cl = len(comp.chords)
-        for i in range(cl):
-            chrds = comp.chords[key]                                                # retrieve current chord object list
-            strt = 0
-            end = chrds[key].rhythm
-            instrument = instrument_to_program(chrds[i].instrument)
-            chord = Instrument(program = instrument)
-            for j in range(len(chrds)):                                             # iterate through current chord list
-                for k in range(len(chrds[j].notes)):                                # add this list of chord objects notes
-                    chord.notes.append(Note(velocity = chrds[j].dynamic, 
-                                            pitch = note_name_to_MIDI_num(chrds[j].notes[k]), 
-                                            start = strt, 
-                                            end = end))  
-                strt += chrds[j].rhythm
-                try:
-                    end += chrds[j+1].rhythm                                        # increment strt/end times
-                except IndexError:
-                    break
-            mid.instruments.append(chord)                                           # add chord progression to instrument list
-            key+=1
+            for j in range(1, len(cur_part.notes)):
+                mel.notes.append(Note(velocity=cur_part.dynamics[j-1],
+                                      pitch=note_name_to_MIDI_num(cur_part.notes[j-1]),
+                                      start=strt,
+                                      end=end))
+                strt += cur_part.rhythms[j-1]
+                end += cur_part.rhythms[j]
 
-    # add melodichords
-    if len(comp.melodichords) > 0:
-        '''NOTE: currently creating a separate track every time a chord 
-        or melody is inputted. this was a similar problem from before...'''
-        strt = 0
-        l = len(comp.melodichords)
-        for item in range(l):
-            melodichords = comp.melodichords[item]                                         # get THIS list of melody()/chord() objects
-            if isinstance(melodichords[item], Melody):                                     # is this a melody object?
-                # strt = 0
-                end = melodichords[item].rhythms[0]    
-                instrument = instrument_to_program(melodichords[item].instrument)          # create melody instrument
-                mel = Instrument(program = instrument)        
-                for j in range(len(melodichords[item].notes)):                             # add *this* melody's notes
-                    anote = Note(velocity = melodichords[item].dynamics[j], 
-                                 pitch = note_name_to_MIDI_num(melodichords[item].notes[j]), 
-                                 start = strt, 
-                                 end = end)   
-                    mel.notes.append(anote)                                                # add to instrument object
-                    strt += melodichords[item].rhythms[j]
-                    try:                                                                   # increment strt/end times
-                        if isinstance(melodichords[item+1], Chord):
-                            end += melodichords[item+1].rhythm
-                        elif isinstance(melodichords[item], Melody):
-                            end += melodichords[item+1].rhythms[0]
-                    except IndexError:
-                        break
-                mid.instruments.append(mel)                                                # add melody to instrument list
-            elif isinstance(melodichords[item], Chord):                                    # or a chord object?
-                # strt = 0
-                end = melodichords[item].rhythm
-                instrument = instrument_to_program(melodichords[item].instrument)
-                ci = Instrument(program=instrument)
-                for k in range(len(melodichords[item].notes)):
-                    anote = Note(velocity = melodichords[item].dynamic, 
-                                 pitch = note_name_to_MIDI_num(melodichords[item].notes[k]), 
-                                 start = strt, 
-                                 end = end)
-                    ci.notes.append(anote)                                                 # add to instrument object
-                try:                                                                       # increment strt/end times
-                    strt += melodichords[item].rhythm
-                    if isinstance(melodichords[item+1], Chord):
-                        end += melodichords[item+1].rhythm
-                    elif isinstance(melodichords[item], Melody):
-                        end += melodichords[item+1].rhythm[0]
-                except IndexError:
-                    break
-                mid.instruments.append(ci)
+            # add mel: Instrument() to instrument list
+            midi_writer.instruments.append(mel)
+
+        # handle Chord() object
+        elif isinstance(cur_part, Chord):
+            end += cur_part.rhythm
+            instrument = instrument_to_program(cur_part.instrument)
+            chord = Instrument(program=instrument)
+
+            for note in cur_part.notes:
+                chord.notes.append(Note(velocity=cur_part.dynamic,
+                                        pitch=note_name_to_MIDI_num(note),
+                                        start=strt,
+                                        end=end))
+            # add chord progression to instrument list
+            midi_writer.instruments.append(chord)
+            strt += cur_part.rhythm
+
+        else:
+            raise TypeError("Needs to be either a Melody() or Chord() object instance!"
+                            f"Cur_part is type: {type(cur_part)}")
 
     # write to MIDI file
     print('\nsaving', comp.midi_file_name, '...')
-    mid.write(f'./midi/{comp.midi_file_name}')
+    midi_writer.write(f'./midi/{comp.midi_file_name}')

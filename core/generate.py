@@ -12,9 +12,9 @@ from utils.mapping import map_data
 from utils.txtfile import save_info
 from utils.midi import save
 from utils.tools import (
-    tostr,
-    oe,
-    scaletotempo,
+    to_str,
+    oct_equiv,
+    scale_to_tempo,
     scale_limit
 )
 
@@ -66,7 +66,7 @@ class Generate:
             t = 0  # pick 1 to 4 random words
             total = randint(1, 3)
             name = choice(words)
-            while (t < total):
+            while t < total:
                 name = name + ' ' + choice(words)
                 t += 1
         except urllib.error.URLError:
@@ -181,15 +181,15 @@ class Generate:
             meta_data.append(info)
         if data is None:  # Pick total: 10 - 50 if we're generating random notes
             if tot is None:
-                gentotal = randint(9, 49)
+                gen_total = randint(9, 49)
             else:
-                gentotal = tot
+                gen_total = tot
         else:  # Or the largest value of the supplied data set
-            gentotal = max(data)
+            gen_total = max(data)
         # this only uses a supplied root scale once!
         n = 0
         scale = []
-        for i in range(gentotal + 1):  # Generate source scale
+        for i in range(gen_total + 1):  # Generate source scale
             note = f'{root[n]}{octave}'
             scale.append(note)
             n += 1
@@ -200,20 +200,27 @@ class Generate:
                     root, info = self.pick_root(t=True, o=None)
                     meta_data.append(info)
                 n = 0
-        # Randomly pick notes from the generated source scale to create an arhythmic melody. 
+        # Randomly pick notes from the generated source
+        # scale to create an arhythmic melody.
         notes = []
         if data is None:
-            if tot is None:  # Total notes in melody will be between 3 and
-                pick_total = randint(3, len(scale))  # however many notes are in the source scale
+            # Total notes in melody will be between 3 and
+            # however many notes are in the source scale
+            if tot is None:
+                pick_total = randint(3, len(scale))
             else:
                 pick_total = tot
             notes = [choice(scale) for n in range(pick_total)]
         # ...Or pick notes according to integers in data array
         else:
-            dl = len(data)  # Total number of notes is equivalent to the
-            for i in range(dl):  # number of elements in the data set. Any supplied
-                notes.append(scale[data[i]])  # t doesn't matter since we're going of len(data)
-        return notes, meta_data, scale  # for our total because reasons.
+            # Total number of notes is equivalent to the
+            # number of elements in the data set. Any supplied
+            # t value doesn't matter here since we're going of len(data)
+            # for our total because reasons.
+            dl = len(data)
+            for i in range(dl):
+                notes.append(scale[data[i]])
+        return notes, meta_data, scale
 
     def pick_root(self, t=True, o=None):
         """
@@ -231,30 +238,30 @@ class Generate:
         choice = randint(1, 3)
         if choice == 1:
             if t:
-                mode, pcs, scale = self.pick_scale(t=True)
+                mode, pcs, scale = self.pick_scale(transpose=True)
                 info = f"{scale[0]} {mode}"
             else:
-                mode, pcs, scale = self.pick_scale(t=False)
+                mode, pcs, scale = self.pick_scale(transpose=False)
                 info = f"{scale[0]} {mode}"
         elif choice == 2:
             if t:
-                fn, pcs, scale = self.pick_set(t=True)
+                fn, pcs, scale = self.pick_set(transpose=True)
                 info = f"set {fn} transposed to {scale[0]}"
             else:
-                fn, pcs, scale = self.pick_set(t=False)
-                info = f"set {fn} untransposed {scale[0]}"
+                fn, pcs, scale = self.pick_set(transpose=False)
+                info = f"set {fn} un-transposed {scale[0]}"
         else:
             if t:
-                scale, pcs = self.new_scale(t=True)
+                scale, pcs = self.new_scale(transpose=True)
                 info = f"invented scale: {scale} pcs: {pcs}"
             else:
-                scale, pcs = self.new_scale(t=False)
+                scale, pcs = self.new_scale(transpose=False)
                 info = f"invented scale: {scale} pcs: {pcs}"
-        scale = tostr(pcs, octave=o)
+        scale = to_str(pcs=pcs, octave=o)
         return scale, info
 
     @staticmethod
-    def pick_scale(t=True, o=None):
+    def pick_scale(transpose=True, octave=None):
         """
         Picks a scale, randomly transposes it (if indicated),
         and appends a specified octave (if needed).
@@ -266,18 +273,18 @@ class Generate:
 
         Supply a value for o if a specified octave is needed.
         """
-        scale = str(choice(SCALES.keys()))
+        scale = choice(list(SCALES.keys()))
         pcs = SCALES[scale]
-        if t:
+        if transpose:
             mod = Modify()
             pcs_t = mod.transpose(pcs, randint(1, 11), octeq=False)
-            notes = tostr(pcs_t, octave=o)
+            notes = to_str(pcs_t, octave=octave)
         else:
-            notes = tostr(pcs, octave=o)
+            notes = to_str(pcs, octave=octave)
         return scale, pcs, notes
 
     @staticmethod
-    def pick_set(t=True, o=None):
+    def pick_set(transpose=True, octave=None):
         """
         Selects prime form and transposes a random distance (or not)
 
@@ -288,18 +295,18 @@ class Generate:
 
         Supply a value for o if a specified octave is needed.
         """
-        fn = str(choice(SETS.keys()))
+        fn = choice(list(SETS.keys()))
         pcs = SETS[fn]
-        if t:
+        if transpose:
             mod = Modify()
             pcs_t = mod.transpose(pcs, randint(1, 11), octeq=False)
-            scale = tostr(pcs_t, octave=o)
+            scale = to_str(pcs_t, octave=octave)
         else:
-            scale = tostr(pcs, octave=o)
+            scale = to_str(pcs, octave=octave)
         return fn, pcs, scale
 
     @staticmethod
-    def new_scale(self, t=True, o=None):
+    def new_scale(transpose=True, octave=None):
         """
         Returns a randomly generated 5 to 8 note scale with or without an octave
         to be used as a 'root'. Can take an int as a starting octave
@@ -312,22 +319,24 @@ class Generate:
         """
         pcs = []
         total = randint(5, 8)
-        """Current method. Outputs are quite interesting, though I think this
-           is the least efficient way to go about this..."""
+        """
+        Current approach. Outputs are quite interesting, though I think this
+        is the least efficient way to go about this...
+        """
         while len(pcs) < total:
             n = randint(0, 11)
             if n not in pcs:
                 pcs.append(n)
         # pcs = [randint(0,11) for x in range(total) if x not in pcs]
         pcs.sort()
-        if t:
+        if transpose:
             mod = Modify()
             pcs = mod.transpose(pcs, randint(1, 11), octeq=False)
-        scale = tostr(pcs, o)
+        scale = to_str(pcs, octave)
         return scale, pcs
 
     @staticmethod
-    def new_source_scale(root):
+    def _new_source_scale(root: list) -> list[str]:
         """
         Generates a list[str] "source scale" based off a
         supplied root (list[str]).
@@ -350,7 +359,7 @@ class Generate:
                 n = 0
         return scale
 
-    def new_source_scales(self, t=None):
+    def new_source_scales(self, total=None):
         """
         generates a dictionary of source scales to choose from.
 
@@ -358,14 +367,14 @@ class Generate:
             sources (dict[int, list[str]])
             scale_info (list[str])
         """
-        if t is None:
-            t = randint(3, 8)  # pick 3-8 scales if no total is provided
+        if total is None:
+            total = randint(3, 8)  # pick 3-8 scales if no total is provided
         sources = {}
         scale_info = []
-        for scale in range(t):
+        for scale in range(total):
             root, info = self.pick_root()
             scale_info.append(info)
-            sources[scale] = self.new_source_scale(root)
+            sources[scale] = self._new_source_scale(root)
         return sources, scale_info
 
     @staticmethod
@@ -397,7 +406,7 @@ class Generate:
                 sv.append(note)
             variants[i] = sv
         for scale in variants:
-            variants[scale] = tostr(variants[scale], octave=o, octeq=False)
+            variants[scale] = to_str(variants[scale], octave=o, oct_eq=False)
         return variants
 
     @staticmethod
@@ -406,10 +415,14 @@ class Generate:
         Returns a list[int] of pitch classes outlining a one-octave
         arpeggio.
         """
-        return ARPEGGIOS[key]
+        if key in ARPEGGIOS.keys():
+            return ARPEGGIOS[key]
+        else:
+            raise ValueError(f"{key} is not a valid parameter. "
+                             f"available parameters: {list(ARPEGGIOS.keys())}")
 
     @staticmethod
-    def new_12tone_row():
+    def new_12tone_row() -> list[str]:
         """
         Generates a 12-tone row. Returns a note list[str].
         Notes don't have an assigned octave.
@@ -417,7 +430,7 @@ class Generate:
         return sample(PITCH_CLASSES, len(PITCH_CLASSES))
 
     @staticmethod
-    def new_12tone_intervals():
+    def new_12tone_intervals() -> list:
         """
         Returns a list of 11 non-repeating intervals to generate 12-tone row
         transpositions.
@@ -461,7 +474,7 @@ class Generate:
         Generates a series of rhythms of n length, where n is supplied
         from elsewhere. Can also decide to pick 3 and 30 rhythms
         if no desired total is supplied. Will convert raw rhythm values
-        to a given tempo, if provided. Otherwise it'll just return an
+        to a given tempo, if provided. Otherwise, it'll just return an
         unaltered float list.
 
         Uses infrequent repetition.
@@ -474,8 +487,10 @@ class Generate:
         if total == None:
             total = randint(3, 30)
         while len(rhythms) < total:
-            rhythm = choice(RHYTHMS)  # Pick rhythm and add to list
-            if randint(1, 2) == 1:  # Repeat this rhythm or not?
+            # Pick rhythm and add to list
+            rhythm = choice(RHYTHMS)
+            # Repeat this rhythm or not?
+            if randint(1, 2) == 1:
                 limit = scale_limit(total)
                 if limit == 0:
                     limit += 2
@@ -486,8 +501,9 @@ class Generate:
                         break
             else:
                 rhythms.append(rhythm)
-        if tempo != None and tempo != 60.0:  # scale to given tempo, if provided and necessary.
-            rhythms = scaletotempo(tempo, rhythms)
+        # scale to given tempo, if provided and necessary.
+        if tempo is not None and tempo != 60.0:
+            rhythms = scale_to_tempo(tempo, rhythms)
         return rhythms
 
     ### DYNAMICS ###
@@ -567,23 +583,23 @@ class Generate:
     ### CHORDS ###
 
     @staticmethod
-    def display_chord(chord):
-        print("\n------------Chord:-------------")
-        print("\nnotes:", chord.notes)
-        print("rhythm:", chord.rhythm)
-        print("dynamic:", chord.dynamic)
+    def display_chord(chord: Chord) -> None:
+        output = f"\n------------Chord:-------------" \
+                 f"\nnotes: {chord.notes}" \
+                 f"rhythm: {chord.rhythm}" \
+                 f"dynamic: {chord.dynamic}"
+        print(output)
 
-    @staticmethod
-    def display_chords(chords):
+    def display_chords(self, chords: list) -> None:
         print("\n----------------HARMONY INFO:-------------------")
         cl = len(chords)
         for i in range(cl):
             print('\n', i + 1, ': ', 'Notes:', chords[i].notes)
-            print('      Rhythm:', chords[i].rhythm)
-            print('      Dynamics:', chords[i].dynamic)
+            self.display_chord(chords[i])
+
 
     @staticmethod
-    def chord_durations(chords):
+    def chord_durations(chords: list) -> float:
         """
         Returns the total length  in seconds (float) of a series
         of chord() objects (chord progression).
@@ -594,7 +610,8 @@ class Generate:
             d += chords[chord].rhythm
         return d
 
-    def new_chord(self, tempo=None, scale=None):
+
+    def new_chord(self, tempo=None, scale=None) -> Chord:
         """
         Generates a 2-9 note chord with randomly chosen notes, rhythm, and dynamic
         from either a supplied scale or self-selected or generated one.
@@ -602,31 +619,34 @@ class Generate:
         Returns a chord() object. Does not assign an instrument!
         """
         a = Analyze()
-        newchord = Chord()
+        new_chord = Chord()
         if tempo is None:
-            newchord.tempo = 60.0
+            new_chord.tempo = 60.0
         else:
-            newchord.tempo = tempo
+            new_chord.tempo = tempo
         if scale is None:
             # pick an existing scale/set or make a new one?
             if randint(1, 2) == 1:
-                scale, newchord.info = self.pick_root(o=randint(2, 5))
-                newchord.pcs = a.get_pcs(scale)
+                scale, new_chord.info = self.pick_root(o=randint(2, 5))
+                new_chord.pcs = a.get_pcs(scale)
             else:
-                scale, newchord.pcs = self.new_scale(o=randint(2, 5))
-                newchord.info = "Invented Scale"
-        newchord.source_notes = scale
+                scale, new_chord.pcs = self.new_scale(octave=randint(2, 5))
+                new_chord.info = "Invented Scale"
+        new_chord.source_notes = scale
+
         # notes, rhythms, dynamics...
         total = randint(2, 9)
-        newchord.notes = [choice(scale) for c in range(total)]
+        new_chord.notes = [choice(scale) for c in range(total)]
         rhythm = self.new_rhythm()
-        if newchord.tempo != 60:
-            rhythm = scaletotempo(newchord.tempo, rhythm)
-        newchord.rhythm = rhythm
-        newchord.dynamic = self.new_dynamics(total=1, rests=False)
-        return newchord
+        if new_chord.tempo != 60:
+            rhythm = scale_to_tempo(new_chord.tempo, rhythm)
+        new_chord.rhythm = rhythm
+        new_chord.dynamic = self.new_dynamics(total=1, rests=False)
 
-    def new_chords(self, total=None, tempo=None, scale=None):
+        return new_chord
+
+
+    def new_chords(self, total=None, tempo=None, scale=None) -> list[Chord]:
         """
         Generates a progression from the notes of a given scale.
         Returns a list of chord() objects (5-11 if no total is
@@ -647,12 +667,12 @@ class Generate:
         if scale is None:
             scale = self.new_notes()[0]
         while len(chords) < total:
-            newchord = self.new_chord(tempo, scale)
-            chords.append(newchord)
+            new_chord = self.new_chord(tempo, scale)
+            chords.append(new_chord)
         return chords
 
     @staticmethod
-    def new_triads(scale, t=None):
+    def new_triads(scale, t=None) -> list[Chord]:
         """
         generates a list of triads of t length from a given multi-octave
         source scale. a single octave scale will only yield 3 triads since
@@ -698,37 +718,39 @@ class Generate:
         if n < 0:
             return -1
         if r > 11 or r < 0:
-            r = oe(r)
+            r = oct_equiv(r)
         chord = []
         while len(chord) < n:
             chord.append(r)
             r += i
             if r > 11:
-                r = oe(r)
+                r = oct_equiv(r)
         return chord
 
     ### MELODIES ###
 
     @staticmethod
-    def display_melody(m):
+    def display_melody(m: Melody) -> None:
         """
         Displays melody() object data
         """
-        print("\n-----------MELODY Data:------------")
-        print("\nTempo:", m.tempo, "bpm")
-        print("\nInstrument:", m.instrument)
-        print("\nPitch Classes:", m.pcs)
-        print("\nSource data:", m.source_data)
-        print("\nInfo:", m.info)
-        print("\nTotal Notes:", len(m.notes))
-        print("Notes:", m.notes)
-        print("\nTotal rhythms:", len(m.rhythms))
-        print("Rhythms:", m.rhythms)
-        print("\nTotal dynamics:", len(m.dynamics))
-        print("Dynamics:", m.dynamics)
+        output = f"\n-----------MELODY Data:------------" \
+                 f"\nTempo: {m.tempo} bpm" \
+                 f"\nInstrument: {m.instrument}" \
+                 f"\nPitch Classes: {m.pcs}" \
+                 f"\nSource Data: {m.source_data}" \
+                 f"\nInfo: {m.info}" \
+                 f"\nTotal Notes: {len(m.notes)}" \
+                 f"Notes: {m.notes}" \
+                 f"\nTotal rhythms: {len(m.rhythms)}" \
+                 f"Rhythms: {m.rhythms}" \
+                 f"\nTotal Dynamics: {len(m.dynamics)}" \
+                 f"Dynamics: {m.dynamics}\n"
+        print(output)
 
 
-    def new_melody(self, tempo=None, data=None, dt=None, t=None, r=None):
+    def new_melody(self, tempo=None, data=None,
+                   data_type=None, total=None, inst_range=None) -> Melody:
         """
         Picks tempo, notes, rhythms, and dynamics, with or without a
         supplied list from the user. It can process a list of ints
@@ -738,15 +760,16 @@ class Generate:
         if data is supplied, then adding a value for t will be redundant
         since this just goes off the total elements in the data list.
 
-        If no data is supplied, then it will generate a melody anyways.
+        If no data is supplied, then it will generate a melody anyway.
 
         Returns a melody() object
 
         NOTE: Instrument is *NOT* picked! Needs to be supplied externally.
         """
         m = Melody()
-        if dt is not None and data is not None:
-            data, m = map_data(m, data, dt)  # Process any incoming data
+        if data_type is not None and data is not None:
+            # Process any incoming data
+            data, m = map_data(m, data, data_type)
         else:
             m.source_data = 'None Inputted'
         if tempo is None:
@@ -755,19 +778,19 @@ class Generate:
             m.tempo = tempo
         # Pick notes from scratch  
         if data is None:
-            if t is None:
+            if total is None:
                 m.notes, m.info, m.source_scale = self.new_notes()
             else:
-                m.notes, m.info, m.source_scale = self.new_notes(tot=t)
-        # Or use supplied data (supplied total (t) isn't applicable with
+                m.notes, m.info, m.source_scale = self.new_notes(tot=total)
+        # Or use supplied data (supplied total isn't applicable with
         # a data set of n size, since n will just become the total we work with.
         else:
             m.notes, m.info, m.source_scale = self.new_notes(data=data)
         # remove any notes not within a supplied range
-        if r is not None:
+        if inst_range is not None:
             ml = len(m.notes)
             for note in range(ml):
-                if m.notes[note] not in r:
+                if m.notes[note] not in inst_range:
                     m.notes.remove(m.notes[note])
         # add rhythms and dynamics
         m.rhythms = self.new_rhythms(len(m.notes), m.tempo)
@@ -776,12 +799,12 @@ class Generate:
 
     ### NEW COMPOSITION ###
 
-    def new_composition(self, data=None, dt=None):
+    def new_composition(self, data=None, data_type=None):
         """
         Generates 1 melody and set of harmonies with our without
         inputted data.
 
-        Takes an 0x-xxxxxx hex humber representing a color, or
+        Takes a 0x-xxxxxx hex humber representing a color, or
         an array of ints, floats or chars of any length as arguments,
         plus the data type represented by a int
         (int (1), float (2), char (3), or hex number (4)).
@@ -791,13 +814,14 @@ class Generate:
 
         Returns a composition() object on success, or -1 on failure.
         """
-        # Initialize
         comp = self.init_comp()
         comp.ensemble = 'duet'
 
         # Generate a melody
-        if data is not None and dt is not None:
-            m = self.new_melody(tempo=comp.tempo, data=data, dt=dt)
+        if data is not None and data_type is not None:
+            m = self.new_melody(tempo=comp.tempo,
+                                data=data,
+                                data_type=data_type)
             m.instrument = self.new_instrument()
             comp.instruments.append(m.instrument)
         else:
@@ -806,22 +830,28 @@ class Generate:
             comp.instruments.append(m.instrument)
 
         # Save melody info
-        comp.melodies.append(m)
+        comp.parts.update({
+            f"{m.instrument}": m
+        })
 
-        # Generate harmonies from this melody. Total is between half the number of notes
+        # Generate harmonies from this melody.
+        # Total is between half the number of notes
         # in the melody and total num of notes.
         ch = self.new_chords(total=randint(floor(len(m.notes) / 2), len(m.notes)),
                              tempo=comp.tempo,
                              scale=m.notes)
-        instr = INSTRUMENTS[randint(0, 8)]  # pick keyboard instrument and apply to all chord objects
+        # pick keyboard instrument and apply to all chord objects
+        instr = INSTRUMENTS[randint(0, 8)]
         for i in range(len(ch)):
             ch[i].instrument = instr
-        comp.instruments.append(instr)  # save instrument to comp instr list
-        comp.chords[0] = ch  # Save keyboard part to chord dictionary
-
-        comp.title = f"{comp.title} for {m.instrument} and various keyboards"
-
-        save(comp)  # write out
-        comp.display()  # display results
+        comp.instruments.append(instr)
+        # save chord object list
+        comp.parts.update({
+            f"{instr}": ch
+        })
+        # add title, write out to MIDI file, and display results
+        comp.title = f"{comp.title} for various instruments"
+        save(comp)
+        comp.display()
 
         return comp

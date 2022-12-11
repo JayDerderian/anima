@@ -1,9 +1,9 @@
-'''
-This module handles text file generation for new compositions. 
+"""
+This module handles text file generation for new compositions.
 
-Also see if we can reduce the number of times f.write() is called. It seems like... a lot, in 
+Also see if we can reduce the number of times f.write() is called. It seems like... a lot, in
 it's current state.
-'''
+"""
 
 from datetime import datetime as date
 

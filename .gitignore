@@ -6,12 +6,14 @@ midi/
 results/
 libs/
 .vscode/
+.idea/
 docs/
-gui/
+old files/gui/
 old files/
 raw midi/
 resources/
 inprog/
 .env
 notes
+testing.py
 .github/

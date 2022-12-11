@@ -8,7 +8,7 @@ from random import randint
 from datetime import datetime as date
 
 from utils.midi import save
-from utils.tools import scaletotempo
+from utils.tools import scale_to_tempo
 from utils.txtfile import save_info
 
 from core.generate import Generate
@@ -67,7 +67,7 @@ def new_source(create, scale_total, oct_total):
     '''
     scales = {}
     oct_total *= 7
-    mode, mode_pcs, notes = create.pick_scale(t=True)
+    mode, mode_pcs, notes = create.pick_scale(transpose=True)
     for i in range(scale_total):
         n = 0
         scale = []
@@ -80,6 +80,6 @@ def new_source(create, scale_total, oct_total):
                 octave += 1
                 n = 0
         scales[i] = scale
-        mode, mode_pcs, notes = create.pick_scale(t=True)
+        mode, mode_pcs, notes = create.pick_scale(transpose=True)
         print("...new mode:", notes[0], mode)
     return scales

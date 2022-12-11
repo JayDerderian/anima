@@ -14,7 +14,7 @@ from datetime import datetime as date
 
 from utils.midi import save
 from utils.txtfile import save_info
-from utils.tools import scaletotempo
+from utils.tools import scale_to_tempo
 from core.constants import TEMPOS, RHYTHMS, DYNAMICS
 
 from core.generate import Generate
@@ -92,12 +92,12 @@ def pnoduet(instrument=None, tempo=None):
 
     # pick initial starting key/mode
     print("\npicking source notes...")
-    notes = create.pick_scale(t=True)
+    notes = create.pick_scale(transpose=True)
     # append octaves 2 - 5 to have a starting source scale. 
     """if things progress well then i'll attempt to transpose figures 
     mid additive/subtractive process to give harmonic variety,
     and possibly follow a larger harmonic plan."""
-    scale = create.new_source_scale(notes[2])
+    scale = create._new_source_scale(notes[2])
 
     # compose initial [instr] melody
     '''
@@ -279,10 +279,10 @@ def pnoduet(instrument=None, tempo=None):
 
     print("\nscaling rhythms to tempo...")
     if comp.tempo != 60:
-        # om.rhythms = create.scaletotempo(comp.tempo, om.rhythms)
-        m.rhythms = scaletotempo(comp.tempo, m.rhythms)
+        # om.rhythms = create.scale_to_tempo(comp.tempo, om.rhythms)
+        m.rhythms = scale_to_tempo(comp.tempo, m.rhythms)
         for i in range(len(pno)):
-            pno[i].rhythm = scaletotempo(comp.tempo, pno[i].rhythm)
+            pno[i].rhythm = scale_to_tempo(comp.tempo, pno[i].rhythm)
 
 
     #################################

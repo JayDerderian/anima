@@ -5,7 +5,7 @@ MIDI files.
 TODO:
     convert MIDI file data to composition() object, as best as possible.
     mainly need to retrieve MIDI note numbers, velocities, and start/end times
-    possibly parse other parts of MIDI file as I learn more about them...
+    possibly parse_midi other parts of MIDI file as I learn more about them...
 
     comp object analysis:
 
@@ -24,19 +24,19 @@ TODO: generate spectrogram of a given audio file
 """
 
 from utils.midi import (
-    load,
+    load_midi_file,
     save,
-    parse,
+    parse_midi,
     tempo2bpm,
     MIDI_num_to_note_name
 )
 
 from utils.tools import (
-    removeoct,
-    oe,
-    scaletotempo,
-    allsame,
-    tostr
+    remove_oct,
+    oct_equiv,
+    scale_to_tempo,
+    all_same,
+    to_str
 )
 
 from core.constants import (
@@ -82,14 +82,14 @@ class Analyze:
             cl = len(comp.chords)
             for c in range(cl):
                 chords = comp.chords[c]
-                chrdlen = len(chords)
-                for chrd in range(chrdlen):
+                chrd_len = len(chords)
+                for chrd in range(chrd_len):
                     pcs[chords[chrd].instrument] = self.get_pcs(chords[chrd].notes)
             return pcs
-        if len(comp.melodichords) > 0:
-            ml_len = len(comp.melodichords)
+        if len(comp.melodi_chords) > 0:
+            ml_len = len(comp.melodi_chords)
             for m in range(ml_len):
-                pcs[comp.melodichords[m].instrument] = self.get_pcs(comp.melodichords[m].notes)
+                pcs[comp.melodi_chords[m].instrument] = self.get_pcs(comp.melodi_chords[m].notes)
         return pcs
 
     @staticmethod
@@ -103,7 +103,7 @@ class Analyze:
         if type(notes) == str:
             # check if there's an octave int present 
             if not notes.isalpha():
-                note = removeoct(notes)
+                note = remove_oct(notes)
                 pcs = PITCH_CLASSES.index(note)
             else:
                 pcs = PITCH_CLASSES.index(notes)
@@ -112,7 +112,7 @@ class Analyze:
             nl = len(notes)
             for n in range(nl):
                 if not notes[n].isalpha():
-                    note = removeoct(notes[n])
+                    note = remove_oct(notes[n])
                     pcs.append(PITCH_CLASSES.index(note))
                 else:
                     pcs.append(PITCH_CLASSES.index(notes[n]))
@@ -123,7 +123,7 @@ class Analyze:
     # TODO: TEST THIS
     def count_pcs(self, tracks):
         """
-        takes a list tracks (ideally parsed with midi.parse()), then
+        takes a list tracks (ideally parsed with midi.parse_midi()), then
         counts the number of instances of each pitch class in each track
 
         returns:
@@ -136,7 +136,9 @@ class Analyze:
             # note name strings, then pitch classes (obvs not ideal)
             notes = []
             for n in range(len(tracks.notes)):
-                notes.append(self.get_pcs(MIDI_num_to_note_name(track.notes[n])))
+                notes.append(self.get_pcs(
+                    MIDI_num_to_note_name(track.notes[n])
+                ))
             for key in pc_totals:
                 pc_totals[key] += notes.count(key)
         return pc_totals
@@ -318,7 +320,7 @@ class Analyze:
                 print(ret_inv)
 
         --------
-        NOTE: maybe there's a way to poplulate the matrix using synxtax like this:
+        NOTE: maybe there's a way to populate the matrix using syntax like this:
         arr = [[r]*cols]*rows, where r is a modified version (transposition) of the
         original row.
 
@@ -366,22 +368,28 @@ class Analyze:
             "Rhythms": {},
             "Dynamics": {}
         }
-        tracks, msgs = parse(file_name)  # get MidiTrack() dict and Messages() list
-        res["Tempo"] = tempo2bpm(msgs[0].tempo)  # get global tempo
-
-        for t in range(len(tracks)):  # get pitch class integers and velocities from each track
+        # get MidiTrack() dict and Messages() list
+        tracks, msgs = parse_midi(file_name)
+        # get global tempo
+        res["Tempo"] = tempo2bpm(msgs[0].tempo)
+        # get pitch class integers and velocities from each track
+        for t in range(len(tracks)):
             pcs = []
             vel = []
-            track = tracks[f"track {str(t)}"]  # get current track
+            track = tracks[f"track {str(t)}"]
             for i in range(len(track)):
                 if hasattr(track[i], "velocity"):
-                    if track[i].velocity == 0:  # skip any silent notes (rests)
+                    # skip any silent notes (rests)
+                    if track[i].velocity == 0:
                         continue
-                    note = MIDI_num_to_note_name(track[i].note)  # translate to note name...
-                    pcs.append(self.get_pcs(note))  # ...then to PC integer because reasons
+                    # translate to note name...
+                    note = MIDI_num_to_note_name(track[i].note)
+                    # ...then to PC integer because reasons
+                    pcs.append(self.get_pcs(note))
                     vel.append(track[i].velocity)
             pcints[f"track {str(t)}"] = pcs
             vels[f"track {str(t)}"] = vel
+
         res["Pitch Classes"].update(pcints)
         res["Dynamics"].update(vels)
 
