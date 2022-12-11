@@ -128,7 +128,7 @@ class Composition:
                 f"{part.instrument} {total_occurrences + 1}": part
             })
             self.instruments.append(part.instrument)
-        # list of chord() objects
+        # list of chord() and/or melody() objects
         elif type(part) is list:
             total_occurrences = self.how_many(part[0].instrument)
             self.parts.update({

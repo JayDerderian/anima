@@ -60,7 +60,7 @@ class Analyze:
     def __init__(self) -> None:
         self.going = True
 
-    # ---------------------------------Pitch class retrieval-------------------------------#
+    ### Pitch Class Methods ###
 
     def get_pcs_from_comp(self, comp):
         """
@@ -169,6 +169,8 @@ class Analyze:
             raise TypeError("notes must be a single str or list[str]! "
                             "\ntype is:", type(notes))
 
+    ### Pitch Class Set ###
+
     def find_normal_order(self, notes):
         """
         NOTE: Not ready! maybe match against SETS to see if it's actually
@@ -218,7 +220,7 @@ class Analyze:
         """
         ...
 
-    # ----------------------------------Intervals------------------------------------#
+    ### Intervals ###
 
     def get_intervals(self, notes):
         """
@@ -280,7 +282,7 @@ class Analyze:
                 max = n
         return min, max
 
-    # ---------------------------------------12 tone-------------------------------------#
+    ### 12 Tone Functions ###
 
     # TODO:
     def get_12tone_matrix(self, row, intrvls):
@@ -346,7 +348,7 @@ class Analyze:
                 print(y, end=" ")
             print()
 
-    # -----------------------------------MIDI analysis--------------------------------------#
+    ### MIDI Analysis Functions ###
 
     def parse_MIDI(self, file_name: str):
         """
@@ -401,7 +403,6 @@ some additional methods for handling meter. these are mainly used
 sporadically and didn't really warrant being part of the larger analyze method class,
 at least for now...
 """
-
 
 def is_simple(meter):
     """returns True if meter is a simple meter"""
