@@ -68,6 +68,10 @@ class Composition:
         """
         return True if instruments == self.instruments else False
 
+    def how_many(self, instr: str) -> int:
+        """Determines how many occurrences of this instrument are in this piece"""
+        return list(self.parts.keys()).count(instr)
+
     def add_instrument(self, instrument: str) -> None:
         self.instruments.append(instrument)
 
@@ -107,15 +111,18 @@ class Composition:
         minutes, seconds = divmod(self._duration(), 60)
         return str(int(minutes)) + " min " + str(seconds) + " sec "
 
-    def add_part(self, obj):
-        if isinstance(obj, Melody) or isinstance(obj, Chord):
+    def add_part(self, part):
+        """
+        Add a part to this composition
+        """
+        if isinstance(part, Melody) or isinstance(part, Chord):
             # add the part number if there's more than one of this instrument
-            total_occurrences = list(self.parts.keys()).count(obj.instrument)
+            total_occurrences = self.how_many(part.instrument)
             self.parts.update({
-                f"{obj.instrument} {total_occurrences + 1}": obj
+                f"{part.instrument} {total_occurrences + 1}": part
             })
         else:
             raise TypeError("Unsupported object type! "
                             "Should be Chord() or Melody() instance"
-                            f"Object is type: {type(obj)}")
+                            f"Object is type: {type(part)}")
 

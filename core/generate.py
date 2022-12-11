@@ -378,7 +378,7 @@ class Generate:
         return sources, scale_info
 
     @staticmethod
-    def derive_scales(self, pcs, o=None):
+    def derive_scales(pcs, octave=None):
         """
         Generate derivative scales based on each note in a given scale.
         Requires a pitch class set (pcs) list[int] who's values are
@@ -406,7 +406,7 @@ class Generate:
                 sv.append(note)
             variants[i] = sv
         for scale in variants:
-            variants[scale] = to_str(variants[scale], octave=o, oct_eq=False)
+            variants[scale] = to_str(variants[scale], octave=octave, oct_eq=False)
         return variants
 
     @staticmethod
@@ -450,13 +450,16 @@ class Generate:
             mr.reverse()
             m.extend(mr)
         # melody() object
-        else:
+        elif isinstance(m, Melody):
             end = len(m.notes) - 1
             while end > -1:
                 m.notes.append(m.notes[end])
                 m.rhythms.append(m.rhythms[end])
                 m.dynamics.append(m.dynamics[end])
                 end -= 1
+        else:
+            raise TypeError("parameter must be either a list or Melody() object"
+                            f"param was type: {type(m)}")
         return m
 
         ### RHYTHM ###
@@ -484,7 +487,7 @@ class Generate:
               be hard-coded.
         """
         rhythms = []
-        if total == None:
+        if total is None:
             total = randint(3, 30)
         while len(rhythms) < total:
             # Pick rhythm and add to list
@@ -672,7 +675,7 @@ class Generate:
         return chords
 
     @staticmethod
-    def new_triads(scale, t=None) -> list[Chord]:
+    def new_triads(scale, total=None) -> list[Chord]:
         """
         generates a list of triads of t length from a given multi-octave
         source scale. a single octave scale will only yield 3 triads since
@@ -681,7 +684,7 @@ class Generate:
         ideally a list[str] of note chars in at least two octaves will
         be supplied.
 
-        picks notes by accessing every other index three times.
+        Pick notes by accessing every other index three times.
 
         returns a list of chord() objects. if t is not supplied, then
         it will generate as many chords as it can until an IndexError
@@ -699,7 +702,7 @@ class Generate:
             triad.rhythm = 2.0
             triad.dynamic = 100
             triads.append(triad)
-            if len(triads) == t:
+            if len(triads) == total:
                 break
         return triads
 
@@ -749,8 +752,8 @@ class Generate:
         print(output)
 
 
-    def new_melody(self, tempo=None, data=None,
-                   data_type=None, total=None, inst_range=None) -> Melody:
+    def new_melody(self, tempo=None, data=None, data_type=None,
+                   total=None, inst_range=None) -> Melody:
         """
         Picks tempo, notes, rhythms, and dynamics, with or without a
         supplied list from the user. It can process a list of ints
@@ -776,6 +779,7 @@ class Generate:
             m.tempo = self.new_tempo()
         else:
             m.tempo = tempo
+
         # Pick notes from scratch  
         if data is None:
             if total is None:
@@ -786,12 +790,14 @@ class Generate:
         # a data set of n size, since n will just become the total we work with.
         else:
             m.notes, m.info, m.source_scale = self.new_notes(data=data)
-        # remove any notes not within a supplied range
+
+        # remove any notes not within a supplied range (if available)
         if inst_range is not None:
             ml = len(m.notes)
             for note in range(ml):
                 if m.notes[note] not in inst_range:
                     m.notes.remove(m.notes[note])
+
         # add rhythms and dynamics
         m.rhythms = self.new_rhythms(len(m.notes), m.tempo)
         m.dynamics = self.new_dynamics(len(m.notes))
@@ -799,7 +805,7 @@ class Generate:
 
     ### NEW COMPOSITION ###
 
-    def new_composition(self, data=None, data_type=None):
+    def new_composition(self, data=None, data_type=None) -> Composition:
         """
         Generates 1 melody and set of harmonies with our without
         inputted data.
