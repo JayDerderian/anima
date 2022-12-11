@@ -6,6 +6,7 @@ midi/
 results/
 libs/
 .vscode/
+.idea/
 docs/
 old files/gui/
 old files/

@@ -35,12 +35,14 @@ class Composition:
         else:
             self.tempo = 60.0
 
-        self.ensemble = ""  # "trio," "duet", etc..
-        self.instruments = []  # list of instruments
-        # self.tracks is a dictionary where each entry is a list
-        # of either Melody() or Chord() (or both!) objects.
-        self.tracks = dict
-
+        # "trio," "duet", etc..
+        self.ensemble = ""
+        # list of instruments in the piece
+        self.instruments = []
+        # self.parts is a dictionary where each entry is a list
+        # of either Melody() or Chord() (or both!) objects,
+        # or a single Melody() or Chord() object
+        self.parts = {}
 
     def __repr__(self) -> str:
         if len(self.instruments) == 0:
@@ -50,17 +52,14 @@ class Composition:
         else:
             return f"{self.title} for {len(self.instruments)} instruments"
 
-
     def _get_instrument_list(self) -> list:
-        return list(self.tracks.keys())
-
+        return list(self.parts.keys())
 
     def is_picked(self, instr: str) -> bool:
         """
         Has this instrument been picked already?
         """
         return True if instr in self.instruments else False
-
 
     def all_picked(self, instruments: list) -> bool:
         """
@@ -69,15 +68,12 @@ class Composition:
         """
         return True if instruments == self.instruments else False
 
-
     def add_instrument(self, instrument: str) -> None:
         self.instruments.append(instrument)
-
 
     def remove_instrument(self, instrument: str) -> None:
         if instrument in self.instruments:
             self.instruments.remove(instrument)
-
 
     def display(self) -> None:
         """
@@ -91,20 +87,18 @@ class Composition:
                  f"text file: {self.txt_file_name}"
         print(output)
 
-
     def _duration(self) -> float:
         """
         gets the max duration from the dictionary of tracks
         """
         longest = 0.0
-        for track in self.tracks:
+        for track in self.parts:
             dur = 0.0
-            for obj in self.tracks[track]:
+            for obj in self.parts[track]:
                 dur += obj.duration()
             if dur > longest:
                 longest = dur
         return longest
-
 
     def duration(self) -> str:
         """
@@ -113,11 +107,15 @@ class Composition:
         minutes, seconds = divmod(self._duration(), 60)
         return str(int(minutes)) + " min " + str(seconds) + " sec "
 
+    def add_part(self, obj):
+        if isinstance(obj, Melody) or isinstance(obj, Chord):
+            # add the part number if there's more than one of this instrument
+            total_occurrences = list(self.parts.keys()).count(obj.instrument)
+            self.parts.update({
+                f"{obj.instrument} {total_occurrences + 1}": obj
+            })
+        else:
+            raise TypeError("Unsupported object type! "
+                            "Should be Chord() or Melody() instance"
+                            f"Object is type: {type(obj)}")
 
-    def add_track(self, obj):
-        if not isinstance(obj, Melody) or not isinstance(obj, Chord):
-            raise ValueError("Unsupported object type! "
-                             "Should be Chord() or Melody()")
-        self.tracks.update({
-            f"{obj.instrument}": obj
-        })

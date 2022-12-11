@@ -273,7 +273,7 @@ class Generate:
 
         Supply a value for o if a specified octave is needed.
         """
-        scale = str(choice(SCALES.keys()))
+        scale = choice(list(SCALES.keys()))
         pcs = SCALES[scale]
         if transpose:
             mod = Modify()
@@ -295,7 +295,7 @@ class Generate:
 
         Supply a value for o if a specified octave is needed.
         """
-        fn = str(choice(SETS.keys()))
+        fn = choice(list(SETS.keys()))
         pcs = SETS[fn]
         if transpose:
             mod = Modify()
@@ -750,7 +750,7 @@ class Generate:
 
 
     def new_melody(self, tempo=None, data=None,
-                   dt=None, t=None, r=None) -> Melody:
+                   data_type=None, total=None, inst_range=None) -> Melody:
         """
         Picks tempo, notes, rhythms, and dynamics, with or without a
         supplied list from the user. It can process a list of ints
@@ -760,15 +760,16 @@ class Generate:
         if data is supplied, then adding a value for t will be redundant
         since this just goes off the total elements in the data list.
 
-        If no data is supplied, then it will generate a melody anyways.
+        If no data is supplied, then it will generate a melody anyway.
 
         Returns a melody() object
 
         NOTE: Instrument is *NOT* picked! Needs to be supplied externally.
         """
         m = Melody()
-        if dt is not None and data is not None:
-            data, m = map_data(m, data, dt)  # Process any incoming data
+        if data_type is not None and data is not None:
+            # Process any incoming data
+            data, m = map_data(m, data, data_type)
         else:
             m.source_data = 'None Inputted'
         if tempo is None:
@@ -777,19 +778,19 @@ class Generate:
             m.tempo = tempo
         # Pick notes from scratch  
         if data is None:
-            if t is None:
+            if total is None:
                 m.notes, m.info, m.source_scale = self.new_notes()
             else:
-                m.notes, m.info, m.source_scale = self.new_notes(tot=t)
-        # Or use supplied data (supplied total (t) isn't applicable with
+                m.notes, m.info, m.source_scale = self.new_notes(tot=total)
+        # Or use supplied data (supplied total isn't applicable with
         # a data set of n size, since n will just become the total we work with.
         else:
             m.notes, m.info, m.source_scale = self.new_notes(data=data)
         # remove any notes not within a supplied range
-        if r is not None:
+        if inst_range is not None:
             ml = len(m.notes)
             for note in range(ml):
-                if m.notes[note] not in r:
+                if m.notes[note] not in inst_range:
                     m.notes.remove(m.notes[note])
         # add rhythms and dynamics
         m.rhythms = self.new_rhythms(len(m.notes), m.tempo)
@@ -798,7 +799,7 @@ class Generate:
 
     ### NEW COMPOSITION ###
 
-    def new_composition(self, data=None, dt=None):
+    def new_composition(self, data=None, data_type=None):
         """
         Generates 1 melody and set of harmonies with our without
         inputted data.
@@ -817,8 +818,10 @@ class Generate:
         comp.ensemble = 'duet'
 
         # Generate a melody
-        if data is not None and dt is not None:
-            m = self.new_melody(tempo=comp.tempo, data=data, dt=dt)
+        if data is not None and data_type is not None:
+            m = self.new_melody(tempo=comp.tempo,
+                                data=data,
+                                data_type=data_type)
             m.instrument = self.new_instrument()
             comp.instruments.append(m.instrument)
         else:
@@ -827,7 +830,7 @@ class Generate:
             comp.instruments.append(m.instrument)
 
         # Save melody info
-        comp.tracks.update({
+        comp.parts.update({
             f"{m.instrument}": m
         })
 
@@ -843,7 +846,7 @@ class Generate:
             ch[i].instrument = instr
         comp.instruments.append(instr)
         # save chord object list
-        comp.tracks.update({
+        comp.parts.update({
             f"{instr}": ch
         })
         # add title, write out to MIDI file, and display results
