@@ -116,17 +116,17 @@ def str_qtet(tempo=None):
     durations = []
     for q in range(len(qtet)):
         durations.append(qtet[q].duration())
-    lp = max(durations)
+    longest_part = max(durations)
 
     print("\nsyncing...")
 
     for q in trange((len(qtet)), desc="progress"):
-        if qtet[q].duration() < lp:
-            qtet[q] = sync(qtet[q], lp, figs[q])
+        if qtet[q].duration() < longest_part:
+            qtet[q] = sync(qtet[q], longest_part, figs[q])
 
     # save all parts then write out
     for q in range(len(qtet)):
-        comp.melodies.append(qtet[q])
+        comp.add_part(qtet[q])
     save(comp)
 
     print("\n...success!")
@@ -182,7 +182,7 @@ def write_line(m, scale, total, create, asyn=False):
     return m
 
 
-def build_ending(m):
+def build_ending(m: Melody):
     """
     builds a closing figure based off the last 3-7 notes and slowly
     shortens the rhythms until they're 16th's, while increasing the
@@ -239,3 +239,7 @@ def sync(melody, longest_part, fig):
         melody.rhythms.extend(fig["rhythms"])
         melody.dynamics.extend(fig["dynamics"])
     return melody
+
+
+if __name__ == "__main__":
+    str_qtet()

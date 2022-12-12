@@ -11,7 +11,9 @@ from mido import (
 )
 
 from utils.tools import normalize_str
-from core.constants import INSTRUMENTS, NOTES
+from core.constants import (
+    INSTRUMENTS, NOTES, MIDI_LOC
+)
 
 from containers.note import Note
 from containers.melody import Melody
@@ -94,7 +96,7 @@ def parse_midi(file_name):
 
 
 def _build_melody(start: float, end:float,
-                  cur_part:Melody, midi_writer: PrettyMIDI):
+                  cur_part: Melody, midi_writer: PrettyMIDI):
 
     end += cur_part.rhythms[0]
     instrument = instrument_to_program(cur_part.instrument)
@@ -173,4 +175,4 @@ def save(comp: Composition) -> None:
 
     # write to MIDI file
     print('\nsaving', comp.midi_file_name, '...')
-    midi_writer.write(f'./midi/{comp.midi_file_name}')
+    midi_writer.write(f'{MIDI_LOC}/{comp.midi_file_name}')

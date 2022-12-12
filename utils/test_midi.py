@@ -24,6 +24,6 @@ def gen_test_mid():
     mel.dynamics = [100] * len(mel.notes)
 
     comp.instruments.append(mel.instrument)
-    comp.melodies.append(mel)
+    comp.add_part(mel)
     save(comp)
     comp.display()
