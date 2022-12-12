@@ -124,19 +124,15 @@ class Composition:
         if isinstance(part, Melody) or isinstance(part, Chord):
             # add the part number if there's more than one of this instrument
             total_occurrences = self.how_many(part.instrument)
-            self.parts.update({
-                f"{part.instrument} {total_occurrences + 1}": part
-            })
-            self.instruments.append(part.instrument)
         # list of chord() and/or melody() objects
         elif type(part) is list:
+            # it's assumed every object in this list will have the same instrument
             total_occurrences = self.how_many(part[0].instrument)
-            self.parts.update({
-                f"{part.instrument} {total_occurrences + 1}": part
-            })
-            self.instruments.append(part[0].instrument)
         else:
             raise TypeError("Unsupported object type! "
                             "Should be Chord() or Melody() instance"
                             f"Object is type: {type(part)}")
-
+        self.parts.update({
+            f"{part.instrument} {total_occurrences + 1}": part
+        })
+        self.instruments.append(part.instrument)

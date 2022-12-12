@@ -84,7 +84,7 @@ class Bar:
         if len(self.bar["Rhythms"]) == 0:
             return 0.0
         dur = 0.0
-        for rhy in len(self.bar["Rhythms"]):
+        for rhy in self.bar["Rhythms"]:
             dur += self.bar["Rhythms"][rhy]
         return dur
 
@@ -100,6 +100,7 @@ class Bar:
         else:
             raise ValueError("invalid meter!")
 
+    # TODO: fix this
     def add_notes(self, mel: Melody) -> Melody:
         """
         Takes a Melody() object and adds notes rhythms and dynamics
