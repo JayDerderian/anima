@@ -74,17 +74,17 @@ class Analyze:
         """
         pcs = {}
         if len(comp.melodies) > 0:
-            ml = len(comp.melodies)
-            for m in range(ml):
+            mel_len = len(comp.melodies)
+            for m in range(mel_len):
                 pcs[comp.melodies[m].instrument] = self.get_pcs(comp.melodies[m].notes)
             return pcs
         if len(comp.chords) > 0:
             cl = len(comp.chords)
             for c in range(cl):
                 chords = comp.chords[c]
-                chrd_len = len(chords)
-                for chrd in range(chrd_len):
-                    pcs[chords[chrd].instrument] = self.get_pcs(chords[chrd].notes)
+                chord_len = len(chords)
+                for chord in range(chord_len):
+                    pcs[chords[chord].instrument] = self.get_pcs(chords[chord].notes)
             return pcs
         if len(comp.melodi_chords) > 0:
             ml_len = len(comp.melodi_chords)
@@ -109,8 +109,8 @@ class Analyze:
                 pcs = PITCH_CLASSES.index(notes)
         elif type(notes) == list:
             pcs = []
-            nl = len(notes)
-            for n in range(nl):
+            notes_len = len(notes)
+            for n in range(notes_len):
                 if not notes[n].isalpha():
                     note = remove_oct(notes[n])
                     pcs.append(PITCH_CLASSES.index(note))
@@ -152,7 +152,7 @@ class Analyze:
         note name str must have an assigned octave between 0-8.
 
         the returned list[int] should be used by transpose() with
-        octeq set to False. those resulting values should be mapped
+        oct_eq set to False. those resulting values should be mapped
         back against NOTES to get octave-accurate transposed notes
         """
         if type(notes) == str:
@@ -168,6 +168,7 @@ class Analyze:
         else:
             raise TypeError("notes must be a single str or list[str]! "
                             "\ntype is:", type(notes))
+
 
     ### Pitch Class Set ###
 
@@ -230,12 +231,12 @@ class Analyze:
         difference between index values with NOTES corresponds to distance
         in semi-tones!
         """
-        intrvls = []
+        intervals = []
         ind = self.get_index(notes)
         ind_len = len(ind)
         for n in range(1, ind_len):
-            intrvls.append(ind[n] - ind[n - 1])
-        return intrvls
+            intervals.append(ind[n] - ind[n - 1])
+        return intervals
 
     # TODO: 
     def get_interval_vector(self, notes):
@@ -256,8 +257,7 @@ class Analyze:
         """
         diff = self.get_diff(notes, ran)
         if len(diff) > 0:
-            difflen = len(diff)
-            for note in range(difflen):
+            for note in range(len(diff)):
                 notes.remove(diff[note])
         return notes
 
@@ -285,7 +285,7 @@ class Analyze:
     ### 12 Tone Functions ###
 
     # TODO:
-    def get_12tone_matrix(self, row, intrvls):
+    def get_12tone_matrix(self, row, intervals):
         """
         NOTE: NOT READY
 
@@ -332,9 +332,9 @@ class Analyze:
         m = [[]]
         mod = Modify()
         # add original row to first matrix row
-        for i in range(len(intrvls)):
-            r = mod.transpose(row, intrvls[i])
-            print("\nadding P", intrvls[i], ":", r)
+        for i in range(len(intervals)):
+            r = mod.transpose(row, intervals[i])
+            print("\nadding P", intervals[i], ":", r)
             m.insert(i, r)
         return m
 
