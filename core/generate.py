@@ -790,8 +790,8 @@ class Generate:
 
         # remove any notes not within a supplied range (if available)
         if inst_range is not None:
-            ml = len(melody.notes)
-            for note in range(ml):
+            melody_len = len(melody.notes)
+            for note in range(melody_len):
                 if melody.notes[note] not in inst_range:
                     melody.notes.remove(melody.notes[note])
 
