@@ -18,9 +18,10 @@ from core.generate import Generate
 from core.constants import DYNAMICS, RANGE, RHYTHMS, TEMPOS
 
 from containers.melody import Melody
+from containers.composition import Composition
 
 
-def str_qtet(tempo=None):
+def str_qtet(tempo=None) -> Composition:
     """
     creates a choral for string quartet using a randomly chosen mode
     """
@@ -137,10 +138,9 @@ def str_qtet(tempo=None):
     return comp
 
 
-# --------------------------------------------------------------------------#
+## Helpers ###
 
-
-def write_line(m, scale, total, create, asyn=False):
+def write_line(part: Melody, scale: list, total: int, create: Generate, asyn=False):
     """
     writes each individual melodic line for each part.
     **doesn't add rhythm or dynamics** if asyn==False,
@@ -155,34 +155,38 @@ def write_line(m, scale, total, create, asyn=False):
         total = randint(12, 30)
     for things in range(total):
         # limited to octaves 4 and 5 for violins
-        if m.instrument == 'Violin':
+        if part.instrument == 'Violin':
             note = scale[randint(13, len(scale) - 1)]
             # trying to account for random notes chosen out of range...
             while note not in RANGE["Violin"]:
                 note = scale[randint(13, len(scale) - 1)]
-            m.notes.append(note)
+            part.notes.append(note)
         # limit to octaves 3 and 4 for viola
-        elif m.instrument == 'Viola':
+        elif part.instrument == 'Viola':
             note = scale[randint(7, len(scale) - 8)]
             while note not in RANGE["Viola"]:
                 note = scale[randint(7, len(scale) - 8)]
-            m.notes.append(note)
+            part.notes.append(note)
         # limit to octaves 2 and 3 for cello
-        elif m.instrument == 'Cello':
+        elif part.instrument == 'Cello':
             note = scale[randint(0, len(scale) - 16)]
             while note not in RANGE["Cello"]:
                 note = scale[randint(0, len(scale) - 16)]
-            m.notes.append(note)
+            part.notes.append(note)
 
     if asyn:
         # add independent rhythms and dynamics of n length
-        m.rhythms.extend(create.new_rhythms(total=len(m.notes), tempo=m.tempo))
-        m.dynamics.extend(create.new_dynamics(total=len(m.notes)))
+        part.rhythms.extend(
+            create.new_rhythms(total=len(part.notes), tempo=part.tempo)
+        )
+        part.dynamics.extend(
+            create.new_dynamics(total=len(part.notes))
+        )
 
-    return m
+    return part
 
 
-def build_ending(m: Melody):
+def build_ending(part: Melody):
     """
     builds a closing figure based off the last 3-7 notes and slowly
     shortens the rhythms until they're 16th's, while increasing the
@@ -201,15 +205,15 @@ def build_ending(m: Melody):
         "rhythms": [],
         "dynamics": []
     }
-    fig["notes"] = m.notes[-n:]  # last n notes
-    fig["rhythms"] = scale_to_tempo(m.tempo, [2.0] * n)  # start using half-notes
+    fig["notes"] = part.notes[-n:]  # last n notes
+    fig["rhythms"] = scale_to_tempo(part.tempo, [2.0] * n)  # start using half-notes
     fig["dynamics"] = [100] * n  # medium dynamic
 
     # add initial figure 2 times
     for add in range(2):
-        m.notes.extend(fig["notes"])
-        m.rhythms.extend(fig["rhythms"])
-        m.dynamics.extend(fig["dynamics"])
+        part.notes.extend(fig["notes"])
+        part.rhythms.extend(fig["rhythms"])
+        part.dynamics.extend(fig["dynamics"])
     # change each rhythm list to next quickest value, 
     # and increase number of reps by 1 with each change.
     # volume increases with each iteration.
@@ -217,16 +221,16 @@ def build_ending(m: Melody):
     rep = 2
     dyn = 9
     while cur < 9:
-        fig["rhythms"] = scale_to_tempo(m.tempo, [RHYTHMS[cur]] * n)
+        fig["rhythms"] = scale_to_tempo(part.tempo, [RHYTHMS[cur]] * n)
         fig["dynamics"] = [DYNAMICS[dyn]] * n
         for i in range(rep):
-            m.notes.extend(fig["notes"])
-            m.rhythms.extend(fig["rhythms"])
-            m.dynamics.extend(fig["dynamics"])
+            part.notes.extend(fig["notes"])
+            part.rhythms.extend(fig["rhythms"])
+            part.dynamics.extend(fig["dynamics"])
         cur += 1
         rep += 1
         dyn += 1
-    return m, fig
+    return part, fig
 
 
 def sync(melody, longest_part, fig):

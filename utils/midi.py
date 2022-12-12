@@ -71,7 +71,7 @@ def load_midi_file(file_name: str) -> MidiFile:
     return MidiFile(filename=file_name)
 
 
-def parse_midi(file_name):
+def parse_midi(file_name) -> tuple:
     """
     retrieves a midi file from current working directory
     with a supplied file_name string.
@@ -146,10 +146,10 @@ def save(comp: Composition) -> None:
     midi_writer = PrettyMIDI(initial_tempo=comp.tempo)
 
     # iterate over comp.tracks dictionary
-    for track in comp.parts:
+    for part in comp.parts:
         # reset start and end markers for each track
         strt, end = 0.0, 0.0
-        cur_part = comp.parts[track]
+        cur_part = comp.parts[part]
 
         # handle Melody() object
         if isinstance(cur_part, Melody):
@@ -159,7 +159,8 @@ def save(comp: Composition) -> None:
         elif isinstance(cur_part, Chord):
             strt, end, midi_writer = _build_chord(strt, end, cur_part, midi_writer)
 
-        elif type(cur_part) == list:
+        # handle a list of Chord() or Melody() objects (or both!)
+        elif isinstance(cur_part, list):
             for item in cur_part:
                 if isinstance(item, Melody):
                     strt, end, midi_writer = _build_melody(strt, end, item, midi_writer)
@@ -174,5 +175,4 @@ def save(comp: Composition) -> None:
                             "Should be a Melody or Chord object, or list of either(or both)")
 
     # write to MIDI file
-    print('\nsaving', comp.midi_file_name, '...')
     midi_writer.write(f'{MIDI_LOC}/{comp.midi_file_name}')
