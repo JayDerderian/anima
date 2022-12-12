@@ -467,7 +467,7 @@ class Generate:
                             f"param was type: {type(m)}")
         return m
 
-        ### RHYTHM ###
+    ### RHYTHM ###
 
     @staticmethod
     def new_rhythm() -> float:
@@ -587,7 +587,6 @@ class Generate:
 
         return dynamics
 
-
     ### CHORDS ###
 
     @staticmethod
@@ -600,11 +599,10 @@ class Generate:
 
     def display_chords(self, chords: list) -> None:
         print("\n----------------HARMONY INFO:-------------------")
-        cl = len(chords)
-        for i in range(cl):
+        chord_len = len(chords)
+        for i in range(chord_len):
             print('\n', i + 1, ': ', 'Notes:', chords[i].notes)
             self.display_chord(chords[i])
-
 
     @staticmethod
     def chord_durations(chords: list) -> float:
@@ -617,7 +615,6 @@ class Generate:
         for chord in range(cl):
             d += chords[chord].rhythm
         return d
-
 
     def new_chord(self, tempo=None, scale=None) -> Chord:
         """
@@ -653,7 +650,6 @@ class Generate:
 
         return new_chord
 
-
     def new_chords(self, total=None, tempo=None, scale=None) -> list[Chord]:
         """
         Generates a progression from the notes of a given scale.
@@ -684,7 +680,7 @@ class Generate:
         """
         generates a list of triads of t length from a given multi-octave
         source scale. a single octave scale will only yield 3 triads since
-        the third chord will pick the last element in the list..
+        the third chord will pick the last element in the list.
 
         ideally a list[str] of note chars in at least two octaves will
         be supplied.
@@ -697,15 +693,12 @@ class Generate:
 
         NOTE: chords don't have tempo or instrument assigned!"""
         triads = []
-        sl = len(scale)
-        for i in range(sl):
+        scale_len = len(scale)
+        for i in range(1, scale_len):
             triad = Chord()
-            try:
-                triad.notes = [scale[i], scale[i + 2], scale[i + 4]]
-            except IndexError:
-                break
-            triad.rhythm = 2.0
-            triad.dynamic = 100
+            triad.notes = [scale[i - 1], scale[i + 1], scale[i + 3]]
+            triad.rhythm = 2.0  # half notes by default
+            triad.dynamic = 100  # mezzo forte-ish
             triads.append(triad)
             if len(triads) == total:
                 break
@@ -742,7 +735,7 @@ class Generate:
         """
         Displays melody() object data
         """
-        output = f"\n-----------MELODY Data:------------" \
+        output = f"\n-----------MELODY Info------------" \
                  f"\nTempo: {m.tempo} bpm" \
                  f"\nInstrument: {m.instrument}" \
                  f"\nPitch Classes: {m.pcs}" \
@@ -755,7 +748,6 @@ class Generate:
                  f"\nTotal Dynamics: {len(m.dynamics)}" \
                  f"Dynamics: {m.dynamics}\n"
         print(output)
-
 
     def new_melody(self, tempo=None, data=None, data_type=None,
                    total=None, inst_range=None) -> Melody:
@@ -774,39 +766,39 @@ class Generate:
 
         NOTE: Instrument is *NOT* picked! Needs to be supplied externally.
         """
-        m = Melody()
+        melody = Melody()
         if data_type is not None and data is not None:
             # Process any incoming data
-            data, m = map_data(m, data, data_type)
+            data, melody = map_data(melody, data, data_type)
         else:
-            m.source_data = 'None Inputted'
+            melody.source_data = 'None Inputted'
         if tempo is None:
-            m.tempo = self.new_tempo()
+            melody.tempo = self.new_tempo()
         else:
-            m.tempo = tempo
+            melody.tempo = tempo
 
         # Pick notes from scratch  
         if data is None:
             if total is None:
-                m.notes, m.info, m.source_scale = self.new_notes()
+                melody.notes, melody.info, melody.source_scale = self.new_notes()
             else:
-                m.notes, m.info, m.source_scale = self.new_notes(total=total)
+                melody.notes, melody.info, melody.source_scale = self.new_notes(total=total)
         # Or use supplied data. Supplied total isn't applicable with
         # a data set of n size, since n will just become the total we work with.
         else:
-            m.notes, m.info, m.source_scale = self.new_notes(data=data)
+            melody.notes, melody.info, melody.source_scale = self.new_notes(data=data)
 
         # remove any notes not within a supplied range (if available)
         if inst_range is not None:
-            ml = len(m.notes)
+            ml = len(melody.notes)
             for note in range(ml):
-                if m.notes[note] not in inst_range:
-                    m.notes.remove(m.notes[note])
+                if melody.notes[note] not in inst_range:
+                    melody.notes.remove(melody.notes[note])
 
         # add rhythms and dynamics
-        m.rhythms = self.new_rhythms(len(m.notes), m.tempo)
-        m.dynamics = self.new_dynamics(len(m.notes))
-        return m
+        melody.rhythms = self.new_rhythms(len(melody.notes), melody.tempo)
+        melody.dynamics = self.new_dynamics(len(melody.notes))
+        return melody
 
     ### NEW COMPOSITION ###
 
@@ -830,33 +822,33 @@ class Generate:
 
         # Generate a melody
         if data is not None and data_type is not None:
-            m = self.new_melody(tempo=comp.tempo,
-                                data=data,
-                                data_type=data_type)
-            m.instrument = self.new_instrument()
-            comp.instruments.append(m.instrument)
+            melody = self.new_melody(tempo=comp.tempo,
+                                     data=data,
+                                     data_type=data_type)
+            melody.instrument = self.new_instrument()
+            comp.instruments.append(melody.instrument)
         else:
-            m = self.new_melody(tempo=comp.tempo)
-            m.instrument = self.new_instrument()
-            comp.instruments.append(m.instrument)
+            melody = self.new_melody(tempo=comp.tempo)
+            melody.instrument = self.new_instrument()
+            comp.instruments.append(melody.instrument)
 
         # Save melody info
-        comp.add_part(m)
+        comp.add_part(melody)
 
         # Generate harmonies from this melody.
         # Total is between half the number of notes
         # in the melody and total num of notes.
-        ch = self.new_chords(total=randint(floor(len(m.notes) / 2), len(m.notes)),
-                             tempo=comp.tempo,
-                             scale=m.notes)
+        chords = self.new_chords(total=randint(floor(len(melody.notes) / 2), len(melody.notes)),
+                                 tempo=comp.tempo,
+                                 scale=melody.notes)
         # pick keyboard instrument and apply to all chord objects
         instr = INSTRUMENTS[randint(0, 8)]
-        for i in range(len(ch)):
-            ch[i].instrument = instr
+        for i in range(len(chords)):
+            chords[i].instrument = instr
         comp.instruments.append(instr)
 
         # save chord object list
-        comp.add_part(ch)
+        comp.add_part(chords)
 
         # add title, write out to MIDI file, and display results
         comp.title = f"{comp.title} for various instruments"
