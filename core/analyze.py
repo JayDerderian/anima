@@ -362,8 +362,8 @@ class Analyze:
               extract start/end times for each note, subtract end
               from start, then store?
         """
-        vels = {}
-        pcints = {}
+        dynamics = {}
+        pitch_classes = {}
         res = {
             "Tempo": 0,
             "Pitch Classes": {},
@@ -389,11 +389,11 @@ class Analyze:
                     # ...then to PC integer because reasons
                     pcs.append(self.get_pcs(note))
                     vel.append(track[i].velocity)
-            pcints[f"track {str(t)}"] = pcs
-            vels[f"track {str(t)}"] = vel
+            pitch_classes[f"track {str(t)}"] = pcs
+            dynamics[f"track {str(t)}"] = vel
 
-        res["Pitch Classes"].update(pcints)
-        res["Dynamics"].update(vels)
+        res["Pitch Classes"].update(pitch_classes)
+        res["Dynamics"].update(dynamics)
 
         return res
 
