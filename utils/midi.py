@@ -132,6 +132,7 @@ def _build_chord(start: float, end: float,
 
     return start, end, midi_writer
 
+
 def save(comp: Composition) -> None:
     """
     Takes a composition object and constructs
@@ -148,24 +149,24 @@ def save(comp: Composition) -> None:
     # iterate over comp.tracks dictionary
     for part in comp.parts:
         # reset start and end markers for each track
-        strt, end = 0.0, 0.0
+        start, end = 0.0, 0.0
         cur_part = comp.parts[part]
 
         # handle Melody() object
         if isinstance(cur_part, Melody):
-            strt, end, midi_writer = _build_melody(strt, end, cur_part, midi_writer)
+            start, end, midi_writer = _build_melody(start, end, cur_part, midi_writer)
 
         # handle Chord() object
         elif isinstance(cur_part, Chord):
-            strt, end, midi_writer = _build_chord(strt, end, cur_part, midi_writer)
+            start, end, midi_writer = _build_chord(start, end, cur_part, midi_writer)
 
         # handle a list of Chord() or Melody() objects (or both!)
         elif isinstance(cur_part, list):
             for item in cur_part:
                 if isinstance(item, Melody):
-                    strt, end, midi_writer = _build_melody(strt, end, item, midi_writer)
+                    start, end, midi_writer = _build_melody(start, end, item, midi_writer)
                 elif isinstance(item, Chord):
-                    strt, end, midi_writer = _build_chord(strt, end, item, midi_writer)
+                    start, end, midi_writer = _build_chord(start, end, item, midi_writer)
                 else:
                     raise TypeError(f"Unsupported type! Cur_part is type: {type(cur_part)} "
                                     "Should be a Melody or Chord object, or list of either(or both)")
