@@ -21,8 +21,7 @@ class Chord:
         self.pcs = []
         self.source_notes = []
         self.source_data = []
-        
-        # Data
+
         if instrument is None:
             self.instrument = 'Acoustic Grand Piano'
         elif instrument in INSTRUMENTS:

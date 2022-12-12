@@ -48,12 +48,12 @@ class Modify:
         pass
 
     @staticmethod
-    def transpose(pcs, dist, octeq=True):
+    def transpose(pcs, dist, oct_eq=True):
         """
         transpose a list of pitch classes (list[int]) using a supplied interval t (int),
         or list of intervals t (list[int]).
 
-        if octeq is set to False, then resulting values may be greater than
+        if oct_eq is set to False, then resulting values may be greater than
         11. This may work when working with a source scale (since it goes
         from octaves 2-5) as long as the resulting value n is n <= len(source)-1.
 
@@ -63,10 +63,10 @@ class Modify:
 
         returns a modified pcs (list[int]) or modified pitch class (int).
         """
-        pcsl = len(pcs)
+        pcs_len = len(pcs)
         # modify with a single interval across all pitch-class integers
         if type(dist) == int:
-            for note in range(pcsl):
+            for note in range(pcs_len):
                 pcs[note] += dist
         # modify with a list of intervals across all pitch-class integers. 
         # this allows for each pitch-class to be transposed by a unique
@@ -74,12 +74,12 @@ class Modify:
         # it could also be a list of the same repeated value but that 
         # might be less efficient.
         elif type(dist) == list:
-            for note in range(pcsl):
+            for note in range(pcs_len):
                 pcs[note] += dist[note]
         else:
             raise TypeError("incorrect input type. must be single int or list of ints!")
         # keep resulting pcs values between 0 and 11 by default.
-        if octeq:
+        if oct_eq:
             pcs = oct_equiv(pcs)
         return pcs
 
@@ -90,10 +90,11 @@ class Modify:
         """
         if dist > 11 or dist < 1:
             raise ValueError("distance must be an int: 1<=n<=11")
-        pcs = self.transpose(self.get_index(notes), t=dist, octeq=False)
+        pcs = self.transpose(self.get_index(notes),
+                             dist=dist, oct_eq=False)
         return to_str(pcs, oct_eq=False)
 
-    def transpose_c(self, chords: list, dist: int):
+    def transpose_c(self, chords: list, dist: int) -> list:
         """
         wrapper to use with chord() lists
         """
@@ -101,11 +102,12 @@ class Modify:
             raise ValueError("distance must be an int: 1<=n<=11")
         cl = len(chords)
         for c in range(cl):
-            pcs = self.transpose(self.get_index(chords[c].notes), t=dist, octeq=False)
+            pcs = self.transpose(self.get_index(chords[c].notes),
+                                 dist=dist, oct_eq=False)
             chords[c].notes = to_str(pcs, oct_eq=False)
         return chords
 
-    def get_intervals(self, notes: list[str]):
+    def get_intervals(self, notes: list[str]) -> list[int]:
         """
         generates a list of intervals from a given melody.
         total intervals will be len(m.notes)-1.
@@ -113,38 +115,38 @@ class Modify:
         difference between index values with NOTES corresponds to distance
         in semi-tones!
         """
-        intrvls = []
+        intervals = []
         ind = self.get_index(notes)
         ind_len = len(ind)
         for n in range(1, ind_len):
-            intrvls.append(ind[n] - ind[n - 1])
-        return intrvls
+            intervals.append(ind[n] - ind[n-1])
+        return intervals
 
     @staticmethod
     def get_index(notes):
         """
-        gets the index or list of indicies of a given note or
+        gets the index or list of indices of a given note or
         list of notes in NOTES.
 
         note name str must have an assigned octave between 0-8.
 
         the returned list[int] should be used by transpose() with
-        octeq set to False. those resulting values should be mapped
+        oct_eq set to False. those resulting values should be mapped
         back against NOTES to get octave-accurate transposed notes
         """
         if type(notes) == str:
             return NOTES.index(notes)
         elif type(notes) == list:
-            indicies = []
-            notelen = len(notes)
-            for n in range(notelen):
-                indicies.append(NOTES.index(notes[n]))
-            return indicies
+            indices = []
+            note_len = len(notes)
+            for n in range(note_len):
+                indices.append(NOTES.index(notes[n]))
+            return indices
         else:
             raise TypeError("notes must be a single str or list[str]! type is:", type(notes))
 
     @staticmethod
-    def retrograde(m: Melody):
+    def retrograde(m: Melody) -> Melody:
         """
         reverses the elements in a melody object (notes, rhythms, dynamics)
         returns a duplicated melody() object
@@ -159,21 +161,25 @@ class Modify:
         """
         inverts a melody. returns a new note list[str]
         """
-        inverted = []  # list of inverted intervals
-        intr = self.get_intervals(notes)  # get list of intervals and invert values
-        il = len(intr)
-        for i in range(il):
-            if is_pos(intr[i]):
-                inverted.append(-abs(intr[i]))
+        # list of inverted intervals
+        inverted = []
+        # get list of intervals and invert values
+        intervals = self.get_intervals(notes)
+        interval_len = len(intervals)
+        for i in range(interval_len):
+            if is_pos(intervals[i]):
+                inverted.append(-abs(intervals[i]))
             else:
-                inverted.append(abs(intr[i]))
-        mel = []  # get index of first note. we don't need them all.
-        mel.append(self.get_index(notes))  # add first note index to new melody note list
-        for i in range(il):  # build new melody note list off this inverted interval list
+                inverted.append(abs(intervals[i]))
+        # get index of first note. we don't need them all.
+        mel = []
+        mel.append(self.get_index(notes))
+        # build new melody note list off this inverted interval list
+        for i in range(interval_len):
             mel.append(mel[i] + inverted[i])
         return to_str(mel, oct_eq=False)
 
-    def retro_invert(self, m: Melody):
+    def retro_invert(self, m: Melody) -> Melody:
         """
         applies both the retrograde and inversion operations.
         returns a separate Melody() object to be appended
@@ -184,7 +190,7 @@ class Modify:
         return ret
 
     @staticmethod
-    def frag(m: Melody):
+    def frag(m: Melody) -> Melody:
         """
         randomly picks a subset of notes, rhythms, and dynamics (all
         from the same position in the melody) from a given melody and
@@ -213,7 +219,7 @@ class Modify:
         return frag
 
     @staticmethod
-    def mutate(m: Melody):
+    def mutate(m: Melody) -> Melody:
         """
         randomly permutates the order of notes, rhythms, and dynamics
         in a given melody object. each list is permutated independently of
@@ -228,7 +234,7 @@ class Modify:
         return mutant
 
     @staticmethod
-    def rotate(notes: list[str]):
+    def rotate(notes: list[str]) -> list[str]:
         """
         moves the first note of a given list of notes
         to the end of the list.

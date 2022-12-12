@@ -10,20 +10,20 @@ from core.generate import Generate
 
 def gen_test_mid():
     """
-    generates a simple MIDI file for testing parsing with
+    generates a simple MIDI file for testing with
     """
-    g = Generate()
-    comp = g.init_comp(tempo=72.0)
+    gen = Generate()
+    comp = gen.init_comp(tempo=72.0)
     comp.title = "test"
     comp.midi_file_name = comp.title + ".mid"
 
-    m = Melody(tempo=comp.tempo,
-               instrument="Acoustic Grand Piano")
-    m.notes = ["C5", "D5", "E5", "C5"]
-    m.rhythms = [scale_to_tempo(tempo=comp.tempo, rhythms=0.5)] * len(m.notes)
-    m.dynamics = [100] * len(m.notes)
+    mel = Melody(tempo=comp.tempo,
+                 instrument="Acoustic Grand Piano")
+    mel.notes = ["C5", "D5", "E5", "C5"]
+    mel.rhythms = [scale_to_tempo(tempo=comp.tempo, rhythms=0.5)] * len(mel.notes)
+    mel.dynamics = [100] * len(mel.notes)
 
-    comp.instruments.append(m.instrument)
-    comp.melodies.append(m)
+    comp.instruments.append(mel.instrument)
+    comp.add_part(mel)
     save(comp)
     comp.display()

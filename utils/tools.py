@@ -38,8 +38,9 @@ def to_str(pcs, octave=None, oct_eq=True):
         # NOTES has note strings with assigned octaves. 
         # assigning an octave value as an arg is redundant 
         # here since a list of any ints such that 
-        # i < len(NOTES) will do.
-        for i in range(len(pcs)):
+        # int < len(NOTES) will do.
+        pcs_len = len(pcs)
+        for i in range(pcs_len):
             scale.append(NOTES[pcs[i]])
     return scale
 
@@ -86,8 +87,8 @@ def oct_equiv(pitch):
     if type(pitch) == int:
         pitch %= 12
     elif type(pitch) == list:
-        pl = len(pitch)
-        for i in range(pl):
+        pitch_len = len(pitch)
+        for i in range(pitch_len):
             if pitch[i] > 11 or pitch[i] < 0:
                 pitch[i] %= 12
     else:
@@ -123,8 +124,8 @@ def scale_to_tempo(tempo, rhythms, revert=False):
             rhythms /= diff
         rhythms = round(rhythms, 3)
     elif type(rhythms) == list:
-        rl = len(rhythms)
-        for i in range(rl):
+        rhythm_len = len(rhythms)
+        for i in range(rhythm_len):
             if not revert:
                 rhythms[i] *= diff
             else:

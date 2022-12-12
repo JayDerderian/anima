@@ -11,7 +11,9 @@ from mido import (
 )
 
 from utils.tools import normalize_str
-from core.constants import INSTRUMENTS, NOTES
+from core.constants import (
+    INSTRUMENTS, NOTES, MIDI_LOC
+)
 
 from containers.note import Note
 from containers.melody import Melody
@@ -69,7 +71,7 @@ def load_midi_file(file_name: str) -> MidiFile:
     return MidiFile(filename=file_name)
 
 
-def parse_midi(file_name):
+def parse_midi(file_name) -> tuple:
     """
     retrieves a midi file from current working directory
     with a supplied file_name string.
@@ -93,6 +95,43 @@ def parse_midi(file_name):
     return tracks, msgs
 
 
+def _build_melody(start: float, end:float,
+                  cur_part: Melody, midi_writer: PrettyMIDI):
+
+    end += cur_part.rhythms[0]
+    instrument = instrument_to_program(cur_part.instrument)
+    mel = Instrument(program=instrument)
+
+    for j in range(1, len(cur_part.notes)):
+        mel.notes.append(Note(velocity=cur_part.dynamics[j - 1],
+                              pitch=note_name_to_MIDI_num(cur_part.notes[j - 1]),
+                              start=start,
+                              end=end))
+        start += cur_part.rhythms[j - 1]
+        end += cur_part.rhythms[j]
+    # add mel: Instrument() to instrument list
+    midi_writer.instruments.append(mel)
+    return start, end, midi_writer
+
+
+def _build_chord(start: float, end: float,
+                 cur_part: Chord, midi_writer: PrettyMIDI):
+
+    end += cur_part.rhythm
+    instrument = instrument_to_program(cur_part.instrument)
+    chord = Instrument(program=instrument)
+
+    for note in cur_part.notes:
+        chord.notes.append(Note(velocity=cur_part.dynamic,
+                                pitch=note_name_to_MIDI_num(note),
+                                start=start,
+                                end=end))
+    # add chord progression to instrument list
+    midi_writer.instruments.append(chord)
+    start += cur_part.rhythm
+
+    return start, end, midi_writer
+
 def save(comp: Composition) -> None:
     """
     Takes a composition object and constructs
@@ -107,48 +146,33 @@ def save(comp: Composition) -> None:
     midi_writer = PrettyMIDI(initial_tempo=comp.tempo)
 
     # iterate over comp.tracks dictionary
-    for track in comp.parts:
+    for part in comp.parts:
         # reset start and end markers for each track
         strt, end = 0.0, 0.0
-        # list of either (or both!) Melody() or Chord() objects
-        cur_part = comp.parts[track]
+        cur_part = comp.parts[part]
 
         # handle Melody() object
         if isinstance(cur_part, Melody):
-            end += cur_part.rhythms[0]
-            instrument = instrument_to_program(cur_part.instrument)
-            mel = Instrument(program=instrument)
-
-            for j in range(1, len(cur_part.notes)):
-                mel.notes.append(Note(velocity=cur_part.dynamics[j-1],
-                                      pitch=note_name_to_MIDI_num(cur_part.notes[j-1]),
-                                      start=strt,
-                                      end=end))
-                strt += cur_part.rhythms[j-1]
-                end += cur_part.rhythms[j]
-
-            # add mel: Instrument() to instrument list
-            midi_writer.instruments.append(mel)
+            strt, end, midi_writer = _build_melody(strt, end, cur_part, midi_writer)
 
         # handle Chord() object
         elif isinstance(cur_part, Chord):
-            end += cur_part.rhythm
-            instrument = instrument_to_program(cur_part.instrument)
-            chord = Instrument(program=instrument)
+            strt, end, midi_writer = _build_chord(strt, end, cur_part, midi_writer)
 
-            for note in cur_part.notes:
-                chord.notes.append(Note(velocity=cur_part.dynamic,
-                                        pitch=note_name_to_MIDI_num(note),
-                                        start=strt,
-                                        end=end))
-            # add chord progression to instrument list
-            midi_writer.instruments.append(chord)
-            strt += cur_part.rhythm
+        # handle a list of Chord() or Melody() objects (or both!)
+        elif isinstance(cur_part, list):
+            for item in cur_part:
+                if isinstance(item, Melody):
+                    strt, end, midi_writer = _build_melody(strt, end, item, midi_writer)
+                elif isinstance(item, Chord):
+                    strt, end, midi_writer = _build_chord(strt, end, item, midi_writer)
+                else:
+                    raise TypeError(f"Unsupported type! Cur_part is type: {type(cur_part)} "
+                                    "Should be a Melody or Chord object, or list of either(or both)")
 
         else:
-            raise TypeError("Needs to be either a Melody() or Chord() object instance!"
-                            f"Cur_part is type: {type(cur_part)}")
+            raise TypeError(f"Unsupported type! Cur_part is type: {type(cur_part)} "
+                            "Should be a Melody or Chord object, or list of either(or both)")
 
     # write to MIDI file
-    print('\nsaving', comp.midi_file_name, '...')
-    midi_writer.write(f'./midi/{comp.midi_file_name}')
+    midi_writer.write(f'{MIDI_LOC}/{comp.midi_file_name}')

@@ -29,7 +29,7 @@ def mixed_qtet(ensemble=None):
     16ths in odd groupings (3, 5, 7 at most) to occasionally
     pull against the constant pulse
     """
-    print("\n\nwriting new mixed quartet...")
+    print("\nwriting new mixed quartet...")
     create = Generate()
     comp = create.init_comp()
     title_full = f"{comp.title} for mixed quartet"
@@ -40,7 +40,7 @@ def mixed_qtet(ensemble=None):
     else:
         e = ensemble
     comp.instruments = e
-    comp.ensemble = 'quartet'
+    comp.ensemble = "quartet"
 
     t = randint(5, 9)  # total chords
     mode, mode_pcs, mode_notes = create.pick_scale(transpose=True)  # pick starting mode
@@ -118,18 +118,16 @@ def mixed_qtet(ensemble=None):
         c4[i].instrument = e[3]
 
     # save final chord lists
-    comp.chords[0] = c1
-    comp.chords[1] = c2
-    comp.chords[2] = c3
-    comp.chords[3] = c4
+    for part in [c1, c2, c3, c4]:
+        comp.add_part(part)
 
     # write out
     save(comp)
-
     # display results
-    print("\ntitle:", title_full)
-    print("date:", comp.date)
-    print("composer:", comp.composer)
-    print("instruments:", comp.instruments)
-    print("duration:", comp.duration(), "seconds")
+    output = f"title: {title_full}" \
+             f"date: {comp.date}" \
+             f"composer: {comp.composer}" \
+             f"instruments: {comp.instruments}," \
+             f"duration: {comp.duration()}\n"
+    print(output)
     return "\nhooray!"

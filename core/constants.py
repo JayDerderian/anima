@@ -1,8 +1,15 @@
 """
 A module for managing all constants used throughout the program.
 """
+from pathlib import Path
 
-# The alphabet. 
+# absolute path of the program itself
+ROOT = Path(__file__).parent.parent
+# location to write MIDI files to
+MIDI_LOC = f'{ROOT}/midi'
+
+
+# The alphabet.
 ALPHABET = ['a', 'b', 'c', 'd', 'e', 'f', 'g',
             'h', 'i', 'j', 'k', 'l', 'm', 'n',
             'o', 'p', 'q', 'r', 's', 't', 'u',
