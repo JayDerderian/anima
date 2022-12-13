@@ -144,6 +144,8 @@ def scale_limit(total: int):
     """
     TODO: look at proportional scaling methods...
     """
+    if total < 1:
+        raise ValueError("total cannot be less than 1")
     if 1 <= total <= 10:
         total = randint(1, 3)
     elif 11 <= total <= 100:

@@ -61,7 +61,7 @@ def tempo2bpm(tempo):
     """
     return int(round((60 * 1000000) / tempo))
 
-
+# TODO modify to work with a specified file path *or* just "song.mid"
 def load_midi_file(file_name: str) -> MidiFile:
     """
     loads a MIDI file using a supplied file name (i.e "song.mid")
