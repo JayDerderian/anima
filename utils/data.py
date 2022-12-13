@@ -43,7 +43,7 @@ def new_chars():
         chars.append(char)
     return chars
 
-def new_data(data_type):
+def new_data(data_type: int):
     """
     Select and generate some random data for input.
     Enter in 1-4 to choose (1 = int list, 2 = float list,
