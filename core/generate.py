@@ -205,7 +205,7 @@ class Generate:
                     meta_data.append(info)
                 n = 0
         # Randomly pick notes from the generated source
-        # scale to create an arhythmic melody.
+        # scale to create an arrhythmic melody.
         notes = []
         if data is None:
             # Total notes in melody will be between 3 and
@@ -401,11 +401,11 @@ class Generate:
         3. Repeat step 2 with next note in supplied pcs up to end of scale.
         """
         variants = {}
-        pcsl = len(pcs)
-        for i in range(pcsl):
+        pcs_len = len(pcs)
+        for i in range(pcs_len):
             sv = []
             note = pcs[i]
-            while len(sv) < pcsl:
+            while len(sv) < pcs_len:
                 note += randint(1, 3)
                 sv.append(note)
             variants[i] = sv
@@ -442,6 +442,7 @@ class Generate:
         """
         return sample(INTERVALS["Chromatic Scale"], len(INTERVALS["Chromatic Scale"]))
 
+    # TODO revisit this
     @staticmethod
     def new_palindrome(m) -> Melody:
         """
@@ -499,6 +500,7 @@ class Generate:
             rhythm = choice(RHYTHMS)
             # Repeat this rhythm or not?
             if randint(1, 2) == 1:
+                # TODO: revisit this
                 limit = scale_limit(total)
                 if limit == 0:
                     limit += 2
@@ -527,6 +529,7 @@ class Generate:
         else:
             return choice(DYNAMICS)
 
+    # TODO: revisit this
     @staticmethod
     def new_dynamics(total=None, rests=True) -> list[int]:
         """

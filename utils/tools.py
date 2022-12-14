@@ -21,15 +21,15 @@ def to_str(pcs, octave=None, oct_eq=True):
     """
     scale = []
     if oct_eq:
-        pcs = oct_equiv(pcs)
+        pcs_eq = oct_equiv(pcs)
         if octave is None:
-            pcs_len = len(pcs)
+            pcs_len = len(pcs_eq)
             for i in range(pcs_len):
-                scale.append(PITCH_CLASSES[pcs[i]])
+                scale.append(PITCH_CLASSES[pcs_eq[i]])
         elif type(octave) == int and 1 < octave < 6:
-            pcs_len = len(pcs)
+            pcs_len = len(pcs_eq)
             for i in range(pcs_len):
-                note = f"{PITCH_CLASSES[pcs[i]]}{octave}"
+                note = f"{PITCH_CLASSES[pcs_eq[i]]}{octave}"
                 scale.append(note)
         else:
             raise ValueError("octave must be within 2-6!")
@@ -53,12 +53,13 @@ def normalize_str(name: str) -> str:
     return "".join(ch for ch in name if ch.isalnum()).lower()
 
 
-def is_pos(num) -> bool:
+def is_pos(num: int) -> bool:
     """
     helper method to tell if an int is positive or negative.
-    zero counts as positive here because reasons
+    zero counts as positive here because pitch class notion
+    starts with 0. 0 = 'C', 1 = 'C#', etc.
     """
-    return True if float(num) >= 0 else False
+    return True if num >= 0 else False
 
 
 def remove_oct(a_note) -> str:
@@ -88,9 +89,9 @@ def oct_equiv(pitch):
         pitch %= 12
     elif type(pitch) == list:
         pitch_len = len(pitch)
-        for i in range(pitch_len):
-            if pitch[i] > 11 or pitch[i] < 0:
-                pitch[i] %= 12
+        for p in range(pitch_len):
+            if pitch[p] > 11 or pitch[p] < 0:
+                pitch[p] %= 12
     else:
         raise ValueError("must be single int or list[int], "
                          "supplied arg is type:", type(pitch))
