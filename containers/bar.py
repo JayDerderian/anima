@@ -54,12 +54,10 @@ class Bar:
             raise TypeError("Unsupported instrument! "
                             "Can only use MIDI supported instruments for the moment :(")
 
-    # see how much space is left in the bar. 
     def space_left(self) -> float:
         """return the remaining time left in the bar in seconds"""
         return self.length - self.current_beat
 
-    # clears all contained values to reuse this bar instance
     def clear(self) -> None:
         """
         clears all fields
@@ -73,7 +71,6 @@ class Bar:
         self.bar["Rhythms"].clear()
         self.bar["Dynamics"].clear()
 
-    # gets the duration of the bar in seconds    
     def duration(self) -> float:
         """
         gets the duration of the bar in seconds.
@@ -93,7 +90,6 @@ class Bar:
                                         f"length: {self.length}"
         return duration
 
-    # sets the meter for this measure
     def set_meter(self, meter: tuple):
         """
         takes a supplied tuple and determines if it's a valid meter
