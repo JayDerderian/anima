@@ -43,14 +43,16 @@ class Bar:
                 raise TypeError(f"tempo must be a float, or is out of range! tempo supplied: {tempo}")
 
         # length (in seconds) = number of beats designated * counting rhythm (converted to seconds). 
-        self.length = self.meter[0] * scale_to_tempo(self.tempo, self.meter[1])
-
+        self.length = self.meter[0] * scale_to_tempo(tempo=self.tempo,
+                                                     rhythms=self.meter[1])
+        # defaults to acoustic grand piano if no instrument is provided
         if instrument is None:
             self.instrument = 'Acoustic Grand Piano'
         elif instrument in INSTRUMENTS:
             self.instrument = instrument
         else:
-            raise TypeError('Invalid instrument!')
+            raise TypeError("Unsupported instrument! "
+                            "Can only use MIDI supported instruments for the moment :(")
 
     # see how much space is left in the bar. 
     def space_left(self) -> float:
@@ -78,36 +80,41 @@ class Bar:
         assumes supplied rhythms have already been scaled
         to the tempo
 
-        NOTE: this might not equal self. Length! this
+        NOTE: this might not equal self.Length! this
               could be a partially completed bar.
         """
         if len(self.bar["Rhythms"]) == 0:
             return 0.0
-        dur = 0.0
-        for rhy in self.bar["Rhythms"]:
-            dur += self.bar["Rhythms"][rhy]
-        return dur
+        duration = 0.0
+        for rhy in range(len(self.bar["Rhythms"])):
+            duration += self.bar["Rhythms"][rhy]
+        assert duration <= self.length, f"calculated duration exceeds estimated length! " \
+                                        f"duration: {duration}" \
+                                        f"length: {self.length}"
+        return duration
 
     # sets the meter for this measure
-    def set_meter(self, meter):
+    def set_meter(self, meter: tuple):
         """
         takes a supplied tuple and determines if it's a valid meter
         """
         if type(meter) != tuple:
-            raise TypeError("supplied meter was not a tuple! instead was:", type(meter))
+            raise TypeError("supplied meter was not a tuple! "
+                            "instead was:", type(meter))
         if is_valid(meter):
             self.meter = (meter[0], meter[1])
         else:
             raise ValueError("invalid meter!")
 
-    # TODO: fix this
+    # TODO: test this
     def add_notes(self, mel: Melody) -> Melody:
         """
-        Takes a Melody() object and adds notes rhythms and dynamics
-        until either the bar is filled OR the last rhythm of the
-        Melody() object is too long to input. If this is the case,
-        then the last rhythm will have the remaining difference subtracted
-        from its initial value. This is intended to handle syncopation.
+        Takes a Melody() object and adds notes, rhythms, and dynamics
+        until either the bar is filled, the melody object is empty,
+        OR the last rhythm of the Melody() object is too long to input.
+        If this last part is the case, then the last rhythm will have the
+        remaining difference subtracted from its initial value.
+        This is intended to handle syncopation.
 
         This basically assumes the note/rhythm/dynamic lists are of n length,
         and weren't concerned with fitting in any specific meter. Remaining
@@ -123,19 +130,28 @@ class Bar:
         self.tempo = mel.tempo
         self.instrument = mel.instrument
 
-        while mel.is_empty() is False or self.full is False:
-
+        while not mel.is_empty() or not self.full:
+            # we're only ever accessing the first element of
+            # each the melody objects lists since we're popping the first
+            # element with each input. every sequential element will be the first
+            # with each iteration.
             self.current_beat += mel.rhythms[0]
-
+            # we're modifying the melody object in place here.
+            # this will gradually shrink each of the lists.
             if self.current_beat < self.length:
-                self.bar['Notes'].append(mel.notes[0])
-                self.bar['Rhythms'].append(mel.rhythms[0])
-                self.bar['Dynamics'].append(mel.dynamics[0])
-
-                mel.notes.pop(mel.notes[0])
-                mel.rhythms.pop(mel.rhythms[0])
-                mel.dynamics.pop(mel.dynamics[0])
-
+                self.bar['Notes'].append(
+                    mel.notes.pop(mel.notes[0])
+                )
+                self.bar['Rhythms'].append(
+                    mel.rhythms.pop(mel.rhythms[0])
+                )
+                self.bar['Dynamics'].append(
+                    mel.dynamics.pop(mel.dynamics[0])
+                )
+            # this rhythm will cause us to exceed the length of the bar.
+            # we need to add the last notes and chop off the difference from
+            # the rhythm to fill the gap. we also don't want to remove the
+            # elements since we'll need them in the next bar!
             elif self.current_beat >= self.length:
                 diff = self.current_beat - self.length
                 self.bar['Notes'].append(mel.notes[0])
