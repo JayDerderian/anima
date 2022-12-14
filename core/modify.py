@@ -249,31 +249,26 @@ class Modify:
         return notes
 
     @staticmethod
-    def change_dynamics(dyn, diff):
+    def change_dynamics(dyn, diff: int):
         """
         makes a single or list of dynamics louder or softer
         by a specified amount. returns a modified dynamics list[int]
+
+        needs to be an int that's a multiple of 4 and
+        within the specified range! MIDI velocities start
+        at 0 and increase by 4 until 127.
         """
-        # needs to be an int that's a multiple of 4 and 
-        # within the specified range! MIDI velocities start 
-        # at 0 and increase by 4 until 127.
-        if type(diff) != int:
-            raise TypeError("supplied value not an int!")
-        else:
-            if diff % 4 != 0:
-                raise ValueError("supplied value not a multiple of four!")
-        # main alteration section
         if type(dyn) == int:
             if dyn > 123:
-                raise ValueError("supplied dynamic is too high")
+                raise ValueError("supplied dynamic is too high. "
+                                 f"max is 123. dyn supplied: {dyn}")
             dyn += diff
         elif type(dyn) == list:
-            # only modify dynamics that will be within proper
-            # MIDI velocity range.
-            dl = len(dyn)
-            for d in range(dl):
+            dyn_len = len(dyn)
+            for d in range(dyn_len):
                 if dyn[d] < 123:
                     dyn[d] += diff
+                # just gonna ignore those dynamics for now...
                 else:
                     continue
         return dyn
