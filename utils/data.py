@@ -11,19 +11,19 @@ from random import (
 from core.constants import ALPHABET
 
 
-def new_ints(t=None):
+def new_ints(t=None) -> list[int]:
     """Generate a list of 10 - 50 random numbers between 0-500"""
     total = randint(10, 50)
     return [randint(0, 500) for i in range(total)]
 
 
-def new_floats():
+def new_floats() -> list[float]:
     """ Generate a list of 10 - 50 random floating point numbers between 0 - 200"""
     total = randint(10, 50)
     return [uniform(0.001, 500.001) for i in range(total)]
 
 
-def new_hex():
+def new_hex() -> str:
     """Generates a random hex color number 0x000000 to 0xFFFFFF"""
     num = randint(0, 16777215)
     hex_num = format(num, 'x')
@@ -31,7 +31,7 @@ def new_hex():
     return hex_num
 
 
-def new_chars():
+def new_chars() -> list[str]:
     """Generate a list of 10 - 50 random upper/lower-case characters"""
     chars = []
     total = randint(10, 50)
