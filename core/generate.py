@@ -675,7 +675,7 @@ class Generate:
         return chords
 
     @staticmethod
-    def new_triads(scale, total=None) -> list[Chord]:
+    def new_triads(scale: list, total=None) -> list[Chord]:
         """
         generates a list of triads of t length from a given multi-octave
         source scale. a single octave scale will only yield 3 triads since
@@ -781,7 +781,9 @@ class Generate:
             if total is None:
                 melody.notes, melody.info, melody.source_scale = self.new_notes()
             else:
-                melody.notes, melody.info, melody.source_scale = self.new_notes(total=total)
+                (melody.notes,
+                 melody.info,
+                 melody.source_scale) = self.new_notes(total=total)
         # Or use supplied data. Supplied total isn't applicable with
         # a data set of n size, since n will just become the total we work with.
         else:
