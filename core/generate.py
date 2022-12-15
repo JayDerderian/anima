@@ -442,31 +442,27 @@ class Generate:
         """
         return sample(INTERVALS["Chromatic Scale"], len(INTERVALS["Chromatic Scale"]))
 
-    # TODO revisit this
     @staticmethod
-    def new_palindrome(m) -> Melody:
+    def new_palindrome(melody) -> Melody:
         """
         Takes either a list of chord() objects or a single melody()
         object, and creates a palindrome from it.
 
         Returns either a modified list[chord()], or modified melody()"""
         # chord() list
-        if type(m) == list:
-            mr = m
-            mr.reverse()
-            m.extend(mr)
+        if type(melody) == list:
+            mel_rev = melody
+            mel_rev.reverse()
+            melody.extend(mel_rev)
         # melody() object
-        elif isinstance(m, Melody):
-            end = len(m.notes) - 1
-            while end > -1:
-                m.notes.append(m.notes[end])
-                m.rhythms.append(m.rhythms[end])
-                m.dynamics.append(m.dynamics[end])
-                end -= 1
+        elif isinstance(melody, Melody):
+            melody.notes.extend(melody.notes.reverse())
+            melody.rhythms.extend(melody.rhythms.reverse())
+            melody.dynamics.extend(melody.dynamics.reverse())
         else:
             raise TypeError("parameter must be either a list or Melody() object"
-                            f"param was type: {type(m)}")
-        return m
+                            f"param was type: {type(melody)}")
+        return melody
 
     ### RHYTHM ###
 
