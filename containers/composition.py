@@ -71,7 +71,7 @@ class Composition:
 
     ### Public methods ###
 
-    def is_picked(self, instr: str) -> bool:
+    def is_used(self, instr: str) -> bool:
         """
         Has this instrument been picked already?
         """

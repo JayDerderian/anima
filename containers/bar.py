@@ -82,9 +82,7 @@ class Bar:
         """
         if len(self.bar["Rhythms"]) == 0:
             return 0.0
-        duration = 0.0
-        for rhy in range(len(self.bar["Rhythms"])):
-            duration += self.bar["Rhythms"][rhy]
+        duration = sum(self.bar["Rhythms"])
         assert duration <= self.length, f"calculated duration exceeds estimated length! " \
                                         f"duration: {duration}" \
                                         f"length: {self.length}"

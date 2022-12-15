@@ -42,7 +42,7 @@ class Chord:
 
     def duration(self):
         """returns the assigned rhythm, which is in seconds adjusted for tempo (hopefully)"""
-        return scale_to_tempo(self.tempo, self.rhythm)
+        return self.rhythm
 
     def get_meta_data(self):
         """ returns meta-data as a dictionary"""

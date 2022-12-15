@@ -146,12 +146,12 @@ class Modify:
             raise TypeError("notes must be a single str or list[str]! type is:", type(notes))
 
     @staticmethod
-    def retrograde(m: Melody) -> Melody:
+    def retrograde(melody: Melody) -> Melody:
         """
         reverses the elements in a melody object (notes, rhythms, dynamics)
         returns a duplicated melody() object
         """
-        retro = m
+        retro = melody
         retro.notes.reverse()
         retro.dynamics.reverse()
         retro.rhythms.reverse()
@@ -219,15 +219,15 @@ class Modify:
         return frag
 
     @staticmethod
-    def mutate(m: Melody) -> Melody:
+    def mutate(melody: Melody) -> Melody:
         """
         randomly permutates the order of notes, rhythms, and dynamics
         in a given melody object. each list is permutated independently of
         each other, meaning original associations aren't preserved!
 
-        returns a separate melody() object containing this permutation
+        returns a new Melody() object containing this permutation
         """
-        mutant = m
+        mutant = melody
         shuffle(mutant.notes)
         shuffle(mutant.rhythms)
         shuffle(mutant.dynamics)

@@ -47,10 +47,11 @@ class Melody:
         """
         Returns the duration (float) of a melody in seconds.
         """
-        dur = 0.0
-        for rhy in self.rhythms:
-            dur += rhy
-        return dur
+        # dur = 0.0
+        # for rhy in self.rhythms:
+        #     dur += rhy
+        # return dur
+        return sum(self.rhythms)
 
     def is_empty(self) -> bool:
         """

@@ -176,4 +176,5 @@ def save(comp: Composition) -> None:
                             "Should be a Melody or Chord object, or list of either(or both)")
 
     # write to MIDI file
+    print(f"saving {comp.midi_file_name} ... ")
     midi_writer.write(f'{MIDI_LOC}/{comp.midi_file_name}')
