@@ -129,19 +129,19 @@ class Bar:
         while not mel.is_empty() or not self.full:
             # we're only ever accessing the first element of
             # each the melody objects lists since we're popping the first
-            # element with each input. every sequential element will be the first
-            # with each iteration.
+            # element with each input. every sequential element will become
+            # the first with each iteration.
             self.current_beat += mel.rhythms[0]
             # we're modifying the melody object in place here.
             # this will gradually shrink each of the lists.
             if self.current_beat < self.length:
-                self.bar['Notes'].append(
+                self.bar["Notes"].append(
                     mel.notes.pop(mel.notes[0])
                 )
-                self.bar['Rhythms'].append(
+                self.bar["Rhythms"].append(
                     mel.rhythms.pop(mel.rhythms[0])
                 )
-                self.bar['Dynamics'].append(
+                self.bar["Dynamics"].append(
                     mel.dynamics.pop(mel.dynamics[0])
                 )
             # this rhythm will cause us to exceed the length of the bar.
@@ -150,9 +150,9 @@ class Bar:
             # elements since we'll need them in the next bar!
             elif self.current_beat >= self.length:
                 diff = self.current_beat - self.length
-                self.bar['Notes'].append(mel.notes[0])
-                self.bar['Rhythms'].append((mel.rhythms[0] + self.current_beat) - diff)
-                self.bar['Dynamics'].append(mel.dynamics[0])
+                self.bar["Notes"].append(mel.notes[0])
+                self.bar["Rhythms"].append((mel.rhythms[0] + self.current_beat) - diff)
+                self.bar["Dynamics"].append(mel.dynamics[0])
 
                 mel.rhythms[0] = diff
                 self.full = True
