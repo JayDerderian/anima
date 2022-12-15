@@ -592,8 +592,8 @@ class Generate:
     def display_chord(chord: Chord) -> None:
         output = f"\n------------Chord:-------------" \
                  f"\nnotes: {chord.notes}" \
-                 f"rhythm: {chord.rhythm}" \
-                 f"dynamic: {chord.dynamic}"
+                 f"\nrhythm: {chord.rhythm}" \
+                 f"\ndynamic: {chord.dynamic}"
         print(output)
 
     def display_chords(self, chords: list) -> None:
@@ -741,11 +741,11 @@ class Generate:
                  f"\nSource Data: {m.source_data}" \
                  f"\nInfo: {m.info}" \
                  f"\nTotal Notes: {len(m.notes)}" \
-                 f"Notes: {m.notes}" \
+                 f"\nNotes: {m.notes}" \
                  f"\nTotal rhythms: {len(m.rhythms)}" \
-                 f"Rhythms: {m.rhythms}" \
+                 f"\nRhythms: {m.rhythms}" \
                  f"\nTotal Dynamics: {len(m.dynamics)}" \
-                 f"Dynamics: {m.dynamics}\n"
+                 f"\nDynamics: {m.dynamics}"
         print(output)
 
     def new_melody(self, tempo=None, data=None, data_type=None,

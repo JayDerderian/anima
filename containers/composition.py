@@ -63,8 +63,11 @@ class Composition:
         longest = 0.0
         for track in self.parts:
             dur = 0.0
-            for obj in self.parts[track]:
-                dur += obj.duration()
+            if isinstance(self.parts[track], Melody) or isinstance(self.parts[track], Chord):
+                dur += self.parts[track].duration()
+            elif isinstance(self.parts[track], list):
+                for obj in self.parts[track]:
+                    dur += obj.duration()
             if dur > longest:
                 longest = dur
         return longest
@@ -102,11 +105,11 @@ class Composition:
         display composition info
         """
         output = f"\ntitle: {self.title}" \
-                 f"tempo: {self.tempo}" \
-                 f"composer: {self.composer}" \
-                 f"duration: {self.duration()}" \
+                 f"\ntempo: {self.tempo}" \
+                 f"\ncomposer: {self.composer}" \
+                 f"\nduration: {self.duration()}" \
                  f"\nmidi file: {self.midi_file_name}" \
-                 f"text file: {self.txt_file_name}\n"
+                 f"\ntext file: {self.txt_file_name}\n"
         print(output)
 
     def duration(self) -> str:
