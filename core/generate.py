@@ -779,7 +779,9 @@ class Generate:
         # Pick notes from scratch  
         if data is None:
             if total is None:
-                melody.notes, melody.info, melody.source_scale = self.new_notes()
+                (melody.notes,
+                 melody.info,
+                 melody.source_scale) = self.new_notes()
             else:
                 (melody.notes,
                  melody.info,
@@ -787,7 +789,9 @@ class Generate:
         # Or use supplied data. Supplied total isn't applicable with
         # a data set of n size, since n will just become the total we work with.
         else:
-            melody.notes, melody.info, melody.source_scale = self.new_notes(data=data)
+            (melody.notes,
+             melody.info,
+             melody.source_scale) = self.new_notes(data=data)
 
         # remove any notes not within a supplied range (if available)
         if inst_range is not None:
