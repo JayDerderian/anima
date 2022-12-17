@@ -66,7 +66,7 @@ def load_midi_file(file_name: str) -> MidiFile:
     """
     loads a MIDI file using a supplied file name (i.e "song.mid")
     """
-    if file_name[-4:] != '.mid':
+    if file_name[-4:] != ".mid":
         raise ValueError("must be a midi file name!")
     return MidiFile(filename=file_name)
 
