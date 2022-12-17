@@ -120,7 +120,6 @@ class Composition:
         minutes, seconds = divmod(self._duration(), 60)
         return str(int(minutes)) + " min " + str(seconds) + " sec "
 
-    # TODO: not adding every part. See debugger in strqtet.py
     def add_part(self, part):
         """
         Add a part to this composition
