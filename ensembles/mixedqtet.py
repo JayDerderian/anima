@@ -119,7 +119,9 @@ def mixed_qtet(ensemble=None):
 
     # save final chord lists
     for part in [c1, c2, c3, c4]:
-        comp.add_part(part)
+        # only need to add the instrument from the
+        # first object since they're all the same
+        comp.add_part(part, part[0].instrument)
 
     # write out
     save(comp)

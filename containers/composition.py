@@ -120,24 +120,12 @@ class Composition:
         minutes, seconds = divmod(self._duration(), 60)
         return str(int(minutes)) + " min " + str(seconds) + " sec "
 
-    def add_part(self, part):
+    def add_part(self, part, instr: str) -> None:
         """
         Add a part to this composition
         """
-        # single melody() or chord() object
-        if isinstance(part, Melody) or isinstance(part, Chord):
-            # add the part number if there's more than one of this instrument
-            total_occurrences = self.how_many(part.instrument)
-            self.instruments.append(part.instrument)
-        # list of chord() and/or melody() objects
-        elif type(part) is list:
-            # it's assumed every object in this list will have the same instrument
-            total_occurrences = self.how_many(part[0].instrument)
-            self.instruments.append(part[0].instrument)
-        else:
-            raise TypeError("Unsupported object type! "
-                            "Should be Chord() or Melody() instance"
-                            f"Object is type: {type(part)}")
+        self.instruments.append(instr)
+        total_occurrences = self.how_many(instr)
         self.parts.update({
-            f"{part.instrument} {total_occurrences + 1}": part
+            f"{instr} {total_occurrences + 1}": part
         })

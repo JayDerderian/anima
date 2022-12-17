@@ -123,7 +123,7 @@ def str_qtet(tempo=None) -> Composition:
 
     # save all parts then write out
     for q in range(len(qtet)):
-        comp.add_part(qtet[q])
+        comp.add_part(qtet[q], qtet[q].instrument)
     save(comp)
 
     print("\n...success!")
