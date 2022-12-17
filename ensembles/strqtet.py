@@ -34,21 +34,17 @@ def str_qtet(tempo=None) -> Composition:
     else:
         comp = create.init_comp(tempo)
     title_full = comp.title + " for string quartet"
+    comp.ensemble = "quartet"
 
     # create our quartet
     qtet = [Melody(tempo=comp.tempo,
-                   instrument='Violin'),
+                   instrument="Violin"),
             Melody(tempo=comp.tempo,
-                   instrument='Violin'),
+                   instrument="Violin"),
             Melody(tempo=comp.tempo,
-                   instrument='Viola'),
+                   instrument="Viola"),
             Melody(tempo=comp.tempo,
-                   instrument='Cello')]
-
-    # add instruments to comp object
-    for inst in range(len(qtet)):
-        comp.instruments.append(qtet[inst])
-    comp.ensemble = 'quartet'
+                   instrument="Cello")]
 
     print("\nwriting new string quartet...")
 
@@ -84,7 +80,7 @@ def str_qtet(tempo=None) -> Composition:
         qtet[q].rhythms.extend(rhy)
         qtet[q].dynamics.extend(dyn)
 
-    # save original values in temp list
+    # save original values in temp object
     qtet_orig = qtet
 
     print("\nwriting asynchronous lines...")

@@ -42,6 +42,7 @@ class Composition:
         # self.parts is a dictionary where each entry is a list
         # of either Melody() or Chord() (or both!) objects,
         # or a single Melody() or Chord() object
+        # the key is the name of the instrument, the value is the object
         self.parts = {}
 
     def __repr__(self) -> str:
@@ -91,7 +92,7 @@ class Composition:
         """
         Determines how many occurrences of this instrument are in this piece
         """
-        return list(self.parts.keys()).count(instr)
+        return self.instruments.count(instr)
 
     def add_instrument(self, instrument: str) -> None:
         self.instruments.append(instrument)
@@ -119,6 +120,7 @@ class Composition:
         minutes, seconds = divmod(self._duration(), 60)
         return str(int(minutes)) + " min " + str(seconds) + " sec "
 
+    # TODO: not adding every part. See debugger in strqtet.py
     def add_part(self, part):
         """
         Add a part to this composition
@@ -127,10 +129,12 @@ class Composition:
         if isinstance(part, Melody) or isinstance(part, Chord):
             # add the part number if there's more than one of this instrument
             total_occurrences = self.how_many(part.instrument)
+            self.instruments.append(part.instrument)
         # list of chord() and/or melody() objects
         elif type(part) is list:
             # it's assumed every object in this list will have the same instrument
             total_occurrences = self.how_many(part[0].instrument)
+            self.instruments.append(part[0].instrument)
         else:
             raise TypeError("Unsupported object type! "
                             "Should be Chord() or Melody() instance"
@@ -138,4 +142,3 @@ class Composition:
         self.parts.update({
             f"{part.instrument} {total_occurrences + 1}": part
         })
-        self.instruments.append(part.instrument)
