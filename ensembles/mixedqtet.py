@@ -44,7 +44,7 @@ def mixed_qtet(ensemble=None):
 
     t = randint(5, 9)  # total chords
     mode, mode_pcs, mode_notes = create.pick_scale(transpose=True)  # pick starting mode
-    source = create._new_source_scale(mode_notes)  # generate source scale from mode
+    source = create.new_source_scale(mode_notes)  # generate source scale from mode
 
     print("\ngenerating", t, "chords...")
     # generate chords from source scale. each chord will be repeated either
@@ -53,13 +53,13 @@ def mixed_qtet(ensemble=None):
 
     # this list will store each repeated chord object with its growing and
     # reseeding dynamics values. once this is finished it'l be dispersed across
-    # each c1..c4 list, then each list will get their instruments assigned to
+    # each c1...c4 list, then each list will get their instruments assigned to
     # each individual chord object.
     prog = []
 
     # generate swells
     print("\nadding dynamic patterns...")
-    '''
+    """
     swell patterns for each chord
 
     4 bars in length (approximately, and for now) for the swell,
@@ -70,12 +70,12 @@ def mixed_qtet(ensemble=None):
 
     # dotted sixteenth swell/recession (18 dotted 16th's)
     92(6x), 96(6x), 100(6x)  
-    '''
+    """
     for chrd in range(len(chords)):
-        '''
+        """
         NOTE: find a way to modify these loops according to
-              the value of i in the main for-loop to differentiate different
-              swells'''
+              the value o
+        """
         # get current chord
         chord = chords[chrd]
         # add tempo adherent 16th note
@@ -119,15 +119,12 @@ def mixed_qtet(ensemble=None):
 
     # save final chord lists
     for part in [c1, c2, c3, c4]:
-        comp.add_part(part)
+        # only need to add the instrument from the
+        # first object since they're all the same
+        comp.add_part(part, part[0].instrument)
 
     # write out
     save(comp)
     # display results
-    output = f"title: {title_full}" \
-             f"date: {comp.date}" \
-             f"composer: {comp.composer}" \
-             f"instruments: {comp.instruments}," \
-             f"duration: {comp.duration()}\n"
-    print(output)
+    comp.display()
     return "\nhooray!"

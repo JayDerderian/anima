@@ -22,9 +22,10 @@ Example usage for generating a single melody using a person's name:
     create = Generate()                                       # create a generate object
     comp = create.init_comp(tempo=60.0, composer=name)        # intialize a new composition object
 
-    m = create.new_melody(tempo=comp.tempo, data=name, dt=3)  # generate a melody() object
+    m = create.new_melody(tempo=comp.tempo, 
+                          data=name, dt=3)                    # generate a melody() object
     m.instrument = create.new_instrument()                    # pick an instrument for this melody
-    comp.melodies.append(m)                                   # save to comp object 
+    comp.add_part(m)                                          # save to comp object 
     save(comp)                                                # generate MIDI file           
 
 This will export a new MIDI file with the title of the composition into the directory 

@@ -2,13 +2,14 @@
 Utility functions for working with MIDI data and I/O
 """
 
-from pretty_midi import PrettyMIDI, Instrument
 from mido import (
     MidiFile,
     MidiTrack,
     Message,
     MetaMessage
 )
+from pretty_midi import PrettyMIDI, Instrument
+
 
 from utils.tools import normalize_str
 from core.constants import (
@@ -21,7 +22,7 @@ from containers.chord import Chord
 from containers.composition import Composition
 
 
-def note_name_to_MIDI_num(note):
+def note_name_to_MIDI_num(note: str) -> int:
     """
     returns the corresponding MIDI note for a
     given note name string. apparently MIDI note numbers
@@ -30,7 +31,7 @@ def note_name_to_MIDI_num(note):
     return NOTES.index(note) + 21
 
 
-def MIDI_num_to_note_name(num):
+def MIDI_num_to_note_name(num: int) -> str:
     """
     returns the corresponding note name string from a
     given MIDI note number
@@ -38,7 +39,7 @@ def MIDI_num_to_note_name(num):
     return NOTES[num - 21]
 
 
-def instrument_to_program(instr):
+def instrument_to_program(instr: str) -> int:
     """
     returns an instrument program number using INSTRUMENTS, which
     maps names to number via their index values.
@@ -48,7 +49,7 @@ def instrument_to_program(instr):
     return inst_list.index(inst_name)
 
 
-def tempo2bpm(tempo):
+def tempo2bpm(tempo: int) -> int:
     """
     converts a MIDI file tempo to tempo in BPM.
     can also take a BPM and return a MIDI file tempo
@@ -66,12 +67,12 @@ def load_midi_file(file_name: str) -> MidiFile:
     """
     loads a MIDI file using a supplied file name (i.e "song.mid")
     """
-    if file_name[-4:] != '.mid':
-        raise ValueError('must be a midi file name!')
+    if file_name[-4:] != ".mid":
+        raise ValueError("must be a midi file name!")
     return MidiFile(filename=file_name)
 
 
-def parse_midi(file_name) -> tuple:
+def parse_midi(file_name: str) -> tuple:
     """
     retrieves a midi file from current working directory
     with a supplied file_name string.
@@ -95,7 +96,7 @@ def parse_midi(file_name) -> tuple:
     return tracks, msgs
 
 
-def _build_melody(start: float, end:float,
+def _build_melody(start: float, end: float,
                   cur_part: Melody, midi_writer: PrettyMIDI):
 
     end += cur_part.rhythms[0]
@@ -103,11 +104,11 @@ def _build_melody(start: float, end:float,
     mel = Instrument(program=instrument)
 
     for j in range(1, len(cur_part.notes)):
-        mel.notes.append(Note(velocity=cur_part.dynamics[j - 1],
-                              pitch=note_name_to_MIDI_num(cur_part.notes[j - 1]),
+        mel.notes.append(Note(velocity=cur_part.dynamics[j-1],
+                              pitch=note_name_to_MIDI_num(cur_part.notes[j-1]),
                               start=start,
                               end=end))
-        start += cur_part.rhythms[j - 1]
+        start += cur_part.rhythms[j-1]
         end += cur_part.rhythms[j]
     # add mel: Instrument() to instrument list
     midi_writer.instruments.append(mel)
@@ -176,4 +177,5 @@ def save(comp: Composition) -> None:
                             "Should be a Melody or Chord object, or list of either(or both)")
 
     # write to MIDI file
-    midi_writer.write(f'{MIDI_LOC}/{comp.midi_file_name}')
+    print(f"\nsaving {comp.midi_file_name} ... ")
+    midi_writer.write(f"{MIDI_LOC}/{comp.midi_file_name}")

@@ -1,7 +1,7 @@
 """
 Module for handling all composition data. Contains a Composition() class/container.
 """
-
+# from core.analyze import Analyze
 from containers.chord import Chord
 from containers.melody import Melody
 
@@ -14,7 +14,6 @@ class Composition:
     ensemble type, instrument list, list of picked instruments, lists melodies, and
     a dictionary of chord progressions.
     """
-
     def __init__(self, title=None, composer=None, tempo=None):
 
         if title is not None:
@@ -42,6 +41,7 @@ class Composition:
         # self.parts is a dictionary where each entry is a list
         # of either Melody() or Chord() (or both!) objects,
         # or a single Melody() or Chord() object
+        # the key is the name of the instrument, the value is the object
         self.parts = {}
 
     def __repr__(self) -> str:
@@ -55,6 +55,7 @@ class Composition:
     def _get_instrument_list(self) -> list:
         return self.instruments
 
+
     def _duration(self) -> float:
         """
         Finds the longest individual part in the piece.
@@ -63,15 +64,22 @@ class Composition:
         longest = 0.0
         for track in self.parts:
             dur = 0.0
-            for obj in self.parts[track]:
-                dur += obj.duration()
-            if dur > longest:
-                longest = dur
+            if isinstance(self.parts[track], Melody) or isinstance(self.parts[track], Chord):
+                dur += self.parts[track].duration()
+                if dur > longest:
+                    longest = dur
+            elif isinstance(self.parts[track], list):
+                # sum the entire list since each object is considered
+                # a "single" part here
+                for obj in self.parts[track]:
+                    dur += obj.duration()
+                if dur > longest:
+                    longest = dur
         return longest
 
     ### Public methods ###
 
-    def is_picked(self, instr: str) -> bool:
+    def is_used(self, instr: str) -> bool:
         """
         Has this instrument been picked already?
         """
@@ -88,7 +96,7 @@ class Composition:
         """
         Determines how many occurrences of this instrument are in this piece
         """
-        return list(self.parts.keys()).count(instr)
+        return self.instruments.count(instr)
 
     def add_instrument(self, instrument: str) -> None:
         self.instruments.append(instrument)
@@ -102,11 +110,11 @@ class Composition:
         display composition info
         """
         output = f"\ntitle: {self.title}" \
-                 f"tempo: {self.tempo}" \
-                 f"composer: {self.composer}" \
-                 f"duration: {self.duration()}" \
+                 f"\ntempo: {self.tempo}" \
+                 f"\ncomposer: {self.composer}" \
+                 f"\nduration: {self.duration()}" \
                  f"\nmidi file: {self.midi_file_name}" \
-                 f"text file: {self.txt_file_name}\n"
+                 f"\ntext file: {self.txt_file_name}\n"
         print(output)
 
     def duration(self) -> str:
@@ -116,23 +124,20 @@ class Composition:
         minutes, seconds = divmod(self._duration(), 60)
         return str(int(minutes)) + " min " + str(seconds) + " sec "
 
-    def add_part(self, part):
+    def add_part(self, part, instr: str) -> None:
         """
         Add a part to this composition
         """
-        # single melody() or chord() object
-        if isinstance(part, Melody) or isinstance(part, Chord):
-            # add the part number if there's more than one of this instrument
-            total_occurrences = self.how_many(part.instrument)
-        # list of chord() and/or melody() objects
-        elif type(part) is list:
-            # it's assumed every object in this list will have the same instrument
-            total_occurrences = self.how_many(part[0].instrument)
-        else:
-            raise TypeError("Unsupported object type! "
-                            "Should be Chord() or Melody() instance"
-                            f"Object is type: {type(part)}")
+        self.instruments.append(instr)
         self.parts.update({
-            f"{part.instrument} {total_occurrences + 1}": part
+            f"{instr} {self.how_many(instr) + 1}": part
         })
-        self.instruments.append(part.instrument)
+
+    def remove_part(self, part: str) -> None:
+        """
+        Remove a part from this composition.
+        part param must be a string like 'violin 1'
+        """
+        if part in list(self.parts.keys()):
+            self.instruments.remove(part)
+            del self.parts[part]

@@ -12,7 +12,7 @@ from random import randint, seed
 
 from utils.midi import save
 from utils.tools import scale_to_tempo
-from utils.txtfile import save_info
+from utils.txtfile import gen_info_doc
 
 from core.generate import Generate
 from core.constants import DYNAMICS, RANGE, RHYTHMS, TEMPOS
@@ -34,27 +34,23 @@ def str_qtet(tempo=None) -> Composition:
     else:
         comp = create.init_comp(tempo)
     title_full = comp.title + " for string quartet"
+    comp.ensemble = "quartet"
 
     # create our quartet
     qtet = [Melody(tempo=comp.tempo,
-                   instrument='Violin'),
+                   instrument="Violin"),
             Melody(tempo=comp.tempo,
-                   instrument='Violin'),
+                   instrument="Violin"),
             Melody(tempo=comp.tempo,
-                   instrument='Viola'),
+                   instrument="Viola"),
             Melody(tempo=comp.tempo,
-                   instrument='Cello')]
-
-    # add instruments to comp object
-    for inst in range(len(qtet)):
-        comp.instruments.append(qtet[inst])
-    comp.ensemble = 'quartet'
+                   instrument="Cello")]
 
     print("\nwriting new string quartet...")
 
     # pick initial notes. 
     mode, pcs, notes = create.pick_scale(transpose=True)
-    source = create._new_source_scale(notes)
+    source = create.new_source_scale(notes)
     print("...using", notes[0], mode)
     print("...notes:", notes)
     print("...pcs:", pcs)
@@ -62,7 +58,7 @@ def str_qtet(tempo=None) -> Composition:
     # save source info to each Melody() object
     for q in range(len(qtet)):
         qtet[q].pcs.append(pcs)
-        qtet[q].source_scale = source
+        qtet[q].source_notes = source
 
     print("\nwriting opening...")
 
@@ -84,20 +80,20 @@ def str_qtet(tempo=None) -> Composition:
         qtet[q].rhythms.extend(rhy)
         qtet[q].dynamics.extend(dyn)
 
-    # save original values in temp list
+    # save original values in temp object
     qtet_orig = qtet
 
     print("\nwriting asynchronous lines...")
 
     mode, pcs, notes = create.pick_scale(transpose=True)
-    source = create._new_source_scale(notes)
+    source = create.new_source_scale(notes)
     print("...using", notes[0], mode)
     print("...notes:", notes)
     print("...pcs:", pcs, "\n")
 
     for q in trange((len(qtet)), desc="progress"):
         qtet[q] = write_line(qtet[q], source, total, create, asyn=True)
-        qtet[q].source_scale.extend(source)
+        qtet[q].source_notes.extend(source)
         qtet[q].pcs.append(pcs)
 
     print("\nrecapitulating choral opening at displaced end points...")
@@ -127,7 +123,7 @@ def str_qtet(tempo=None) -> Composition:
 
     # save all parts then write out
     for q in range(len(qtet)):
-        comp.add_part(qtet[q])
+        comp.add_part(qtet[q], qtet[q].instrument)
     save(comp)
 
     print("\n...success!")

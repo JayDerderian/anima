@@ -3,15 +3,19 @@ a class/container for note information. this is mostly intended to work within
 the midi.py module
 """
 
+from containers.container import Container
 
-class Note:
+class Note(Container):
     """
     Container for working with Instrument() objects, as well as Mido's
     MidiFile and Track() objects
     """
 
     def __init__(self, velocity, pitch, start, end):
-        self.name = ''  # note name string ("C#4")
+
+        super().__init__()
+
+        self.name = ""  # note name string ("C#4")
         self.velocity = velocity  # MIDI velocity
         self.pitch = pitch  # MIDI pitch number
         self.start = start  # start time (float)

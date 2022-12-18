@@ -9,7 +9,7 @@ from datetime import datetime as date
 from random import randint, sample, choice
 
 from utils.mapping import map_data
-from utils.txtfile import save_info
+from utils.txtfile import gen_info_doc
 from utils.midi import save
 from utils.tools import (
     to_str,
@@ -67,11 +67,11 @@ class Generate:
             total = randint(1, 3)  # pick 1 to 3 random words
             name = choice(words)
             while t < total:
-                name = name + ' ' + choice(words)
+                name = name + " " + choice(words)
                 t += 1
         except urllib.error.URLError:
             print("\nnew_title() - ERROR: Unable to retrieve word list!")
-            name = 'untitled - '
+            name = "untitled - "
         return name
 
     @staticmethod
@@ -100,8 +100,8 @@ class Generate:
             comp.composer = self.new_composer()
 
         comp.date = date.now().strftime("%d-%b-%y %H:%M:%S")
-        comp.midi_file_name = f'{comp.title}.mid'
-        comp.txt_file_name = f'{comp.title}.txt'
+        comp.midi_file_name = f"{comp.title}.mid"
+        comp.txt_file_name = f"{comp.title}.txt"
         return comp
 
     ### TEMPO ###
@@ -205,7 +205,7 @@ class Generate:
                     meta_data.append(info)
                 n = 0
         # Randomly pick notes from the generated source
-        # scale to create an arhythmic melody.
+        # scale to create an arrhythmic melody.
         notes = []
         if data is None:
             # Total notes in melody will be between 3 and
@@ -340,13 +340,12 @@ class Generate:
         return scale, pcs
 
     @staticmethod
-    def _new_source_scale(root: list) -> list[str]:
+    def new_source_scale(root: list) -> list[str]:
         """
         Generates a list[str] "source scale" based off a
         supplied root (list[str]).
 
         Does not pick additional roots! Mostly used by other methods.
-        Don't call directly.
 
         Returns a list[str] with appended octaves (2-6)
         """
@@ -378,7 +377,7 @@ class Generate:
         for scale in range(total):
             root, info = self.pick_root()
             scale_info.append(info)
-            sources[scale] = self._new_source_scale(root)
+            sources[scale] = self.new_source_scale(root)
         return sources, scale_info
 
     @staticmethod
@@ -401,11 +400,11 @@ class Generate:
         3. Repeat step 2 with next note in supplied pcs up to end of scale.
         """
         variants = {}
-        pcsl = len(pcs)
-        for i in range(pcsl):
+        pcs_len = len(pcs)
+        for i in range(pcs_len):
             sv = []
             note = pcs[i]
-            while len(sv) < pcsl:
+            while len(sv) < pcs_len:
                 note += randint(1, 3)
                 sv.append(note)
             variants[i] = sv
@@ -443,29 +442,26 @@ class Generate:
         return sample(INTERVALS["Chromatic Scale"], len(INTERVALS["Chromatic Scale"]))
 
     @staticmethod
-    def new_palindrome(m) -> Melody:
+    def new_palindrome(melody) -> Melody:
         """
         Takes either a list of chord() objects or a single melody()
         object, and creates a palindrome from it.
 
         Returns either a modified list[chord()], or modified melody()"""
         # chord() list
-        if type(m) == list:
-            mr = m
-            mr.reverse()
-            m.extend(mr)
+        if type(melody) == list:
+            mel_rev = melody
+            mel_rev.reverse()
+            melody.extend(mel_rev)
         # melody() object
-        elif isinstance(m, Melody):
-            end = len(m.notes) - 1
-            while end > -1:
-                m.notes.append(m.notes[end])
-                m.rhythms.append(m.rhythms[end])
-                m.dynamics.append(m.dynamics[end])
-                end -= 1
+        elif isinstance(melody, Melody):
+            melody.notes.extend(melody.notes.reverse())
+            melody.rhythms.extend(melody.rhythms.reverse())
+            melody.dynamics.extend(melody.dynamics.reverse())
         else:
             raise TypeError("parameter must be either a list or Melody() object"
-                            f"param was type: {type(m)}")
-        return m
+                            f"param was type: {type(melody)}")
+        return melody
 
     ### RHYTHM ###
 
@@ -499,6 +495,7 @@ class Generate:
             rhythm = choice(RHYTHMS)
             # Repeat this rhythm or not?
             if randint(1, 2) == 1:
+                # TODO: revisit this
                 limit = scale_limit(total)
                 if limit == 0:
                     limit += 2
@@ -527,6 +524,7 @@ class Generate:
         else:
             return choice(DYNAMICS)
 
+    # TODO: revisit this
     @staticmethod
     def new_dynamics(total=None, rests=True) -> list[int]:
         """
@@ -593,8 +591,8 @@ class Generate:
     def display_chord(chord: Chord) -> None:
         output = f"\n------------Chord:-------------" \
                  f"\nnotes: {chord.notes}" \
-                 f"rhythm: {chord.rhythm}" \
-                 f"dynamic: {chord.dynamic}"
+                 f"\nrhythm: {chord.rhythm}" \
+                 f"\ndynamic: {chord.dynamic}"
         print(output)
 
     def display_chords(self, chords: list) -> None:
@@ -623,7 +621,6 @@ class Generate:
 
         Returns a chord() object. Does not assign an instrument!
         """
-        a = Analyze()
         new_chord = Chord()
         if tempo is None:
             new_chord.tempo = 60.0
@@ -633,7 +630,6 @@ class Generate:
             # pick an existing scale/set or make a new one?
             if randint(1, 2) == 1:
                 scale, new_chord.info = self.pick_root(octave=randint(2, 5))
-                new_chord.pcs = a.get_pcs(scale)
             else:
                 scale, new_chord.pcs = self.new_scale(octave=randint(2, 5))
                 new_chord.info = "Invented Scale"
@@ -676,7 +672,7 @@ class Generate:
         return chords
 
     @staticmethod
-    def new_triads(scale, total=None) -> list[Chord]:
+    def new_triads(scale: list, total=None) -> list[Chord]:
         """
         generates a list of triads of t length from a given multi-octave
         source scale. a single octave scale will only yield 3 triads since
@@ -742,15 +738,15 @@ class Generate:
                  f"\nSource Data: {m.source_data}" \
                  f"\nInfo: {m.info}" \
                  f"\nTotal Notes: {len(m.notes)}" \
-                 f"Notes: {m.notes}" \
+                 f"\nNotes: {m.notes}" \
                  f"\nTotal rhythms: {len(m.rhythms)}" \
-                 f"Rhythms: {m.rhythms}" \
+                 f"\nRhythms: {m.rhythms}" \
                  f"\nTotal Dynamics: {len(m.dynamics)}" \
-                 f"Dynamics: {m.dynamics}\n"
+                 f"\nDynamics: {m.dynamics}"
         print(output)
 
     def new_melody(self, tempo=None, data=None, data_type=None,
-                   total=None, inst_range=None) -> Melody:
+                   total=None, inst_range=None, rests=True) -> Melody:
         """
         Picks tempo, notes, rhythms, and dynamics, with or without a
         supplied list from the user. It can process a list of ints
@@ -771,7 +767,7 @@ class Generate:
             # Process any incoming data
             data, melody = map_data(melody, data, data_type)
         else:
-            melody.source_data = 'None Inputted'
+            melody.source_data = "None Inputted"
         if tempo is None:
             melody.tempo = self.new_tempo()
         else:
@@ -780,24 +776,30 @@ class Generate:
         # Pick notes from scratch  
         if data is None:
             if total is None:
-                melody.notes, melody.info, melody.source_scale = self.new_notes()
+                (melody.notes,
+                 melody.info,
+                 melody.source_notes) = self.new_notes()
             else:
-                melody.notes, melody.info, melody.source_scale = self.new_notes(total=total)
+                (melody.notes,
+                 melody.info,
+                 melody.source_notes) = self.new_notes(total=total)
         # Or use supplied data. Supplied total isn't applicable with
         # a data set of n size, since n will just become the total we work with.
         else:
-            melody.notes, melody.info, melody.source_scale = self.new_notes(data=data)
+            (melody.notes,
+             melody.info,
+             melody.source_notes) = self.new_notes(data=data)
 
         # remove any notes not within a supplied range (if available)
         if inst_range is not None:
-            ml = len(melody.notes)
-            for note in range(ml):
+            melody_len = len(melody.notes)
+            for note in range(melody_len):
                 if melody.notes[note] not in inst_range:
                     melody.notes.remove(melody.notes[note])
 
         # add rhythms and dynamics
         melody.rhythms = self.new_rhythms(len(melody.notes), melody.tempo)
-        melody.dynamics = self.new_dynamics(len(melody.notes))
+        melody.dynamics = self.new_dynamics(len(melody.notes), rests)
         return melody
 
     ### NEW COMPOSITION ###
@@ -818,7 +820,7 @@ class Generate:
         Returns a composition() object on success, or -1 on failure.
         """
         comp = self.init_comp()
-        comp.ensemble = 'duet'
+        comp.ensemble = "duet"
 
         # Generate a melody
         if data is not None and data_type is not None:
@@ -826,14 +828,12 @@ class Generate:
                                      data=data,
                                      data_type=data_type)
             melody.instrument = self.new_instrument()
-            comp.instruments.append(melody.instrument)
         else:
             melody = self.new_melody(tempo=comp.tempo)
             melody.instrument = self.new_instrument()
-            comp.instruments.append(melody.instrument)
 
         # Save melody info
-        comp.add_part(melody)
+        comp.add_part(melody, melody.instrument)
 
         # Generate harmonies from this melody.
         # Total is between half the number of notes
@@ -845,13 +845,12 @@ class Generate:
         instr = INSTRUMENTS[randint(0, 8)]
         for i in range(len(chords)):
             chords[i].instrument = instr
-        comp.instruments.append(instr)
 
         # save chord object list
-        comp.add_part(chords)
+        comp.add_part(chords, instr)
 
         # add title, write out to MIDI file, and display results
-        comp.title = f"{comp.title} for various instruments"
+        comp.title = f"{comp.title} for mixed duet"
         save(comp)
         comp.display()
 

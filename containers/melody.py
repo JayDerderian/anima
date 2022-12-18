@@ -1,16 +1,10 @@
 """
 Module for the Melody() class/container. Used for individual melody data in compositions.
-
-TODO: create a method to break generated Melody() data into a list of Bar() objects, with
-      or without a common time signature. Tempo should be global.
-
-NOTE: one possible way to use melody objects would be to make sure that whatever length you want
-      is adherent to a consistent meter by checking whether the total length is a modulo of a given beat division
-
-      if we want a piece to be in all 4/4, then the length of the melody should me mel.duration() % 4 == 0.
 """
 
-class Melody:
+from containers.container import Container
+
+class Melody(Container):
     """
     A class/container for managing all data relevant to melodies.
 
@@ -23,11 +17,7 @@ class Melody:
 
     def __init__(self, tempo=None, instrument=None):
 
-        # Meta data
-        self.info = 'None'
-        self.pcs = []
-        self.source_data = []
-        self.source_scale = []
+        super().__init__()
 
         if tempo is None:
             self.tempo = 0.0
@@ -47,10 +37,7 @@ class Melody:
         """
         Returns the duration (float) of a melody in seconds.
         """
-        dur = 0.0
-        for rhy in self.rhythms:
-            dur += rhy
-        return dur
+        return sum(self.rhythms)
 
     def is_empty(self) -> bool:
         """
@@ -68,7 +55,7 @@ class Melody:
             "Info": self.info,
             "PCS": self.pcs,
             "Source Data": self.source_data,
-            "Source Scale": self.source_scale
+            "Source Scale": self.source_notes
         }
     
     def get_pcs(self) -> list:

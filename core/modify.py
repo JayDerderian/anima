@@ -146,12 +146,12 @@ class Modify:
             raise TypeError("notes must be a single str or list[str]! type is:", type(notes))
 
     @staticmethod
-    def retrograde(m: Melody) -> Melody:
+    def retrograde(melody: Melody) -> Melody:
         """
         reverses the elements in a melody object (notes, rhythms, dynamics)
         returns a duplicated melody() object
         """
-        retro = m
+        retro = melody
         retro.notes.reverse()
         retro.dynamics.reverse()
         retro.rhythms.reverse()
@@ -203,7 +203,7 @@ class Modify:
         frag.info = data[0]
         frag.pcs = data[1]
         frag.source_data = data[2]
-        frag.source_scale = data[3]
+        frag.source_notes = data[3]
         frag.tempo = m.tempo
         frag.instrument = m.instrument
         # generate fragment. any subset will necessarily
@@ -219,15 +219,15 @@ class Modify:
         return frag
 
     @staticmethod
-    def mutate(m: Melody) -> Melody:
+    def mutate(melody: Melody) -> Melody:
         """
         randomly permutates the order of notes, rhythms, and dynamics
         in a given melody object. each list is permutated independently of
         each other, meaning original associations aren't preserved!
 
-        returns a separate melody() object containing this permutation
+        returns a new Melody() object containing this permutation
         """
-        mutant = m
+        mutant = melody
         shuffle(mutant.notes)
         shuffle(mutant.rhythms)
         shuffle(mutant.dynamics)
@@ -249,31 +249,26 @@ class Modify:
         return notes
 
     @staticmethod
-    def change_dynamics(dyn, diff):
+    def change_dynamics(dyn, diff: int):
         """
         makes a single or list of dynamics louder or softer
         by a specified amount. returns a modified dynamics list[int]
+
+        needs to be an int that's a multiple of 4 and
+        within the specified range! MIDI velocities start
+        at 0 and increase by 4 until 127.
         """
-        # needs to be an int that's a multiple of 4 and 
-        # within the specified range! MIDI velocities start 
-        # at 0 and increase by 4 until 127.
-        if type(diff) != int:
-            raise TypeError("supplied value not an int!")
-        else:
-            if diff % 4 != 0:
-                raise ValueError("supplied value not a multiple of four!")
-        # main alteration section
         if type(dyn) == int:
             if dyn > 123:
-                raise ValueError("supplied dynamic is too high")
+                raise ValueError("supplied dynamic is too high. "
+                                 f"max is 123. dyn supplied: {dyn}")
             dyn += diff
         elif type(dyn) == list:
-            # only modify dynamics that will be within proper
-            # MIDI velocity range.
-            dl = len(dyn)
-            for d in range(dl):
+            dyn_len = len(dyn)
+            for d in range(dyn_len):
                 if dyn[d] < 123:
                     dyn[d] += diff
+                # just gonna ignore those dynamics for now...
                 else:
                     continue
         return dyn
