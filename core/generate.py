@@ -9,7 +9,7 @@ from datetime import datetime as date
 from random import randint, sample, choice
 
 from utils.mapping import map_data
-from utils.txtfile import save_info
+from utils.txtfile import gen_info_doc
 from utils.midi import save
 from utils.tools import (
     to_str,
@@ -67,11 +67,11 @@ class Generate:
             total = randint(1, 3)  # pick 1 to 3 random words
             name = choice(words)
             while t < total:
-                name = name + ' ' + choice(words)
+                name = name + " " + choice(words)
                 t += 1
         except urllib.error.URLError:
             print("\nnew_title() - ERROR: Unable to retrieve word list!")
-            name = 'untitled - '
+            name = "untitled - "
         return name
 
     @staticmethod
@@ -100,8 +100,8 @@ class Generate:
             comp.composer = self.new_composer()
 
         comp.date = date.now().strftime("%d-%b-%y %H:%M:%S")
-        comp.midi_file_name = f'{comp.title}.mid'
-        comp.txt_file_name = f'{comp.title}.txt'
+        comp.midi_file_name = f"{comp.title}.mid"
+        comp.txt_file_name = f"{comp.title}.txt"
         return comp
 
     ### TEMPO ###
@@ -340,13 +340,12 @@ class Generate:
         return scale, pcs
 
     @staticmethod
-    def _new_source_scale(root: list) -> list[str]:
+    def new_source_scale(root: list) -> list[str]:
         """
         Generates a list[str] "source scale" based off a
         supplied root (list[str]).
 
         Does not pick additional roots! Mostly used by other methods.
-        Don't call directly.
 
         Returns a list[str] with appended octaves (2-6)
         """
@@ -378,7 +377,7 @@ class Generate:
         for scale in range(total):
             root, info = self.pick_root()
             scale_info.append(info)
-            sources[scale] = self._new_source_scale(root)
+            sources[scale] = self.new_source_scale(root)
         return sources, scale_info
 
     @staticmethod
@@ -622,7 +621,6 @@ class Generate:
 
         Returns a chord() object. Does not assign an instrument!
         """
-        a = Analyze()
         new_chord = Chord()
         if tempo is None:
             new_chord.tempo = 60.0
@@ -632,7 +630,6 @@ class Generate:
             # pick an existing scale/set or make a new one?
             if randint(1, 2) == 1:
                 scale, new_chord.info = self.pick_root(octave=randint(2, 5))
-                new_chord.pcs = a.get_pcs(scale)
             else:
                 scale, new_chord.pcs = self.new_scale(octave=randint(2, 5))
                 new_chord.info = "Invented Scale"
@@ -770,7 +767,7 @@ class Generate:
             # Process any incoming data
             data, melody = map_data(melody, data, data_type)
         else:
-            melody.source_data = 'None Inputted'
+            melody.source_data = "None Inputted"
         if tempo is None:
             melody.tempo = self.new_tempo()
         else:
@@ -823,7 +820,7 @@ class Generate:
         Returns a composition() object on success, or -1 on failure.
         """
         comp = self.init_comp()
-        comp.ensemble = 'duet'
+        comp.ensemble = "duet"
 
         # Generate a melody
         if data is not None and data_type is not None:
@@ -856,7 +853,7 @@ class Generate:
         comp.add_part(chords, instr)
 
         # add title, write out to MIDI file, and display results
-        comp.title = f"{comp.title} for various instruments"
+        comp.title = f"{comp.title} for mixed duet"
         save(comp)
         comp.display()
 

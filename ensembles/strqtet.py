@@ -12,7 +12,7 @@ from random import randint, seed
 
 from utils.midi import save
 from utils.tools import scale_to_tempo
-from utils.txtfile import save_info
+from utils.txtfile import gen_info_doc
 
 from core.generate import Generate
 from core.constants import DYNAMICS, RANGE, RHYTHMS, TEMPOS
@@ -50,7 +50,7 @@ def str_qtet(tempo=None) -> Composition:
 
     # pick initial notes. 
     mode, pcs, notes = create.pick_scale(transpose=True)
-    source = create._new_source_scale(notes)
+    source = create.new_source_scale(notes)
     print("...using", notes[0], mode)
     print("...notes:", notes)
     print("...pcs:", pcs)
@@ -86,7 +86,7 @@ def str_qtet(tempo=None) -> Composition:
     print("\nwriting asynchronous lines...")
 
     mode, pcs, notes = create.pick_scale(transpose=True)
-    source = create._new_source_scale(notes)
+    source = create.new_source_scale(notes)
     print("...using", notes[0], mode)
     print("...notes:", notes)
     print("...pcs:", pcs, "\n")

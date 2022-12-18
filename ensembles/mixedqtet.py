@@ -44,7 +44,7 @@ def mixed_qtet(ensemble=None):
 
     t = randint(5, 9)  # total chords
     mode, mode_pcs, mode_notes = create.pick_scale(transpose=True)  # pick starting mode
-    source = create._new_source_scale(mode_notes)  # generate source scale from mode
+    source = create.new_source_scale(mode_notes)  # generate source scale from mode
 
     print("\ngenerating", t, "chords...")
     # generate chords from source scale. each chord will be repeated either

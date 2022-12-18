@@ -2,13 +2,14 @@
 Utility functions for working with MIDI data and I/O
 """
 
-from pretty_midi import PrettyMIDI, Instrument
 from mido import (
     MidiFile,
     MidiTrack,
     Message,
     MetaMessage
 )
+from pretty_midi import PrettyMIDI, Instrument
+
 
 from utils.tools import normalize_str
 from core.constants import (
@@ -176,5 +177,5 @@ def save(comp: Composition) -> None:
                             "Should be a Melody or Chord object, or list of either(or both)")
 
     # write to MIDI file
-    print(f"saving {comp.midi_file_name} ... ")
-    midi_writer.write(f'{MIDI_LOC}/{comp.midi_file_name}')
+    print(f"\nsaving {comp.midi_file_name} ... ")
+    midi_writer.write(f"{MIDI_LOC}/{comp.midi_file_name}")

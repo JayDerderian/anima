@@ -6,7 +6,7 @@ from pathlib import Path
 # absolute path of the program itself
 ROOT = Path(__file__).parent.parent
 # location to write MIDI files to
-MIDI_LOC = f'{ROOT}/midi'
+MIDI_LOC = f"{ROOT}/midi"
 
 
 # The alphabet.
@@ -30,8 +30,8 @@ DEFAULT_TICKS_PER_BEAT = 480
 
 
 # Dynamics (MIDI velocities: 0 - 127)
-'''NOTE: use indices 0-8 for soft dynamics only. 
-         9-17 for med, and 18-26 for loud dynamics'''
+"""NOTE: use indices 0-8 for soft dynamics only. 
+         9-17 for med, and 18-26 for loud dynamics"""
 DYNAMICS = [20, 24, 28, 32, 36, 40, 44, 48, 52,
             56, 60, 64, 68, 72, 76, 80, 84, 88,
             92, 96, 100, 104, 108, 112, 116, 120, 
@@ -40,7 +40,7 @@ DYNAMICS = [20, 24, 28, 32, 36, 40, 44, 48, 52,
 
 # Base rhythms in seconds at 60bpm (or q = 60). 
 # Convert to current tempo using scale_to_tempo() when necessary.
-'''
+"""
 Durations in seconds (1 sec = quarter note @ 60bpm)
 
 Current range is from a whole note to 32nd note,
@@ -56,24 +56,24 @@ though other values will be added eventually.
     [7] 0.375 = dotted sixteenth
     [8] 0.25 = sixteenth 
     [9] 0.125 = thirty-second
-''' 
+"""
 RHYTHMS = [4.0, 3.0, 2.0, 1.5, 1.0, 
            0.75, 0.5, 0.375, 0.25, 0.125]
 
-'''
+"""
 MIDI doesn't actually have rests. Instead a "rest" is just a 
 completely silent note in a MIDI file, so rests need to be notated
 in the sheet music accordingly and be able to recognize the constant
 REST in a given composition object.
 
 REST is actually a MIDI velocity of 0
-'''
+"""
 REST = 0
 
-'''
+"""
 this is mainly used by the analysis module to determine proper beat values
 in a given meter. were' sticking with rational meters for the time being.
-'''
+"""
 BEATS = [1, 2, 4, 8, 16, 32, 64]
 
 # Base durations in seconds for tuplets where q = 60bpm
@@ -90,10 +90,10 @@ TUPLETS = {
 
 
 # List of pitch classes
-'''
+"""
 NOTE: the indices of each pitch class correspond to 
       its representation in integer notation!
-'''
+"""
 PITCH_CLASSES = ["C", "C#", "D", "Eb", "E", "F", 
                  "F#", "G", "G#", "A", "Bb", "B"]
 
@@ -248,9 +248,9 @@ ARPEGGIOS = {
     "quartal":    [0, 5, 10, 5],
 }
 
-'''
+"""
 A dictionary of common chord progressions notated in roman numerals
-'''
+"""
 PROGRESSIONS = {
     'Pop1': ['I', 'V', 'vi', 'IV'],
     'Pop2': ['I', 'IV', 'V', 'IV'],
@@ -261,9 +261,9 @@ PROGRESSIONS = {
     '12BarBlues': ['I','I','I','I','IV','IV', 'I', 'I', 'V', 'IV', 'I', 'I']
 }
 
-'''
+"""
 maps roman numeral notation to scale degree. 
-'''
+"""
 SCALE_DEGREE_MAPPING = {
     'i': 1,
     'I': 1,
@@ -281,7 +281,7 @@ SCALE_DEGREE_MAPPING = {
     'VII': 7
 }
 
-'''
+"""
 A rather large dictionary containing all of Allen Forte's 5 to 9 
 note prime form pitch class sets. A corresponding list called FORTE_NUMBERS 
 is used with randint() to pick a prime form from the dictionary in pickScale().
@@ -300,7 +300,8 @@ generate a scale represented by a list of strings (i.e. ["C#4", "D5"... etc]).
     [11, 0,...] set and you get 7-35!
 
 Info taken from here: 
-https://en.wikipedia.org/wiki/List_of_pitch-class_sets'''
+https://en.wikipedia.org/wiki/List_of_pitch-class_sets
+"""
 
 
 SETS = {    
@@ -602,13 +603,13 @@ ENSEMBLE_SIZES = {
 
 
 # Ensembles
-'''
+"""
 A dictionary of some template ensembles.
 
 NOTE: obviously not complete or comprehensive. 
       just some standards that could use usefull when quick 
       templates are needed.
-'''
+"""
 
 
 ENSEMBLES = {
@@ -674,11 +675,11 @@ ENSEMBLES = {
 }
 
 
-'''
+"""
 List of each possible note for a limited set of instruments
 Currently covers all of the orchestral instruments, plus a 
 few others in CONCERT pitch!. 
-'''
+"""
 RANGE = {
     
     #-------------------------Orchestral---------------------------------#

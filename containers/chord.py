@@ -23,15 +23,16 @@ class Chord:
         self.source_data = []
 
         if instrument is None:
-            self.instrument = 'Acoustic Grand Piano'
+            self.instrument = "Acoustic Grand Piano"
         elif instrument in INSTRUMENTS:
             self.instrument = instrument
         else:
-            raise TypeError(f'{instrument} not a valid instrument!')
+            raise TypeError(f"{instrument} not a valid instrument!")
         if tempo is None:
             self.tempo = 60.0
         elif tempo < 40.0 or tempo > 280.0:
-            raise ValueError(f'tempo is out of range! must be between 40.0 and 280.0. tempo supplied: {tempo}')
+            raise ValueError("tempo is out of range! "
+                             f"must be between 40.0 and 280.0. tempo supplied: {tempo}")
         else:
             self.tempo = tempo
 

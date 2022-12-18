@@ -1,6 +1,6 @@
 """
 This module handles creating a purely "random" composition. Tempo, ensemble size, instruments, title,
-melodies, and harmonies are all independtly generated, united only by a global tempo. Length of each part
+melodies, and harmonies are all independently generated, united only by a global tempo. Length of each part
 may vary substantially, as well as the instrumentation.
 """
 
@@ -8,14 +8,10 @@ may vary substantially, as well as the instrumentation.
 from core.generate import Generate
 from core.constants import ENSEMBLE_SIZES
 
-from containers.composition import Composition
-
 import utils.midi as mid
-from utils.txtfile import save_info
 from utils.data import new_data
 
 from random import randint, choice
-from datetime import datetime as date
 
 
 # Pure "random" mode
@@ -41,7 +37,7 @@ def new_random_composition():
     size = randint(1, 11)
     print("\ntotal instruments:", size)
     comp.ensemble = ENSEMBLE_SIZES[size]
-    instruments = create.new_instruments(size)
+    instruments = create.new_instruments(total=size)
     print("instruments:", instruments)
 
     # how many melody instruments?
@@ -52,10 +48,10 @@ def new_random_composition():
         for i in range(total_melodies):
             # use randomly chosen source data
             if randint(1, 2) == 1:
-                dt = randint(1, 4)
-                data = new_data(dt)
+                data_type = randint(1, 4)
+                data = new_data(data_type)
                 melody = create.new_melody(tempo=comp.tempo,
-                                           data=data, data_type=dt)
+                                           data=data, data_type=data_type)
             # ... or not
             else:
                 melody = create.new_melody(tempo=comp.tempo)
@@ -64,8 +60,6 @@ def new_random_composition():
             melody.instrument = instr
             # remove from original ist
             instruments.remove(instr)
-            # save to comp.instruments
-            comp.instruments.append(instr)
             # save the melody
             comp.add_part(melody, melody.instrument)
 
@@ -86,7 +80,7 @@ def new_random_composition():
             instruments.remove(instr)
             comp.instruments.append(instr)
             # save chord progression to comp chord dictionary
-            comp.add_part(chords, chords[0].instrument)
+            comp.add_part(chords, instr)
 
     # export to MIDI file and .txt file
     mid.save(comp)

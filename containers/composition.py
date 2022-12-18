@@ -125,7 +125,15 @@ class Composition:
         Add a part to this composition
         """
         self.instruments.append(instr)
-        total_occurrences = self.how_many(instr)
         self.parts.update({
-            f"{instr} {total_occurrences + 1}": part
+            f"{instr} {self.how_many(instr) + 1}": part
         })
+
+    def remove_part(self, part: str) -> None:
+        """
+        Remove a part from this composition.
+        part param must be a string like 'violin 1'
+        """
+        if part in list(self.parts.keys()):
+            self.instruments.remove(part)
+            del self.parts[part]
