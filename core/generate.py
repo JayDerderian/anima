@@ -746,7 +746,7 @@ class Generate:
         print(output)
 
     def new_melody(self, tempo=None, data=None, data_type=None,
-                   total=None, inst_range=None) -> Melody:
+                   total=None, inst_range=None, rests=True) -> Melody:
         """
         Picks tempo, notes, rhythms, and dynamics, with or without a
         supplied list from the user. It can process a list of ints
@@ -778,17 +778,17 @@ class Generate:
             if total is None:
                 (melody.notes,
                  melody.info,
-                 melody.source_scale) = self.new_notes()
+                 melody.source_notes) = self.new_notes()
             else:
                 (melody.notes,
                  melody.info,
-                 melody.source_scale) = self.new_notes(total=total)
+                 melody.source_notes) = self.new_notes(total=total)
         # Or use supplied data. Supplied total isn't applicable with
         # a data set of n size, since n will just become the total we work with.
         else:
             (melody.notes,
              melody.info,
-             melody.source_scale) = self.new_notes(data=data)
+             melody.source_notes) = self.new_notes(data=data)
 
         # remove any notes not within a supplied range (if available)
         if inst_range is not None:
@@ -799,7 +799,7 @@ class Generate:
 
         # add rhythms and dynamics
         melody.rhythms = self.new_rhythms(len(melody.notes), melody.tempo)
-        melody.dynamics = self.new_dynamics(len(melody.notes))
+        melody.dynamics = self.new_dynamics(len(melody.notes), rests)
         return melody
 
     ### NEW COMPOSITION ###
@@ -828,11 +828,9 @@ class Generate:
                                      data=data,
                                      data_type=data_type)
             melody.instrument = self.new_instrument()
-            comp.instruments.append(melody.instrument)
         else:
             melody = self.new_melody(tempo=comp.tempo)
             melody.instrument = self.new_instrument()
-            comp.instruments.append(melody.instrument)
 
         # Save melody info
         comp.add_part(melody, melody.instrument)
@@ -847,7 +845,6 @@ class Generate:
         instr = INSTRUMENTS[randint(0, 8)]
         for i in range(len(chords)):
             chords[i].instrument = instr
-        comp.instruments.append(instr)
 
         # save chord object list
         comp.add_part(chords, instr)

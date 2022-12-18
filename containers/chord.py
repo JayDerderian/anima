@@ -1,11 +1,11 @@
 """
 This module contains the Chord() class, used to contain information unique to Chord() objects.
 """
-from utils.tools import scale_to_tempo
+from containers.container import Container
 from core.constants import INSTRUMENTS
 
 
-class Chord:
+class Chord(Container):
     """
     A class/container for managing all data relevant to a single chord.
 
@@ -16,11 +16,7 @@ class Chord:
         """
         Initialize with several empty lists. Use any inputted instrument or tempo data!
         """
-        # Metadata
-        self.info = "None"
-        self.pcs = []
-        self.source_notes = []
-        self.source_data = []
+        super().__init__()
 
         if instrument is None:
             self.instrument = "Acoustic Grand Piano"

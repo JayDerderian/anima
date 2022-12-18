@@ -49,6 +49,9 @@ from core.constants import (
     SETS
 )
 from core.modify import Modify
+from containers.composition import Composition
+from containers.melody import Melody
+from containers.chord import Chord
 
 
 class Analyze:
@@ -61,36 +64,6 @@ class Analyze:
         self.going = True
 
     ### Pitch Class Methods ###
-
-    def get_pcs_from_comp(self, comp):
-        """
-        gets all pitch classes from each part in a composition() object
-
-        param: Composition()
-        return: list[int]
-
-        NOTE: this doesn't account if there's more than one of the same instrument!
-              the dictionary key is the current melody object instrument, for now...
-        """
-        pcs = {}
-        if len(comp.melodies) > 0:
-            mel_len = len(comp.melodies)
-            for m in range(mel_len):
-                pcs[comp.melodies[m].instrument] = self.get_pcs(comp.melodies[m].notes)
-            return pcs
-        if len(comp.chords) > 0:
-            cl = len(comp.chords)
-            for c in range(cl):
-                chords = comp.chords[c]
-                chord_len = len(chords)
-                for chord in range(chord_len):
-                    pcs[chords[chord].instrument] = self.get_pcs(chords[chord].notes)
-            return pcs
-        if len(comp.melodi_chords) > 0:
-            ml_len = len(comp.melodi_chords)
-            for m in range(ml_len):
-                pcs[comp.melodi_chords[m].instrument] = self.get_pcs(comp.melodi_chords[m].notes)
-        return pcs
 
     @staticmethod
     def get_pcs(notes):
@@ -117,7 +90,8 @@ class Analyze:
                 else:
                     pcs.append(PITCH_CLASSES.index(notes[n]))
         else:
-            raise TypeError("notes must be a list[int] or single int! type is", type(notes))
+            raise TypeError("notes must be a list[int] or single int! "
+                            "type is", type(notes))
         return pcs
 
     # TODO: TEST THIS
@@ -129,8 +103,20 @@ class Analyze:
         returns:
             dict(key = pitch class integer, value = total appearances)
         """
-        pc_totals = {0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0,
-                     6: 0, 7: 0, 8: 0, 9: 0, 10: 0, 11: 0}
+        pc_totals = {
+            0: 0,
+            1: 0,
+            2: 0,
+            3: 0,
+            4: 0,
+            5: 0,
+            6: 0,
+            7: 0,
+            8: 0,
+            9: 0,
+            10: 0,
+            11: 0
+        }
         for track in tracks:
             # convert all MIDI note numbers to 
             # note name strings, then pitch classes (obvs not ideal)
@@ -169,9 +155,9 @@ class Analyze:
             raise TypeError("notes must be a single str or list[str]! "
                             "\ntype is:", type(notes))
 
-
     ### Pitch Class Set ###
 
+    # TODO
     def find_normal_order(self, notes):
         """
         NOTE: Not ready! maybe match against SETS to see if it's actually
@@ -191,7 +177,7 @@ class Analyze:
             pcs.append(pc)
         return pcs
 
-    # TODO:
+    # TODO
     def find_set(self, notes):
         """
         Given a set of notes, find an associated Forte set
@@ -238,7 +224,7 @@ class Analyze:
             intervals.append(ind[n] - ind[n - 1])
         return intervals
 
-    # TODO: 
+    # TODO
     def get_interval_vector(self, notes):
         """
         gets the interval vector of a given set of
@@ -284,7 +270,7 @@ class Analyze:
 
     ### 12 Tone Functions ###
 
-    # TODO:
+    # TODO
     def get_12tone_matrix(self, row, intervals):
         """
         NOTE: NOT READY
@@ -348,6 +334,40 @@ class Analyze:
                 print(y, end=" ")
             print()
 
+
+    def _get_comp_info(self, comp: Composition) -> dict:
+        """
+        builds a dictionary of pitch class information from
+        a given composition object
+        """
+        if len(comp.parts) == 0:
+            return {}
+
+        info = {}
+        for part in comp.parts:
+            if isinstance(comp.parts[part], Melody) or isinstance(comp.parts[part], Chord):
+                info.update({
+                    "name": comp.parts[part].instrument,
+                    "pcs": comp.parts[part].pcs if len(comp.parts[part]) > 0
+                    else self.get_pcs(comp.parts[part].notes),
+                })
+            elif isinstance(comp.parts[part], list):
+                for item in comp.parts[part]:
+                    if isinstance(item, Melody) or isinstance(item, Chord):
+                        info.update({
+                            "name": item.instrument,
+                            "pcs": item.pcs if len(item.pcs) > 0 else self.get_pcs(item.notes),
+                        })
+                    else:
+                        raise TypeError("incorrect type for a part! "
+                                        "\nmust be melody, chord, or list (of melody or chord) objects "
+                                        f"\nitem == {type(item)}")
+            else:
+                raise TypeError("incorrect type for a part! "
+                                "\nmust be melody, chord, or list (of melody or chord) objects "
+                                f"\nself.parts[{part}] == {type(comp.parts[part])}")
+        return info
+
     ### MIDI Analysis Functions ###
 
     def parse_MIDI(self, file_name: str):
@@ -403,6 +423,7 @@ some additional methods for handling meter. these are mainly used
 sporadically and didn't really warrant being part of the larger analyze method class,
 at least for now...
 """
+
 
 def is_simple(meter):
     """returns True if meter is a simple meter"""

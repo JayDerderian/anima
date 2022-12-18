@@ -203,7 +203,7 @@ class Modify:
         frag.info = data[0]
         frag.pcs = data[1]
         frag.source_data = data[2]
-        frag.source_scale = data[3]
+        frag.source_notes = data[3]
         frag.tempo = m.tempo
         frag.instrument = m.instrument
         # generate fragment. any subset will necessarily

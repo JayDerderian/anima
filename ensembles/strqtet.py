@@ -58,7 +58,7 @@ def str_qtet(tempo=None) -> Composition:
     # save source info to each Melody() object
     for q in range(len(qtet)):
         qtet[q].pcs.append(pcs)
-        qtet[q].source_scale = source
+        qtet[q].source_notes = source
 
     print("\nwriting opening...")
 
@@ -93,7 +93,7 @@ def str_qtet(tempo=None) -> Composition:
 
     for q in trange((len(qtet)), desc="progress"):
         qtet[q] = write_line(qtet[q], source, total, create, asyn=True)
-        qtet[q].source_scale.extend(source)
+        qtet[q].source_notes.extend(source)
         qtet[q].pcs.append(pcs)
 
     print("\nrecapitulating choral opening at displaced end points...")

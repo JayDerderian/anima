@@ -1,7 +1,7 @@
 """
 Module for handling all composition data. Contains a Composition() class/container.
 """
-
+# from core.analyze import Analyze
 from containers.chord import Chord
 from containers.melody import Melody
 
@@ -14,7 +14,6 @@ class Composition:
     ensemble type, instrument list, list of picked instruments, lists melodies, and
     a dictionary of chord progressions.
     """
-
     def __init__(self, title=None, composer=None, tempo=None):
 
         if title is not None:
@@ -56,6 +55,7 @@ class Composition:
     def _get_instrument_list(self) -> list:
         return self.instruments
 
+
     def _duration(self) -> float:
         """
         Finds the longest individual part in the piece.
@@ -66,11 +66,15 @@ class Composition:
             dur = 0.0
             if isinstance(self.parts[track], Melody) or isinstance(self.parts[track], Chord):
                 dur += self.parts[track].duration()
+                if dur > longest:
+                    longest = dur
             elif isinstance(self.parts[track], list):
+                # sum the entire list since each object is considered
+                # a "single" part here
                 for obj in self.parts[track]:
                     dur += obj.duration()
-            if dur > longest:
-                longest = dur
+                if dur > longest:
+                    longest = dur
         return longest
 
     ### Public methods ###

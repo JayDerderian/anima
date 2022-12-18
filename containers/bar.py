@@ -1,7 +1,7 @@
 """
 class/container for dealing with individual measures.
 """
-
+from containers.container import Container
 from containers.melody import Melody
 
 from core.analyze import Analyze, is_valid
@@ -10,7 +10,7 @@ from core.constants import INSTRUMENTS
 from utils.tools import scale_to_tempo
 
 
-class Bar:
+class Bar(Container):
     """
     class/container for dealing with individual measures.
     """
@@ -27,6 +27,9 @@ class Bar:
     }
 
     def __init__(self, meter=None, tempo=None, instrument=None):
+
+        super().__init__()
+
         if meter is None:
             self.meter = (4, 4)  # defaults to 4/4 if no meter is provided
         else:

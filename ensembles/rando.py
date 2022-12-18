@@ -78,7 +78,6 @@ def new_random_composition():
             for c in range(len(chords)):
                 chords[c].instrument = instr
             instruments.remove(instr)
-            comp.instruments.append(instr)
             # save chord progression to comp chord dictionary
             comp.add_part(chords, instr)
 
