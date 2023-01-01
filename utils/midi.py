@@ -147,7 +147,7 @@ def save(comp: Composition) -> None:
 
     midi_writer = PrettyMIDI(initial_tempo=comp.tempo)
 
-    # iterate over comp.tracks dictionary
+    # iterate over comp.parts dictionary
     for part in comp.parts:
         # reset start and end markers for each track
         start, end = 0.0, 0.0

@@ -20,9 +20,9 @@ def gen_info_doc(file_name: str, comp: Composition, data=None):
     """
     with open(file_name, "w+") as f:
         ### generate a header ###
-        header = '\n************************************************************* ' \
-                 '\n--------------------------COMPOSITION------------------------ ' \
-                 '\n************************************************************* '
+        header = "\n************************************************************* " \
+                 "\n--------------------------COMPOSITION------------------------ " \
+                 "\n************************************************************* "
         f.write(header)
 
         ### add composition information ###
@@ -78,7 +78,7 @@ def gen_info_doc(file_name: str, comp: Composition, data=None):
                        f"\nSource scale: {comp.parts[part].source_notes}" \
                        f"\nPitch classes: {comp.parts[part].pcs}"
                 f.write(part)
-            # handle list of melody or chord objects
+            # handle list of melody and/or chord objects
             elif isinstance(comp.parts[part], list):
                 for item in comp.parts[part]:
                     # handle single melody or chord objects

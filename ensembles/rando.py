@@ -9,7 +9,7 @@ from core.generate import Generate
 from core.constants import ENSEMBLE_SIZES
 
 import utils.midi as mid
-from utils.data import new_data
+from utils.data import new_data, DATA_MAP
 
 from random import randint, choice
 
@@ -48,7 +48,7 @@ def new_random_composition():
         for i in range(total_melodies):
             # use randomly chosen source data
             if randint(1, 2) == 1:
-                data_type = randint(1, 4)
+                data_type = choice(list(DATA_MAP.keys()))
                 data = new_data(data_type)
                 melody = create.new_melody(tempo=comp.tempo,
                                            data=data, data_type=data_type)

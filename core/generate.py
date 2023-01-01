@@ -6,7 +6,9 @@ import urllib.request
 from math import floor
 from names import get_full_name
 from datetime import datetime as date
-from random import randint, sample, choice
+from random import (
+    seed, randint, sample, choice
+)
 
 from utils.mapping import map_data
 from utils.txtfile import gen_info_doc
@@ -46,6 +48,7 @@ class Generate:
     """
 
     def __init__(self):
+        seed()
         self.alive = True
 
     ## TITLE ###
@@ -822,16 +825,15 @@ class Generate:
         comp = self.init_comp()
         comp.ensemble = "duet"
 
-        # Generate a melody
+        # Generate a melody only if we have both data and data_type args
         if data is not None and data_type is not None:
             melody = self.new_melody(tempo=comp.tempo,
                                      data=data,
                                      data_type=data_type)
-            melody.instrument = self.new_instrument()
         else:
             melody = self.new_melody(tempo=comp.tempo)
-            melody.instrument = self.new_instrument()
-
+        # pick instrument
+        melody.instrument = self.new_instrument()
         # Save melody info
         comp.add_part(melody, melody.instrument)
 
@@ -849,9 +851,10 @@ class Generate:
         # save chord object list
         comp.add_part(chords, instr)
 
-        # add title, write out to MIDI file, and display results
+        # add title, write out to MIDI & text ile, and display results
         comp.title = f"{comp.title} for mixed duet"
         save(comp)
+        gen_info_doc(file_name=comp.txt_file_name, comp=comp)
         comp.display()
 
         return comp
