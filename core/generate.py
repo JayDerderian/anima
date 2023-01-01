@@ -192,10 +192,11 @@ class Generate:
         # Or the largest value of the supplied data set
         else:
             gen_total = max(data)
-        # this only uses a supplied root scale once!
+
         n = 0
         scale = []
         # Generate source scale
+        # this only uses a supplied root scale once!
         for i in range(gen_total + 1):
             note = f'{root[n]}{octave}'
             scale.append(note)
@@ -207,6 +208,7 @@ class Generate:
                     root, info = self.pick_root(transpose=True, octave=None)
                     meta_data.append(info)
                 n = 0
+
         # Randomly pick notes from the generated source
         # scale to create an arrhythmic melody.
         notes = []
@@ -302,15 +304,15 @@ class Generate:
 
         Supply a value for o if a specified octave is needed.
         """
-        fn = choice(list(SETS.keys()))
-        pcs = SETS[fn]
+        forte_number = choice(list(SETS.keys()))
+        pcs = SETS[forte_number]
         if transpose:
             mod = Modify()
             pcs_t = mod.transpose(pcs, randint(1, 11), oct_eq=False)
             scale = to_str(pcs_t, octave=octave)
         else:
             scale = to_str(pcs, octave=octave)
-        return fn, pcs, scale
+        return forte_number, pcs, scale
 
     @staticmethod
     def new_scale(transpose=True, octave=None):
@@ -611,11 +613,11 @@ class Generate:
         Returns the total length  in seconds (float) of a series
         of chord() objects (chord progression).
         """
-        d = 0.0
-        cl = len(chords)
-        for chord in range(cl):
-            d += chords[chord].rhythm
-        return d
+        duration = 0.0
+        chord_len = len(chords)
+        for chord in range(chord_len):
+            duration += chords[chord].rhythm
+        return duration
 
     def new_chord(self, tempo=None, scale=None) -> Chord:
         """
@@ -675,7 +677,7 @@ class Generate:
         return chords
 
     @staticmethod
-    def new_triads(scale: list, total=None) -> list[Chord]:
+    def new_triads(scale: list, total: int) -> list[Chord]:
         """
         generates a list of triads of t length from a given multi-octave
         source scale. a single octave scale will only yield 3 triads since
@@ -694,12 +696,15 @@ class Generate:
         triads = []
         scale_len = len(scale)
         for i in range(1, scale_len):
-            triad = Chord()
-            triad.notes = [scale[i - 1], scale[i + 1], scale[i + 3]]
-            triad.rhythm = 2.0  # half notes by default
-            triad.dynamic = 100  # mezzo forte-ish
-            triads.append(triad)
-            if len(triads) == total:
+            try:
+                triad = Chord()
+                triad.notes = [scale[i - 1], scale[i + 1], scale[i + 3]]
+                triad.rhythm = 2.0  # half notes by default
+                triad.dynamic = 100  # mezzo forte-ish
+                triads.append(triad)
+                if len(triads) == total:
+                    break
+            except IndexError:
                 break
         return triads
 
