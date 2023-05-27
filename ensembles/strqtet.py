@@ -27,24 +27,20 @@ def str_qtet(tempo=None) -> Composition:
     """
 
     # initialize
-    seed()
     create = Generate()
     if tempo is None:
         comp = create.init_comp(TEMPOS[randint(20, 27)])  # 100 - 126bpm
     else:
         comp = create.init_comp(tempo)
-    title_full = comp.title + " for string quartet"
     comp.ensemble = "quartet"
 
     # create our quartet
-    qtet = [Melody(tempo=comp.tempo,
-                   instrument="Violin"),
-            Melody(tempo=comp.tempo,
-                   instrument="Violin"),
-            Melody(tempo=comp.tempo,
-                   instrument="Viola"),
-            Melody(tempo=comp.tempo,
-                   instrument="Cello")]
+    qtet = [
+        Melody(tempo=comp.tempo, instrument="Violin"),
+        Melody(tempo=comp.tempo, instrument="Violin"),
+        Melody(tempo=comp.tempo, instrument="Viola"),
+        Melody(tempo=comp.tempo, instrument="Cello")
+    ]
 
     print("\nwriting new string quartet...")
 
@@ -72,6 +68,7 @@ def str_qtet(tempo=None) -> Composition:
     for rhythm in range(total):
         # use slower rhythms
         rhy.append(RHYTHMS[randint(1, 4)])
+
     # create dynamics
     dyn = create.new_dynamics(total=total)
 
@@ -137,8 +134,7 @@ def str_qtet(tempo=None) -> Composition:
 
 ## Helpers ###
 
-def write_line(part: Melody, scale: list,
-               total: int, create: Generate, asyn=False) -> Melody:
+def write_line(part: Melody, scale: list, total: int, create: Generate, asyn=False) -> Melody:
     """
     writes each individual melodic line for each part.
     **doesn't add rhythm or dynamics** if asyn==False,
@@ -151,6 +147,7 @@ def write_line(part: Melody, scale: list,
     if asyn:
         # NOTE: this will redefine supplied total if asyn is True
         total = randint(12, 30)
+
     for things in range(total):
         # limited to octaves 4 and 5 for violins
         if part.instrument == 'Violin':
@@ -159,12 +156,14 @@ def write_line(part: Melody, scale: list,
             while note not in RANGE["Violin"]:
                 note = scale[randint(13, len(scale) - 1)]
             part.notes.append(note)
+
         # limit to octaves 3 and 4 for viola
         elif part.instrument == 'Viola':
             note = scale[randint(7, len(scale) - 8)]
             while note not in RANGE["Viola"]:
                 note = scale[randint(7, len(scale) - 8)]
             part.notes.append(note)
+
         # limit to octaves 2 and 3 for cello
         elif part.instrument == 'Cello':
             note = scale[randint(0, len(scale) - 16)]
@@ -205,6 +204,7 @@ def build_ending(part: Melody) -> tuple[Melody, dict]:
         part.notes.extend(fig["notes"])
         part.rhythms.extend(fig["rhythms"])
         part.dynamics.extend(fig["dynamics"])
+
     # change each rhythm list to next quickest value, 
     # and increase number of reps by 1 with each change.
     # volume increases with each iteration.
@@ -221,6 +221,7 @@ def build_ending(part: Melody) -> tuple[Melody, dict]:
         cur += 1
         rep += 1
         dyn += 1
+
     return part, fig
 
 
@@ -233,6 +234,7 @@ def sync(melody, longest_part, fig):
         melody.notes.extend(fig["notes"])
         melody.rhythms.extend(fig["rhythms"])
         melody.dynamics.extend(fig["dynamics"])
+
     return melody
 
 
