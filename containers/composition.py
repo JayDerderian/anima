@@ -122,11 +122,13 @@ class Composition:
         returns the compositions' duration as a formatted string
         """
         minutes, seconds = divmod(self._duration(), 60)
-        return str(int(minutes)) + " min " + str(seconds) + " sec "
+        return f"{str(minutes)} min {str(seconds)} sec"
 
     def add_part(self, part, instr: str) -> None:
         """
-        Add a part to this composition
+        Add a part to this composition where
+        a "part" is either a Melody object, a Chord object,
+        or a list of either (or both).
         """
         self.instruments.append(instr)
         self.parts.update({

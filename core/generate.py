@@ -6,7 +6,9 @@ import urllib.request
 from math import floor
 from names import get_full_name
 from datetime import datetime as date
-from random import randint, sample, choice
+from random import (
+    seed, randint, sample, choice
+)
 
 from utils.mapping import map_data
 from utils.txtfile import gen_info_doc
@@ -46,6 +48,7 @@ class Generate:
     """
 
     def __init__(self):
+        seed()
         self.alive = True
 
     ## TITLE ###
@@ -189,10 +192,11 @@ class Generate:
         # Or the largest value of the supplied data set
         else:
             gen_total = max(data)
-        # this only uses a supplied root scale once!
+
         n = 0
         scale = []
         # Generate source scale
+        # this only uses a supplied root scale once!
         for i in range(gen_total + 1):
             note = f'{root[n]}{octave}'
             scale.append(note)
@@ -204,6 +208,7 @@ class Generate:
                     root, info = self.pick_root(transpose=True, octave=None)
                     meta_data.append(info)
                 n = 0
+
         # Randomly pick notes from the generated source
         # scale to create an arrhythmic melody.
         notes = []
@@ -299,15 +304,15 @@ class Generate:
 
         Supply a value for o if a specified octave is needed.
         """
-        fn = choice(list(SETS.keys()))
-        pcs = SETS[fn]
+        forte_number = choice(list(SETS.keys()))
+        pcs = SETS[forte_number]
         if transpose:
             mod = Modify()
             pcs_t = mod.transpose(pcs, randint(1, 11), oct_eq=False)
             scale = to_str(pcs_t, octave=octave)
         else:
             scale = to_str(pcs, octave=octave)
-        return fn, pcs, scale
+        return forte_number, pcs, scale
 
     @staticmethod
     def new_scale(transpose=True, octave=None):
@@ -409,8 +414,7 @@ class Generate:
                 sv.append(note)
             variants[i] = sv
         for scale in variants:
-            variants[scale] = to_str(variants[scale],
-                                     octave=octave, oct_eq=False)
+            variants[scale] = to_str(variants[scale], octave=octave, oct_eq=False)
         return variants
 
     @staticmethod
@@ -524,7 +528,6 @@ class Generate:
         else:
             return choice(DYNAMICS)
 
-    # TODO: revisit this
     @staticmethod
     def new_dynamics(total=None, rests=True) -> list[int]:
         """
@@ -608,11 +611,11 @@ class Generate:
         Returns the total length  in seconds (float) of a series
         of chord() objects (chord progression).
         """
-        d = 0.0
-        cl = len(chords)
-        for chord in range(cl):
-            d += chords[chord].rhythm
-        return d
+        duration = 0.0
+        chord_len = len(chords)
+        for chord in range(chord_len):
+            duration += chords[chord].rhythm
+        return duration
 
     def new_chord(self, tempo=None, scale=None) -> Chord:
         """
@@ -672,7 +675,7 @@ class Generate:
         return chords
 
     @staticmethod
-    def new_triads(scale: list, total=None) -> list[Chord]:
+    def new_triads(scale: list, total: int) -> list[Chord]:
         """
         generates a list of triads of t length from a given multi-octave
         source scale. a single octave scale will only yield 3 triads since
@@ -691,12 +694,15 @@ class Generate:
         triads = []
         scale_len = len(scale)
         for i in range(1, scale_len):
-            triad = Chord()
-            triad.notes = [scale[i - 1], scale[i + 1], scale[i + 3]]
-            triad.rhythm = 2.0  # half notes by default
-            triad.dynamic = 100  # mezzo forte-ish
-            triads.append(triad)
-            if len(triads) == total:
+            try:
+                triad = Chord()
+                triad.notes = [scale[i - 1], scale[i + 1], scale[i + 3]]
+                triad.rhythm = 2.0  # half notes by default
+                triad.dynamic = 100  # mezzo forte-ish
+                triads.append(triad)
+                if len(triads) == total:
+                    break
+            except IndexError:
                 break
         return triads
 
@@ -822,16 +828,15 @@ class Generate:
         comp = self.init_comp()
         comp.ensemble = "duet"
 
-        # Generate a melody
+        # Generate a melody only if we have both data and data_type args
         if data is not None and data_type is not None:
             melody = self.new_melody(tempo=comp.tempo,
                                      data=data,
                                      data_type=data_type)
-            melody.instrument = self.new_instrument()
         else:
             melody = self.new_melody(tempo=comp.tempo)
-            melody.instrument = self.new_instrument()
-
+        # pick instrument
+        melody.instrument = self.new_instrument()
         # Save melody info
         comp.add_part(melody, melody.instrument)
 
@@ -849,9 +854,10 @@ class Generate:
         # save chord object list
         comp.add_part(chords, instr)
 
-        # add title, write out to MIDI file, and display results
+        # add title, write out to MIDI & text ile, and display results
         comp.title = f"{comp.title} for mixed duet"
         save(comp)
+        gen_info_doc(file_name=comp.txt_file_name, comp=comp)
         comp.display()
 
         return comp

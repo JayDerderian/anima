@@ -3,7 +3,7 @@ this module generates a string quartet.
 
 the piece opens with a series of chords, followed by a section of free counterpoint.
 at some point each performer plays their part of the opening chords, asynchronously of each other,
-then play a repeated series of notes whos rhythms get faster and faster untill all parts are
+then play a repeated series of notes who's rhythms get faster and faster until all parts are
 playing 16th notes, then the piece ends.
 """
 
@@ -125,6 +125,7 @@ def str_qtet(tempo=None) -> Composition:
     for q in range(len(qtet)):
         comp.add_part(qtet[q], qtet[q].instrument)
     save(comp)
+    gen_info_doc(file_name=comp.txt_file_name, comp=comp, data=None)
 
     print("\n...success!")
 
@@ -136,7 +137,8 @@ def str_qtet(tempo=None) -> Composition:
 
 ## Helpers ###
 
-def write_line(part: Melody, scale: list, total: int, create: Generate, asyn=False):
+def write_line(part: Melody, scale: list,
+               total: int, create: Generate, asyn=False) -> Melody:
     """
     writes each individual melodic line for each part.
     **doesn't add rhythm or dynamics** if asyn==False,
@@ -182,7 +184,7 @@ def write_line(part: Melody, scale: list, total: int, create: Generate, asyn=Fal
     return part
 
 
-def build_ending(part: Melody):
+def build_ending(part: Melody) -> tuple[Melody, dict]:
     """
     builds a closing figure based off the last 3-7 notes and slowly
     shortens the rhythms until they're 16th's, while increasing the
@@ -196,14 +198,7 @@ def build_ending(part: Melody):
     n = randint(3, 7)
 
     # build initial figure
-    fig = {
-        "notes": [],
-        "rhythms": [],
-        "dynamics": []
-    }
-    fig["notes"] = part.notes[-n:]  # last n notes
-    fig["rhythms"] = scale_to_tempo(part.tempo, [2.0] * n)  # start using half-notes
-    fig["dynamics"] = [100] * n  # medium dynamic
+    fig = {"notes": part.notes[-n:], "rhythms": scale_to_tempo(part.tempo, [2.0] * n), "dynamics": [100] * n}
 
     # add initial figure 2 times
     for add in range(2):

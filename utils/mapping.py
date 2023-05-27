@@ -40,7 +40,6 @@ def letters_to_numbers(letters: str) -> list[int]:
     translated into notes (strings). Accounts for number chars
     as well
     """
-    # convert inputted str to list of str's
     letters_list = list(letters)
     numbers = []
     for i in range(len(letters_list)):
@@ -62,15 +61,15 @@ def letters_to_numbers(letters: str) -> list[int]:
     return numbers
 
 
-def hex_to_int_list(hex) -> list[int]:
+def hex_to_int_list(hex_str: str) -> list[int]:
     """
     Converts a prefixed hex number to an array of integers.
     """
-    hex_int = int(hex, 0)
+    hex_int = int(hex_str, 0)
     return [int(x) for x in str(hex_int)]
 
 
-def map_data(mel: Melody, data, dt: int):
+def map_data(mel: Melody, data, data_type: str):
     """
     Wrapper method to map data used by newMelody()
 
@@ -79,19 +78,15 @@ def map_data(mel: Melody, data, dt: int):
     """
     # Save original source data
     mel.source_data = data
-    # If ints, scale as necessary
-    if dt == 1:
+    if data_type == "int":
         data_scaled = scale_the_scale(data)
-    # If floats then convert to ints and scale
-    elif dt == 2:
+    elif data_type == "float":
         data_scaled = scale_the_scale(
             float_to_int(data)
         )
-    # If name or other multi-word input then matches letters to their corresponding index numbers.
-    elif dt == 3:
+    elif data_type == "chars":
         data_scaled = letters_to_numbers(data)
-    # If hex convert to array of ints and scale
-    elif dt == 4:
+    elif data_type == "hex":
         data_scaled = hex_to_int_list(data)
     else:
         raise ValueError("dt value out of range! 1-4")

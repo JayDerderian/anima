@@ -276,7 +276,7 @@ class Analyze:
         NOTE: NOT READY
 
         Generates a 2-D array/12-tone matrix from a given pitch class set (pcs = list[int]).
-        Requires a list of 11 positive intervals between 1-11 ([1, 4, 2, 6]) to iterate off of.
+        Requires a list of 11 unique positive intervals between 1-11 ([1, 4, 2, 6]) to iterate off of.
 
         The matrix is generating by appending a transposition
         of the original row to each subsequent index.
@@ -335,7 +335,7 @@ class Analyze:
             print()
 
 
-    def _get_comp_info(self, comp: Composition) -> dict:
+    def get_comp_pcs(self, comp: Composition) -> dict:
         """
         builds a dictionary of pitch class information from
         a given composition object

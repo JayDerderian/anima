@@ -104,10 +104,8 @@ def _build_melody(start: float, end: float,
     mel = Instrument(program=instrument)
 
     for j in range(1, len(cur_part.notes)):
-        mel.notes.append(Note(velocity=cur_part.dynamics[j-1],
-                              pitch=note_name_to_MIDI_num(cur_part.notes[j-1]),
-                              start=start,
-                              end=end))
+        mel.notes.append(Note(velocity=cur_part.dynamics[j-1], pitch=note_name_to_MIDI_num(cur_part.notes[j-1]),
+                              start=start, end=end))
         start += cur_part.rhythms[j-1]
         end += cur_part.rhythms[j]
     # add mel: Instrument() to instrument list
@@ -123,10 +121,8 @@ def _build_chord(start: float, end: float,
     chord = Instrument(program=instrument)
 
     for note in cur_part.notes:
-        chord.notes.append(Note(velocity=cur_part.dynamic,
-                                pitch=note_name_to_MIDI_num(note),
-                                start=start,
-                                end=end))
+        chord.notes.append(Note(velocity=cur_part.dynamic, pitch=note_name_to_MIDI_num(note),
+                                start=start, end=end))
     # add chord progression to instrument list
     midi_writer.instruments.append(chord)
     start += cur_part.rhythm
@@ -147,7 +143,7 @@ def save(comp: Composition) -> None:
 
     midi_writer = PrettyMIDI(initial_tempo=comp.tempo)
 
-    # iterate over comp.tracks dictionary
+    # iterate over comp.parts dictionary
     for part in comp.parts:
         # reset start and end markers for each track
         start, end = 0.0, 0.0
