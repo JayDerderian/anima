@@ -23,6 +23,19 @@ TODO:
 TODO: generate spectrogram of a given audio file
 """
 
+from core.constants import (
+    NOTES,
+    PITCH_CLASSES,
+    RHYTHMS,
+    BEATS,
+    RANGE,
+    SCALES,
+    SETS
+)
+from core.modify import Modify
+from containers.composition import Composition
+from containers.melody import Melody
+from containers.chord import Chord
 from utils.midi import (
     load_midi_file,
     save,
@@ -38,20 +51,6 @@ from utils.tools import (
     all_same,
     to_str
 )
-
-from core.constants import (
-    NOTES,
-    PITCH_CLASSES,
-    RHYTHMS,
-    BEATS,
-    RANGE,
-    SCALES,
-    SETS
-)
-from core.modify import Modify
-from containers.composition import Composition
-from containers.melody import Melody
-from containers.chord import Chord
 
 
 class Analyze:
