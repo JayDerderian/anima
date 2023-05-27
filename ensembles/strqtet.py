@@ -198,14 +198,7 @@ def build_ending(part: Melody) -> tuple[Melody, dict]:
     n = randint(3, 7)
 
     # build initial figure
-    fig = {
-        "notes": [],
-        "rhythms": [],
-        "dynamics": []
-    }
-    fig["notes"] = part.notes[-n:]  # last n notes
-    fig["rhythms"] = scale_to_tempo(part.tempo, [2.0] * n)  # start using half-notes
-    fig["dynamics"] = [100] * n  # medium dynamic
+    fig = {"notes": part.notes[-n:], "rhythms": scale_to_tempo(part.tempo, [2.0] * n), "dynamics": [100] * n}
 
     # add initial figure 2 times
     for add in range(2):
