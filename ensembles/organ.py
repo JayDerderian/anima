@@ -5,17 +5,11 @@ with or without a melody
 
 # Imports
 from random import randint
-from datetime import datetime as date
 
 from utils.midi import save
-from utils.tools import scale_to_tempo
-from utils.txtfile import gen_info_doc
 
 from core.generate import Generate
-from core.constants import DYNAMICS, RANGE, RHYTHMS, TEMPOS
-
-from containers.melody import Melody
-from containers.composition import Composition
+from core.constants import TEMPOS
 
 
 def organ(tempo=None):
@@ -34,8 +28,7 @@ def organ(tempo=None):
     # generate 2-5 chords based off 2-4
     # randomly chosen and built scales between octaves 2 - 3
     source_scale = create.new_source_scale(root=create.pick_root()[0])
-    chords = create.new_chords(total=randint(2, 5),
-                               tempo=comp.tempo, scale=source_scale)
+    chords = create.new_chords(total=randint(2, 5), tempo=comp.tempo, scale=source_scale)
     for chord in range(len(chords)):
         chords[chord].instrument = "Reed Organ"
     comp.add_part(chords, chords[0].instrument)
