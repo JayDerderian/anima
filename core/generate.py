@@ -414,8 +414,7 @@ class Generate:
                 sv.append(note)
             variants[i] = sv
         for scale in variants:
-            variants[scale] = to_str(variants[scale],
-                                     octave=octave, oct_eq=False)
+            variants[scale] = to_str(variants[scale], octave=octave, oct_eq=False)
         return variants
 
     @staticmethod
@@ -529,7 +528,6 @@ class Generate:
         else:
             return choice(DYNAMICS)
 
-    # TODO: revisit this
     @staticmethod
     def new_dynamics(total=None, rests=True) -> list[int]:
         """
