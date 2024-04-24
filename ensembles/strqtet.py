@@ -39,12 +39,12 @@ def str_qtet(tempo=None) -> Composition:
         Melody(tempo=comp.tempo, instrument="Violin"),
         Melody(tempo=comp.tempo, instrument="Violin"),
         Melody(tempo=comp.tempo, instrument="Viola"),
-        Melody(tempo=comp.tempo, instrument="Cello")
+        Melody(tempo=comp.tempo, instrument="Cello"),
     ]
 
     print("\nwriting new string quartet...")
 
-    # pick initial notes. 
+    # pick initial notes.
     mode, pcs, notes = create.pick_scale(transpose=True)
     source = create.new_source_scale(notes)
     print("...using", notes[0], mode)
@@ -72,7 +72,7 @@ def str_qtet(tempo=None) -> Composition:
     # create dynamics
     dyn = create.new_dynamics(total=total)
 
-    # add rhy & dyn to each part 
+    # add rhy & dyn to each part
     for q in range(len(qtet)):
         qtet[q].rhythms.extend(rhy)
         qtet[q].dynamics.extend(dyn)
@@ -134,7 +134,10 @@ def str_qtet(tempo=None) -> Composition:
 
 ## Helpers ###
 
-def write_line(part: Melody, scale: list, total: int, create: Generate, asyn=False) -> Melody:
+
+def write_line(
+    part: Melody, scale: list, total: int, create: Generate, asyn=False
+) -> Melody:
     """
     writes each individual melodic line for each part.
     **doesn't add rhythm or dynamics** if asyn==False,
@@ -150,7 +153,7 @@ def write_line(part: Melody, scale: list, total: int, create: Generate, asyn=Fal
 
     for things in range(total):
         # limited to octaves 4 and 5 for violins
-        if part.instrument == 'Violin':
+        if part.instrument == "Violin":
             note = scale[randint(13, len(scale) - 1)]
             # trying to account for random notes chosen out of range...
             while note not in RANGE["Violin"]:
@@ -158,14 +161,14 @@ def write_line(part: Melody, scale: list, total: int, create: Generate, asyn=Fal
             part.notes.append(note)
 
         # limit to octaves 3 and 4 for viola
-        elif part.instrument == 'Viola':
+        elif part.instrument == "Viola":
             note = scale[randint(7, len(scale) - 8)]
             while note not in RANGE["Viola"]:
                 note = scale[randint(7, len(scale) - 8)]
             part.notes.append(note)
 
         # limit to octaves 2 and 3 for cello
-        elif part.instrument == 'Cello':
+        elif part.instrument == "Cello":
             note = scale[randint(0, len(scale) - 16)]
             while note not in RANGE["Cello"]:
                 note = scale[randint(0, len(scale) - 16)]
@@ -173,12 +176,8 @@ def write_line(part: Melody, scale: list, total: int, create: Generate, asyn=Fal
 
     if asyn:
         # add independent rhythms and dynamics of n length
-        part.rhythms.extend(
-            create.new_rhythms(total=len(part.notes), tempo=part.tempo)
-        )
-        part.dynamics.extend(
-            create.new_dynamics(total=len(part.notes))
-        )
+        part.rhythms.extend(create.new_rhythms(total=len(part.notes), tempo=part.tempo))
+        part.dynamics.extend(create.new_dynamics(total=len(part.notes)))
 
     return part
 
@@ -197,7 +196,11 @@ def build_ending(part: Melody) -> tuple[Melody, dict]:
     n = randint(3, 7)
 
     # build initial figure
-    fig = {"notes": part.notes[-n:], "rhythms": scale_to_tempo(part.tempo, [2.0] * n), "dynamics": [100] * n}
+    fig = {
+        "notes": part.notes[-n:],
+        "rhythms": scale_to_tempo(part.tempo, [2.0] * n),
+        "dynamics": [100] * n,
+    }
 
     # add initial figure 2 times
     for add in range(2):
@@ -205,7 +208,7 @@ def build_ending(part: Melody) -> tuple[Melody, dict]:
         part.rhythms.extend(fig["rhythms"])
         part.dynamics.extend(fig["dynamics"])
 
-    # change each rhythm list to next quickest value, 
+    # change each rhythm list to next quickest value,
     # and increase number of reps by 1 with each change.
     # volume increases with each iteration.
     cur = 2

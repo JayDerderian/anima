@@ -5,6 +5,7 @@ the midi.py module
 
 from containers.container import Container
 
+
 class Note(Container):
     """
     Container for working with Instrument() objects, as well as Mido's
@@ -22,8 +23,10 @@ class Note(Container):
         self.end = end  # end time(float)
 
     def __repr__(self):
-        return f'Note (pitch = {self.pitch}, start={self.start}), ' \
-               f'end={self.end}, velocity={self.velocity})'
+        return (
+            f"Note (pitch = {self.pitch}, start={self.start}), "
+            f"end={self.end}, velocity={self.velocity})"
+        )
 
     def duration(self):
         return self.end - self.start

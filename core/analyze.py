@@ -23,15 +23,7 @@ TODO:
 TODO: generate spectrogram of a given audio file
 """
 
-from core.constants import (
-    NOTES,
-    PITCH_CLASSES,
-    RHYTHMS,
-    BEATS,
-    RANGE,
-    SCALES,
-    SETS
-)
+from core.constants import NOTES, PITCH_CLASSES, RHYTHMS, BEATS, RANGE, SCALES, SETS
 from core.modify import Modify
 from containers.composition import Composition
 from containers.melody import Melody
@@ -41,16 +33,10 @@ from utils.midi import (
     save,
     parse_midi,
     tempo2bpm,
-    MIDI_num_to_note_name
+    MIDI_num_to_note_name,
 )
 
-from utils.tools import (
-    remove_oct,
-    oct_equiv,
-    scale_to_tempo,
-    all_same,
-    to_str
-)
+from utils.tools import remove_oct, oct_equiv, scale_to_tempo, all_same, to_str
 
 
 class Analyze:
@@ -73,7 +59,7 @@ class Analyze:
         it's in the original order of the elements in the submitted notes list
         """
         if type(notes) == str:
-            # check if there's an octave int present 
+            # check if there's an octave int present
             if not notes.isalpha():
                 note = remove_oct(notes)
                 pcs = PITCH_CLASSES.index(note)
@@ -89,8 +75,9 @@ class Analyze:
                 else:
                     pcs.append(PITCH_CLASSES.index(notes[n]))
         else:
-            raise TypeError("notes must be a list[int] or single int! "
-                            "type is", type(notes))
+            raise TypeError(
+                "notes must be a list[int] or single int! " "type is", type(notes)
+            )
         return pcs
 
     # TODO: TEST THIS
@@ -114,16 +101,14 @@ class Analyze:
             8: 0,
             9: 0,
             10: 0,
-            11: 0
+            11: 0,
         }
         for track in tracks:
-            # convert all MIDI note numbers to 
+            # convert all MIDI note numbers to
             # note name strings, then pitch classes (obvs not ideal)
             notes = []
             for n in range(len(tracks.notes)):
-                notes.append(self.get_pcs(
-                    MIDI_num_to_note_name(track.notes[n])
-                ))
+                notes.append(self.get_pcs(MIDI_num_to_note_name(track.notes[n])))
             for key in pc_totals:
                 pc_totals[key] += notes.count(key)
         return pc_totals
@@ -146,13 +131,12 @@ class Analyze:
             indices = []
             notes_len = len(notes)
             for n in range(notes_len):
-                indices.append(
-                    NOTES.index(notes[n])
-                )
+                indices.append(NOTES.index(notes[n]))
             return indices
         else:
-            raise TypeError("notes must be a single str or list[str]! "
-                            "\ntype is:", type(notes))
+            raise TypeError(
+                "notes must be a single str or list[str]! " "\ntype is:", type(notes)
+            )
 
     ### Pitch Class Set ###
 
@@ -169,7 +153,7 @@ class Analyze:
         """
         pcs = self.get_pcs(notes)  # get pcs from a given set
         pcs.sort()  # sort in ascending order
-        # rotate until smallest interval in the set is 
+        # rotate until smallest interval in the set is
         # at the left, and range of set is the smallest possible
         while pcs[1] - pcs[0] >= 2:
             pc = pcs.pop(0)
@@ -249,7 +233,9 @@ class Analyze:
     @staticmethod
     def get_diff(notes, ran):
         """removes notes not in range of a given instrument with a provided range"""
-        return [notes for notes in notes + ran if notes not in notes or notes not in ran]
+        return [
+            notes for notes in notes + ran if notes not in notes or notes not in ran
+        ]
 
     @staticmethod
     def get_range(notes: list[str]):
@@ -333,7 +319,6 @@ class Analyze:
                 print(y, end=" ")
             print()
 
-
     def get_comp_pcs(self, comp: Composition) -> dict:
         """
         builds a dictionary of pitch class information from
@@ -344,27 +329,44 @@ class Analyze:
 
         info = {}
         for part in comp.parts:
-            if isinstance(comp.parts[part], Melody) or isinstance(comp.parts[part], Chord):
-                info.update({
-                    "name": comp.parts[part].instrument,
-                    "pcs": comp.parts[part].pcs if len(comp.parts[part]) > 0
-                    else self.get_pcs(comp.parts[part].notes),
-                })
+            if isinstance(comp.parts[part], Melody) or isinstance(
+                comp.parts[part], Chord
+            ):
+                info.update(
+                    {
+                        "name": comp.parts[part].instrument,
+                        "pcs": (
+                            comp.parts[part].pcs
+                            if len(comp.parts[part]) > 0
+                            else self.get_pcs(comp.parts[part].notes)
+                        ),
+                    }
+                )
             elif isinstance(comp.parts[part], list):
                 for item in comp.parts[part]:
                     if isinstance(item, Melody) or isinstance(item, Chord):
-                        info.update({
-                            "name": item.instrument,
-                            "pcs": item.pcs if len(item.pcs) > 0 else self.get_pcs(item.notes),
-                        })
+                        info.update(
+                            {
+                                "name": item.instrument,
+                                "pcs": (
+                                    item.pcs
+                                    if len(item.pcs) > 0
+                                    else self.get_pcs(item.notes)
+                                ),
+                            }
+                        )
                     else:
-                        raise TypeError("incorrect type for a part! "
-                                        "\nmust be melody, chord, or list (of melody or chord) objects "
-                                        f"\nitem == {type(item)}")
+                        raise TypeError(
+                            "incorrect type for a part! "
+                            "\nmust be melody, chord, or list (of melody or chord) objects "
+                            f"\nitem == {type(item)}"
+                        )
             else:
-                raise TypeError("incorrect type for a part! "
-                                "\nmust be melody, chord, or list (of melody or chord) objects "
-                                f"\nself.parts[{part}] == {type(comp.parts[part])}")
+                raise TypeError(
+                    "incorrect type for a part! "
+                    "\nmust be melody, chord, or list (of melody or chord) objects "
+                    f"\nself.parts[{part}] == {type(comp.parts[part])}"
+                )
         return info
 
     ### MIDI Analysis Functions ###
@@ -383,12 +385,7 @@ class Analyze:
         """
         dynamics = {}
         pitch_classes = {}
-        res = {
-            "Tempo": 0,
-            "Pitch Classes": {},
-            "Rhythms": {},
-            "Dynamics": {}
-        }
+        res = {"Tempo": 0, "Pitch Classes": {}, "Rhythms": {}, "Dynamics": {}}
         # get MidiTrack() dict and Messages() list
         tracks, msgs = parse_midi(file_name)
         # get global tempo
