@@ -2,13 +2,14 @@
 A module for managing all constants used throughout the program.
 """
 
+from os.path import join
 from pathlib import Path
 
 # absolute path of the program itself
 ROOT = Path(__file__).parent.parent
 
 # location to write MIDI files to
-MIDI_LOC = f"{ROOT}/midi"
+MIDI_LOC = join(ROOT, "midi")
 
 # The alphabet.
 ALPHABET = [
@@ -830,38 +831,37 @@ ENSEMBLES = {
     "sax trio 1": ["Soprano Sax", "Alto Sax", "Tenor Sax"],
     "sax trio 2": ["Alto Sax", "Tenor Sax", "Baritone Sax"],
     "sax quartet": ["Soprano Sax", "Alto Sax", "Tenor Sax", "Baritone Sax"],
-    # orchestral (2222/2221/pno/strings) no percussion yet!
-    "orchestra": [
-        # woodwinds (0-7)
-        "Flute",
-        "Flute",
-        "Oboe",
-        "Oboe",
-        "Clarinet",
-        "Clarinet",
-        "Bassoon",
-        "Bassoon",
-        # brass (8-14)
-        "French Horn",
-        "French Horn",
-        "Trumpet",
-        "Trumpet",
-        "Trombone",
-        "Trombone",
-        "Tuba",
-        # pno (15)
-        "Acoustic Grand Piano",
-        # violin 1 (16)
-        "String Ensemble 1",
-        # violin 2 (17)
-        "String Ensemble 2",
-        # violas (18)
-        "String Ensemble 1",
-        # cellos (19)
-        "String Ensemble 2",
-        # basses (20)
-        "String Ensemble 2",
-    ],
+    # orchestra (2222/2221/pno/strings) no percussion yet!
+    "orchestra": {
+        "winds": [
+            "Flute",
+            "Flute",
+            "Oboe",
+            "Oboe",
+            "Clarinet",
+            "Clarinet",
+            "Bassoon",
+            "Bassoon",
+        ],
+        "brass": [
+            "French Horn",
+            "French Horn",
+            "Trumpet",
+            "Trumpet",
+            "Trombone",
+            "Trombone",
+            "Tuba",
+        ],
+        "piano": "Acoustic Grand Piano",
+        "percussion": [],
+        "strings": [
+            "String Ensemble 1",  # violin 1
+            "String Ensemble 2",  # violin 2
+            "String Ensemble 1",  # violas
+            "String Ensemble 2",  # cellos
+            "String Ensemble 1",  # basses
+        ],
+    },
 }
 
 
