@@ -2,6 +2,7 @@
 This module handles mapping functions when converting raw data to index numbers,
 which will be used to map against newNotes()'s generated source scale in newMelody()
 """
+
 from containers.melody import Melody
 from core.constants import ALPHABET
 
@@ -28,8 +29,8 @@ def scale_the_scale(data):
 
     """
     for i in range(len(data)):
-        if data[i] > len(data)-1:
-            data[i] %= len(data)-1
+        if data[i] > len(data) - 1:
+            data[i] %= len(data) - 1
     return data
 
 
@@ -47,16 +48,14 @@ def letters_to_numbers(letters: str) -> list[int]:
         if letters_list[i].isupper():
             letters_list[i] = letters_list[i].lower()
         if letters_list[i] in ALPHABET:
-            numbers.append(
-                ALPHABET.index(letters_list[i])
-            )
+            numbers.append(ALPHABET.index(letters_list[i]))
         # is this str a str of an int???
         elif letters_list[i].isnumeric():
             # convert to int, keep within bounds of len(letters)-1,
             # then add to list.
             num = int(letters[i])
-            if num > len(ALPHABET)-1:
-                num %= len(ALPHABET)-1
+            if num > len(ALPHABET) - 1:
+                num %= len(ALPHABET) - 1
             numbers.append(num)
     return numbers
 
@@ -81,9 +80,7 @@ def map_data(mel: Melody, data, data_type: str):
     if data_type == "int":
         data_scaled = scale_the_scale(data)
     elif data_type == "float":
-        data_scaled = scale_the_scale(
-            float_to_int(data)
-        )
+        data_scaled = scale_the_scale(float_to_int(data))
     elif data_type == "chars":
         data_scaled = letters_to_numbers(data)
     elif data_type == "hex":

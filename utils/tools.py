@@ -3,6 +3,7 @@ a module containing a variety of tools to analyze and manipulate melody()
 objects and chord() lists. these methods will likely be used in other large
 classes in the analyze.py and modify.py files.
 """
+
 from random import randint
 from core.constants import NOTES, PITCH_CLASSES
 
@@ -12,7 +13,7 @@ def all_same(a_list: list) -> bool:
     return True if all(e == a_list[0] for e in a_list) else False
 
 
-def to_str(pcs, octave=None, oct_eq=True):
+def to_str(pcs: list, octave: int = None, oct_eq: bool = True) -> list:
     """
     Converts a list of pitch class integers to note name strings, with or without
     a supplied octave. Works within one octave or beyond one octave.
@@ -35,9 +36,9 @@ def to_str(pcs, octave=None, oct_eq=True):
             raise ValueError("octave must be within 2-6!")
     else:
         # this only uses pcs, even if an octave is supplied.
-        # NOTES has note strings with assigned octaves. 
-        # assigning an octave value as an arg is redundant 
-        # here since a list of any ints such that 
+        # NOTES has note strings with assigned octaves.
+        # assigning an octave value as an arg is redundant
+        # here since a list of any ints such that
         # int < len(NOTES) will do.
         pcs_len = len(pcs)
         for i in range(pcs_len):
@@ -62,13 +63,13 @@ def is_pos(num: int) -> bool:
     return True if num >= 0 else False
 
 
-def remove_oct(a_note) -> str:
+def remove_oct(a_note: str) -> str:
     """
     removes octave integer from a note name string.
     shouldn't be called directly.
     """
     # split single note into two or three parts:
-    # either name + oct or name + acc + oct. 
+    # either name + oct or name + acc + oct.
     n = [char for char in a_note]
     if len(n) == 3:
         return f"{n[0]}{n[1]}"
@@ -78,7 +79,7 @@ def remove_oct(a_note) -> str:
         return n[0]
 
 
-def oct_equiv(pitch):
+def oct_equiv(pitch) -> int | list:
     """
     Octave equivalence. Handles either a single int or list[int].
     Keeps a single pitch class integer within span of an octave (0 - 11).
@@ -93,12 +94,13 @@ def oct_equiv(pitch):
             if pitch[p] > 11 or pitch[p] < 0:
                 pitch[p] %= 12
     else:
-        raise ValueError("must be single int or list[int], "
-                         "supplied arg is type:", type(pitch))
+        raise TypeError(
+            "must be single int or list[int], " "supplied arg is type:", type(pitch)
+        )
     return pitch
 
 
-def scale_to_tempo(tempo, rhythms, revert=False):
+def scale_to_tempo(tempo: float, rhythms: list, revert: bool = False) -> list:
     """
     Converts a supplied float or list[float] of rhythmic values to
     actual value in seconds at a given tempo. can also convert back to base
@@ -137,7 +139,7 @@ def scale_to_tempo(tempo, rhythms, revert=False):
     return rhythms
 
 
-def scale_limit(total: int):
+def scale_limit(total: int) -> int:
     """
     scales repetition limits according to total notes
     higher total == fewer reps, basically
