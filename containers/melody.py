@@ -4,6 +4,7 @@ Module for the Melody() class/container. Used for individual melody data in comp
 
 from containers.container import Container
 
+
 class Melody(Container):
     """
     A class/container for managing all data relevant to melodies.
@@ -24,14 +25,13 @@ class Melody(Container):
         else:
             self.tempo = tempo
         if instrument is None:
-            self.instrument = 'None'
+            self.instrument = "None"
         else:
             self.instrument = instrument
 
         self.notes = []
         self.rhythms = []
         self.dynamics = []
-
 
     def duration(self) -> float:
         """
@@ -55,9 +55,9 @@ class Melody(Container):
             "Info": self.info,
             "PCS": self.pcs,
             "Source Data": self.source_data,
-            "Source Scale": self.source_notes
+            "Source Scale": self.source_notes,
         }
-    
+
     def get_pcs(self) -> list:
         """
         return a list[int] of all pitch classes in this melody.

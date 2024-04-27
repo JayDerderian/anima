@@ -1,6 +1,7 @@
 """
 Module for handling all composition data. Contains a Composition() class/container.
 """
+
 # from core.analyze import Analyze
 from containers.chord import Chord
 from containers.melody import Melody
@@ -14,6 +15,7 @@ class Composition:
     ensemble type, instrument list, list of picked instruments, lists melodies, and
     a dictionary of chord progressions.
     """
+
     def __init__(self, title=None, composer=None, tempo=None):
 
         if title is not None:
@@ -55,7 +57,6 @@ class Composition:
     def _get_instrument_list(self) -> list:
         return self.instruments
 
-
     def _duration(self) -> float:
         """
         Finds the longest individual part in the piece.
@@ -64,7 +65,9 @@ class Composition:
         longest = 0.0
         for track in self.parts:
             dur = 0.0
-            if isinstance(self.parts[track], Melody) or isinstance(self.parts[track], Chord):
+            if isinstance(self.parts[track], Melody) or isinstance(
+                self.parts[track], Chord
+            ):
                 dur += self.parts[track].duration()
                 if dur > longest:
                     longest = dur
@@ -109,12 +112,14 @@ class Composition:
         """
         display composition info
         """
-        output = f"\ntitle: {self.title}" \
-                 f"\ntempo: {self.tempo}" \
-                 f"\ncomposer: {self.composer}" \
-                 f"\nduration: {self.duration()}" \
-                 f"\nmidi file: {self.midi_file_name}" \
-                 f"\ntext file: {self.txt_file_name}\n"
+        output = (
+            f"\ntitle: {self.title}"
+            f"\ntempo: {self.tempo}"
+            f"\ncomposer: {self.composer}"
+            f"\nduration: {self.duration()}"
+            f"\nmidi file: {self.midi_file_name}"
+            f"\ntext file: {self.txt_file_name}\n"
+        )
         print(output)
 
     def duration(self) -> str:
@@ -131,9 +136,7 @@ class Composition:
         or a list of either (or both).
         """
         self.instruments.append(instr)
-        self.parts.update({
-            f"{instr} {self.how_many(instr) + 1}": part
-        })
+        self.parts.update({f"{instr} {self.how_many(instr) + 1}": part})
 
     def remove_part(self, part: str) -> None:
         """

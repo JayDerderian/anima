@@ -1,6 +1,7 @@
 """
 class/container for dealing with individual measures.
 """
+
 from containers.container import Container
 from containers.melody import Melody
 
@@ -14,6 +15,7 @@ class Bar(Container):
     """
     class/container for dealing with individual measures.
     """
+
     meter = ()  # the meter of this bar
     tempo = 0.0  # global composition tempo
     length = 0.0  # length of bar in seconds using the meter
@@ -23,7 +25,7 @@ class Bar(Container):
     bar = {  # dictionary representing the current bar
         "Notes": [],
         "Rhythms": [],
-        "Dynamics": []
+        "Dynamics": [],
     }
 
     def __init__(self, meter=None, tempo=None, instrument=None):
@@ -43,19 +45,24 @@ class Bar(Container):
             if type(tempo) == float and 40 < tempo < 240:
                 self.tempo = tempo
             else:
-                raise TypeError(f"tempo must be a float, or is out of range! tempo supplied: {tempo}")
+                raise TypeError(
+                    f"tempo must be a float, or is out of range! tempo supplied: {tempo}"
+                )
 
-        # length (in seconds) = number of beats designated * counting rhythm (converted to seconds). 
-        self.length = self.meter[0] * scale_to_tempo(tempo=self.tempo,
-                                                     rhythms=self.meter[1])
+        # length (in seconds) = number of beats designated * counting rhythm (converted to seconds).
+        self.length = self.meter[0] * scale_to_tempo(
+            tempo=self.tempo, rhythms=self.meter[1]
+        )
         # defaults to acoustic grand piano if no instrument is provided
         if instrument is None:
-            self.instrument = 'Acoustic Grand Piano'
+            self.instrument = "Acoustic Grand Piano"
         elif instrument in INSTRUMENTS:
             self.instrument = instrument
         else:
-            raise TypeError("Unsupported instrument! "
-                            "Can only use MIDI supported instruments for the moment :(")
+            raise TypeError(
+                "Unsupported instrument! "
+                "Can only use MIDI supported instruments for the moment :("
+            )
 
     def space_left(self) -> float:
         """return the remaining time left in the bar in seconds"""
@@ -86,9 +93,11 @@ class Bar(Container):
         if len(self.bar["Rhythms"]) == 0:
             return 0.0
         duration = sum(self.bar["Rhythms"])
-        assert duration <= self.length, f"calculated duration exceeds estimated length! " \
-                                        f"duration: {duration}" \
-                                        f"length: {self.length}"
+        assert duration <= self.length, (
+            f"calculated duration exceeds estimated length! "
+            f"duration: {duration}"
+            f"length: {self.length}"
+        )
         return duration
 
     def set_meter(self, meter: tuple):
@@ -96,8 +105,9 @@ class Bar(Container):
         takes a supplied tuple and determines if it's a valid meter
         """
         if type(meter) != tuple:
-            raise TypeError("supplied meter was not a tuple! "
-                            "instead was:", type(meter))
+            raise TypeError(
+                "supplied meter was not a tuple! " "instead was:", type(meter)
+            )
         if is_valid(meter):
             self.meter = (meter[0], meter[1])
         else:
@@ -136,15 +146,9 @@ class Bar(Container):
             # we're modifying the melody object in place here.
             # this will gradually shrink each of the lists.
             if self.current_beat < self.length:
-                self.bar["Notes"].append(
-                    mel.notes.pop(mel.notes[0])
-                )
-                self.bar["Rhythms"].append(
-                    mel.rhythms.pop(mel.rhythms[0])
-                )
-                self.bar["Dynamics"].append(
-                    mel.dynamics.pop(mel.dynamics[0])
-                )
+                self.bar["Notes"].append(mel.notes.pop(mel.notes[0]))
+                self.bar["Rhythms"].append(mel.rhythms.pop(mel.rhythms[0]))
+                self.bar["Dynamics"].append(mel.dynamics.pop(mel.dynamics[0]))
             # this rhythm will cause us to exceed the length of the bar.
             # we need to add the last notes and chop off the difference from
             # the rhythm to fill the gap. we also don't want to remove the

@@ -2,19 +2,12 @@
 Utility functions for working with MIDI data and I/O
 """
 
-from mido import (
-    MidiFile,
-    MidiTrack,
-    Message,
-    MetaMessage
-)
+from mido import MidiFile, MidiTrack, Message, MetaMessage
 from pretty_midi import PrettyMIDI, Instrument
 
 
 from utils.tools import normalize_str
-from core.constants import (
-    INSTRUMENTS, NOTES, MIDI_LOC
-)
+from core.constants import INSTRUMENTS, NOTES, MIDI_LOC
 
 from containers.note import Note
 from containers.melody import Melody
@@ -67,7 +60,7 @@ def load_midi_file(file_name: str) -> MidiFile:
     """
     loads a MIDI file using a supplied file name (i.e "song.mid")
     """
-    if file_name[-4:] != ".mid":
+    if not file_name.endswith(".mid"):
         raise ValueError("must be a midi file name!")
     return MidiFile(filename=file_name)
 
@@ -88,41 +81,57 @@ def parse_midi(file_name: str) -> tuple:
     tracks = {}
     file = load_midi_file(file_name)
     for i, track in enumerate(file.tracks):
-        tracks.update({
-            f'track {str(i)}': track,
-        })
+        tracks.update(
+            {
+                f"track {str(i)}": track,
+            }
+        )
         for msg in track:
             msgs.append(msg)
     return tracks, msgs
 
 
-def _build_melody(start: float, end: float,
-                  cur_part: Melody, midi_writer: PrettyMIDI):
+def _build_melody(
+    start: float, end: float, cur_part: Melody, midi_writer: PrettyMIDI
+) -> tuple[float, float, PrettyMIDI]:
 
     end += cur_part.rhythms[0]
     instrument = instrument_to_program(cur_part.instrument)
     mel = Instrument(program=instrument)
 
     for j in range(1, len(cur_part.notes)):
-        mel.notes.append(Note(velocity=cur_part.dynamics[j-1], pitch=note_name_to_MIDI_num(cur_part.notes[j-1]),
-                              start=start, end=end))
-        start += cur_part.rhythms[j-1]
+        mel.notes.append(
+            Note(
+                velocity=cur_part.dynamics[j - 1],
+                pitch=note_name_to_MIDI_num(cur_part.notes[j - 1]),
+                start=start,
+                end=end,
+            )
+        )
+        start += cur_part.rhythms[j - 1]
         end += cur_part.rhythms[j]
     # add mel: Instrument() to instrument list
     midi_writer.instruments.append(mel)
     return start, end, midi_writer
 
 
-def _build_chord(start: float, end: float,
-                 cur_part: Chord, midi_writer: PrettyMIDI):
+def _build_chord(
+    start: float, end: float, cur_part: Chord, midi_writer: PrettyMIDI
+) -> tuple[float, float, PrettyMIDI]:
 
     end += cur_part.rhythm
     instrument = instrument_to_program(cur_part.instrument)
     chord = Instrument(program=instrument)
 
     for note in cur_part.notes:
-        chord.notes.append(Note(velocity=cur_part.dynamic, pitch=note_name_to_MIDI_num(note),
-                                start=start, end=end))
+        chord.notes.append(
+            Note(
+                velocity=cur_part.dynamic,
+                pitch=note_name_to_MIDI_num(note),
+                start=start,
+                end=end,
+            )
+        )
     # add chord progression to instrument list
     midi_writer.instruments.append(chord)
     start += cur_part.rhythm
@@ -161,16 +170,24 @@ def save(comp: Composition) -> None:
         elif isinstance(cur_part, list):
             for item in cur_part:
                 if isinstance(item, Melody):
-                    start, end, midi_writer = _build_melody(start, end, item, midi_writer)
+                    start, end, midi_writer = _build_melody(
+                        start, end, item, midi_writer
+                    )
                 elif isinstance(item, Chord):
-                    start, end, midi_writer = _build_chord(start, end, item, midi_writer)
+                    start, end, midi_writer = _build_chord(
+                        start, end, item, midi_writer
+                    )
                 else:
-                    raise TypeError(f"Unsupported type! Cur_part is type: {type(cur_part)} "
-                                    "Should be a Melody or Chord object, or list of either(or both)")
+                    raise TypeError(
+                        f"Unsupported type! Cur_part is type: {type(cur_part)} "
+                        "Should be a Melody or Chord object, or list of either(or both)"
+                    )
 
         else:
-            raise TypeError(f"Unsupported type! Cur_part is type: {type(cur_part)} "
-                            "Should be a Melody or Chord object, or list of either(or both)")
+            raise TypeError(
+                f"Unsupported type! Cur_part is type: {type(cur_part)} "
+                "Should be a Melody or Chord object, or list of either(or both)"
+            )
 
     # write to MIDI file
     print(f"\nsaving {comp.midi_file_name} ... ")

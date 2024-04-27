@@ -5,11 +5,11 @@ Outputs list of n length with one of the following data types: list[int],
 list[float], hex str, list[str]
 """
 
-from random import (
-    seed, uniform, randint, choice
-)
+from random import seed, uniform, randint, choice
 from core.constants import ALPHABET
+
 seed()
+
 
 def new_ints() -> list[int]:
     """Generate a list of 10 - 50 random numbers between 0-500"""
@@ -26,7 +26,7 @@ def new_floats() -> list[float]:
 def new_hex() -> str:
     """Generates a random hex color number 0x000000 to 0xFFFFFF as a string"""
     num = randint(0, 16777215)
-    hex_num = format(num, 'x')
+    hex_num = format(num, "x")
     hex_num = "0x" + hex_num
     return hex_num
 
@@ -48,16 +48,18 @@ DATA_MAP = {
     "ints": new_ints(),
     "floats": new_floats(),
     "chars": new_chars(),
-    "hex_num": new_hex()
+    "hex_num": new_hex(),
 }
 
 
 def new_data(data_type: str):
     """
     Select and generate some random data for input.
-    
+
     """
     if data_type not in list(DATA_MAP.keys()):
-        raise ValueError(f"{data_type} is not a valid data type! "
-                         f"available data types: {list(DATA_MAP.keys())}")
+        raise ValueError(
+            f"{data_type} is not a valid data type! "
+            f"available data types: {list(DATA_MAP.keys())}"
+        )
     return DATA_MAP[data_type]

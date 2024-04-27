@@ -12,30 +12,16 @@ TODO:
     Implement a method to add notes and rhythms to the end of the file.
 """
 
-from random import (
-    randint,
-    shuffle,
-    choice,
-    choices
-)
+from __future__ import annotations
+
+from random import randint, shuffle, choice, choices
 
 import utils.midi as mid
 
-from utils.tools import (
-    to_str,
-    is_pos,
-    oct_equiv,
-    scale_to_tempo
-)
+from utils.tools import to_str, is_pos, oct_equiv, scale_to_tempo
 
 from containers.melody import Melody
-from core.constants import (
-    NOTES,
-    RHYTHMS,
-    PITCH_CLASSES,
-    DYNAMICS,
-    RANGE
-)
+from core.constants import NOTES, RHYTHMS, PITCH_CLASSES, DYNAMICS, RANGE
 
 
 class Modify:
@@ -48,7 +34,9 @@ class Modify:
         pass
 
     @staticmethod
-    def transpose(pcs, dist, oct_eq=True):
+    def transpose(
+        pcs: list[int], dist: int | list[int], oct_eq: bool = True
+    ) -> list[int]:
         """
         transpose a list of pitch classes (list[int]) using a supplied interval t (int),
         or list of intervals t (list[int]).
@@ -68,10 +56,10 @@ class Modify:
         if type(dist) == int:
             for note in range(pcs_len):
                 pcs[note] += dist
-        # modify with a list of intervals across all pitch-class integers. 
+        # modify with a list of intervals across all pitch-class integers.
         # this allows for each pitch-class to be transposed by a unique
-        # distance, allowing for rapid variation generation. 
-        # it could also be a list of the same repeated value but that 
+        # distance, allowing for rapid variation generation.
+        # it could also be a list of the same repeated value but that
         # might be less efficient.
         elif type(dist) == list:
             for note in range(pcs_len):
@@ -90,8 +78,7 @@ class Modify:
         """
         if dist > 11 or dist < 1:
             raise ValueError("distance must be an int: 1<=n<=11")
-        pcs = self.transpose(self.get_index(notes),
-                             dist=dist, oct_eq=False)
+        pcs = self.transpose(self.get_index(notes), dist=dist, oct_eq=False)
         return to_str(pcs, oct_eq=False)
 
     def transpose_c(self, chords: list, dist: int) -> list:
@@ -102,8 +89,9 @@ class Modify:
             raise ValueError("distance must be an int: 1<=n<=11")
         cl = len(chords)
         for c in range(cl):
-            pcs = self.transpose(self.get_index(chords[c].notes),
-                                 dist=dist, oct_eq=False)
+            pcs = self.transpose(
+                self.get_index(chords[c].notes), dist=dist, oct_eq=False
+            )
             chords[c].notes = to_str(pcs, oct_eq=False)
         return chords
 
@@ -119,11 +107,11 @@ class Modify:
         ind = self.get_index(notes)
         ind_len = len(ind)
         for n in range(1, ind_len):
-            intervals.append(ind[n] - ind[n-1])
+            intervals.append(ind[n] - ind[n - 1])
         return intervals
 
     @staticmethod
-    def get_index(notes):
+    def get_index(notes: str | list[str]) -> int | list[int]:
         """
         gets the index or list of indices of a given note or
         list of notes in NOTES.
@@ -143,7 +131,9 @@ class Modify:
                 indices.append(NOTES.index(notes[n]))
             return indices
         else:
-            raise TypeError("notes must be a single str or list[str]! type is:", type(notes))
+            raise TypeError(
+                "notes must be a single str or list[str]! type is:", type(notes)
+            )
 
     @staticmethod
     def retrograde(melody: Melody) -> Melody:
@@ -157,7 +147,7 @@ class Modify:
         retro.rhythms.reverse()
         return retro
 
-    def invert(self, notes: list[str]):
+    def invert(self, notes: list[str]) -> list[str | list[str]]:
         """
         inverts a melody. returns a new note list[str]
         """
@@ -197,7 +187,7 @@ class Modify:
         returns this subset as a melodic fragment in a new melody() object
         """
         frag = Melody()
-        # copy other info from supplied melody object 
+        # copy other info from supplied melody object
         # to not miss anything important
         data = m.get_meta_data()
         frag.info = data[0]
@@ -260,8 +250,9 @@ class Modify:
         """
         if type(dyn) == int:
             if dyn > 123:
-                raise ValueError("supplied dynamic is too high. "
-                                 f"max is 123. dyn supplied: {dyn}")
+                raise ValueError(
+                    "supplied dynamic is too high. " f"max is 123. dyn supplied: {dyn}"
+                )
             dyn += diff
         elif type(dyn) == list:
             dyn_len = len(dyn)
