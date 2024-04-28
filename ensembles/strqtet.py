@@ -136,7 +136,7 @@ def str_qtet(tempo=None) -> Composition:
 
 
 def write_line(
-    part: Melody, scale: list, total: int, create: Generate, asyn=False
+    part: Melody, scale: list, total: int, create: Generate, asyn: bool = False
 ) -> Melody:
     """
     writes each individual melodic line for each part.
@@ -151,7 +151,7 @@ def write_line(
         # NOTE: this will redefine supplied total if asyn is True
         total = randint(12, 30)
 
-    for things in range(total):
+    for _ in range(total):
         # limited to octaves 4 and 5 for violins
         if part.instrument == "Violin":
             note = scale[randint(13, len(scale) - 1)]
