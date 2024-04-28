@@ -15,16 +15,3 @@ class Container(object):
         self.pcs = []  # pitch classes for this container
         self.source_data = []  # source data for this container
         self.source_notes = []  # source scale for this container
-
-    def __str__(self):
-        raise NotImplementedError("This is an abstract base class!")
-
-    def __repr__(self):
-        raise NotImplementedError("This is an abstract base class!")
-
-    # context manager support
-    def __enter__(self):
-        raise NotImplementedError("This is an abstract base class!")
-
-    def __exit__(self, exc_type, exc_value):
-        raise NotImplementedError("This is an abstract base class!")
