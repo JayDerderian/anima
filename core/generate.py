@@ -25,6 +25,7 @@ from core.constants import (
     ARPEGGIOS,
     SETS,
     INTERVALS,
+    RANGE,
 )
 from core.modify import Modify
 from core.analyze import Analyze
@@ -65,8 +66,11 @@ class Generate:
             while t < total:
                 name = name + " " + choice(words)
                 t += 1
-        except urllib.error.URLError:
-            print("\nnew_title() - ERROR: Unable to retrieve word list!")
+        except urllib.error.URLError as e:
+            print(f"unable to retrieve word list: {e}")
+            name = "untitled - "
+        except Exception as e:
+            print(f"exception occurred trying to retrieve word list: {e}")
             name = "untitled - "
         return name
 
@@ -224,6 +228,7 @@ class Generate:
             data_len = len(data)
             for i in range(data_len):
                 notes.append(scale[data[i]])
+
         return notes, meta_data, scale
 
     def pick_root(self, transpose: bool = True, octave: int = None) -> tuple[list, str]:
@@ -376,12 +381,14 @@ class Generate:
         """
         if total is None:
             total = randint(3, 8)  # pick 3-8 scales if no total is provided
+
         sources = {}
         scale_info = []
         for scale in range(total):
             root, info = self.pick_root()
             scale_info.append(info)
             sources[scale] = self.new_source_scale(root)
+
         return sources, scale_info
 
     @staticmethod
@@ -412,8 +419,10 @@ class Generate:
                 note += randint(1, 3)
                 sv.append(note)
             variants[i] = sv
+
         for scale in variants:
             variants[scale] = to_str(variants[scale], octave=octave, oct_eq=False)
+
         return variants
 
     @staticmethod
@@ -763,10 +772,10 @@ class Generate:
     def new_melody(
         self,
         tempo: float = None,
-        data=None,
-        data_type=None,
+        raw_data=None,
+        data_type: int = None,
         total: int = None,
-        inst_range=None,
+        inst_range: bool = None,
         rests: bool = True,
     ) -> Melody:
         """
@@ -785,9 +794,11 @@ class Generate:
         NOTE: Instrument is *NOT* picked! Needs to be supplied externally.
         """
         melody = Melody()
-        if data_type is not None and data is not None:
+        if data_type is not None and raw_data is not None:
             # Process any incoming data
-            data, melody = map_data(melody, data, data_type)
+            source_data = raw_data
+            melody.source_data = source_data
+            processed_data = map_data(raw_data, data_type)
         else:
             melody.source_data = "None Inputted"
         if tempo is None:
@@ -796,7 +807,7 @@ class Generate:
             melody.tempo = tempo
 
         # Pick notes from scratch
-        if data is None:
+        if raw_data is None:
             if total is None:
                 (melody.notes, melody.info, melody.source_notes) = self.new_notes()
             else:
@@ -806,7 +817,9 @@ class Generate:
         # Or use supplied data. Supplied total isn't applicable with
         # a data set of n size, since n will just become the total we work with.
         else:
-            (melody.notes, melody.info, melody.source_notes) = self.new_notes(data=data)
+            (melody.notes, melody.info, melody.source_notes) = self.new_notes(
+                data=processed_data
+            )
 
         # remove any notes not within a supplied range (if available)
         if inst_range is not None:
@@ -819,6 +832,55 @@ class Generate:
         melody.rhythms = self.new_rhythms(len(melody.notes), melody.tempo)
         melody.dynamics = self.new_dynamics(len(melody.notes), rests)
         return melody
+
+    def write_string_line(
+        self, part: Melody, scale: list, total: int, asyn: bool = False
+    ) -> Melody:
+        """
+        writes a melodic line for a string instrument (violin, viola, cello, or bass TBD)
+
+        **doesn't add rhythm or dynamics** if asyn==False,
+        which it is by default. if asyn==true, then any supplied
+        total will be overwritten! still working on that
+        quirk...
+
+        returns a modified Melody() object
+        """
+        if asyn:
+            # NOTE: this will redefine supplied total if asyn is True
+            total = randint(12, 30)
+
+        for _ in range(total):
+            # limited to octaves 4 and 5 for violins
+            if part.instrument == "Violin":
+                note = scale[randint(13, len(scale) - 1)]
+                # trying to account for random notes chosen out of range...
+                while note not in RANGE["Violin"]:
+                    note = scale[randint(13, len(scale) - 1)]
+                part.notes.append(note)
+
+            # limit to octaves 3 and 4 for viola
+            elif part.instrument == "Viola":
+                note = scale[randint(7, len(scale) - 8)]
+                while note not in RANGE["Viola"]:
+                    note = scale[randint(7, len(scale) - 8)]
+                part.notes.append(note)
+
+            # limit to octaves 2 and 3 for cello
+            elif part.instrument == "Cello":
+                note = scale[randint(0, len(scale) - 16)]
+                while note not in RANGE["Cello"]:
+                    note = scale[randint(0, len(scale) - 16)]
+                part.notes.append(note)
+
+        if asyn:
+            # add independent rhythms and dynamics of n length
+            part.rhythms.extend(
+                self.new_rhythms(total=len(part.notes), tempo=part.tempo)
+            )
+            part.dynamics.extend(self.new_dynamics(total=len(part.notes)))
+
+        return part
 
     ### NEW COMPOSITION ###
 
@@ -842,7 +904,9 @@ class Generate:
 
         # Generate a melody only if we have both data and data_type args
         if data is not None and data_type is not None:
-            melody = self.new_melody(tempo=comp.tempo, data=data, data_type=data_type)
+            melody = self.new_melody(
+                tempo=comp.tempo, raw_data=data, data_type=data_type
+            )
         else:
             melody = self.new_melody(tempo=comp.tempo)
         # pick instrument
