@@ -96,8 +96,12 @@ class Generate:
             comp.tempo = 60.0
         if title is None:
             comp.title = self.new_title()
+        else:
+            comp.title = title
         if composer is None:
             comp.composer = self.new_composer()
+        else:
+            comp.composer = composer
 
         comp.date = date.now().strftime("%d-%b-%y %H:%M:%S")
         comp.midi_file_name = f"{comp.title}.mid"

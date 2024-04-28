@@ -3,7 +3,6 @@ a module containing a variety of tools to analyze and manipulate melody()
 objects and chord() lists. these methods will likely be used in other large
 classes in the analyze.py and modify.py files.
 """
-
 from random import randint
 from core.constants import NOTES, PITCH_CLASSES
 
@@ -79,7 +78,7 @@ def remove_oct(a_note: str) -> str:
         return n[0]
 
 
-def oct_equiv(pitch) -> int | list:
+def oct_equiv(pitch):
     """
     Octave equivalence. Handles either a single int or list[int].
     Keeps a single pitch class integer within span of an octave (0 - 11).

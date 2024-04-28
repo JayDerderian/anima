@@ -1,7 +1,7 @@
 """
 Utility functions for working with MIDI data and I/O
 """
-
+from os.path import join
 from mido import MidiFile, MidiTrack, Message, MetaMessage
 from pretty_midi import PrettyMIDI, Instrument
 
@@ -110,7 +110,7 @@ def _build_melody(
         )
         start += cur_part.rhythms[j - 1]
         end += cur_part.rhythms[j]
-    # add mel: Instrument() to instrument list
+
     midi_writer.instruments.append(mel)
     return start, end, midi_writer
 
@@ -132,7 +132,7 @@ def _build_chord(
                 end=end,
             )
         )
-    # add chord progression to instrument list
+
     midi_writer.instruments.append(chord)
     start += cur_part.rhythm
 
@@ -191,4 +191,4 @@ def save(comp: Composition) -> None:
 
     # write to MIDI file
     print(f"\nsaving {comp.midi_file_name} ... ")
-    midi_writer.write(f"{MIDI_LOC}/{comp.midi_file_name}")
+    midi_writer.write(join(MIDI_LOC, comp.midi_file_name))
