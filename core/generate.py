@@ -137,25 +137,12 @@ class Generate:
     ### PITCH ###
 
     @staticmethod
-    def new_note(i: int = None, octave: int = None) -> str:
+    def new_note() -> str:
         """
-        Converts a given integer to a pitch in a specified octave (ex C#6),
-        or randomly picks a note between octaves 2 to 5. Returns a single
-        string (i.e. "C#4").
-
-        use randint(0, 11) and randint(2, 5) for num/octave args to get a
-        randomly chosen note, or leave arg fields empty
+        Picks a note at random between octaves 1 and 7.
+        Returns a string representing the note, such as "C#2"
         """
-        if i is None:
-            note = choice(PITCH_CLASSES)
-        elif type(i) == int and -1 < i < len(PITCH_CLASSES):
-            note = PITCH_CLASSES[i]
-        else:
-            raise TypeError("wrong type or value for i! i type is:", type(i))
-        if octave is None:
-            octave = randint(2, 5)
-        note = f"{note}{octave}"
-        return note
+        return f"{choice(PITCH_CLASSES)}{randint(1, 7)}"
 
     def new_notes(
             self, data=None, root: list = None, total: int = None
@@ -900,7 +887,7 @@ class Generate:
 
         Takes a 0x-xxxxxx hex humber representing a color, or
         an array of ints, floats or chars of any length as arguments,
-        plus the data type represented by a int
+        plus the data type represented by an int
         (int (1), float (2), char (3), or hex number (4)).
 
         Outputs a a MIDI file, a .txt file with the compositions' data (title, instrumentation,
