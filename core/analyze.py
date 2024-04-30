@@ -30,7 +30,7 @@ from containers.melody import Melody
 from containers.chord import Chord
 from utils.midi import (
     load_midi_file,
-    save,
+    export_midi,
     parse_midi,
     tempo2bpm,
     MIDI_num_to_note_name,
@@ -330,7 +330,7 @@ class Analyze:
         info = {}
         for part in comp.parts:
             if isinstance(comp.parts[part], Melody) or isinstance(
-                comp.parts[part], Chord
+                    comp.parts[part], Chord
             ):
                 info.update(
                     {

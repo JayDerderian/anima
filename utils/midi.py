@@ -5,10 +5,8 @@ from os.path import join
 from mido import MidiFile, MidiTrack, Message, MetaMessage
 from pretty_midi import PrettyMIDI, Instrument
 
-
 from utils.tools import normalize_str
 from core.constants import INSTRUMENTS, NOTES, MIDI_LOC
-
 from containers.note import Note
 from containers.melody import Melody
 from containers.chord import Chord
@@ -92,9 +90,8 @@ def parse_midi(file_name: str) -> tuple:
 
 
 def _build_melody(
-    start: float, end: float, cur_part: Melody, midi_writer: PrettyMIDI
+        start: float, end: float, cur_part: Melody, midi_writer: PrettyMIDI
 ) -> tuple[float, float, PrettyMIDI]:
-
     end += cur_part.rhythms[0]
     instrument = instrument_to_program(cur_part.instrument)
     mel = Instrument(program=instrument)
@@ -116,9 +113,8 @@ def _build_melody(
 
 
 def _build_chord(
-    start: float, end: float, cur_part: Chord, midi_writer: PrettyMIDI
+        start: float, end: float, cur_part: Chord, midi_writer: PrettyMIDI
 ) -> tuple[float, float, PrettyMIDI]:
-
     end += cur_part.rhythm
     instrument = instrument_to_program(cur_part.instrument)
     chord = Instrument(program=instrument)
@@ -139,13 +135,10 @@ def _build_chord(
     return start, end, midi_writer
 
 
-def save(comp: Composition) -> None:
+def export_midi(comp: Composition) -> None:
     """
-    Takes a composition object and constructs
-    data to be written out to a MIDI file
+    Takes a composition object and constructs data to be written out to a MIDI file
     """
-
-    # nothing to write out
     if len(comp.parts) == 0:
         print("No tracks! Exiting...")
         return

@@ -2,7 +2,7 @@
 generates a simple MIDI file for testing parsing with
 """
 
-from utils.midi import save
+from utils.midi import export_midi
 from utils.tools import scale_to_tempo
 
 from containers.melody import Melody
@@ -25,5 +25,5 @@ def gen_test_mid():
 
     comp.instruments.append(mel.instrument)
     comp.add_part(mel, mel.instrument)
-    save(comp)
+    export_midi(comp)
     comp.display()

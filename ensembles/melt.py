@@ -14,7 +14,7 @@ import argparse
 from tqdm import trange
 from random import randint, seed
 
-from utils.midi import save
+from utils.midi import export_midi
 from utils.tools import scale_to_tempo
 from utils.txtfile import gen_info_doc
 
@@ -76,7 +76,7 @@ def melt(tempo: str = None, title: str = None) -> Composition:
     print("...notes:", root_scale)
     print("...pcs:", pcs)
 
-    # save source info to each Melody() object
+    # export_midi source info to each Melody() object
     for q in range(len(trio)):
         trio[q].pcs.append(pcs)
         trio[q].source_notes = source
@@ -95,14 +95,14 @@ def melt(tempo: str = None, title: str = None) -> Composition:
         trio[q].rhythms.extend(rhy)
         trio[q].dynamics.extend(dyn)
 
-    # save all parts then write out
+    # export_midi all parts then write out
     for q in range(len(trio)):
         comp.add_part(trio[q], trio[q].instrument)
 
-    # save MIDI output
-    save(comp)
+    # export_midi MIDI output
+    export_midi(comp)
 
-    # save info documentation about the composition
+    # export_midi info documentation about the composition
     # gen_info_doc(file_name=comp.txt_file_name, comp=comp, data=None)
 
     print("\n...success!")

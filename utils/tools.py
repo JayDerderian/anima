@@ -99,7 +99,7 @@ def oct_equiv(pitch):
     return pitch
 
 
-def scale_to_tempo(tempo: float, rhythms: list, revert: bool = False) -> list:
+def scale_to_tempo(tempo: float, rhythms, revert: bool = False) -> list:
     """
     Converts a supplied float or list[float] of rhythmic values to
     actual value in seconds at a given tempo. can also convert back to base

@@ -10,7 +10,7 @@ playing 16th notes, then the piece ends.
 from tqdm import trange
 from random import randint, seed
 
-from utils.midi import save
+from utils.midi import export_midi
 from utils.tools import scale_to_tempo
 from utils.txtfile import gen_info_doc
 
@@ -51,7 +51,7 @@ def str_qtet(tempo=None) -> Composition:
     print("...notes:", notes)
     print("...pcs:", pcs)
 
-    # save source info to each Melody() object
+    # export_midi source info to each Melody() object
     for q in range(len(qtet)):
         qtet[q].pcs.append(pcs)
         qtet[q].source_notes = source
@@ -77,7 +77,7 @@ def str_qtet(tempo=None) -> Composition:
         qtet[q].rhythms.extend(rhy)
         qtet[q].dynamics.extend(dyn)
 
-    # save original values in temp object
+    # export_midi original values in temp object
     qtet_orig = qtet
 
     print("\nwriting asynchronous lines...")
@@ -118,10 +118,10 @@ def str_qtet(tempo=None) -> Composition:
         if qtet[q].duration() < longest_part:
             qtet[q] = sync(qtet[q], longest_part, figs[q])
 
-    # save all parts then write out
+    # export_midi all parts then write out
     for q in range(len(qtet)):
         comp.add_part(qtet[q], qtet[q].instrument)
-    save(comp)
+    export_midi(comp)
     gen_info_doc(file_name=comp.txt_file_name, comp=comp, data=None)
 
     print("\n...success!")
@@ -136,7 +136,7 @@ def str_qtet(tempo=None) -> Composition:
 
 
 def write_line(
-    part: Melody, scale: list, total: int, create: Generate, asyn: bool = False
+        part: Melody, scale: list, total: int, create: Generate, asyn: bool = False
 ) -> Melody:
     """
     writes each individual melodic line for each part.

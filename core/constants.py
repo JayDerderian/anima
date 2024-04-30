@@ -82,12 +82,10 @@ TEMPOS = [
     208.0,
 ]  # 34 - 36
 
-
 # The default tempo is 120 BPM for MIDI messages
 # (500000 microseconds per beat (quarter note).)
 DEFAULT_TEMPO = 500000
 DEFAULT_TICKS_PER_BEAT = 480
-
 
 # Dynamics (MIDI velocities: 0 - 127)
 """NOTE: use indices 0-8 for soft dynamics only. 
@@ -121,7 +119,6 @@ DYNAMICS = [
     120,
     124,
 ]
-
 
 # Base rhythms in seconds at 60bpm (or q = 60).
 # Convert to current tempo using scale_to_tempo() when necessary.
@@ -172,14 +169,12 @@ TUPLETS = {
     "septuplet sixteenth": 0.071,
 }
 
-
 # List of pitch classes
 """
 NOTE: the indices of each pitch class correspond to 
       its representation in integer notation!
 """
 PITCH_CLASSES = ["C", "C#", "D", "Eb", "E", "F", "F#", "G", "G#", "A", "Bb", "B"]
-
 
 # All the notes!
 # Complete piano range from bottom key to top key, octaves 0 - 8
@@ -274,7 +269,6 @@ NOTES = [
     "C8",
 ]
 
-
 # All 12 major scales
 MAJOR_SCALES = {
     1: ["C", "D", "E", "F", "G", "A", "B"],
@@ -291,7 +285,6 @@ MAJOR_SCALES = {
     12: ["B", "C#", "D#", "E", "F#", "G#", "A#"],
 }
 
-
 # All 12 relative/natural minor scales
 MINOR_SCALES = {
     1: ["A", "B", "C", "D", "E", "F", "G"],
@@ -307,7 +300,6 @@ MINOR_SCALES = {
     11: ["G", "A", "Bb", "C", "D", "Eb", "F"],
     12: ["G#", "A#", "B", "C#", "D#", "E", "F#"],
 }
-
 
 # These are modes and scales starting on 'C', so they will need to
 # be transposed before being matched with corresponding note strings.
@@ -381,7 +373,6 @@ SCALES = {
     "Whole Tone": [0, 2, 4, 6, 8, 10],
 }
 
-
 # Interval list/dictionary
 """
 NOTE: Develop interval sets that begin with 2 and end with 2,
@@ -410,7 +401,6 @@ INTERVALS = {
     "Dim Triad": [3, 3],
     "Aug Triad": [4, 4],
 }
-
 
 # NOTE: figure out to account of octaves if pcs below are transposed!
 ARPEGGIOS = {
@@ -461,7 +451,7 @@ SCALE_DEGREE_MAPPING = {
 A rather large dictionary containing all of Allen Forte's 5 to 9 
 note prime form pitch class sets. A corresponding list called FORTE_NUMBERS 
 is used with randint() to pick a prime form from the dictionary in pickScale().
-The choice using FORTE_NUMBERS can be used to save which number was used for analytical
+The choice using FORTE_NUMBERS can be used to export_midi which number was used for analytical
 purposes.
 
 Each integer/pitch class functions as an index number against CHROMATIC_SCALE to 
@@ -478,7 +468,6 @@ generate a scale represented by a list of strings (i.e. ["C#4", "D5"... etc]).
 Info taken from here: 
 https://en.wikipedia.org/wiki/List_of_pitch-class_sets
 """
-
 
 SETS = {
     # 5-note sets
@@ -761,7 +750,6 @@ SETS = {
     "9-12": [0, 1, 2, 4, 5, 6, 8, 9, 10],
 }
 
-
 # Ensemble sizes
 ENSEMBLE_SIZES = {
     1: "solo",
@@ -777,7 +765,6 @@ ENSEMBLE_SIZES = {
     11: "large ensemble",
 }
 
-
 # Ensembles
 """
 A dictionary of some template ensembles.
@@ -786,7 +773,6 @@ NOTE: obviously not complete or comprehensive.
       just some standards that could use usefull when quick 
       templates are needed.
 """
-
 
 ENSEMBLES = {
     # strings
@@ -863,7 +849,6 @@ ENSEMBLES = {
         ],
     },
 }
-
 
 """
 List of each possible note for a limited set of instruments
@@ -1389,7 +1374,6 @@ RANGE = {
         "B4",
     ],
 }
-
 
 # MIDI instruments list (standard)
 # NOTE: indices 0 - 110 are MELODIC/HARMONIC instruments!
