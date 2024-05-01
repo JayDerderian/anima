@@ -136,7 +136,7 @@ def str_qtet(tempo=None) -> Composition:
 
 
 def write_line(
-        part: Melody, scale: list, total: int, create: Generate, asyn: bool = False
+    part: Melody, scale: list, total: int, create: Generate, asyn: bool = False
 ) -> Melody:
     """
     writes each individual melodic line for each part.

@@ -1,6 +1,7 @@
 """
 Utility functions for working with MIDI data and I/O
 """
+
 from os.path import join
 from mido import MidiFile, MidiTrack, Message, MetaMessage
 from pretty_midi import PrettyMIDI, Instrument
@@ -90,7 +91,7 @@ def parse_midi(file_name: str) -> tuple:
 
 
 def _build_melody(
-        start: float, end: float, cur_part: Melody, midi_writer: PrettyMIDI
+    start: float, end: float, cur_part: Melody, midi_writer: PrettyMIDI
 ) -> tuple[float, float, PrettyMIDI]:
     end += cur_part.rhythms[0]
     instrument = instrument_to_program(cur_part.instrument)
@@ -113,7 +114,7 @@ def _build_melody(
 
 
 def _build_chord(
-        start: float, end: float, cur_part: Chord, midi_writer: PrettyMIDI
+    start: float, end: float, cur_part: Chord, midi_writer: PrettyMIDI
 ) -> tuple[float, float, PrettyMIDI]:
     end += cur_part.rhythm
     instrument = instrument_to_program(cur_part.instrument)

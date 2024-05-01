@@ -83,6 +83,8 @@ def oct_equiv(pitch):
     Octave equivalence. Handles either a single int or list[int].
     Keeps a single pitch class integer within span of an octave (0 - 11).
 
+    Pitch should be an int or a list[int]
+
     Returns either a modified int or list[int]
     """
     if type(pitch) == int:
@@ -94,12 +96,23 @@ def oct_equiv(pitch):
                 pitch[p] %= 12
     else:
         raise TypeError(
-            "must be single int or list[int], " "supplied arg is type:", type(pitch)
+            "must be single int or list[int], " "\nsupplied arg is type:", type(pitch)
         )
     return pitch
 
 
-def scale_to_tempo(tempo: float, rhythms, revert: bool = False) -> list:
+def _scale(rhythms: float, diff: float, revert: bool = False) -> float:
+    """
+    Scale the given rhythm to the given difference
+    """
+    if revert:
+        rhythms /= diff
+    else:
+        rhythms *= diff
+    return rhythms
+
+
+def scale_to_tempo(tempo: float, rhythms, revert: bool = False):
     """
     Converts a supplied float or list[float] of rhythmic values to
     actual value in seconds at a given tempo. can also convert back to base
@@ -117,22 +130,12 @@ def scale_to_tempo(tempo: float, rhythms, revert: bool = False) -> list:
           facilitate sheet music generation.
     """
     diff = 60 / tempo
-    if type(rhythms) == int:
-        rhythms = float(rhythms)
     if type(rhythms) == float:
-        if not revert:
-            rhythms *= diff
-        else:
-            rhythms /= diff
-        rhythms = round(rhythms, 3)
+        rhythms = round(_scale(rhythms, diff, revert), 3)
     elif type(rhythms) == list:
         rhythm_len = len(rhythms)
         for i in range(rhythm_len):
-            if not revert:
-                rhythms[i] *= diff
-            else:
-                rhythms[i] /= diff
-            rhythms[i] = round(rhythms[i], 3)
+            rhythms[i] = round(_scale(rhythms[i], diff, revert), 3)
     else:
         raise TypeError("incorrect input type. must be single float or list of floats!")
     return rhythms
