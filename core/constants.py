@@ -9,7 +9,7 @@ from pathlib import Path
 ROOT = Path(__file__).parent.parent
 
 # location to write MIDI files to
-MIDI_LOC = join(ROOT, "midi")
+MIDI_FOLDER = join(ROOT, "midi")
 
 # The alphabet.
 ALPHABET = [
@@ -300,6 +300,9 @@ MINOR_SCALES = {
     11: ["G", "A", "Bb", "C", "D", "Eb", "F"],
     12: ["G#", "A#", "B", "C#", "D#", "E", "F#"],
 }
+
+# Chromatic scale pitch class set notation representation
+CHROMATIC_SCALE = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
 
 # These are modes and scales starting on 'C', so they will need to
 # be transposed before being matched with corresponding note strings.

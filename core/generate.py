@@ -15,6 +15,7 @@ from utils.tools import to_str, oct_equiv, scale_to_tempo, scale_limit
 
 from core.constants import (
     NOTES,
+    CHROMATIC_SCALE,
     PITCH_CLASSES,
     RHYTHMS,
     REST,
@@ -174,10 +175,9 @@ class Generate:
             note meta data (list[str]),
             original source scale (list[str])
         """
-        # Save forte numbers and/or pitch class sets
-        meta_data = []
-        # initial starting octave
-        octave = randint(2, 3)
+
+        meta_data = []  # save forte numbers and/or pitch class sets
+        octave = randint(2, 3)  # initial starting octave
         if root is None:
             root, info = self.pick_root(transpose=True, octave=None)
             meta_data.append(info)
@@ -191,10 +191,10 @@ class Generate:
         else:
             gen_total = max(data)
 
+        # Generate source scale
+        # NOTE: This only uses a supplied root scale once!
         n = 0
         scale = []
-        # Generate source scale
-        # this only uses a supplied root scale once!
         for i in range(gen_total + 1):
             note = f"{root[n]}{octave}"
             scale.append(note)
@@ -212,14 +212,16 @@ class Generate:
         notes = []
         if data is None:
             # Total notes in melody will be between 3 and
-            # however many notes are in the source scale
+            # however many notes are in the source scale if no
+            # total value is provided.
             if total is None:
                 pick_total = randint(3, len(scale))
             else:
                 pick_total = total
-            notes = [choice(scale) for n in range(pick_total)]
+            notes = [choice(scale) for _ in range(pick_total)]
         # ...Or pick notes according to integers in data array
         else:
+            # Map notes to the inputed data to generate a melody.
             # Total number of notes is equivalent to the
             # number of elements in the data set. Any supplied
             # t value doesn't matter here since we're going of len(data)
@@ -229,6 +231,13 @@ class Generate:
                 notes.append(scale[data[i]])
 
         return notes, meta_data, scale
+
+    @staticmethod
+    def choose_notes(source_notes: list, total: int) -> list:
+        """
+        Choose a set (size total) of notes at random from a given set of notes.
+        """
+        return [choice(source_notes) for _ in range(total)]
 
     def pick_root(self, transpose: bool = True, octave: int = None) -> tuple[list, str]:
         """
@@ -456,7 +465,8 @@ class Generate:
         Takes either a list of chord() objects or a single melody()
         object, and creates a palindrome from it.
 
-        Returns either a modified list[chord()], or modified melody()"""
+        Returns either a modified list[chord()], or modified melody()
+        """
         # chord() list
         if type(melody) == list:
             mel_rev = melody
@@ -509,20 +519,24 @@ class Generate:
             _rhythms = source_rhythms
         else:
             _rhythms = RHYTHMS
+
+        # generate rhythms
         while len(rhythms) < total:
             rhythm = choice(_rhythms)  # Pick rhythm and add to list
             if randint(1, 2) == 1:  # Repeat this rhythm or not?
                 limit = self._rep_limit(total)
-                reps = randint(1, limit)
-                for i in range(reps):
+                total_reps = randint(1, limit)
+                for i in range(total_reps):
                     rhythms.append(rhythm)
                     if len(rhythms) == total:
                         break
             else:
                 rhythms.append(rhythm)
-        # scale to given tempo, if provided and necessary.
+
+        # scale to given tempo if provided.
         if tempo is not None and tempo != 60.0:
             rhythms = scale_to_tempo(tempo, rhythms)
+
         return rhythms
 
     @staticmethod
@@ -546,7 +560,68 @@ class Generate:
             return choice(DYNAMICS)
 
     @staticmethod
-    def new_dynamics(total: int = None, rests: bool = True) -> list[int]:
+    def _new_dynamics_with_silences(total_dynamics: int, dynamics: list):
+        """
+        Creates a list of dynamic/velocities with optional silences.
+        Will also randomly repeat a dynamic n times.
+        """
+        while len(dynamics) < total_dynamics:
+            if randint(0, 1) == 1:  # Pick dynamic OR a rest
+                dynamic = choice(DYNAMICS)
+                if randint(1, 2) == 1:  # repeat?
+                    # scale total reps with regards to the total number of dynamic/velocities we have
+                    # we want to avoid repeating the dynamic/velocities *too* many times, so we try to
+                    # repeat something with a "sane" number of repetiions -- i.e., doesn't dominate the
+                    # entire set of dyanmics.
+                    rep_limit = scale_limit(total_dynamics)
+                    if rep_limit == 0:
+                        rep_limit += 2
+                    total_reps = randint(1, rep_limit)
+                    for _ in range(total_reps):
+                        dynamics.append(dynamic)
+                        if len(dynamics) == total_dynamics:
+                            break
+                else:
+                    dynamics.append(dynamic)
+            else:
+                dynamic = REST
+                if randint(1, 2) == 1:  # repeat?
+                    total_reps = randint(1, 2)  # only repeat rests 1-2 times for now...
+                    for _ in range(total_reps):
+                        dynamics.append(dynamic)
+                        if len(dynamics) == total_dynamics:
+                            break
+                else:
+                    dynamics.append(dynamic)
+
+        return dynamics
+
+    @staticmethod
+    def _new_dynamics(total_dynamics: int, dynamics: list) -> list:
+        """
+        Generates a list of dynamics without silences(rests)
+        """
+        while len(dynamics) < total_dynamics:
+            dynamic = choice(DYNAMICS)
+            if randint(1, 2) == 1:  # repeat?
+                # scale total reps with regards to the total number of dynamic/velocities we have
+                # we want to avoid repeating the dynamic/velocities *too* many times, so we try to
+                # repeat something with a "sane" number of repetiions -- i.e., doesn't dominate the
+                # entire set of dyanmics.
+                rep_limit = scale_limit(total_dynamics)
+                if rep_limit == 0:
+                    rep_limit += 2
+                total_reps = randint(1, rep_limit)
+                for _ in range(total_reps):
+                    dynamics.append(dynamic)
+                    if len(dynamics) == total_dynamics:
+                        break
+            else:
+                dynamics.append(dynamic)
+
+        return dynamics
+
+    def new_dynamics(self, total: int = None, rests: bool = True) -> list[int]:
         """
         Generates a list of dynamics (MIDI velocities) of n length,
         where n is supplied from elsewhere. Uses infrequent repetition.
@@ -560,50 +635,12 @@ class Generate:
               is needed. 'total' can be used to sync up with a given list or
               be hard-coded.
         """
-        dynamics = []
         if total is None:
             total = randint(3, 30)
-        if rests:  # using rests
-            while len(dynamics) < total:
-                if randint(0, 1) == 1:  # Pick dynamic OR a rest
-                    dynamic = choice(DYNAMICS)
-                    if randint(1, 2) == 1:  # repeat?
-                        limit = scale_limit(total)
-                        if limit == 0:
-                            limit += 2
-                        reps = randint(1, limit)
-                        for i in range(reps):
-                            dynamics.append(dynamic)
-                            if len(dynamics) == total:
-                                break
-                    else:
-                        dynamics.append(dynamic)
-                else:
-                    dynamic = REST
-                    if randint(1, 2) == 1:  # repeat?
-                        reps = randint(1, 2)  # only repeat rests 1-2 times for now...
-                        for i in range(reps):
-                            dynamics.append(dynamic)
-                            if len(dynamics) == total:
-                                break
-                    else:
-                        dynamics.append(dynamic)
-        else:  # NOT using rests
-            while len(dynamics) < total:
-                dynamic = choice(DYNAMICS)
-                if randint(1, 2) == 1:  # repeat?
-                    limit = scale_limit(total)
-                    if limit == 0:
-                        limit += 2
-                    reps = randint(1, limit)
-                    for i in range(reps):
-                        dynamics.append(dynamic)
-                        if len(dynamics) == total:
-                            break
-                else:
-                    dynamics.append(dynamic)
-
-        return dynamics
+        if rests:
+            return self._new_dynamics_with_silences(total, [])
+        else:
+            return self._new_dynamics(total, [])
 
     ### CHORDS ###
 
@@ -625,7 +662,7 @@ class Generate:
             self.display_chord(chords[i])
 
     @staticmethod
-    def chord_durations(chords: list) -> float:
+    def get_chord_durations(chords: list) -> float:
         """
         Returns the total length  in seconds (float) of a series
         of chord() objects (chord progression).
@@ -730,20 +767,28 @@ class Generate:
         NOTE: chords don't have tempo or instrument assigned!"""
         triads = []
         scale_len = len(scale)
-        for i in range(1, scale_len):
-            # TODO: revisit this try/except. seems kind of dumb.
-            # catching an index error when we could probably design our loop/indices better
-            # maybe just use
-            try:
-                triad = Chord()
-                triad.notes = [scale[i - 1], scale[i + 1], scale[i + 3]]
-                triad.rhythm = 2.0  # half notes by default
-                triad.dynamic = 100  # mezzo forte-ish
-                triads.append(triad)
-                if len(triads) == total:
-                    break
-            except IndexError:
+        # for i in range(1, scale_len):
+        #     # TODO: revisit this try/except. seems kind of dumb.
+        #     # catching an index error when we could probably design our loop/indices better
+        #     try:
+        #         triad = Chord()
+        #         triad.notes = [scale[i - 1], scale[i + 1], scale[i + 3]]
+        #         triad.rhythm = 2.0  # half notes by default
+        #         triad.dynamic = 100  # mezzo forte-ish
+        #         triads.append(triad)
+        #         if len(triads) == total:
+        #             break
+        #     except IndexError:
+        #         break
+        for i in range(0, scale_len):
+            if i + 4 > scale_len or len(triads) == total:
                 break
+            triad = Chord()
+            triad.notes = [scale[i], scale[i + 2], scale[i + 4]]
+            triad.rhythm = 2.0  # half note by default
+            triad.dynamic = 100  # mezzo-forte-ish
+            triads.append(triad)
+
         return triads
 
     @staticmethod
