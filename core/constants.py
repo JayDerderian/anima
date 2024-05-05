@@ -178,6 +178,9 @@ PITCH_CLASSES = ["C", "C#", "D", "Eb", "E", "F", "F#", "G", "G#", "A", "Bb", "B"
 
 # All the notes!
 # Complete piano range from bottom key to top key, octaves 0 - 8
+# NOTE: enharmonic spellings of certain notes (like C# vs Db) are ignored
+# for the sake of simplicity, though the resulting sounds will be the same.
+# TODO: add enharmonic spellings and adjust midi.note_name_to_MIDI_num helpers
 NOTES = [
     "A0",
     "Bb0",
@@ -271,34 +274,34 @@ NOTES = [
 
 # All 12 major scales
 MAJOR_SCALES = {
-    1: ["C", "D", "E", "F", "G", "A", "B"],
-    2: ["Db", "Eb", "F", "Gb", "Ab", "Bb", "C"],
-    3: ["D", "E", "F#", "G", "A", "B", "C#"],
-    4: ["Eb", "F", "G", "Ab", "Bb", "C", "D"],
-    5: ["E", "F#", "G#", "A", "B", "C#", "D#"],
-    6: ["F", "G", "A", "Bb", "C", "D", "E"],
-    7: ["F#", "G#", "A#", "B", "C#", "D#", "E#"],
-    8: ["G", "A", "B", "C", "D", "E", "F#"],
-    9: ["Ab", "Bb", "C", "Db", "Eb", "F", "G"],
-    10: ["A", "B", "C#", "D", "E", "F#", "G#"],
-    11: ["Bb", "C", "D", "Eb", "F", "G", "A"],
-    12: ["B", "C#", "D#", "E", "F#", "G#", "A#"],
+    "C Major": ["C", "D", "E", "F", "G", "A", "B"],
+    "Db Major": ["Db", "Eb", "F", "Gb", "Ab", "Bb", "C"],
+    "D Major": ["D", "E", "F#", "G", "A", "B", "C#"],
+    "Eb Major": ["Eb", "F", "G", "Ab", "Bb", "C", "D"],
+    "E Major": ["E", "F#", "G#", "A", "B", "C#", "D#"],
+    "F Major": ["F", "G", "A", "Bb", "C", "D", "E"],
+    "F# Major": ["F#", "G#", "A#", "B", "C#", "D#", "E#"],
+    "G Major": ["G", "A", "B", "C", "D", "E", "F#"],
+    "Ab Major": ["Ab", "Bb", "C", "Db", "Eb", "F", "G"],
+    "A Major": ["A", "B", "C#", "D", "E", "F#", "G#"],
+    "Bb Major": ["Bb", "C", "D", "Eb", "F", "G", "A"],
+    "B Major": ["B", "C#", "D#", "E", "F#", "G#", "A#"],
 }
 
 # All 12 relative/natural minor scales
 MINOR_SCALES = {
-    1: ["A", "B", "C", "D", "E", "F", "G"],
-    2: ["Bb", "C", "Db", "Eb", "F", "Gb", "Ab"],
-    3: ["B", "C#", "D", "E", "F#", "G", "A"],
-    4: ["C", "D", "Eb", "F", "G", "Ab", "Bb"],
-    5: ["C#", "D#", "E", "F#", "G#", "A", "B"],
-    6: ["D", "E", "F", "G", "A", "Bb", "C"],
-    7: ["D#", "E#", "F#", "G#", "A#", "B", "C#"],
-    8: ["E", "F#", "G", "A", "B", "C", "D"],
-    9: ["F", "G", "Ab", "Bb", "C", "Db", "Eb"],
-    10: ["F#", "G#", "A", "B", "C#", "D", "E"],
-    11: ["G", "A", "Bb", "C", "D", "Eb", "F"],
-    12: ["G#", "A#", "B", "C#", "D#", "E", "F#"],
+    "A Minor": ["A", "B", "C", "D", "E", "F", "G"],
+    "Bb Minor": ["Bb", "C", "Db", "Eb", "F", "Gb", "Ab"],
+    "B Minor": ["B", "C#", "D", "E", "F#", "G", "A"],
+    "C Minor": ["C", "D", "Eb", "F", "G", "Ab", "Bb"],
+    "C# Minor": ["C#", "D#", "E", "F#", "G#", "A", "B"],
+    "D Minor": ["D", "E", "F", "G", "A", "Bb", "C"],
+    "D# Minor": ["Eb", "F", "Gb", "Ab", "Bb", "B", "C#"],  # ignorning C flat
+    "E Minor": ["E", "F#", "G", "A", "B", "C", "D"],
+    "F Minor": ["F", "G", "Ab", "Bb", "C", "Db", "Eb"],
+    "F# Minor": ["F#", "G#", "A", "B", "C#", "D", "E"],
+    "G Minor": ["G", "A", "Bb", "C", "D", "Eb", "F"],
+    "G# Minor": ["G#", "A#", "B", "C#", "D#", "E", "F#"],
 }
 
 # Chromatic scale pitch class set notation representation

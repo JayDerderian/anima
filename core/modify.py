@@ -17,9 +17,7 @@ from __future__ import annotations
 from random import randint, shuffle, choice, choices
 
 import utils.midi as mid
-
 from utils.tools import to_str, is_pos, oct_equiv, scale_to_tempo
-
 from containers.melody import Melody
 from core.constants import NOTES, RHYTHMS, PITCH_CLASSES, DYNAMICS, RANGE
 

@@ -64,7 +64,7 @@ def load_midi_file(file_name: str) -> MidiFile:
     return MidiFile(filename=file_name)
 
 
-def parse_midi(file_name: str) -> tuple:
+def parse_midi(file_name: str) -> tuple[dict, list]:
     """
     retrieves a midi file from current working directory
     with a supplied file_name string.
@@ -95,7 +95,7 @@ def _to_instrument(part) -> Instrument:
 
 
 def _build_melody(
-        start: float, end: float, cur_part: Melody, mel_inst: Instrument
+    start: float, end: float, cur_part: Melody, mel_inst: Instrument
 ) -> tuple[float, float, Instrument]:
     end += cur_part.rhythms[0]
     # instrument = instrument_to_program(cur_part.instrument)
@@ -116,7 +116,7 @@ def _build_melody(
 
 
 def _build_chord(
-        start: float, end: float, cur_part: Chord, chord_inst: Instrument
+    start: float, end: float, cur_part: Chord, chord_inst: Instrument
 ) -> tuple[float, float, Instrument]:
     end += cur_part.rhythm
     # instrument = instrument_to_program(cur_part.instrument)

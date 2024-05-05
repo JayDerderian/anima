@@ -99,7 +99,7 @@ def oct_equiv(pitch):
                 pitch[p] %= 12
     else:
         raise TypeError(
-            "must be single int or list[int], " "\nsupplied arg is type:", type(pitch)
+            f"must be single int or list[int]. supplied arg is type: {type(pitch)}"
         )
     return pitch
 
