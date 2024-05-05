@@ -14,12 +14,11 @@ TODO:
 
 from __future__ import annotations
 
-from random import randint, shuffle, choice, choices
+from random import randint, shuffle
 
-import utils.midi as mid
 from utils.tools import to_str, is_pos, oct_equiv, scale_to_tempo
 from containers.melody import Melody
-from core.constants import NOTES, RHYTHMS, PITCH_CLASSES, DYNAMICS, RANGE
+from core.constants import NOTES
 
 
 class Modify:
@@ -102,10 +101,10 @@ class Modify:
         in semi-tones!
         """
         intervals = []
-        ind = self.get_index(notes)
-        ind_len = len(ind)
+        index_list = self.get_index(notes)
+        ind_len = len(index_list)
         for n in range(1, ind_len):
-            intervals.append(ind[n] - ind[n - 1])
+            intervals.append(index_list[n] - index_list[n - 1])
         return intervals
 
     @staticmethod
@@ -178,32 +177,32 @@ class Modify:
         return ret
 
     @staticmethod
-    def frag(m: Melody) -> Melody:
+    def fragment(orig_melody: Melody) -> Melody:
         """
         randomly picks a subset of notes, rhythms, and dynamics (all
         from the same position in the melody) from a given melody and
         returns this subset as a melodic fragment in a new melody() object
         """
-        frag = Melody()
         # copy other info from supplied melody object
-        # to not miss anything important
-        data = m.get_meta_data()
-        frag.info = data[0]
-        frag.pcs = data[1]
-        frag.source_data = data[2]
-        frag.source_notes = data[3]
-        frag.tempo = m.tempo
-        frag.instrument = m.instrument
-        # generate fragment. any subset will necessarily
+        # to not miss anything important. remove initial
+        # notes ect so we can reuse the lists.
+        frag = orig_melody
+        frag.notes = []
+        frag.rhythms = []
+        frag.dynamics = []
+
+        # generate fragment size. any subset will necessarily
         # be at least one element less than the original set.
-        frag_len = randint(3, len(m.notes) - 2)
+        frag_len = randint(3, len(orig_melody.notes) - 2)
+
         # pick starting index and build fragment from here
-        strt = randint(0, len(m.notes) - frag_len)
-        for stuff in range(frag_len):
-            frag.notes.append(m.notes[strt])
-            frag.rhythms.append(m.rhythms[strt])
-            frag.dynamics.append(m.dynamics[strt])
+        strt = randint(0, len(orig_melody.notes) - frag_len)
+        for _ in range(frag_len):
+            frag.notes.append(orig_melody.notes[strt])
+            frag.rhythms.append(orig_melody.rhythms[strt])
+            frag.dynamics.append(orig_melody.dynamics[strt])
             strt += 1
+
         return frag
 
     @staticmethod
@@ -237,7 +236,7 @@ class Modify:
         return notes
 
     @staticmethod
-    def change_dynamics(dyn, diff: int):
+    def change_dynamics(dyn: int | list, diff: int) -> int | list:
         """
         makes a single or list of dynamics louder or softer
         by a specified amount. returns a modified dynamics list[int]
@@ -257,7 +256,5 @@ class Modify:
             for d in range(dyn_len):
                 if dyn[d] < 123:
                     dyn[d] += diff
-                # just gonna ignore those dynamics for now...
-                else:
-                    continue
+
         return dyn
