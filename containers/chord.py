@@ -25,7 +25,7 @@ class Chord(Container):
         elif instrument in INSTRUMENTS:
             self.instrument = instrument
         else:
-            raise TypeError(f"{instrument} not a valid instrument!")
+            raise TypeError(f"{instrument} is not a valid instrument!")
         if tempo is None:
             self.tempo = 60.0
         elif tempo < 40.0 or tempo > 280.0:

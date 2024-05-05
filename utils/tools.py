@@ -4,6 +4,7 @@ objects and chord() lists. these methods will likely be used in other large
 classes in the analyze.py and modify.py files.
 """
 
+from math import floor
 from random import randint
 from core.constants import NOTES, PITCH_CLASSES
 
@@ -49,7 +50,8 @@ def to_str(pcs: list, octave: int = None, oct_eq: bool = True) -> list:
 def normalize_str(name: str) -> str:
     """
     removes all non-alphanumeric characters from a string and converts
-    it to lowercase.
+    it to all lowercase characters. This will be useful for mapping
+    index values/pitch class integers to their corresponding characters.
     """
     return "".join(ch for ch in name if ch.isalnum()).lower()
 
@@ -79,10 +81,12 @@ def remove_oct(a_note: str) -> str:
         return n[0]
 
 
-def oct_equiv(pitch) -> int | list:
+def oct_equiv(pitch):
     """
     Octave equivalence. Handles either a single int or list[int].
     Keeps a single pitch class integer within span of an octave (0 - 11).
+
+    Pitch should be an int or a list[int]
 
     Returns either a modified int or list[int]
     """
@@ -95,12 +99,24 @@ def oct_equiv(pitch) -> int | list:
                 pitch[p] %= 12
     else:
         raise TypeError(
-            "must be single int or list[int], " "supplied arg is type:", type(pitch)
+            f"must be single int or list[int]. supplied arg is type: {type(pitch)}"
         )
     return pitch
 
 
-def scale_to_tempo(tempo: float, rhythms: list, revert: bool = False) -> list:
+def _scale(rhythms: float, diff: float, revert: bool = False) -> float:
+    """
+    Scale the given rhythm to the given difference. Set revert to True
+    if you want to revert the rhythmic values to their original values at generation time.
+    """
+    if revert:
+        rhythms /= diff
+    else:
+        rhythms *= diff
+    return rhythms
+
+
+def scale_to_tempo(tempo: float, rhythms, revert: bool = False):
     """
     Converts a supplied float or list[float] of rhythmic values to
     actual value in seconds at a given tempo. can also convert back to base
@@ -115,31 +131,21 @@ def scale_to_tempo(tempo: float, rhythms: list, revert: bool = False) -> list:
     all supplied durations against to get the new tempo-accurate durations in seconds.
 
     NOTE: the round() method keeps the results within three decimal places to help
-          facilitate sheet music generation.
+          facilitate clearer sheet music generation.
     """
     diff = 60 / tempo
-    if type(rhythms) == int:
-        rhythms = float(rhythms)
     if type(rhythms) == float:
-        if not revert:
-            rhythms *= diff
-        else:
-            rhythms /= diff
-        rhythms = round(rhythms, 3)
+        rhythms = round(_scale(rhythms, diff, revert), 3)
     elif type(rhythms) == list:
         rhythm_len = len(rhythms)
         for i in range(rhythm_len):
-            if not revert:
-                rhythms[i] *= diff
-            else:
-                rhythms[i] /= diff
-            rhythms[i] = round(rhythms[i], 3)
+            rhythms[i] = round(_scale(rhythms[i], diff, revert), 3)
     else:
         raise TypeError("incorrect input type. must be single float or list of floats!")
     return rhythms
 
 
-def scale_limit(total: int) -> int:
+def scale_limit(given_total_items: int) -> int:
     """
     scales repetition limits according to total notes
     higher total == fewer reps, basically
@@ -147,20 +153,23 @@ def scale_limit(total: int) -> int:
     """
     TODO: look at proportional scaling methods...
     """
-    if total < 1:
+    if given_total_items < 1:
         raise ValueError("total cannot be less than 1")
-    if 1 <= total <= 10:
-        total = randint(1, 3)
-    elif 11 <= total <= 100:
-        total = randint(1, int(total * 0.2))
-    elif 101 <= total <= 300:
-        total = randint(1, int(total * 0.075))
-    elif 301 <= total <= 500:
-        total = randint(1, int(total * 0.05))
-    elif 501 <= total <= 700:
-        total = randint(1, int(total * 0.035))
-    elif 701 <= total <= 1000:
-        total = randint(1, int(total * 0.02))
-    elif total > 1000:
-        total = randint(1, int(total * 0.001))
-    return total
+
+    rep_limit = 0
+    if 1 <= given_total_items <= 10:
+        given_total_items = randint(1, 3)
+    elif 11 <= given_total_items <= 100:
+        rep_limit = randint(1, floor(given_total_items * 0.2))
+    elif 101 <= given_total_items <= 300:
+        rep_limit = randint(1, floor(given_total_items * 0.075))
+    elif 301 <= given_total_items <= 500:
+        rep_limit = randint(1, floor(given_total_items * 0.05))
+    elif 501 <= given_total_items <= 700:
+        rep_limit = randint(1, floor(given_total_items * 0.035))
+    elif 701 <= given_total_items <= 1000:
+        rep_limit = randint(1, floor(given_total_items * 0.02))
+    elif given_total_items > 1000:
+        rep_limit = randint(1, floor(given_total_items * 0.001))
+
+    return rep_limit

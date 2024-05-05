@@ -68,15 +68,13 @@ def hex_to_int_list(hex_str: str) -> list[int]:
     return [int(x) for x in str(hex_int)]
 
 
-def map_data(mel: Melody, data, data_type: str):
+def map_data(data, data_type: str):
     """
     Wrapper method to map data used by newMelody()
 
     Returns modified data and modified melody() object, or -1
     on failure. melody() object has original source data saved.
     """
-    # Save original source data
-    mel.source_data = data
     if data_type == "int":
         data_scaled = scale_the_scale(data)
     elif data_type == "float":
@@ -86,5 +84,5 @@ def map_data(mel: Melody, data, data_type: str):
     elif data_type == "hex":
         data_scaled = hex_to_int_list(data)
     else:
-        raise ValueError("dt value out of range! 1-4")
-    return data_scaled, mel
+        raise ValueError(f"unsupported data type: {data_type}")
+    return data_scaled

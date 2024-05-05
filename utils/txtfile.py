@@ -12,7 +12,7 @@ from containers.composition import Composition
 
 def gen_info_doc(file_name: str, comp: Composition, data=None):
     """
-    Generates a new .txt file to save a new composition's data and meta-data to.
+    Generates a new .txt file to export_midi a new composition's data and meta-data to.
     Parameters:
         file_name: string
         data: any object

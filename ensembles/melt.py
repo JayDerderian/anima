@@ -14,7 +14,7 @@ import argparse
 from tqdm import trange
 from random import randint, seed
 
-from utils.midi import save
+from utils.midi import export_midi
 from utils.tools import scale_to_tempo
 from utils.txtfile import gen_info_doc
 
@@ -23,6 +23,9 @@ from core.constants import DYNAMICS, RANGE, RHYTHMS, TEMPOS
 
 from containers.melody import Melody
 from containers.composition import Composition
+
+# initialize generator
+create = Generate()
 
 
 def parse_args():
@@ -38,17 +41,15 @@ def parse_args():
 
 
 def melt(tempo: str = None, title: str = None) -> Composition:
-    create = Generate()  # initialize generator
-
     if tempo is None or tempo == "":
         comp = create.init_comp(TEMPOS[randint(20, 29)])
     else:
         comp = create.init_comp(tempo)
     if title is None or title == "":
-        title_full = comp.title + " for string quartet"
+        title_full = comp.title + " for string trio"
     else:
         comp.title = title
-        title_full = title + " for string quartet"
+        title_full = title + " for string trio"
 
     trio = [
         Melody(tempo=comp.tempo, instrument="Viola"),
@@ -56,13 +57,16 @@ def melt(tempo: str = None, title: str = None) -> Composition:
         Melody(tempo=comp.tempo, instrument="Cello"),
     ]
     trio_empty = trio  # used to reset qtet for each subsequent section
+    comp.ensemble = "string trio"
+
     # these will be used as empty containers for each new section
     for inst in range(len(trio)):  # add instruments to comp object
         comp.instruments.append(trio[inst])
-    comp.ensemble = "string trio"
 
-    sections = {}  # dictionary of different sections from the composition.
+    # dictionary of different sections from the composition.
     # can be used to mix and match material!
+    sections = {}
+
     # introduce our root and source scales here. Should be up to around the 6th octave as our highest,
     # so we have enough room for interesting voicings but hopefully make it still somewhat
     # human playable.
@@ -72,45 +76,44 @@ def melt(tempo: str = None, title: str = None) -> Composition:
     print("...notes:", root_scale)
     print("...pcs:", pcs)
 
-    # save source info to each Melody() object
+    # export_midi source info to each Melody() object
     for q in range(len(trio)):
         trio[q].pcs.append(pcs)
         trio[q].source_notes = source
 
     # write individual *choral* lines
-    total = randint(12, 30)
+    total_notes = randint(12, 30)
     for q in range(len(trio)):
-        trio[q] = write_line(trio[q], source, total, create)
+        trio[q] = write_line(trio[q], source, total_notes)
 
     # create rhythms and dynamics
-    rhy = [RHYTHMS[randint(1, 3)] for i in range(total)]
-    dyn = [65 for i in range(total)]
+    rhy = [RHYTHMS[randint(1, 3)] for i in range(total_notes)]
+    dyn = [65 for i in range(total_notes)]
 
     # add rhythms and dynamics to each part
     for q in range(len(trio)):
         trio[q].rhythms.extend(rhy)
         trio[q].dynamics.extend(dyn)
 
-    # save all parts then write out
+    # export_midi all parts then write out
     for q in range(len(trio)):
         comp.add_part(trio[q], trio[q].instrument)
 
-    # save MIDI output
-    save(comp)
+    # export_midi MIDI output
+    export_midi(comp)
 
-    # save info documentation about the composition
+    # export_midi info documentation about the composition
     # gen_info_doc(file_name=comp.txt_file_name, comp=comp, data=None)
 
     print("\n...success!")
 
     # display results
     comp.display()
+
     return comp
 
 
-def write_line(
-    part: Melody, scale: list, total: int, create: Generate, asyn=False
-) -> Melody:
+def write_line(part: Melody, scale: list, total: int, asyn: bool = False) -> Melody:
     """
     writes each individual melodic line for each part.
     **doesn't add rhythm or dynamics** if asyn==False,

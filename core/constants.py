@@ -9,7 +9,7 @@ from pathlib import Path
 ROOT = Path(__file__).parent.parent
 
 # location to write MIDI files to
-MIDI_LOC = join(ROOT, "midi")
+MIDI_FOLDER = join(ROOT, "midi")
 
 # The alphabet.
 ALPHABET = [
@@ -82,12 +82,10 @@ TEMPOS = [
     208.0,
 ]  # 34 - 36
 
-
 # The default tempo is 120 BPM for MIDI messages
 # (500000 microseconds per beat (quarter note).)
 DEFAULT_TEMPO = 500000
 DEFAULT_TICKS_PER_BEAT = 480
-
 
 # Dynamics (MIDI velocities: 0 - 127)
 """NOTE: use indices 0-8 for soft dynamics only. 
@@ -121,7 +119,6 @@ DYNAMICS = [
     120,
     124,
 ]
-
 
 # Base rhythms in seconds at 60bpm (or q = 60).
 # Convert to current tempo using scale_to_tempo() when necessary.
@@ -172,7 +169,6 @@ TUPLETS = {
     "septuplet sixteenth": 0.071,
 }
 
-
 # List of pitch classes
 """
 NOTE: the indices of each pitch class correspond to 
@@ -180,9 +176,11 @@ NOTE: the indices of each pitch class correspond to
 """
 PITCH_CLASSES = ["C", "C#", "D", "Eb", "E", "F", "F#", "G", "G#", "A", "Bb", "B"]
 
-
 # All the notes!
 # Complete piano range from bottom key to top key, octaves 0 - 8
+# NOTE: enharmonic spellings of certain notes (like C# vs Db) are ignored
+# for the sake of simplicity, though the resulting sounds will be the same.
+# TODO: add enharmonic spellings and adjust midi.note_name_to_MIDI_num helpers
 NOTES = [
     "A0",
     "Bb0",
@@ -274,40 +272,40 @@ NOTES = [
     "C8",
 ]
 
-
 # All 12 major scales
 MAJOR_SCALES = {
-    1: ["C", "D", "E", "F", "G", "A", "B"],
-    2: ["Db", "Eb", "F", "Gb", "Ab", "Bb", "C"],
-    3: ["D", "E", "F#", "G", "A", "B", "C#"],
-    4: ["Eb", "F", "G", "Ab", "Bb", "C", "D"],
-    5: ["E", "F#", "G#", "A", "B", "C#", "D#"],
-    6: ["F", "G", "A", "Bb", "C", "D", "E"],
-    7: ["F#", "G#", "A#", "B", "C#", "D#", "E#"],
-    8: ["G", "A", "B", "C", "D", "E", "F#"],
-    9: ["Ab", "Bb", "C", "Db", "Eb", "F", "G"],
-    10: ["A", "B", "C#", "D", "E", "F#", "G#"],
-    11: ["Bb", "C", "D", "Eb", "F", "G", "A"],
-    12: ["B", "C#", "D#", "E", "F#", "G#", "A#"],
+    "C Major": ["C", "D", "E", "F", "G", "A", "B"],
+    "Db Major": ["Db", "Eb", "F", "Gb", "Ab", "Bb", "C"],
+    "D Major": ["D", "E", "F#", "G", "A", "B", "C#"],
+    "Eb Major": ["Eb", "F", "G", "Ab", "Bb", "C", "D"],
+    "E Major": ["E", "F#", "G#", "A", "B", "C#", "D#"],
+    "F Major": ["F", "G", "A", "Bb", "C", "D", "E"],
+    "F# Major": ["F#", "G#", "A#", "B", "C#", "D#", "E#"],
+    "G Major": ["G", "A", "B", "C", "D", "E", "F#"],
+    "Ab Major": ["Ab", "Bb", "C", "Db", "Eb", "F", "G"],
+    "A Major": ["A", "B", "C#", "D", "E", "F#", "G#"],
+    "Bb Major": ["Bb", "C", "D", "Eb", "F", "G", "A"],
+    "B Major": ["B", "C#", "D#", "E", "F#", "G#", "A#"],
 }
-
 
 # All 12 relative/natural minor scales
 MINOR_SCALES = {
-    1: ["A", "B", "C", "D", "E", "F", "G"],
-    2: ["Bb", "C", "Db", "Eb", "F", "Gb", "Ab"],
-    3: ["B", "C#", "D", "E", "F#", "G", "A"],
-    4: ["C", "D", "Eb", "F", "G", "Ab", "Bb"],
-    5: ["C#", "D#", "E", "F#", "G#", "A", "B"],
-    6: ["D", "E", "F", "G", "A", "Bb", "C"],
-    7: ["D#", "E#", "F#", "G#", "A#", "B", "C#"],
-    8: ["E", "F#", "G", "A", "B", "C", "D"],
-    9: ["F", "G", "Ab", "Bb", "C", "Db", "Eb"],
-    10: ["F#", "G#", "A", "B", "C#", "D", "E"],
-    11: ["G", "A", "Bb", "C", "D", "Eb", "F"],
-    12: ["G#", "A#", "B", "C#", "D#", "E", "F#"],
+    "A Minor": ["A", "B", "C", "D", "E", "F", "G"],
+    "Bb Minor": ["Bb", "C", "Db", "Eb", "F", "Gb", "Ab"],
+    "B Minor": ["B", "C#", "D", "E", "F#", "G", "A"],
+    "C Minor": ["C", "D", "Eb", "F", "G", "Ab", "Bb"],
+    "C# Minor": ["C#", "D#", "E", "F#", "G#", "A", "B"],
+    "D Minor": ["D", "E", "F", "G", "A", "Bb", "C"],
+    "D# Minor": ["Eb", "F", "Gb", "Ab", "Bb", "B", "C#"],  # ignorning C flat
+    "E Minor": ["E", "F#", "G", "A", "B", "C", "D"],
+    "F Minor": ["F", "G", "Ab", "Bb", "C", "Db", "Eb"],
+    "F# Minor": ["F#", "G#", "A", "B", "C#", "D", "E"],
+    "G Minor": ["G", "A", "Bb", "C", "D", "Eb", "F"],
+    "G# Minor": ["G#", "A#", "B", "C#", "D#", "E", "F#"],
 }
 
+# Chromatic scale pitch class set notation representation
+CHROMATIC_SCALE = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
 
 # These are modes and scales starting on 'C', so they will need to
 # be transposed before being matched with corresponding note strings.
@@ -381,7 +379,6 @@ SCALES = {
     "Whole Tone": [0, 2, 4, 6, 8, 10],
 }
 
-
 # Interval list/dictionary
 """
 NOTE: Develop interval sets that begin with 2 and end with 2,
@@ -410,7 +407,6 @@ INTERVALS = {
     "Dim Triad": [3, 3],
     "Aug Triad": [4, 4],
 }
-
 
 # NOTE: figure out to account of octaves if pcs below are transposed!
 ARPEGGIOS = {
@@ -461,7 +457,7 @@ SCALE_DEGREE_MAPPING = {
 A rather large dictionary containing all of Allen Forte's 5 to 9 
 note prime form pitch class sets. A corresponding list called FORTE_NUMBERS 
 is used with randint() to pick a prime form from the dictionary in pickScale().
-The choice using FORTE_NUMBERS can be used to save which number was used for analytical
+The choice using FORTE_NUMBERS can be used to export_midi which number was used for analytical
 purposes.
 
 Each integer/pitch class functions as an index number against CHROMATIC_SCALE to 
@@ -478,7 +474,6 @@ generate a scale represented by a list of strings (i.e. ["C#4", "D5"... etc]).
 Info taken from here: 
 https://en.wikipedia.org/wiki/List_of_pitch-class_sets
 """
-
 
 SETS = {
     # 5-note sets
@@ -761,7 +756,6 @@ SETS = {
     "9-12": [0, 1, 2, 4, 5, 6, 8, 9, 10],
 }
 
-
 # Ensemble sizes
 ENSEMBLE_SIZES = {
     1: "solo",
@@ -777,7 +771,6 @@ ENSEMBLE_SIZES = {
     11: "large ensemble",
 }
 
-
 # Ensembles
 """
 A dictionary of some template ensembles.
@@ -786,7 +779,6 @@ NOTE: obviously not complete or comprehensive.
       just some standards that could use usefull when quick 
       templates are needed.
 """
-
 
 ENSEMBLES = {
     # strings
@@ -863,7 +855,6 @@ ENSEMBLES = {
         ],
     },
 }
-
 
 """
 List of each possible note for a limited set of instruments
@@ -1389,7 +1380,6 @@ RANGE = {
         "B4",
     ],
 }
-
 
 # MIDI instruments list (standard)
 # NOTE: indices 0 - 110 are MELODIC/HARMONIC instruments!

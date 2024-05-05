@@ -13,14 +13,13 @@ class Note(Container):
     """
 
     def __init__(self, velocity, pitch, start, end):
-
         super().__init__()
 
         self.name = ""  # note name string ("C#4")
-        self.velocity = velocity  # MIDI velocity
+        self.velocity = velocity  # MIDI velocity (dynamic)
         self.pitch = pitch  # MIDI pitch number
-        self.start = start  # start time (float)
-        self.end = end  # end time(float)
+        self.start = start  # MIDI start time (float)
+        self.end = end  # MIDI end time(float)
 
     def __repr__(self):
         return (
@@ -30,3 +29,9 @@ class Note(Container):
 
     def duration(self):
         return self.end - self.start
+
+    def pitch(self):
+        return self.pitch
+
+    def velocity(self):
+        return self.velocity

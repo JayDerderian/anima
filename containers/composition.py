@@ -17,7 +17,7 @@ class Composition:
     """
 
     def __init__(self, title=None, composer=None, tempo=None):
-
+        # title and composer info
         if title is not None:
             self.title = title
         else:
@@ -26,6 +26,8 @@ class Composition:
             self.composer = composer
         else:
             self.composer = ""
+
+        # metadata
         self.date = ""
         self.midi_file_name = ""
         self.txt_file_name = ""
@@ -38,8 +40,10 @@ class Composition:
 
         # "trio," "duet", etc..
         self.ensemble = ""
+
         # list of instruments in the piece
         self.instruments = []
+
         # self.parts is a dictionary where each entry is a list
         # of either Melody() or Chord() (or both!) objects,
         # or a single Melody() or Chord() object
@@ -53,9 +57,6 @@ class Composition:
             return f"{self.title} for solo {self.instruments[0]}"
         else:
             return f"{self.title} for {len(self.instruments)} instruments"
-
-    def _get_instrument_list(self) -> list:
-        return self.instruments
 
     def _duration(self) -> float:
         """
@@ -87,6 +88,12 @@ class Composition:
         Has this instrument been picked already?
         """
         return True if instr in self.instruments else False
+
+    def get_instrument_list(self) -> list:
+        """
+        Get a list of instruments used in this composition.
+        """
+        return self.instruments
 
     def all_picked(self, instruments: list) -> bool:
         """
