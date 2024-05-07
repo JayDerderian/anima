@@ -68,7 +68,7 @@ class Modify:
             pcs = oct_equiv(pcs)
         return pcs
 
-    def transpose_m(self, notes: list[int], dist: int):
+    def transpose_melody(self, notes: list[int], dist: int):
         """
         wrapper to use with melody() objects.
         returns a new note list[str]
@@ -78,18 +78,20 @@ class Modify:
         pcs = self.transpose(self.get_index(notes), dist=dist, oct_eq=False)
         return to_str(pcs, oct_eq=False)
 
-    def transpose_c(self, chords: list, dist: int) -> list:
+    def transpose_chords(self, chords: list, dist: int) -> list:
         """
         wrapper to use with chord() lists
         """
         if dist > 11 or dist < 1:
             raise ValueError("distance must be an int: 1<=n<=11")
+
         total_chords = len(chords)
         for c in range(total_chords):
             pcs = self.transpose(
                 self.get_index(chords[c].notes), dist=dist, oct_eq=False
             )
             chords[c].notes = to_str(pcs, oct_eq=False)
+
         return chords
 
     def get_intervals(self, notes: list[str]) -> list[int]:
@@ -115,9 +117,9 @@ class Modify:
 
         note name str must have an assigned octave between 0-8.
 
-        the returned list[int] should be used by transpose() with
+        the returned int or list[int] should be used by transpose() with
         oct_eq set to False. those resulting values should be mapped
-        back against NOTES to get octave-accurate transposed notes
+        back against NOTES to get octave-accurate transposed notes.
         """
         if type(notes) == str:
             return NOTES.index(notes)
@@ -272,8 +274,8 @@ class Modify:
     def change_durations(self, rhythms: list[float], val: float | list[float]) -> list:
         """
         Augment or diminish a Melody or Chord() object's rhythms by a specified amount.
-        If a list of augmentation values are provided, they must be of equal length
-        of the
+        If a list of alteration values are provided, they must be of equal length
+        of the list of rhythm values.
         """
         if type(val) == float:
             for i in range(len(rhythms)):
@@ -282,14 +284,15 @@ class Modify:
         elif type(val) == list:
             if len(val) != len(rhythms):
                 raise ValueError(
-                    f"augmentation value list must be same length as rhythms list"
-                    f"vals: {len(val)}\nrhythms: {len(rhythms)}"
+                    f"alteration values list must be same length as rhythms list\n"
+                    f"vals: {len(val)} rhythms: {len(rhythms)}"
                 )
             for i in range(len(rhythms)):
                 rhythms[i] += val[i]
         else:
             raise TypeError(
-                "augmentation values must be either type float or list[float]"
+                "alteration values must be either type float or list[float].",
+                f"vals: {type(val)}",
             )
 
         return rhythms

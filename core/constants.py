@@ -153,7 +153,7 @@ REST = 0
 
 """
 this is mainly used by the analysis module to determine proper beat values
-in a given meter. were' sticking with rational meters for the time being.
+in a given meter. we're sticking with rational meters for the time being.
 """
 BEATS = [1, 2, 4, 8, 16, 32, 64]
 
@@ -171,16 +171,23 @@ TUPLETS = {
 
 # List of pitch classes
 """
-NOTE: the indices of each pitch class correspond to 
-      its representation in integer notation!
+NOTE: the indices of each pitch class correspond to its representation in integer notation!
+This implicit mapping is pretty central to how this whole system works.
+
+We're skipping including enharmonic spellings of certain pitch classes (like C# vs Db) since
+there's no audible difference in the resulting MIDI file, and any enharmonic issues could be 
+resolved when exporting the MIDI file to a sheet music notation program.
 """
 PITCH_CLASSES = ["C", "C#", "D", "Eb", "E", "F", "F#", "G", "G#", "A", "Bb", "B"]
 
-# All the notes!
-# Complete piano range from bottom key to top key, octaves 0 - 8
-# NOTE: enharmonic spellings of certain notes (like C# vs Db) are ignored
-# for the sake of simplicity, though the resulting sounds will be the same.
-# TODO: add enharmonic spellings and adjust midi.note_name_to_MIDI_num helpers
+"""
+All the notes!
+
+Complete piano range from bottom key to top key, octaves 0 - 8
+
+NOTE: enharmonic spellings of certain notes (like C# vs Db) are ignored
+for the sake of simplicity, though the resulting sounds will be the same.
+"""
 NOTES = [
     "A0",
     "Bb0",
@@ -272,36 +279,41 @@ NOTES = [
     "C8",
 ]
 
+
+"""
+NOTE: spellings aren't correct since we're only using certain 
+enharmonic spellings, but the resulting sound will be the same.
+"""
 # All 12 major scales
 MAJOR_SCALES = {
     "C Major": ["C", "D", "E", "F", "G", "A", "B"],
-    "Db Major": ["Db", "Eb", "F", "Gb", "Ab", "Bb", "C"],
+    "Db Major": ["C#", "Eb", "F", "F#", "G#", "Bb", "C"],
     "D Major": ["D", "E", "F#", "G", "A", "B", "C#"],
-    "Eb Major": ["Eb", "F", "G", "Ab", "Bb", "C", "D"],
-    "E Major": ["E", "F#", "G#", "A", "B", "C#", "D#"],
+    "Eb Major": ["Eb", "F", "G", "G#", "Bb", "C", "D"],
+    "E Major": ["E", "F#", "G#", "A", "B", "C#", "Eb"],
     "F Major": ["F", "G", "A", "Bb", "C", "D", "E"],
-    "F# Major": ["F#", "G#", "A#", "B", "C#", "D#", "E#"],
+    "F# Major": ["F#", "G#", "Bb", "B", "C#", "Eb", "F"],
     "G Major": ["G", "A", "B", "C", "D", "E", "F#"],
-    "Ab Major": ["Ab", "Bb", "C", "Db", "Eb", "F", "G"],
+    "Ab Major": ["G#", "Bb", "C", "C#", "Eb", "F", "G"],
     "A Major": ["A", "B", "C#", "D", "E", "F#", "G#"],
     "Bb Major": ["Bb", "C", "D", "Eb", "F", "G", "A"],
-    "B Major": ["B", "C#", "D#", "E", "F#", "G#", "A#"],
+    "B Major": ["B", "C#", "Eb", "E", "F#", "G#", "A#"],
 }
 
 # All 12 relative/natural minor scales
 MINOR_SCALES = {
     "A Minor": ["A", "B", "C", "D", "E", "F", "G"],
-    "Bb Minor": ["Bb", "C", "Db", "Eb", "F", "Gb", "Ab"],
+    "Bb Minor": ["Bb", "C", "C#", "Eb", "F", "F#", "G#"],
     "B Minor": ["B", "C#", "D", "E", "F#", "G", "A"],
-    "C Minor": ["C", "D", "Eb", "F", "G", "Ab", "Bb"],
-    "C# Minor": ["C#", "D#", "E", "F#", "G#", "A", "B"],
+    "C Minor": ["C", "D", "Eb", "F", "G", "G#", "Bb"],
+    "C# Minor": ["C#", "Eb", "E", "F#", "G#", "A", "B"],
     "D Minor": ["D", "E", "F", "G", "A", "Bb", "C"],
-    "D# Minor": ["Eb", "F", "Gb", "Ab", "Bb", "B", "C#"],  # ignorning C flat
+    "D# Minor": ["Eb", "F", "F#", "G#", "Bb", "B", "C#"],
     "E Minor": ["E", "F#", "G", "A", "B", "C", "D"],
-    "F Minor": ["F", "G", "Ab", "Bb", "C", "Db", "Eb"],
+    "F Minor": ["F", "G", "G#", "Bb", "C", "C#", "Eb"],
     "F# Minor": ["F#", "G#", "A", "B", "C#", "D", "E"],
     "G Minor": ["G", "A", "Bb", "C", "D", "Eb", "F"],
-    "G# Minor": ["G#", "A#", "B", "C#", "D#", "E", "F#"],
+    "G# Minor": ["G#", "A#", "B", "C#", "Eb", "E", "F#"],
 }
 
 # Chromatic scale pitch class set notation representation

@@ -44,10 +44,9 @@ class Generate:
 
     def __init__(self):
         seed()
-        self.alive = True
         self.mod = Modify()  # modifier class
 
-    ## TITLE ###
+    ### TITLE ###
 
     @staticmethod
     def new_title() -> str:
@@ -151,7 +150,7 @@ class Generate:
         return f"{choice(PITCH_CLASSES)}{randint(1, 7)}"
 
     @staticmethod
-    def new_note(scale: list[str]) -> str:
+    def choose_note(scale: list[str]) -> str:
         """
         Picks a note at random from a given list of notes
         """
@@ -921,7 +920,7 @@ class Generate:
         """
         if asyn:
             # NOTE: this will redefine supplied total if asyn is True
-            total = randint(12, 30)  
+            total = randint(12, 30)
 
         for _ in range(total):
             # limited to octaves 4 and 5 for violins
