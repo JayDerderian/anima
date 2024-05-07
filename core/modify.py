@@ -51,16 +51,16 @@ class Modify:
         pcs_len = len(pcs)
         # modify with a single interval across all pitch-class integers
         if type(dist) == int:
-            for note in range(pcs_len):
-                pcs[note] += dist
+            for i in range(pcs_len):
+                pcs[i] += dist
         # modify with a list of intervals across all pitch-class integers.
         # this allows for each pitch-class to be transposed by a unique
         # distance, allowing for rapid variation generation.
         # it could also be a list of the same repeated value but that
         # might be less efficient.
         elif type(dist) == list:
-            for note in range(pcs_len):
-                pcs[note] += dist[note]
+            for i in range(pcs_len):
+                pcs[i] += dist[i]
         else:
             raise TypeError("incorrect input type. must be single int or list of ints!")
         # keep resulting pcs values between 0 and 11 by default.
@@ -84,8 +84,8 @@ class Modify:
         """
         if dist > 11 or dist < 1:
             raise ValueError("distance must be an int: 1<=n<=11")
-        cl = len(chords)
-        for c in range(cl):
+        total_chords = len(chords)
+        for c in range(total_chords):
             pcs = self.transpose(
                 self.get_index(chords[c].notes), dist=dist, oct_eq=False
             )
@@ -148,22 +148,24 @@ class Modify:
         """
         inverts a melody. returns a new note list[str]
         """
-        # list of inverted intervals
-        inverted = []
-        # get list of intervals and invert values
-        intervals = self.get_intervals(notes)
-        interval_len = len(intervals)
-        for i in range(interval_len):
+
+        inverted = []  # list of inverted intervals
+        intervals = self.get_intervals(notes)  # get list of intervals and invert values
+        total_intervals = len(intervals)
+        for i in range(total_intervals):
             if is_pos(intervals[i]):
                 inverted.append(-abs(intervals[i]))
             else:
                 inverted.append(abs(intervals[i]))
+
         # get index of first note. we don't need them all.
         mel = []
         mel.append(self.get_index(notes))
+
         # build new melody note list off this inverted interval list
-        for i in range(interval_len):
+        for i in range(total_intervals):
             mel.append(mel[i] + inverted[i])
+
         return to_str(mel, oct_eq=False)
 
     def retro_invert(self, m: Melody) -> Melody:
@@ -252,9 +254,42 @@ class Modify:
                 )
             dyn += diff
         elif type(dyn) == list:
-            dyn_len = len(dyn)
-            for d in range(dyn_len):
+            total_dynamics = len(dyn)
+            for d in range(total_dynamics):
                 if dyn[d] < 123:
                     dyn[d] += diff
 
         return dyn
+
+    @staticmethod
+    def change_duration(rhythm: float, val: float) -> float:
+        """
+        Augment or diminish a single rhythmic duration.
+        """
+        rhythm += val
+        return rhythm
+
+    def change_durations(self, rhythms: list[float], val: float | list[float]) -> list:
+        """
+        Augment or diminish a Melody or Chord() object's rhythms by a specified amount.
+        If a list of augmentation values are provided, they must be of equal length
+        of the
+        """
+        if type(val) == float:
+            for i in range(len(rhythms)):
+                rhythms[i] += val
+
+        elif type(val) == list:
+            if len(val) != len(rhythms):
+                raise ValueError(
+                    f"augmentation value list must be same length as rhythms list"
+                    f"vals: {len(val)}\nrhythms: {len(rhythms)}"
+                )
+            for i in range(len(rhythms)):
+                rhythms[i] += val[i]
+        else:
+            raise TypeError(
+                "augmentation values must be either type float or list[float]"
+            )
+
+        return rhythms
