@@ -14,11 +14,24 @@ from containers.chord import Chord
 from containers.composition import Composition
 
 
+def is_valid_midi_num(num: int) -> bool:
+    """
+    Returns True if the midi number is valid
+    """
+    return True if num >= 21 and num <= 108 else False
+
+
 def note_name_to_MIDI_num(note: str) -> int:
     """
     returns the corresponding MIDI note for a
-    given note name string. apparently MIDI note numbers
-    are the given index of a note in NOTES plus 21
+    given note name string.
+
+    Midi numbers start at 21 and go to 108 because reasons.
+    See: https://newt.phys.unsw.edu.au/jw/notes.html
+
+    Our implementation uses indicies to match note names to note numbers,
+    so we compensate for the difference in value between the index and the
+    MIDI number by adding (or subtracting) 21.
     """
     return NOTES.index(note) + 21
 
@@ -26,8 +39,10 @@ def note_name_to_MIDI_num(note: str) -> int:
 def MIDI_num_to_note_name(num: int) -> str:
     """
     returns the corresponding note name string from a
-    given MIDI note number
+    given MIDI note number.
     """
+    if num < 21 or num > 108:
+        raise ValueError("MIDI number must be between 21 and 108")
     return NOTES[num - 21]
 
 
@@ -98,20 +113,18 @@ def _build_melody(
     start: float, end: float, cur_part: Melody, mel_inst: Instrument
 ) -> tuple[float, float, Instrument]:
     end += cur_part.rhythms[0]
-    # instrument = instrument_to_program(cur_part.instrument)
-    # mel = Instrument(program=instrument)
-    for j in range(1, len(cur_part.notes)):
+    for i in range(1, len(cur_part.notes)):
         mel_inst.notes.append(
             Note(
-                velocity=cur_part.dynamics[j - 1],
-                pitch=note_name_to_MIDI_num(cur_part.notes[j - 1]),
+                velocity=cur_part.dynamics[i - 1],
+                pitch=note_name_to_MIDI_num(cur_part.notes[i - 1]),
                 start=start,
                 end=end,
             )
         )
-        start += cur_part.rhythms[j - 1]
-        end += cur_part.rhythms[j]
-    # midi_writer.instruments.append(mel)
+        start += cur_part.rhythms[i - 1]
+        end += cur_part.rhythms[i]
+
     return start, end, mel_inst
 
 
@@ -119,8 +132,6 @@ def _build_chord(
     start: float, end: float, cur_part: Chord, chord_inst: Instrument
 ) -> tuple[float, float, Instrument]:
     end += cur_part.rhythm
-    # instrument = instrument_to_program(cur_part.instrument)
-    # chord = Instrument(program=instrument)
     for note in cur_part.notes:
         chord_inst.notes.append(
             Note(
@@ -130,7 +141,6 @@ def _build_chord(
                 end=end,
             )
         )
-    # midi_writer.instruments.append(chord)
     start += cur_part.rhythm
 
     return start, end, chord_inst

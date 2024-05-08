@@ -9,9 +9,10 @@ from core.generate import Generate
 from containers.melody import Melody
 from containers.chord import Chord
 
-TEMPO = 116  # global composition tempo
+TEMPO = 146  # global composition tempo
 DYNAMIC = 100  # dynamic for every note generated. velocities are handled during editing in the DAW
-PIANO = "Acoustic Grand Piano"
+PIANO = "Acoustic Grand Piano"  # MIDI instrument name
+BASS = "Contrabass"  # MIDI instrument name
 
 # initialize generator & composition objects
 create = Generate()
@@ -21,14 +22,14 @@ comp = create.init_comp(tempo=TEMPO, title=create.new_title(), composer="contra 
 # used for slow middle break down after an initial build
 def gen_piano_chords() -> list:
     """
-    Generates a slow, deep, moody piano intro
+    Generates a slow, deep, series of piano chords
     """
 
     # each of these rhythms will be used with a single chord.
-    source_rhythms = [2, 3, 5, 8]
+    source_rhythms = [2.0, 2.5, 3.0, 5.0]
 
     # pick initial notes.
-    print("generating piano intro...")
+    print("generating piano chords...")
 
     # f natural minor
     source_scale = [
@@ -55,7 +56,7 @@ def gen_piano_chords() -> list:
         "Eb4",
     ]
 
-    # pick three different chords
+    # pick five different chords
     chords = []
     for _ in range(5):
         # pick the notes and dynamic for each chord before
@@ -133,6 +134,9 @@ def gen_slow_bass_line() -> Melody:
 
     source_rhythms = [2, 4, 5, 6]
     source_notes = [
+        "C0",
+        "C#0",
+        "Eb0",
         "F0",
         "G0",
         "G#0",
@@ -161,10 +165,7 @@ def gen_slow_bass_line() -> Melody:
 
 
 if __name__ == "__main__":
-    # melody = gen_long_melody()
-    # comp.add_part(part=melody, instr=melody.instrument)
-
     chords = gen_piano_chords()
-
     comp.add_part(part=chords, instr=PIANO)
+
     export_midi(comp)

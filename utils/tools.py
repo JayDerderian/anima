@@ -4,13 +4,17 @@ objects and chord() lists. these methods will likely be used in other large
 classes in the analyze.py and modify.py files.
 """
 
+from __future__ import annotations
+
 from math import floor
 from random import randint
 from core.constants import NOTES, PITCH_CLASSES
 
 
 def all_same(a_list: list) -> bool:
-    """returns true if all elements in the list are the same"""
+    """
+    Returns true if all elements in the list are the same
+    """
     return True if all(e == a_list[0] for e in a_list) else False
 
 
@@ -116,7 +120,7 @@ def _scale(rhythms: float, diff: float, revert: bool = False) -> float:
     return rhythms
 
 
-def scale_to_tempo(tempo: float, rhythms, revert: bool = False):
+def scale_to_tempo(tempo: float, rhythms, revert: bool = False) -> float | list:
     """
     Converts a supplied float or list[float] of rhythmic values to
     actual value in seconds at a given tempo. can also convert back to base
