@@ -2,6 +2,8 @@
 Utility functions for working with MIDI data and I/O
 """
 
+from __future__ import annotations
+
 from os.path import join
 from mido import MidiFile, MidiTrack, Message, MetaMessage
 from pretty_midi import PrettyMIDI, Instrument
@@ -105,7 +107,7 @@ def parse_midi(file_name: str) -> tuple[dict, list]:
     return tracks, msgs
 
 
-def _to_instrument(part) -> Instrument:
+def to_instrument(part: Chord | Melody) -> Instrument:
     return Instrument(program=instrument_to_program(part.instrument))
 
 
@@ -165,13 +167,13 @@ def export_midi(comp: Composition) -> None:
         # handle Melody() object
         if isinstance(cur_part, Melody):
             _, _, instrument = _build_melody(
-                start, end, cur_part, _to_instrument(cur_part)
+                start, end, cur_part, to_instrument(cur_part)
             )
             midi_writer.instruments.append(instrument)
         # handle Chord() object
         elif isinstance(cur_part, Chord):
             _, _, instrument = _build_chord(
-                start, end, cur_part, _to_instrument(cur_part)
+                start, end, cur_part, to_instrument(cur_part)
             )
             midi_writer.instruments.append(instrument)
 
@@ -181,7 +183,7 @@ def export_midi(comp: Composition) -> None:
             # we pick the instrument using the first object. instruments will
             # all have the same MIDI instrument since every object in this list will
             # also have the same instrument.
-            instrument = _to_instrument(cur_part[0])
+            instrument = to_instrument(cur_part[0])
             for item in cur_part:
                 if isinstance(item, Melody):
                     start, end, instrument = _build_melody(start, end, item, instrument)
@@ -190,7 +192,7 @@ def export_midi(comp: Composition) -> None:
                 else:
                     raise TypeError(
                         f"Unsupported type! Cur_part is type: {type(cur_part)} "
-                        "Should be a Melody or Chord object, or list of either(or both)"
+                        "Should be a Melody or Chord object, or list of either (or both)"
                     )
             midi_writer.instruments.append(instrument)
         else:
@@ -200,5 +202,5 @@ def export_midi(comp: Composition) -> None:
             )
 
     # write to MIDI file
-    print(f"\nsaving {comp.midi_file_name} ... ")
+    print(f"saving {comp.midi_file_name} ... ")
     midi_writer.write(join(MIDI_FOLDER, comp.midi_file_name))

@@ -12,6 +12,7 @@ from containers.chord import Chord
 TEMPO = 146  # global composition tempo
 DYNAMIC = 100  # dynamic for every note generated. velocities are handled during editing in the DAW
 PIANO = "Acoustic Grand Piano"  # MIDI instrument name
+STRINGS = "String Ensemble 1"  # MIDI instrument name
 BASS = "Contrabass"  # MIDI instrument name
 
 # initialize generator & composition objects
@@ -67,7 +68,7 @@ def gen_piano_chords() -> list:
 
         # repeat each chord 6 to 9 times, each with a different
         # rhythm chosen from the rhythms list
-        total_reps = randint(4, 9)
+        total_reps = randint(2, 5)
         for _ in range(total_reps):
             chord = Chord(tempo=TEMPO, instrument=PIANO)
             chord.notes = chord_notes
@@ -83,32 +84,9 @@ def gen_long_melody() -> Melody:
 
     melody = Melody(tempo=TEMPO, instrument=PIANO)
 
-    source_rhythms = [0.5, 2, 4]
-    source_scale = [
-        "C4",
-        "C#4",
-        "Eb4",
-        "F4",
-        "G4",
-        "G#4",
-        "Bb4",
-        "C5",
-        "C#5",
-        "Eb5",
-        "F5",
-        "G5",
-        "G#5",
-        "Bb5",
-        "C6",
-    ]
-
-    total_notes = randint(13, 21)
-
-    melody.notes = create.choose_notes(source_notes=source_scale, total=total_notes)
-    melody.rhythms = create.new_rhythms(
-        total=total_notes, tempo=melody.tempo, source_rhythms=source_rhythms
-    )
-    melody.dynamics = [DYNAMIC] * total_notes
+    melody.notes = ["F5", "C5", "G#5", "G5", "C6", "E5", "C#6", "C6", "Bb5", "Eb5"]
+    melody.rhythms = [2.0, 2.0, 3.0, 4.0, 2.0, 2.0, 4.0, 4.0, 3.0, 2.0]
+    melody.dynamics = [DYNAMIC] * len(melody.notes)
 
     return melody
 
@@ -165,7 +143,7 @@ def gen_slow_bass_line() -> Melody:
 
 
 if __name__ == "__main__":
-    chords = gen_piano_chords()
-    comp.add_part(part=chords, instr=PIANO)
+    bass_line = gen_slow_bass_line()
+    comp.add_part(part=bass_line, instr=bass_line.instrument)
 
     export_midi(comp)

@@ -286,6 +286,7 @@ class Generate:
             else:
                 scale, pcs = self.new_scale(transpose=False)
                 info = f"invented scale: {scale} pcs: {pcs}"
+
         scale = to_str(pcs=pcs, octave=octave)
         return scale, info
 
@@ -365,7 +366,7 @@ class Generate:
         return scale, pcs
 
     @staticmethod
-    def new_source_scale(root: list) -> list[str]:
+    def new_source_scale(root: list[str]) -> list[str]:
         """
         Generates a list[str] "source scale" based off a
         supplied root (list[str]). List should contain
@@ -444,7 +445,7 @@ class Generate:
         return variants
 
     @staticmethod
-    def pick_arp(key) -> list[int]:
+    def pick_arp(key: str) -> list[int]:
         """
         Returns a list[int] of pitch classes outlining a one-octave
         arpeggio.
@@ -918,6 +919,9 @@ class Generate:
 
         returns a modified Melody() object
         """
+        if part.instrument not in ["Violin", "Viola", "Cello", "Contrabass"]:
+            raise ValueError("melody object must be assigned a string instrument")
+
         if asyn:
             # NOTE: this will redefine supplied total if asyn is True
             total = randint(12, 30)
@@ -926,7 +930,6 @@ class Generate:
             # limited to octaves 4 and 5 for violins
             if part.instrument == "Violin":
                 note = scale[randint(13, len(scale) - 1)]
-                # trying to account for random notes chosen out of range...
                 while note not in RANGE["Violin"]:
                     note = scale[randint(13, len(scale) - 1)]
                 part.notes.append(note)

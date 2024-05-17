@@ -137,8 +137,9 @@ class Modify:
     @staticmethod
     def retrograde(melody: Melody) -> Melody:
         """
-        reverses the elements in a melody object (notes, rhythms, dynamics)
-        returns a duplicated melody() object
+        Reverses the melodic parameters in a melody object (notes, rhythms, dynamics)
+
+        Returns a new Melody() object containing the reversed elements.
         """
         retro = melody
         retro.notes.reverse()
@@ -146,7 +147,7 @@ class Modify:
         retro.rhythms.reverse()
         return retro
 
-    def invert(self, notes: list[str]) -> list[str | list[str]]:
+    def invert(self, notes: list[str]) -> str | list[str]:
         """
         inverts a melody. returns a new note list[str]
         """
@@ -161,14 +162,15 @@ class Modify:
                 inverted.append(abs(intervals[i]))
 
         # get index of first note. we don't need them all.
-        mel = []
-        mel.append(self.get_index(notes))
+        pcs = []
+        pcs.append(self.get_index(notes))
 
         # build new melody note list off this inverted interval list
         for i in range(total_intervals):
-            mel.append(mel[i] + inverted[i])
+            pcs.append(pcs[i] + inverted[i])
 
-        return to_str(mel, oct_eq=False)
+        # return a notes list.
+        return to_str(pcs, oct_eq=False)
 
     def retro_invert(self, m: Melody) -> Melody:
         """

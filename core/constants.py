@@ -281,8 +281,9 @@ NOTES = [
 
 
 """
-NOTE: spellings aren't correct since we're only using certain 
-enharmonic spellings, but the resulting sound will be the same.
+NOTE: note spellings (i.e sharps vs flats) aren't correct here 
+since we're only using certain enharmonic spellings, but the 
+resulting sound will be the same to the ear.
 """
 # All 12 major scales
 MAJOR_SCALES = {
@@ -467,10 +468,7 @@ SCALE_DEGREE_MAPPING = {
 
 """
 A rather large dictionary containing all of Allen Forte's 5 to 9 
-note prime form pitch class sets. A corresponding list called FORTE_NUMBERS 
-is used with randint() to pick a prime form from the dictionary in pickScale().
-The choice using FORTE_NUMBERS can be used to export_midi which number was used for analytical
-purposes.
+note prime form pitch class sets.
 
 Each integer/pitch class functions as an index number against CHROMATIC_SCALE to 
 generate a scale represented by a list of strings (i.e. ["C#4", "D5"... etc]).
