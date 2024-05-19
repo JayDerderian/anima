@@ -22,6 +22,7 @@ TODO:
 
 TODO: generate spectrogram of a given audio file
 """
+from mido import MetaMessage
 
 from core.constants import NOTES, PITCH_CLASSES, RHYTHMS, BEATS, RANGE, SCALES, SETS
 from core.modify import Modify
@@ -81,7 +82,7 @@ class Analyze:
         return pcs
 
     # TODO: TEST THIS
-    def count_pcs(self, tracks):
+    def count_pcs(self, all_tracks: dict) -> dict:
         """
         takes a list tracks (ideally parsed with midi.parse_midi()), then
         counts the number of instances of each pitch class in each track
@@ -103,14 +104,20 @@ class Analyze:
             10: 0,
             11: 0,
         }
-        for track in tracks:
+        for track_key in all_tracks:
+            # first track always has MetaMessages, and we don't care about those here
+            if track_key == "track 0":
+                continue
             # convert all MIDI note numbers to
             # note name strings, then pitch classes (obvs not ideal)
             notes = []
-            for n in range(len(tracks.notes)):
-                notes.append(self.get_pcs(MIDI_num_to_note_name(track.notes[n])))
+            curr_track = all_tracks[track_key]
+            for msg in curr_track:
+                if hasattr(msg, "note"):
+                    notes.append(self.get_pcs(MIDI_num_to_note_name(msg.note)))
             for key in pc_totals:
                 pc_totals[key] += notes.count(key)
+
         return pc_totals
 
     @staticmethod
