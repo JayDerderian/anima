@@ -80,7 +80,7 @@ class Generate:
         return get_full_name()
 
     def init_comp(
-            self, tempo: float = None, title: str = None, composer: str = None
+        self, tempo: float = None, title: str = None, composer: str = None
     ) -> Composition:
         """
         Initializes a Composition() object by creating
@@ -157,7 +157,7 @@ class Generate:
         return choice(scale)
 
     def new_notes(
-            self, data=None, root: list = None, total: int = None
+        self, data=None, root: list = None, total: int = None
     ) -> tuple[list, list, list]:
         """
         Generates a set of notes to be used as a melody. Can also
@@ -291,7 +291,7 @@ class Generate:
         return scale, info
 
     def pick_scale(
-            self, transpose: bool = True, octave: int = None
+        self, transpose: bool = True, octave: int = None
     ) -> tuple[str, list[int], list]:
         """
         Picks a scale, randomly transposes it (if indicated),
@@ -314,7 +314,7 @@ class Generate:
         return scale, pcs, notes
 
     def pick_set(
-            self, transpose: bool = True, octave: int = None
+        self, transpose: bool = True, octave: int = None
     ) -> tuple[str, list[int], list]:
         """
         Selects prime form and transposes a random distance (or not)
@@ -336,7 +336,7 @@ class Generate:
         return forte_number, pcs, scale
 
     def new_scale(
-            self, transpose: bool = True, octave: int = None
+        self, transpose: bool = True, octave: int = None
     ) -> tuple[list, list[int]]:
         """
         Returns a randomly generated 5 to 8 note scale with or without an octave
@@ -509,7 +509,7 @@ class Generate:
         return choice(RHYTHMS)
 
     def new_rhythms(
-            self, total: int = None, tempo: float = None, source_rhythms: list = None
+        self, total: int = None, tempo: float = None, source_rhythms: list = None
     ):
         """
         Generates a series of rhythms of n length, where n is supplied
@@ -689,7 +689,7 @@ class Generate:
         return duration
 
     def new_chord(
-            self, tempo: float = None, scale: list = None, asyn: bool = True
+        self, tempo: float = None, scale: list = None, asyn: bool = True
     ) -> Chord:
         """
         Generates a 2-9 note chord with randomly chosen notes from either a supplied
@@ -737,7 +737,7 @@ class Generate:
         return new_chord
 
     def new_chords(
-            self, total: int = None, tempo: float = None, scale: list = None
+        self, total: int = None, tempo: float = None, scale: list = None
     ) -> list[Chord]:
         """
         Generates a progression from the notes of a given scale.
@@ -840,13 +840,13 @@ class Generate:
         print(output)
 
     def new_melody(
-            self,
-            tempo: float = None,
-            raw_data=None,
-            data_type: int = None,
-            total: int = None,
-            inst_range: bool = None,
-            rests: bool = True,
+        self,
+        tempo: float = None,
+        raw_data=None,
+        data_type: int = None,
+        total: int = None,
+        inst_range: bool = None,
+        rests: bool = True,
     ) -> Melody:
         """
         Picks tempo, notes, rhythms, and dynamics, with or without a
@@ -907,7 +907,7 @@ class Generate:
         return melody
 
     def write_string_line(
-            self, part: Melody, scale: list, total: int, asyn: bool = False
+        self, part: Melody, scale: list, total: int, asyn: bool = False
     ) -> Melody:
         """
         writes a melodic line for a string instrument (violin, viola, cello, or bass TBD)
